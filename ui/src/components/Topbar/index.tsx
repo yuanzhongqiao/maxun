@@ -8,7 +8,7 @@ const Topbar = () => {
     <Header className="flex justify-between items-center h-16 bg-white shadow-md">
       <Col span={4} className="flex items-center">
         <Link to="/">
-          <img src="your_logo.png" alt="Your company logo" className="h-8 w-auto" />
+          <img src="maxun_logo.png" alt="Maxun" className="h-8 w-auto" />
         </Link>
       </Col>
       <Col span={16} className="hidden lg:flex justify-end">
@@ -25,7 +25,7 @@ const Topbar = () => {
         </Menu>
       </Col>
       <Col span={4} className="lg:hidden flex justify-end">
-        {/* Add a hamburger icon for mobile menu (replace with your preferred icon) */}
+        {/* Add a hamburger icon for mobile menu  */}
         <button className="text-gray-600 focus:outline-none">
           <svg
             xmlns="http://www.w3.org/2000/svg"
