@@ -56,14 +56,14 @@ const Topbar = () => {
         visible={visible}
       >
         <Menu mode="vertical">
-          <Menu.Item key="1">
-            <Link to="/link1">Link 1</Link>
+        <Menu.Item key="1">
+            <Link to="/link1">Dashboard</Link>
           </Menu.Item>
           <Menu.Item key="2">
-            <Link to="/link2">Link 2</Link>
+            <Link to="/link2">Credits</Link>
           </Menu.Item>
           <Menu.Item key="3">
-            <Link to="/link3">Link 3</Link>
+            <Link to="/link3">Profile</Link>
           </Menu.Item>
         </Menu>
       </Drawer>
