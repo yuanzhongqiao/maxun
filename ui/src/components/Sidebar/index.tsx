@@ -1,4 +1,4 @@
-import { Layout, Menu, } from "antd";
+import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
 
 const { Sider } = Layout;
