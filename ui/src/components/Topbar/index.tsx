@@ -9,7 +9,6 @@ const Topbar = () => {
   const [visible, setVisible] = useState(false);
 
   const showDrawer = () => setVisible(true);
-
   const hideDrawer = () => setVisible(false);
 
   return (
