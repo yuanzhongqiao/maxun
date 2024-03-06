@@ -26,7 +26,7 @@ const Sidebar = () => {
         </Menu>
         <div className="flex items-center py-4 px-6">
           {/* Add  logo image here */}
-          <img src="your_logo.png" alt="Your company logo" className="h-8 w-auto mr-4" />
+          <img src="your_logo.png" alt="Maxun logo" className="h-8 w-auto mr-4" />
           <span className="text-xl font-bold">Maxun</span>
         </div>
       </div>
