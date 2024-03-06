@@ -12,7 +12,7 @@ const Topbar = () => {
   const hideDrawer = () => setVisible(false);
 
   return (
-    <Header className="flex justify-between items-center h-16 bg-white shadow-md">
+    <Header className="flex justify-between items-center h-16 bg-white shadow-xl">
       <Col span={4} className="flex items-center">
         <Link to="/">
           <img src="maxun_logo.png" alt="Maxun" className="h-8 w-auto" />
