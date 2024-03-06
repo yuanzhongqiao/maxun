@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout, Menu, Col, Row } from "antd";
-import { Link } from "react-router-dom"; // Assuming you're using react-router-dom for navigation
+import { Link } from "react-router-dom";
 
 const { Sider } = Layout;
 
@@ -8,9 +8,9 @@ const Sidebar = () => {
   return (
     <Sider
       className="h-screen bg-white text-gray-800 fixed top-16 left-0 flex flex-col justify-between"
-      width={250} // Adjust width as needed
+      width={250} 
     >
-      <div className="flex flex-col justify-between h-full"> {/* Full height container */}
+      <div className="flex flex-col justify-between h-full"> 
         <Menu mode="vertical">
           <Menu.Item key="1">
             <Link to="/dashboard">Dashboard</Link>
