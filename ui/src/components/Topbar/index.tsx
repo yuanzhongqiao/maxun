@@ -53,7 +53,7 @@ const Topbar = () => {
         placement="right"
         closable={false}
         onClose={hideDrawer}
-        visible={visible}
+        open={visible}
         getContainer={() => document.body} // Ensure the drawer covers viewport on mobile
       >
         <Menu mode="vertical">
