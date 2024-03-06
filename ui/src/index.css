@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+        --pink: #ff00c3;
+        --black: #ff00c3;
+        --white: #ff00c3;
+    }
+}
