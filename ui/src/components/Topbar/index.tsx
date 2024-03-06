@@ -48,6 +48,25 @@ const Topbar = () => {
           </svg>
         </button>
       </Col>
+      <Drawer
+        title="Navigation"
+        placement="right"
+        closable={false}
+        onClose={hideDrawer}
+        visible={visible}
+      >
+        <Menu mode="vertical">
+          <Menu.Item key="1">
+            <Link to="/link1">Link 1</Link>
+          </Menu.Item>
+          <Menu.Item key="2">
+            <Link to="/link2">Link 2</Link>
+          </Menu.Item>
+          <Menu.Item key="3">
+            <Link to="/link3">Link 3</Link>
+          </Menu.Item>
+        </Menu>
+      </Drawer>
     </Header>
   );
 };
