@@ -1,10 +1,17 @@
-import { Layout, Menu, Col } from "antd";
+import { useState } from "react";
+import { Layout, Menu, Col, Drawer } from "antd";
 import { Link } from "react-router-dom"; 
 import { FaBars } from "react-icons/fa";
 
 const { Header } = Layout;
 
 const Topbar = () => {
+  const [visible, setVisible] = useState(false);
+
+  const showDrawer = () => setVisible(true);
+
+  const hideDrawer = () => setVisible(false);
+
   return (
     <Header className="flex justify-between items-center h-16 bg-white shadow-md">
       <Col span={4} className="flex items-center">
@@ -27,7 +34,7 @@ const Topbar = () => {
       </Col>
       <Col span={4} className="lg:hidden flex justify-end">
         <FaBars className="text-2xl text-gray-600" />
-        <button className="text-gray-600 focus:outline-none">
+        <button className="text-gray-600 focus:outline-none" onClick={showDrawer}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
