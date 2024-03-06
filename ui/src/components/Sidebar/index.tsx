@@ -12,16 +12,16 @@ const Sidebar = () => {
       <div className="flex flex-col justify-between h-full"> 
         <Menu mode="vertical">
           <Menu.Item key="1">
-            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/dashboard">Bots</Link>
           </Menu.Item>
           <Menu.Item key="2">
-            <Link to="/settings">Settings</Link>
+            <Link to="/settings">Subscription</Link>
           </Menu.Item>
           <Menu.Item key="3">
-            <Link to="/users">Users</Link>
+            <Link to="/users">API</Link>
           </Menu.Item>
           <Menu.Item key="4">
-            <Link to="/profile">Profile</Link>
+            <Link to="/profile">Workflow</Link>
           </Menu.Item>
         </Menu>
         <div className="flex items-center py-4 px-6">
