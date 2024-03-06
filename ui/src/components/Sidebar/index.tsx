@@ -14,14 +14,14 @@ const Sidebar = () => {
                     <Menu.Item key="1">
                         <Link to="/bots">Bots</Link>
                     </Menu.Item>
+                    <Menu.Item key="4">
+                        <Link to="/workflow">Workflow</Link>
+                    </Menu.Item>
                     <Menu.Item key="2">
                         <Link to="/analytics">Analytics</Link>
                     </Menu.Item>
                     <Menu.Item key="3">
                         <Link to="/api">API</Link>
-                    </Menu.Item>
-                    <Menu.Item key="4">
-                        <Link to="/workflow">Workflow</Link>
                     </Menu.Item>
                 </Menu>
             </div>
