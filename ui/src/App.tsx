@@ -13,8 +13,7 @@ const App = () => (
     }}
   >
    
-      <Button type="primary">Primary</Button>
-      <Button>Default</Button>
+     
     
   <BrowserRouter>
     <Topbar />
