@@ -18,7 +18,7 @@ const Sidebar = () => {
             <Link to="/subscription">Subscription</Link>
           </Menu.Item>
           <Menu.Item key="3">
-            <Link to="/users">API</Link>
+            <Link to="/api">API</Link>
           </Menu.Item>
           <Menu.Item key="4">
             <Link to="/profile">Workflow</Link>
