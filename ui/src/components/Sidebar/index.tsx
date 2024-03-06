@@ -6,7 +6,7 @@ const { Sider } = Layout;
 const Sidebar = () => {
     return (
         <Sider
-            className="h-screen bg-white text-gray-800 fixed top-16 left-0 flex flex-col justify-between"
+            className="h-screen bg-white text-gray-800 fixed top-16 left-0 flex flex-col justify-between shadow-xl"
             width={250}
         >
             <div className="flex flex-col justify-between h-full">
