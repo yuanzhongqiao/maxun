@@ -9,7 +9,7 @@ const Sidebar = () => {
             className="h-screen bg-white text-gray-800 fixed top-16 left-0 flex flex-col justify-between shadow-xl"
             width={250}
         >
-            <div className="flex flex-col justify-between h-full mt-16">
+            <div className="flex flex-col justify-between h-full mt-32">
                 <Menu mode="vertical">
                     <Menu.Item key="1">
                         <Link to="/bots">Bots</Link>
