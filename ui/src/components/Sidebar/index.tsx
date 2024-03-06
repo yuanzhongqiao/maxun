@@ -21,7 +21,7 @@ const Sidebar = () => {
             <Link to="/api">API</Link>
           </Menu.Item>
           <Menu.Item key="4">
-            <Link to="/profile">Workflow</Link>
+            <Link to="/workflow">Workflow</Link>
           </Menu.Item>
         </Menu>
         <div className="flex items-center py-4 px-6">
