@@ -24,10 +24,6 @@ const Sidebar = () => {
                         <Link to="/workflow">Workflow</Link>
                     </Menu.Item>
                 </Menu>
-                <div className="flex items-center py-4 px-6 justify-end">
-                    <img src="your_logo.png" alt="Maxun logo" className="h-8 w-auto mr-4" />
-                    <span className="text-xl font-bold">Maxun</span>
-                </div>
             </div>
         </Sider>
     );
