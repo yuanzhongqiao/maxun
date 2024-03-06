@@ -4,10 +4,23 @@ import { Button, ConfigProvider, Space } from 'antd';
 import { BrowserRouter } from 'react-router-dom'
 
 const App = () => (
+  <ConfigProvider
+    theme={{
+      token: {
+        colorPrimary: '#00b96b',
+        borderRadius: 2,
+      },
+    }}
+  >
+    <Space>
+      <Button type="primary">Primary</Button>
+      <Button>Default</Button>
+    </Space>
   <BrowserRouter>
     <Topbar />
     <Sidebar />
   </BrowserRouter>
+  </ConfigProvider>
 );
 
 export default App;
