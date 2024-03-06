@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Layout, Menu, Col, Drawer } from "antd";
-import { Link } from "react-router-dom"; 
+import { Link } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 
 const { Header } = Layout;
@@ -58,9 +58,9 @@ const Topbar = () => {
       >
         <Menu mode="vertical">
           <Menu.Item key="1">
-            <Link to="/dashboard" onClick={hideDrawer}> 
-            Dashboard
-          </Link>
+            <Link to="/dashboard" onClick={hideDrawer}>
+              Dashboard
+            </Link>
           </Menu.Item>
           <Menu.Item key="2">
             <Link to="/credits" onClick={hideDrawer}>Credits</Link>
