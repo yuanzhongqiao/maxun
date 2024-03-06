@@ -1,5 +1,6 @@
 import { Layout, Menu, Col } from "antd";
 import { Link } from "react-router-dom"; 
+import { FaBars } from "react-icons/fa";
 
 const { Header } = Layout;
 
@@ -25,7 +26,7 @@ const Topbar = () => {
         </Menu>
       </Col>
       <Col span={4} className="lg:hidden flex justify-end">
-        {/* Add a hamburger icon for mobile menu  */}
+        <FaBars className="text-2xl text-gray-600" />
         <button className="text-gray-600 focus:outline-none">
           <svg
             xmlns="http://www.w3.org/2000/svg"
