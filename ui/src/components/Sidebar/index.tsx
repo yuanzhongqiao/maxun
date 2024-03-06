@@ -15,7 +15,7 @@ const Sidebar = () => {
                         <Link to="/bots">Bots</Link>
                     </Menu.Item>
                     <Menu.Item key="2">
-                        <Link to="/subscription">Subscription</Link>
+                        <Link to="/subscription">Analytics</Link>
                     </Menu.Item>
                     <Menu.Item key="3">
                         <Link to="/api">API</Link>
