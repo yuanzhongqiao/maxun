@@ -54,16 +54,19 @@ const Topbar = () => {
         closable={false}
         onClose={hideDrawer}
         visible={visible}
+        getContainer={() => document.body} // Ensure the drawer covers viewport on mobile
       >
         <Menu mode="vertical">
-        <Menu.Item key="1">
-            <Link to="/dashboard">Dashboard</Link>
+          <Menu.Item key="1">
+            <Link to="/dashboard" onClick={hideDrawer}> 
+            Dashboard
+          </Link>
           </Menu.Item>
           <Menu.Item key="2">
-            <Link to="/credits">Credits</Link>
+            <Link to="/credits" onClick={hideDrawer}>Credits</Link>
           </Menu.Item>
           <Menu.Item key="3">
-            <Link to="/account">Account</Link>
+            <Link to="/account" onClick={hideDrawer}>Account</Link>
           </Menu.Item>
         </Menu>
       </Drawer>
