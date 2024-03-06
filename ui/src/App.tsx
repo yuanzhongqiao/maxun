@@ -12,10 +12,10 @@ const App = () => (
       },
     }}
   >
-  <BrowserRouter>
-    <Topbar />
-    <Sidebar />
-  </BrowserRouter>
+    <BrowserRouter>
+      <Topbar />
+      <Sidebar />
+    </BrowserRouter>
   </ConfigProvider>
 );
 
