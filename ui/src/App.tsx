@@ -1,12 +1,10 @@
-function App() {
+import Topbar from "./components/Topbar";
+import { BrowserRouter } from 'react-router-dom'
 
-  return (
-    <>
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1>
-    </>
-  )
-}
+const App = () => (
+  <BrowserRouter>
+    <Topbar />
+  </BrowserRouter>
+);
 
-export default App
+export default App;
