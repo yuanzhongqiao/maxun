@@ -1,6 +1,6 @@
 import Topbar from "./components/Topbar";
 import Sidebar from "./components/Sidebar";
-import { Button, ConfigProvider, Space } from 'antd';
+import { ConfigProvider } from 'antd';
 import { BrowserRouter } from 'react-router-dom'
 
 const App = () => (
@@ -10,7 +10,7 @@ const App = () => (
         colorPrimary: '#ff00c3',
         borderRadius: 2,
       },
-    }}
+    }}``
   >
    
      
