@@ -10,7 +10,7 @@ const App = () => (
         colorPrimary: '#ff00c3',
         borderRadius: 2,
       },
-    }}``
+    }}
   >
    
      
