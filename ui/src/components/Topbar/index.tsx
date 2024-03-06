@@ -22,13 +22,13 @@ const Topbar = () => {
       <Col span={16} className="hidden lg:flex justify-end">
         <Menu mode="horizontal">
           <Menu.Item key="1">
-            <Link to="/link1">Dashboard</Link>
+            <Link to="/dashboard">Dashboard</Link>
           </Menu.Item>
           <Menu.Item key="2">
-            <Link to="/link2">Credits</Link>
+            <Link to="/credits">Credits</Link>
           </Menu.Item>
           <Menu.Item key="3">
-            <Link to="/link3">Profile</Link>
+            <Link to="/profile">Profile</Link>
           </Menu.Item>
         </Menu>
       </Col>
@@ -57,13 +57,13 @@ const Topbar = () => {
       >
         <Menu mode="vertical">
         <Menu.Item key="1">
-            <Link to="/link1">Dashboard</Link>
+            <Link to="/dashboard">Dashboard</Link>
           </Menu.Item>
           <Menu.Item key="2">
-            <Link to="/link2">Credits</Link>
+            <Link to="/credits">Credits</Link>
           </Menu.Item>
           <Menu.Item key="3">
-            <Link to="/link3">Profile</Link>
+            <Link to="/profile">Profile</Link>
           </Menu.Item>
         </Menu>
       </Drawer>
