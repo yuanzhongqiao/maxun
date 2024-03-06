@@ -8,7 +8,6 @@ const App = () => (
     theme={{
       token: {
         colorPrimary: '#ff00c3',
-        borderRadius: 2,
       },
     }}
   >
