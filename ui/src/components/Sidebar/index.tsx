@@ -12,7 +12,7 @@ const Sidebar = () => {
       <div className="flex flex-col justify-between h-full"> 
         <Menu mode="vertical">
           <Menu.Item key="1">
-            <Link to="/dashboard">Bots</Link>
+            <Link to="/bots">Bots</Link>
           </Menu.Item>
           <Menu.Item key="2">
             <Link to="/settings">Subscription</Link>
