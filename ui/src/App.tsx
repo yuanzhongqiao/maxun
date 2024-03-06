@@ -12,9 +12,6 @@ const App = () => (
       },
     }}
   >
-   
-     
-    
   <BrowserRouter>
     <Topbar />
     <Sidebar />
