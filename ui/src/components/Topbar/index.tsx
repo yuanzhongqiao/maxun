@@ -28,7 +28,7 @@ const Topbar = () => {
             <Link to="/credits">Credits</Link>
           </Menu.Item>
           <Menu.Item key="3">
-            <Link to="/profile">Profile</Link>
+            <Link to="/account">Account</Link>
           </Menu.Item>
         </Menu>
       </Col>
@@ -63,7 +63,7 @@ const Topbar = () => {
             <Link to="/credits">Credits</Link>
           </Menu.Item>
           <Menu.Item key="3">
-            <Link to="/profile">Profile</Link>
+            <Link to="/account">Account</Link>
           </Menu.Item>
         </Menu>
       </Drawer>
