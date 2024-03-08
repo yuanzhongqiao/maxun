@@ -1,12 +1,22 @@
-function App() {
+import Topbar from "./components/Topbar";
+import Sidebar from "./components/Sidebar";
+import { ConfigProvider } from 'antd';
+import { BrowserRouter } from 'react-router-dom'
 
-  return (
-    <>
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1>
-    </>
-  )
-}
+const App = () => (
+  <ConfigProvider
+    theme={{
+      token: {
+        colorPrimary: '#ff00c3',
+        borderRadius: 2,
+      },
+    }}
+  >
+    <BrowserRouter>
+      <Topbar />
+      <Sidebar />
+    </BrowserRouter>
+  </ConfigProvider>
+);
 
-export default App
+export default App;
