@@ -33,19 +33,6 @@ const Topbar = () => {
       </Col>
       <Col span={4} className="lg:hidden flex justify-end">
         <FaBars className="text-2xl text-gray-600" />
-        <button className="text-gray-600 focus:outline-none" onClick={showDrawer}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-6 h-6"
-          >
-            <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" />
-          </svg>
-        </button>
       </Col>
       <Drawer
         title="Navigation"
