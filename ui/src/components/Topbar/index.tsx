@@ -32,7 +32,7 @@ const Topbar = () => {
         </Menu>
       </Col>
       <Col span={4} className="lg:hidden flex justify-end">
-        <FaBars className="text-2xl text-gray-600" onClick={showDrawer}/>
+        <FaBars className="text-2xl text-gray-600" onClick={showDrawer} />
       </Col>
       <Drawer
         title="Navigation"
