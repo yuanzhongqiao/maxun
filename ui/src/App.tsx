@@ -1,5 +1,6 @@
 import Topbar from "./components/Topbar";
-import Sidebar from "./components/Sidebar";
+// import Sidebar from "./components/Sidebar";
+import DataSelection from "./components/Interface"
 import { ConfigProvider } from 'antd';
 import { BrowserRouter } from 'react-router-dom'
 
@@ -14,7 +15,8 @@ const App = () => (
   >
     <BrowserRouter>
       <Topbar />
-      <Sidebar />
+      {/* <Sidebar /> */}
+      <DataSelection />
     </BrowserRouter>
   </ConfigProvider>
 );
