@@ -1,8 +1,3 @@
-// import Fastify from 'fastify'
-// import { PlaywrightCrawler } from 'crawlee';
-
-// const fastify = Fastify();
-
 const fastify = require('fastify')();
 const scraper = require('./scraper');
 
