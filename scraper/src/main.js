@@ -1,5 +1,11 @@
 const fastify = require('fastify')();
 const scraper = require('./scraper');
+// Change this later
+const corsOptions = {
+  origin: 'http://localhost:5173' 
+}
+fastify.register(require('@fastify/cors'), corsOptions)
+
 
 fastify.post('/scrape', async (request, reply) => {
   const { url, selections } = request.body;
@@ -16,5 +22,5 @@ fastify.post('/scrape', async (request, reply) => {
 
 fastify.listen(3000, (err, address) => {
   if (err) throw err;
-  console.log(`Server is now listening on ${address}`);
+  console.log(`Server listening on ${fastify.server.address().port}`)
 });
