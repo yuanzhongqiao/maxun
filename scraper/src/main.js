@@ -10,7 +10,7 @@ const corsOptions = {
   origin: 'http://localhost:5173' 
 }
 
-await fastify.register(cors, {corsOptions})
+await fastify.register(cors, corsOptions)
 
 fastify.get('/proxy', async (request, reply) => {
   const { url } = request.query;
