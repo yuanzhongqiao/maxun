@@ -1,5 +1,8 @@
 const fastify = require('fastify')();
 const scraper = require('./scraper');
+const fetch = require('node-fetch');
+
+
 // Change this later
 const corsOptions = {
   origin: 'http://localhost:5173' 
@@ -8,10 +11,10 @@ fastify.register(require('@fastify/cors'), corsOptions)
 
 
 fastify.post('/scrape', async (request, reply) => {
-  const { url, selections } = request.body;
+  const { url, selectors } = request.body;
 
   try {
-    const data = await scraper.scrape(url, selections);
+    const data = await scraper(url, selectors);
     console.log('Scraped data:', data);
     reply.send(data);
   } catch (error) {
