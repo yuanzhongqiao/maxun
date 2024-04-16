@@ -1,7 +1,7 @@
 {
     "name": "scraper",
     "version": "0.0.1",
-    "type": "commonjs",
+    "type": "module",
     "description": "This is an example of a Crawlee project.",
     "dependencies": {
         "@fastify/cors": "^9.0.1",
