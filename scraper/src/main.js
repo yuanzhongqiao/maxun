@@ -38,7 +38,7 @@ fastify.post('/scrape', async (request, reply) => {
   }
 });
 
-fastify.listen(3000, (err, address) => {
+await fastify.listen(3000, (err, address) => {
   if (err) throw err;
   console.log(`Server listening on ${fastify.server.address().port}`)
 });
