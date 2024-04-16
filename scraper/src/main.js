@@ -1,6 +1,6 @@
-const fastify = require('fastify')();
-const scraper = require('./scraper');
-const fetch = require('node-fetch');
+import fastify from 'fastify';
+import fetch from 'node-fetch';
+import scraper from './scraper.js';
 
 
 // Change this later
