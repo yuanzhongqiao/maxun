@@ -28,4 +28,4 @@ const browser = await playwright.chromium.launch({
   }
 }
 
-module.exports = scraper;
+export default scraper;
