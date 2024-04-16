@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import Frame from 'react-frame-component';
 
 function Scraper() {
   const [url, setUrl] = useState('');
