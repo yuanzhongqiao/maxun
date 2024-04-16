@@ -1,13 +1,16 @@
-import fastify from 'fastify';
+import Fastify from 'fastify'
+import cors from '@fastify/cors'
 import fetch from 'node-fetch';
 import scraper from './scraper.js';
 
+const fastify = Fastify();
 
 // Change this later
 const corsOptions = {
   origin: 'http://localhost:5173' 
 }
-fastify.register(require('@fastify/cors'), corsOptions)
+
+await fastify.register(cors, {corsOptions})
 
 fastify.get('/proxy', async (request, reply) => {
   const { url } = request.query;
