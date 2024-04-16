@@ -9,6 +9,18 @@ const corsOptions = {
 }
 fastify.register(require('@fastify/cors'), corsOptions)
 
+fastify.get('/proxy', async (request, reply) => {
+  const { url } = request.query;
+
+  try {
+    const response = await fetch(url);
+    const html = await response.text();
+    reply.type('text/html').send(html);
+  } catch (error) {
+    reply.status(500).send(`Error fetching website: ${error.message}`);
+  }
+});
+
 
 fastify.post('/scrape', async (request, reply) => {
   const { url, selectors } = request.body;
