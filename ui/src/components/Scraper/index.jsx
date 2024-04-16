@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import Frame from 'react-frame-component';
 
 function Scraper() {
   const [url, setUrl] = useState('');
   const [selections, setSelections] = useState([]);
   const [data, setData] = useState(null);
+  const iframeRef = useRef(null);
 
   const handleUrlChange = (e) => {
     setUrl(e.target.value);
@@ -55,6 +57,22 @@ function Scraper() {
     }
   };
 
+  // useEffect(() => {
+  //   if (iframeRef.current && iframeRef.current.contentWindow) {
+  //     const contentWindow = iframeRef.current.contentWindow;
+  //     const contentDocument = contentWindow.document;
+
+  //     contentDocument.body.onclick = handleSelectElement;
+  //   }
+  // }, [url]);
+
+  const handleIframeLoad = () => {
+    if (iframeRef.current && iframeRef.current.contentDocument) {
+      const contentDocument = iframeRef.current.contentDocument;
+      contentDocument.body.onclick = handleSelectElement;
+    }
+  };
+
   return (
     <div>
       <input
@@ -66,12 +84,10 @@ function Scraper() {
       <button onClick={handleScrape}>Scrape</button>
       <p>Click on the elements you want to scrape:</p>
       <iframe
+        ref={iframeRef}
         src={url}
-        onLoad={(e) => {
-          const iframeDocument = e.target.contentDocument;
-          iframeDocument.body.onclick = handleSelectElement;
-        }}
         style={{ width: '100%', height: '500px' }}
+        onLoad={handleIframeLoad}
       />
       <p>Selected Elements:</p>
       <ul>
