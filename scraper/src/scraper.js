@@ -1,7 +1,9 @@
-const { chromium } = require('playwright');
+import playwright from 'playwright';
 
 async function scraper(url, selectors) {
-  const browser = await chromium.launch();
+const browser = await playwright.chromium.launch({
+    headless: false // setting this to true will not run the UI
+});
   const page = await browser.newPage();
 
   try {
