@@ -1,6 +1,4 @@
-const fastify = require('fastify')({
-  logger: true
-});
+const fastify = require('fastify')();
 const scraper = require('./scraper');
 // Change this later
 const corsOptions = {
