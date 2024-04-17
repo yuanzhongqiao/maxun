@@ -1,109 +1,91 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
 import axios from 'axios';
 
-function Scraper() {
+const Scraper = () => {
   const [url, setUrl] = useState('');
-  const [selections, setSelections] = useState([]);
-  const [data, setData] = useState(null);
-  const iframeRef = useRef(null);
+  const [selectedSelectors, setSelectedSelectors] = useState([]);
+  const [scrapedData, setScrapedData] = useState(null);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleSelectElement = async (selector) => {
+      try {
+        await window.playwright.selectElement(selector);
+        setSelectedSelectors((prevSelectors) => [...prevSelectors, selector]);
+      } catch (error) {
+        console.error('Error selecting element:', error);
+      }
+    };
+
+    window.playwright = {
+      selectElement: handleSelectElement,
+    };
+
+    return () => {
+      window.playwright = null;
+    };
+  }, []);
 
   const handleUrlChange = (e) => {
     setUrl(e.target.value);
   };
 
-  const handleSelectElement = (e) => {
-    const selection = {
-      name: `selection_${selections.length + 1}`,
-      selector: generateSelector(e.target),
-    };
-    setSelections((prevSelections) => [...prevSelections, selection]);
-  };
+  const handleOpenSite = async () => {
+    try {
+      const containerId = containerRef.current.id;
+      const response = await axios.post('http://localhost:3000/scrape', { url, containerId });
 
-  const generateSelector = (element) => {
-    let selector = element.tagName.toLowerCase();
-    let parent = element.parentNode;
-
-    while (parent && parent.tagName !== 'HTML') {
-      const id = parent.id;
-      const classes = Array.from(parent.classList).join('.');
-
-      if (id) {
-        selector = `#${id} > ${selector}`;
-        break;
-      } else if (classes) {
-        selector = `.${classes} > ${selector}`;
-        break;
+      // Mount the Playwright context into the frontend container
+      if (response.data.success) {
+        const { context } = response.data;
+        await context.setDefaultViewportSize({ width: 1280, height: 720 });
+        await context.exposeBinding('selectElement', async (selector) => {
+          const selection = {
+            name: `selection_${selectedSelectors.length + 1}`,
+            selector,
+          };
+          setSelectedSelectors((prevSelectors) => [...prevSelectors, selection]);
+        });
+        ReactDOM.render(<div id="playwright-container" />, containerRef.current);
+        await context.mount(document.getElementById('playwright-container'));
       } else {
-        selector = `${parent.tagName.toLowerCase()} > ${selector}`;
+        console.error('Error opening site:', response.data.error);
       }
-
-      parent = parent.parentNode;
+    } catch (error) {
+      console.error('Error opening site:', error);
     }
-
-    return selector;
   };
 
   const handleScrape = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/scrape', {
-        url,
-        selections,
-      });
-      setData(response.data);
-      console.log('Scraped Data', response.data);
+      const response = await axios.post('http://localhost:3000/scrape', { selectedSelectors });
+      setScrapedData(response.data);
     } catch (error) {
       console.error('Error scraping:', error);
     }
   };
 
-  // useEffect(() => {
-  //   if (iframeRef.current && iframeRef.current.contentWindow) {
-  //     const contentWindow = iframeRef.current.contentWindow;
-  //     const contentDocument = contentWindow.document;
-
-  //     contentDocument.body.onclick = handleSelectElement;
-  //   }
-  // }, [url]);
-
-  const handleIframeLoad = () => {
-    if (iframeRef.current && iframeRef.current.contentDocument) {
-      const contentDocument = iframeRef.current.contentDocument;
-      contentDocument.body.onclick = handleSelectElement;
-    }
-  };
-
   return (
     <div>
-      <input
-        type="text"
-        placeholder="Enter URL to scrape"
-        value={url}
-        onChange={handleUrlChange}
-      />
-      <button onClick={handleScrape}>Scrape</button>
-      <p>Click on the elements you want to scrape:</p>
-      <iframe
-        ref={iframeRef}
-        src={url}
-        style={{ width: '100%', height: '500px' }}
-        onLoad={handleIframeLoad}
-      />
+      <input type="text" value={url} onChange={handleUrlChange} placeholder="Enter URL" />
+      <button onClick={handleOpenSite}>Open Site</button>
+      <div ref={containerRef} style={{ width: '100%', height: '500px', border: '1px solid black' }} />
+      <button onClick={handleScrape}>Scrape Data</button>
       <p>Selected Elements:</p>
       <ul>
-        {selections.map((selection, index) => (
-          <li key={index}>
-            {selection.name}: {selection.selector}
-          </li>
+        {selectedSelectors.map((selector, index) => (
+          <li key={index}>{selector}</li>
         ))}
       </ul>
-      {data && (
+      {scrapedData && (
         <div>
           <h2>Scraped Data:</h2>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
+          <pre>{JSON.stringify(scrapedData, null, 2)}</pre>
         </div>
       )}
     </div>
   );
-}
+};
 
 export default Scraper;
