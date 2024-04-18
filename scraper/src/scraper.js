@@ -22,13 +22,3 @@ async function scrapeData(url, selectors, waitForSeconds = 2) {
   
     await crawler.run([{ url }]);
 }
-
-const url = process.argv[2];
-const selectors = process.argv.slice(3); // Selectors are passed as subsequent arguments
-const waitForSeconds = parseInt(process.argv[selectors.length + 2] || 2); // Optional wait time
-
-if (url && selectors.length > 0) {
-    await scrapeData(url, selectors, waitForSeconds);
-} else {
-    console.error('Please provide URL and selectors as arguments.');
-}
