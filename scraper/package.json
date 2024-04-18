@@ -5,6 +5,7 @@
     "description": "This is an example of a Crawlee project.",
     "dependencies": {
         "@fastify/cors": "^9.0.1",
+        "crawlee": "^3.9.2",
         "fastify": "^4.26.2",
         "node-fetch": "^3.3.2",
         "playwright": "*"
