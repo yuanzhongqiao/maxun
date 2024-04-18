@@ -17,8 +17,12 @@ async function scrapeData(url, selectors, waitForSeconds = 2) {
             }
   
             console.log('Scraped data:', scrapedData);
+
+            return { data: scrapedData };
         },
     });
   
     await crawler.run([{ url }]);
 }
+
+export default scrapeData
