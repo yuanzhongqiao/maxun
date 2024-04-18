@@ -1,8 +1,5 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
-import fetch from 'node-fetch';
-import playwright from 'playwright'
-import { PlaywrightCrawler } from 'crawlee';
 
 const fastify = Fastify();
 
