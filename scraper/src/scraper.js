@@ -16,7 +16,7 @@ async function scrapeData(url, selectors, waitForSeconds = 2) {
                 scrapedData.push(...elementData);
             }
   
-            console.log('Scraped data:', scrapedData); // Replace with desired saving method
+            console.log('Scraped data:', scrapedData);
         },
     });
   
