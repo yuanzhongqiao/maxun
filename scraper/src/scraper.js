@@ -1,3 +1,5 @@
+import { PlaywrightCrawler } from 'crawlee';
+
 async function scrapeData(url, selectors, waitForSeconds = 2) {
     const crawler = new PlaywrightCrawler({
         requestHandler: async ({ page }) => {
