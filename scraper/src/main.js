@@ -1,7 +1,7 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import fetch from 'node-fetch';
-import scraper from './scraper.js';
+import playwright from 'playwright'
 
 const fastify = Fastify();
 
@@ -12,6 +12,10 @@ const corsOptions = {
 
 await fastify.register(cors, corsOptions)
 
+fastify.get('/', async (request, reply) => {
+  reply.send('Welcome to the Playwright Scraper API');
+});
+
 fastify.get('/proxy', async (request, reply) => {
   const { url } = request.query;
 
@@ -21,20 +25,6 @@ fastify.get('/proxy', async (request, reply) => {
     reply.type('text/html').send(html);
   } catch (error) {
     reply.status(500).send(`Error fetching website: ${error.message}`);
-  }
-});
-
-
-fastify.post('/scrape', async (request, reply) => {
-  const { url, selectors } = request.body;
-
-  try {
-    const data = await scraper(url, selectors);
-    console.log('Scraped data:', data);
-    reply.send(data);
-  } catch (error) {
-    console.error('Error scraping:', error);
-    reply.status(500).send({ error: 'Failed to scrape data' });
   }
 });
 
