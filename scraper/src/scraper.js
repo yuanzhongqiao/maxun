@@ -1,13 +1,10 @@
 import { PlaywrightCrawler, Configuration } from 'crawlee';
 
-async function scrapeData(url, selectors, waitForSeconds = 2) {
+async function scrapeData(url, selectors) {
     const scrapedData = [];
     const crawler = new PlaywrightCrawler({
         requestHandler: async ({ page, request }) => {
             await page.goto(url);
-  
-            await page.waitForTimeout(waitForSeconds * 1000);
-  
             console.log('Received selectors:', selectors);
   
             for (const selector of selectors) {
