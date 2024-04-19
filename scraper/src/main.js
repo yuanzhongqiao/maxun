@@ -12,7 +12,7 @@ const corsOptions = {
 await fastify.register(cors, corsOptions)
 
 fastify.get('/', async (request, reply) => {
-  reply.send('Welcome to the Playwright Scraper API');
+  reply.send('Hello Word!');
 });
 
 fastify.post('/scrape', async (request, reply) => {
