@@ -4,7 +4,6 @@ async function scrapeData(url, selectors, waitForSeconds = 2) {
     const scrapedData = [];
     const crawler = new PlaywrightCrawler({
         requestHandler: async ({ page, request }) => {
-            console.log('Request object:', request)
             await page.goto(url);
   
             await page.waitForTimeout(waitForSeconds * 1000);
