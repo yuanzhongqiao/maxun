@@ -1,9 +1,10 @@
-import { PlaywrightCrawler } from 'crawlee';
+import { PlaywrightCrawler, Configuration } from 'crawlee';
 
 async function scrapeData(url, selectors, waitForSeconds = 2) {
     const scrapedData = [];
     const crawler = new PlaywrightCrawler({
-        requestHandler: async ({ page }) => {
+        requestHandler: async ({ page, request }) => {
+            console.log('Request object:', request)
             await page.goto(url);
   
             await page.waitForTimeout(waitForSeconds * 1000);
@@ -17,9 +18,14 @@ async function scrapeData(url, selectors, waitForSeconds = 2) {
   
             console.log('Scraped data:', scrapedData);
         },
-    });
-    await crawler.run([{ url }]);
+    },
+    new Configuration({
+        persistStorage: false,
+    }));
+
+    await crawler.run([ url ]);
     return scrapedData;
+   
 }
 
 export default scrapeData;
