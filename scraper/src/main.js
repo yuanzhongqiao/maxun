@@ -6,25 +6,24 @@ const fastify = Fastify();
 
 // Change this later
 const corsOptions = {
-  origin: 'http://localhost:5173' 
+  origin: 'http://localhost:5173'
 }
 
 await fastify.register(cors, corsOptions)
 
 fastify.get('/', async (request, reply) => {
-  reply.send('Hello Word!');
+  reply.send('Vroom Vroom Vroom');
 });
 
 fastify.post('/scrape', async (request, reply) => {
   const { url, selectors } = request.body;
   try {
-      const response = await scrapeData(url, selectors);
-      reply.send(response);
+    const response = await scrapeData(url, selectors);
+    reply.send(response);
   } catch (error) {
-      reply.status(500).send({ error: error.message });
+    reply.status(500).send({ error: error.message });
   }
 });
-
 
 await fastify.listen(3000, (err, address) => {
   if (err) throw err;
