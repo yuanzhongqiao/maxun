@@ -1,6 +1,5 @@
 import Topbar from "./components/Topbar";
 import Sidebar from "./components/Sidebar";
-import Scraper from "./components/Scraper";
 import { ConfigProvider } from 'antd';
 import { BrowserRouter } from 'react-router-dom'
 
@@ -16,7 +15,6 @@ const App = () => (
     <BrowserRouter>
       <Topbar />
       {/* <Sidebar />  */}
-      <Scraper />
     </BrowserRouter>
   </ConfigProvider>
 );
