@@ -1,5 +1,4 @@
-// components/WebPreview.js
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { getCssSelector } from "css-selector-generator";
 import axios from 'axios'
 
