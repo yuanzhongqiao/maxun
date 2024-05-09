@@ -21,16 +21,6 @@ function WebPreview({ html, setHtml, elements }) {
     }
 }
 
-  const generateCssSelector = (element) => {
-    const selector = element.nodeName.toLowerCase();
-    if (element.id) {
-      return `#${element.id}`;
-    } else {
-      const classes = Array.from(element.classList).join('.');
-      return `${selector}.${classes}`;
-    }
-  };
-
   return (
     <div className="border border-gray-300 p-4 mb-4">
        <button onClick={() => loadWebsite()}  className="bg-blue-500 text-white px-4 py-2 rounded">Load Website</button>
