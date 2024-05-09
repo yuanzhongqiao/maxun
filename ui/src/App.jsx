@@ -1,5 +1,6 @@
 import Topbar from "./components/Topbar";
 import Sidebar from "./components/Sidebar";
+import WebPreview from "./components/WebPreview";
 import { ConfigProvider } from 'antd';
 import { BrowserRouter } from 'react-router-dom'
 
@@ -15,6 +16,7 @@ const App = () => (
     <BrowserRouter>
       <Topbar />
       {/* <Sidebar />  */}
+      <WebPreview />
     </BrowserRouter>
   </ConfigProvider>
 );
