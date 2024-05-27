@@ -32,7 +32,7 @@ function WebPreview({ html, setHtml, elements }) {
       {html && html.length > 0 ? (
         <iframe
           srcDoc={html}
-          sandbox="allow-forms allow-scripts"
+          sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals allow-orientation-lock allow-pointer-lock allow-presentation allow-top-navigation allow-top-navigation-by-user-activation"
           style={{ width: '850px', height: '620px', resize: 'both' }}
         ></iframe>
       ) : (
