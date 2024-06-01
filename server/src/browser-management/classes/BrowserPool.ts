@@ -17,7 +17,12 @@ interface BrowserPoolInfo {
     active: boolean,
 }
 
-
+/**
+ * Dictionary of all the active remote browser's instances indexed by their id.
+ * The value in this dictionary is of type BrowserPoolInfo,
+ * which provides additional information about the browser's usage.
+ * @category Types
+ */
 interface PoolDictionary {
     [key: string]: BrowserPoolInfo,
 }
