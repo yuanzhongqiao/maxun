@@ -280,6 +280,29 @@ export class RemoteBrowser {
     }
 
     /**
+     * Internal method for a new page initialization. Subscribes this page to the screencast.
+     * @param options optional page options to be used when creating a new page
+     * @returns {Promise<void>}
+     */
+    private initializeNewPage = async (options?: Object) : Promise<void> => {
+        await this.stopScreencast();
+        const newPage = options ? await this.browser?.newPage(options)
+          : await this.browser?.newPage();
+
+        await this.currentPage?.close();
+        this.currentPage = newPage;
+        if (this.currentPage) {
+            this.currentPage.on('load', (page) => {
+                this.socket.emit('urlChanged', page.url());
+            })
+            this.client = await this.currentPage.context().newCDPSession(this.currentPage);
+            await this.subscribeToScreencast();
+        } else {
+          logger.log('error', 'Could not get a new page, returned undefined');
+        }
+    };
+
+    /**
      * Initiates screencast of the remote browser through socket,
      * registers listener for rerender event and emits the loaded event.
      * Should be called only once after the browser is fully initialized.
