@@ -43,4 +43,26 @@ export const initializeRemoteBrowserForRecording = (options: RemoteBrowserOption
         });
     return id;
 };
+
+/**
+ * Starts and initializes a {@link RemoteBrowser} instance for interpretation.
+ * Creates a new {@link Socket} connection over a dedicated namespace.
+ * Returns the new remote browser's generated id.
+ * @param options {@link RemoteBrowserOptions} to be used when launching the browser
+ * @returns string
+ * @category BrowserManagement-Controller
+ */
+export const createRemoteBrowserForRun = (options: RemoteBrowserOptions): string => {
+    const id = uuid();
+    createSocketConnectionForRun(
+      io.of(id),
+    async (socket: Socket) => {
+          const browserSession = new RemoteBrowser(socket);
+          await browserSession.initialize(options);
+          browserPool.addRemoteBrowser(id, browserSession, true);
+          socket.emit('ready-for-run');
+      });
+    return id;
+};
+
 };
