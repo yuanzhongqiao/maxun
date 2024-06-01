@@ -258,6 +258,28 @@ export class RemoteBrowser {
     };
 
     /**
+     * Changes the active page to the page instance on the given index
+     * available in pages array on the {@link BrowserContext}.
+     * Automatically stops the screencast session on the previous page and starts the new one.
+     * @param tabIndex index of the page in the pages array on the {@link BrowserContext}
+     * @returns {Promise<void>}
+     */
+    private changeTab = async (tabIndex: number) : Promise<void>=> {
+        const page = this.currentPage?.context().pages()[tabIndex];
+        if (page) {
+            await this.stopScreencast();
+            this.currentPage = page;
+            await this.currentPage.setViewportSize({height: 720, width: 1280})
+            this.client = await this.currentPage.context().newCDPSession(this.currentPage);
+            this.socket.emit('urlChanged', this.currentPage.url());
+            await this.makeAndEmitScreenshot();
+            await this.subscribeToScreencast();
+        } else {
+            logger.log('error', `${tabIndex} index out of range of pages`)
+        }
+    }
+
+    /**
      * Initiates screencast of the remote browser through socket,
      * registers listener for rerender event and emits the loaded event.
      * Should be called only once after the browser is fully initialized.
