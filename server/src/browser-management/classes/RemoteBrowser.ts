@@ -205,6 +205,42 @@ export class RemoteBrowser {
     };
 
     /**
+     * Starts the interpretation of the currently generated workflow.
+     * @returns {Promise<void>}
+     */
+    public interpretCurrentRecording = async () : Promise<void> => {
+        logger.log('debug', 'Starting interpretation in the editor');
+        if (this.generator) {
+            const workflow = this.generator.AddGeneratedFlags(this.generator.getWorkflowFile());
+            await this.initializeNewPage();
+            if (this.currentPage) {
+                const params = this.generator.getParams();
+                if (params) {
+                    this.interpreterSettings.params = params.reduce((acc, param) => {
+                        if (this.interpreterSettings.params && Object.keys(this.interpreterSettings.params).includes(param)) {
+                            return { ...acc, [param]: this.interpreterSettings.params[param] };
+                        } else {
+                            return { ...acc, [param]: '', }
+                        }
+                    }, {})
+                }
+                logger.log('debug', `Starting interpretation with settings: ${JSON.stringify(this.interpreterSettings, null, 2)}`);
+                await this.interpreter.interpretRecordingInEditor(
+                  workflow, this.currentPage,
+                  (newPage: Page) => this.currentPage = newPage,
+                  this.interpreterSettings
+                );
+                // clear the active index from generator
+                this.generator.clearLastIndex();
+            } else {
+                logger.log('error', 'Could not get a new page, returned undefined');
+            }
+        } else {
+            logger.log('error', 'Generator is not initialized');
+        }
+    };
+
+    /**
      * Initiates screencast of the remote browser through socket,
      * registers listener for rerender event and emits the loaded event.
      * Should be called only once after the browser is fully initialized.
