@@ -81,4 +81,14 @@ export const destroyRemoteBrowser = async (id: string) : Promise<boolean> => {
     }
     return browserPool.deleteRemoteBrowser(id);
 };
+
+/**
+ * Returns the id of an active browser or null.
+ * Wrapper around {@link browserPool.getActiveBrowserId()} function.
+ * @returns {string | null}
+ * @category  BrowserManagement-Controller
+ */
+export const getActiveBrowserId = (): string | null=> {
+    return browserPool.getActiveBrowserId();
+};
 };
