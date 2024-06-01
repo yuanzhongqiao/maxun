@@ -157,4 +157,21 @@ export class RemoteBrowser {
             }, 100);
         });
     };
+
+    /**
+     * Terminates the screencast session and closes the remote browser.
+     * If an interpretation was running it will be stopped.
+     * @returns {Promise<void>}
+     */
+    public switchOff = async() : Promise<void> => {
+        await this.interpreter.stopInterpretation();
+        if (this.browser) {
+            await this.stopScreencast();
+            await this.browser.close();
+        } else {
+            logger.log('error', 'Browser wasn\'t initialized');
+            logger.log('error','Switching off the browser failed');
+        }
+    };
+
 }
