@@ -190,5 +190,18 @@ export class RemoteBrowser {
         }
     };
 
-    
+    /**
+     * Updates the active socket instance.
+     * This will update all registered events for the socket and
+     * all the properties using the socket.
+     * @param socket socket.io socket instance used to communicate with the client side
+     * @returns void
+     */
+    public updateSocket = (socket: Socket) : void => {
+        this.socket = socket;
+        this.registerEditorEvents();
+        this.generator?.updateSocket(socket);
+        this.interpreter?.updateSocket(socket);
+    };
+
 }
