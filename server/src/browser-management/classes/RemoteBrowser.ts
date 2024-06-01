@@ -205,6 +205,35 @@ export class RemoteBrowser {
     };
 
     /**
+     * Initiates screencast of the remote browser through socket,
+     * registers listener for rerender event and emits the loaded event.
+     * Should be called only once after the browser is fully initialized.
+     * @returns {Promise<void>}
+     */
+    private startScreencast = async() : Promise<void> => {
+        if (!this.client) {
+            logger.log('warn','client is not initialized');
+            return;
+        }
+        await this.client.send('Page.startScreencast', { format: 'jpeg', quality: 75 });
+        logger.log('info',`Browser started with screencasting a page.`);
+    };
+
+    /**
+     * Unsubscribes the current page from the screencast session.
+     * @returns {Promise<void>}
+     */
+    private stopScreencast = async() : Promise<void> => {
+        if (!this.client) {
+            logger.log('error','client is not initialized');
+            logger.log('error','Screencast stop failed');
+        } else {
+            await this.client.send('Page.stopScreencast');
+            logger.log('info', `Browser stopped with screencasting.`);
+        }
+    };
+
+    /**
      * Helper for emitting the screenshot of browser's active page through websocket.
      * @param payload the screenshot binary data
      * @returns void
