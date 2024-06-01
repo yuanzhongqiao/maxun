@@ -81,4 +81,20 @@ export class BrowserPool {
         logger.log('debug', `Remote browser with id: ${id} retrieved from the pool`);
         return this.pool[id]?.browser;
     };
+
+    /**
+     * Returns the active browser's instance id from the pool.
+     * If there is no active browser, it returns undefined.
+     * If there are multiple active browsers, it returns the first one.
+     * @returns the first remote active browser instance's id from the pool
+     */
+    public getActiveBrowserId = () : string | null => {
+        for (const id of Object.keys(this.pool)) {
+            if (this.pool[id].active) {
+                return id;
+            }
+        }
+        logger.log('warn', `No active browser in the pool`);
+        return null;
+    };
 }
