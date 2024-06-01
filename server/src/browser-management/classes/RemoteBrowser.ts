@@ -174,4 +174,21 @@ export class RemoteBrowser {
         }
     };
 
+    /**
+     * Makes and emits a single screenshot to the client side.
+     * @returns {Promise<void>}
+     */
+    public makeAndEmitScreenshot = async() : Promise<void> => {
+        try {
+            const screenshot = await this.currentPage?.screenshot();
+            if (screenshot) {
+                this.emitScreenshot(screenshot.toString('base64'));
+            }
+        } catch (e) {
+            const { message } = e as Error;
+            logger.log('error', message);
+        }
+    };
+
+    
 }
