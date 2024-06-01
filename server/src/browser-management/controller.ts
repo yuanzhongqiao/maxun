@@ -120,5 +120,23 @@ export const getRemoteBrowserCurrentTabs = (id: string): string[] | undefined =>
       });
 };
 
-
+/**
+ * Interprets the currently generated workflow in the active browser instance.
+ * If there is no active browser, the function logs an error.
+ * @returns {Promise<void>}
+ * @category  BrowserManagement-Controller
+ */
+export const interpretWholeWorkflow = async() => {
+    const id = getActiveBrowserId();
+    if (id) {
+    const browser = browserPool.getRemoteBrowser(id);
+      if (browser) {
+        await browser.interpretCurrentRecording();
+      } else {
+        logger.log('error', `No active browser with id ${id} found in the browser pool`);
+      }
+    } else {
+      logger.log('error', `Cannot interpret the workflow: bad id ${id}.`);
+    }
+};
 };
