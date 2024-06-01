@@ -56,4 +56,19 @@ export class BrowserPool {
         }
         logger.log('debug', `Remote browser with id: ${id} added to the pool`);
     };
+
+    /**
+     * Removes the remote browser instance from the pool.
+     * @param id remote browser instance's id
+     * @returns true if the browser was removed successfully, false otherwise
+     */
+    public deleteRemoteBrowser = (id: string) : boolean => {
+        if (!this.pool[id]) {
+            logger.log('warn', `Remote browser with id: ${id} does not exist in the pool`);
+            return false;
+        }
+        delete(this.pool[id]);
+        logger.log('debug', `Remote browser with id: ${id} deleted from the pool`);
+        return true;
+    };
 }
