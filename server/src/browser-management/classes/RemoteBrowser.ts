@@ -204,4 +204,14 @@ export class RemoteBrowser {
         this.interpreter?.updateSocket(socket);
     };
 
+    /**
+     * Helper for emitting the screenshot of browser's active page through websocket.
+     * @param payload the screenshot binary data
+     * @returns void
+     */
+    private emitScreenshot = (payload: any) : void => {
+        const dataWithMimeType = ('data:image/jpeg;base64,').concat(payload);
+        this.socket.emit('screencast', dataWithMimeType);
+        logger.log('debug',`Screenshot emitted`);
+    };
 }
