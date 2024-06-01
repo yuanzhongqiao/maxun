@@ -128,4 +128,33 @@ export class RemoteBrowser {
             }
         });
     }
+
+    /**
+     * Subscribes the remote browser for a screencast session
+     * on [CDP](https://chromedevtools.github.io/devtools-protocol/) level,
+     * where screenshot is being sent through the socket
+     * every time the browser's active page updates.
+     * @returns {Promise<void>}
+     */
+    public subscribeToScreencast = async() : Promise<void> => {
+        await this.startScreencast();
+        if (!this.client) {
+            logger.log('warn','client is not initialized');
+            return;
+        }
+        this.client.on('Page.screencastFrame', ({ data: base64, sessionId }) => {
+            this.emitScreenshot(base64);
+            setTimeout(async () => {
+                try {
+                    if (!this.client) {
+                        logger.log('warn','client is not initialized');
+                        return;
+                    }
+                    await this.client.send('Page.screencastFrameAck', { sessionId: sessionId });
+                } catch (e) {
+                    logger.log('error', e);
+                }
+            }, 100);
+        });
+    };
 }
