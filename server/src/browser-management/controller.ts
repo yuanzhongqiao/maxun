@@ -65,4 +65,20 @@ export const createRemoteBrowserForRun = (options: RemoteBrowserOptions): string
     return id;
 };
 
+/**
+ * Terminates a remote browser recording session
+ * and removes the browser from the browser pool.
+ * @param id instance id of the remote browser to be terminated
+ * @returns {Promise<boolean>}
+ * @category BrowserManagement-Controller
+ */
+export const destroyRemoteBrowser = async (id: string) : Promise<boolean> => {
+    const browserSession = browserPool.getRemoteBrowser(id);
+    if (browserSession) {
+        logger.log('debug', `Switching off the browser with id: ${id}`);
+        await browserSession.stopCurrentInterpretation();
+        await browserSession.switchOff();
+    }
+    return browserPool.deleteRemoteBrowser(id);
+};
 };
