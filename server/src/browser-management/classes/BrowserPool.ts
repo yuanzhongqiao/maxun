@@ -27,3 +27,16 @@ interface PoolDictionary {
     [key: string]: BrowserPoolInfo,
 }
 
+/**
+ * A browser pool is a collection of remote browsers that are initialized and ready to be used.
+ * Adds the possibility to add, remove and retrieve remote browsers from the pool.
+ * It is possible to manage multiple browsers for creating or running a recording.
+ * @category BrowserManagement
+ */
+export class BrowserPool {
+
+    /**
+     * Holds all the instances of remote browsers.
+     */
+    private pool : PoolDictionary = {};
+}
