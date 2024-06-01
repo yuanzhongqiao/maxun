@@ -39,4 +39,21 @@ export class BrowserPool {
      * Holds all the instances of remote browsers.
      */
     private pool : PoolDictionary = {};
+
+    /**
+     * Adds a remote browser instance to the pool indexed by the id.
+     * @param id remote browser instance's id
+     * @param browser remote browser instance
+     * @param active states if the browser's instance is being actively used
+     */
+    public addRemoteBrowser = (id: string, browser: RemoteBrowser, active: boolean = false): void => {
+        this.pool = {
+            ...this.pool,
+            [id]: {
+                browser,
+                active,
+            },
+        }
+        logger.log('debug', `Remote browser with id: ${id} added to the pool`);
+    };
 }
