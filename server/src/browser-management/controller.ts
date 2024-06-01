@@ -139,4 +139,19 @@ export const interpretWholeWorkflow = async() => {
       logger.log('error', `Cannot interpret the workflow: bad id ${id}.`);
     }
 };
+
+/**
+ * Stops the interpretation of the current workflow in the active browser instance.
+ * If there is no active browser, the function logs an error.
+ * @returns {Promise<void>}
+ * @category  BrowserManagement-Controller
+ */
+export const stopRunningInterpretation = async() => {
+    const id = getActiveBrowserId();
+    if (id) {
+      const browser = browserPool.getRemoteBrowser(id);
+      await browser?.stopCurrentInterpretation();
+    } else {
+      logger.log('error', 'Cannot stop interpretation: No active browser or generator.');
+    }
 };
