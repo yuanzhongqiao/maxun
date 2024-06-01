@@ -102,5 +102,23 @@ export const getRemoteBrowserCurrentUrl = (id: string): string | undefined => {
     return browserPool.getRemoteBrowser(id)?.getCurrentPage()?.url();
 };
 
+/**
+ * Returns the array of tab strings from a remote browser if exists in the browser pool.
+ * @param id instance id of the remote browser
+ * @return {string[] | undefined}
+ * @category  BrowserManagement-Controller
+ */
+export const getRemoteBrowserCurrentTabs = (id: string): string[] | undefined => {
+    return browserPool.getRemoteBrowser(id)?.getCurrentPage()?.context().pages()
+      .map((page) => {
+          const parsedUrl = new URL(page.url());
+          const host =  parsedUrl.hostname.match(/\b(?!www\.)[a-zA-Z0-9]+/g)?.join('.');
+          if (host) {
+            return host;
+          }
+          return 'new tab';
+      });
+};
+
 
 };
