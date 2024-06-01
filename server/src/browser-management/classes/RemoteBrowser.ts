@@ -90,4 +90,42 @@ export class RemoteBrowser {
         this.currentPage = await context.newPage();
         this.client = await this.currentPage.context().newCDPSession(this.currentPage);
     };
+
+    /**
+     * Registers all event listeners needed for the recording editor session.
+     * Should be called only once after the full initialization of the remote browser.
+     * @returns void
+     */
+    public registerEditorEvents = () : void => {
+        this.socket.on('rerender', async() => await this.makeAndEmitScreenshot());
+        this.socket.on('settings', (settings) => this.interpreterSettings = settings);
+        this.socket.on('changeTab', async(tabIndex) => await this.changeTab(tabIndex));
+        this.socket.on('addTab', async () => {
+            await this.currentPage?.context().newPage();
+            const lastTabIndex = this.currentPage ? this.currentPage.context().pages().length - 1 : 0;
+            await this.changeTab(lastTabIndex);
+        });
+        this.socket.on('closeTab', async (tabInfo) => {
+            const page = this.currentPage?.context().pages()[tabInfo.index];
+            if (page) {
+                if (tabInfo.isCurrent){
+                    if (this.currentPage?.context().pages()[tabInfo.index + 1]) {
+                        // next tab
+                        await this.changeTab(tabInfo.index + 1);
+                    } else {
+                        //previous tab
+                        await this.changeTab(tabInfo.index - 1);
+                    }
+                }
+                // close the page and log it
+                await page.close();
+                logger.log(
+                  'debug',
+                  `${tabInfo.index} page was closed, new length of pages: ${this.currentPage?.context().pages().length}`
+                )
+            } else {
+                logger.log('error', `${tabInfo.index} index out of range of pages`)
+            }
+        });
+    }
 }
