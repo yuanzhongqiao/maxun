@@ -91,4 +91,16 @@ export const destroyRemoteBrowser = async (id: string) : Promise<boolean> => {
 export const getActiveBrowserId = (): string | null=> {
     return browserPool.getActiveBrowserId();
 };
+
+/**
+ * Returns the url string from a remote browser if exists in the browser pool.
+ * @param id instance id of the remote browser
+ * @returns {string | undefined}
+ * @category  BrowserManagement-Controller
+ */
+export const getRemoteBrowserCurrentUrl = (id: string): string | undefined => {
+    return browserPool.getRemoteBrowser(id)?.getCurrentPage()?.url();
+};
+
+
 };
