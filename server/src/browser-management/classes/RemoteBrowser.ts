@@ -77,4 +77,17 @@ export class RemoteBrowser {
         this.interpreter = new WorkflowInterpreter(socket);
         this.generator = new WorkflowGenerator(socket);
     }
+
+    /**
+     * An asynchronous constructor for asynchronously initialized properties.
+     * Must be called right after creating an instance of RemoteBrowser class.
+     * @param options remote browser options to be used when launching the browser
+     * @returns {Promise<void>}
+     */
+    public initialize = async(options: RemoteBrowserOptions) : Promise<void> => {
+        this.browser = <Browser>(await options.browser.launch(options.launchOptions));
+        const context = await this.browser.newContext();
+        this.currentPage = await context.newPage();
+        this.client = await this.currentPage.context().newCDPSession(this.currentPage);
+    };
 }
