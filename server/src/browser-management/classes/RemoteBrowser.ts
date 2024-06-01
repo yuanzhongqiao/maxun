@@ -241,6 +241,23 @@ export class RemoteBrowser {
     };
 
     /**
+     * Stops the workflow interpretation and initializes a new page.
+     * @returns {Promise<void>}
+     */
+    public stopCurrentInterpretation = async () : Promise<void> => {
+        await this.interpreter.stopInterpretation();
+        await this.initializeNewPage();
+    };
+
+    /**
+     * Returns the current page instance.
+     * @returns {Page | null | undefined}
+     */
+    public getCurrentPage = () : Page | null | undefined => {
+        return this.currentPage;
+    };
+
+    /**
      * Initiates screencast of the remote browser through socket,
      * registers listener for rerender event and emits the loaded event.
      * Should be called only once after the browser is fully initialized.
