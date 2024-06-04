@@ -93,5 +93,13 @@ export class WorkflowInterpreter {
         logger.log('debug',"Resume called but no resume function is set");
       }
     });
+    this.socket.on('step', () => {
+      if (this.interpretationResume) {
+        this.interpretationResume();
+      } else {
+        logger.log('debug', "Step called but no resume function is set");
+      }
+    });
+    
   }
 }
