@@ -100,6 +100,9 @@ export class WorkflowInterpreter {
         logger.log('debug', "Step called but no resume function is set");
       }
     });
-    
+    this.socket.on('breakpoints', (data: boolean[]) => {
+      logger.log('debug', "Setting breakpoints: " + data);
+      this.breakpoints = data
+    });
   }
 }
