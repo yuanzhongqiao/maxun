@@ -186,10 +186,21 @@ export class WorkflowInterpreter {
       logger.log('info', 'Stopping the interpretation.');
       await this.interpreter.stop();
       this.socket.emit('log', '----- The interpretation has been stopped -----', false);
+      this.clearState();
     } else {
       logger.log('error', 'Cannot stop: No active interpretation.');
     }
   };
 
-  
+  private clearState = () => {
+    this.debugMessages = [];
+    this.interpretationIsPaused = false;
+    this.activeId = null;
+    this.interpreter = null;
+    this.breakpoints = [];
+    this.interpretationResume = null;
+    this.serializableData = [];
+    this.binaryData = [];
+  }
+
 }
