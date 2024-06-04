@@ -261,4 +261,12 @@ export class WorkflowInterpreter {
     return result;
   }
 
+  /**
+   * Returns true if an interpretation is currently running.
+   * @returns {boolean}
+   */
+  public interpretationInProgress = () => {
+    return this.interpreter !== null;
+  };
+
 }
