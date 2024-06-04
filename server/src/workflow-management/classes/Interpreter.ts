@@ -65,5 +65,13 @@ export class WorkflowInterpreter {
    */
   private interpretationResume: (() => void) | null = null;
 
-  
+  /**
+   * A public constructor taking a socket instance for communication with the client.
+   * @param socket Socket.io socket instance enabling communication with the client (frontend) side.
+   * @constructor
+   */
+  constructor (socket: Socket) {
+    this.socket = socket;
+  }
+
 }
