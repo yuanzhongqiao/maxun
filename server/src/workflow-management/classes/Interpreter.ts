@@ -74,4 +74,15 @@ export class WorkflowInterpreter {
     this.socket = socket;
   }
 
+  /**
+   * Subscribes to the events that are used to control the interpretation.
+   * The events are pause, resume, step and breakpoints.
+   * Step is used to interpret a single pair and pause on the other matched pair.
+   * @returns void
+   */
+  public subscribeToPausing = () => {
+    this.socket.on('pause', () => {
+      this.interpretationIsPaused = true;
+    });
+  }
 }
