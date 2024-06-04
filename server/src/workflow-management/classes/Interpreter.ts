@@ -203,4 +203,62 @@ export class WorkflowInterpreter {
     this.binaryData = [];
   }
 
+  /**
+   * Interprets the recording as a run.
+   * @param workflow The workflow to interpret.
+   * @param page The page instance used to interact with the browser.
+   * @param settings The settings to use for the interpretation.
+   */
+  public InterpretRecording = async (workflow: WorkflowFile, page: Page, settings: InterpreterSettings) => {
+    const params = settings.params ? settings.params : null;
+    delete settings.params;
+    const options = {
+      ...settings,
+      debugChannel: {
+        activeId: (id: any) => {
+          this.activeId = id;
+          this.socket.emit('activePairId', id);
+        },
+        debugMessage: (msg: any) => {
+          this.debugMessages.push(`[${new Date().toLocaleString()}] ` + msg);
+          this.socket.emit('debugMessage', msg)
+        },
+      },
+      serializableCallback: (data: string) => {
+        this.serializableData.push(data);
+        this.socket.emit('serializableCallback', data);
+      },
+      binaryCallback: async (data: string, mimetype: string) => {
+        this.binaryData.push({mimetype, data: JSON.stringify(data)});
+        this.socket.emit('binaryCallback', {data, mimetype});
+      }
+    }
+
+    const interpreter = new Interpreter(workflow, options);
+    this.interpreter = interpreter;
+
+    const status = await interpreter.run(page, params);
+
+    const result = {
+      log: this.debugMessages,
+      result: status,
+      serializableOutput: this.serializableData.reduce((reducedObject, item, index) => {
+        return {
+          [`item-${index}`]: item,
+          ...reducedObject,
+        }
+      }, {}),
+      binaryOutput: this.binaryData.reduce((reducedObject, item, index) => {
+        return {
+          [`item-${index}`]: item,
+          ...reducedObject,
+        }
+      }, {})
+    }
+
+    logger.log('debug',`Interpretation finished`);
+    this.clearState();
+    return result;
+  }
+
 }
