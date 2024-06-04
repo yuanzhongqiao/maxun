@@ -84,5 +84,14 @@ export class WorkflowInterpreter {
     this.socket.on('pause', () => {
       this.interpretationIsPaused = true;
     });
+    this.socket.on('resume', () => {
+      this.interpretationIsPaused = false;
+      if (this.interpretationResume) {
+        this.interpretationResume();
+        this.socket.emit('log', '----- The interpretation has been resumed -----', false);
+      } else {
+        logger.log('debug',"Resume called but no resume function is set");
+      }
+    });
   }
 }
