@@ -177,5 +177,19 @@ export class WorkflowInterpreter {
     this.socket.emit('finished');
   };
 
+  /**
+   * Stops the current process of the interpretation of the workflow.
+   * @returns {Promise<void>}
+   */
+  public stopInterpretation = async () => {
+    if (this.interpreter) {
+      logger.log('info', 'Stopping the interpretation.');
+      await this.interpreter.stop();
+      this.socket.emit('log', '----- The interpretation has been stopped -----', false);
+    } else {
+      logger.log('error', 'Cannot stop: No active interpretation.');
+    }
+  };
+
   
 }
