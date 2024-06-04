@@ -17,7 +17,7 @@ export class WorkflowInterpreter {
    * Socket.io socket instance enabling communication with the client (frontend) side.
    * @private
    */
-  private socket : Socket;
+  private socket: Socket;
 
   /**
    * True if the interpretation is paused.
@@ -50,7 +50,7 @@ export class WorkflowInterpreter {
   /**
    * An array of all the binary data extracted from the run.
    */
-  public binaryData: {mimetype: string, data: string}[] = [];
+  public binaryData: { mimetype: string, data: string }[] = [];
 
   /**
    * An array of id's of the pairs from the workflow that are about to be paused.
@@ -70,7 +70,7 @@ export class WorkflowInterpreter {
    * @param socket Socket.io socket instance enabling communication with the client (frontend) side.
    * @constructor
    */
-  constructor (socket: Socket) {
+  constructor(socket: Socket) {
     this.socket = socket;
   }
 
@@ -90,7 +90,7 @@ export class WorkflowInterpreter {
         this.interpretationResume();
         this.socket.emit('log', '----- The interpretation has been resumed -----', false);
       } else {
-        logger.log('debug',"Resume called but no resume function is set");
+        logger.log('debug', "Resume called but no resume function is set");
       }
     });
     this.socket.on('step', () => {
@@ -139,7 +139,7 @@ export class WorkflowInterpreter {
         this.socket.emit('serializableCallback', data);
       },
       binaryCallback: (data: string, mimetype: string) => {
-        this.socket.emit('binaryCallback', {data, mimetype});
+        this.socket.emit('binaryCallback', { data, mimetype });
       }
     }
 
@@ -148,14 +148,14 @@ export class WorkflowInterpreter {
 
     interpreter.on('flag', async (page, resume) => {
       if (this.activeId !== null && this.breakpoints[this.activeId]) {
-        logger.log('debug',`breakpoint hit id: ${this.activeId}`);
+        logger.log('debug', `breakpoint hit id: ${this.activeId}`);
         this.socket.emit('breakpointHit');
         this.interpretationIsPaused = true;
       }
 
       if (this.interpretationIsPaused) {
         this.interpretationResume = resume;
-        logger.log('debug',`Paused inside of flag: ${page.url()}`);
+        logger.log('debug', `Paused inside of flag: ${page.url()}`);
         updatePageOnPause(page);
         this.socket.emit('log', '----- The interpretation has been paused -----', false);
       } else {
@@ -169,7 +169,7 @@ export class WorkflowInterpreter {
 
     this.socket.emit('log', `----- The interpretation finished with status: ${status} -----`, false);
 
-    logger.log('debug',`Interpretation finished`);
+    logger.log('debug', `Interpretation finished`);
     this.interpreter = null;
     this.socket.emit('activePairId', -1);
     this.interpretationIsPaused = false;
@@ -229,8 +229,8 @@ export class WorkflowInterpreter {
         this.socket.emit('serializableCallback', data);
       },
       binaryCallback: async (data: string, mimetype: string) => {
-        this.binaryData.push({mimetype, data: JSON.stringify(data)});
-        this.socket.emit('binaryCallback', {data, mimetype});
+        this.binaryData.push({ mimetype, data: JSON.stringify(data) });
+        this.socket.emit('binaryCallback', { data, mimetype });
       }
     }
 
@@ -256,7 +256,7 @@ export class WorkflowInterpreter {
       }, {})
     }
 
-    logger.log('debug',`Interpretation finished`);
+    logger.log('debug', `Interpretation finished`);
     this.clearState();
     return result;
   }
@@ -274,7 +274,7 @@ export class WorkflowInterpreter {
    * @param socket Socket.io socket instance enabling communication with the client (frontend) side.
    * @returns void
    */
-  public updateSocket = (socket: Socket) : void => {
+  public updateSocket = (socket: Socket): void => {
     this.socket = socket;
     this.subscribeToPausing();
   };
