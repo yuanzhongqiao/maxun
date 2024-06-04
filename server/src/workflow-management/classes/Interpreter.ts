@@ -269,4 +269,13 @@ export class WorkflowInterpreter {
     return this.interpreter !== null;
   };
 
+  /**
+   * Updates the socket used for communication with the client (frontend).
+   * @param socket Socket.io socket instance enabling communication with the client (frontend) side.
+   * @returns void
+   */
+  public updateSocket = (socket: Socket) : void => {
+    this.socket = socket;
+    this.subscribeToPausing();
+  };
 }
