@@ -105,4 +105,77 @@ export class WorkflowInterpreter {
       this.breakpoints = data
     });
   }
+
+  /**
+   * Sets up the instance of {@link Interpreter} and interprets
+   * the workflow inside the recording editor.
+   * Cleans up this interpreter instance after the interpretation is finished.
+   * @param workflow The workflow to interpret.
+   * @param page The page instance used to interact with the browser.
+   * @param updatePageOnPause A callback to update the page after a pause.
+   * @returns {Promise<void>}
+   */
+  public interpretRecordingInEditor = async (
+    workflow: WorkflowFile,
+    page: Page,
+    updatePageOnPause: (page: Page) => void,
+    settings: InterpreterSettings,
+  ) => {
+    const params = settings.params ? settings.params : null;
+    delete settings.params;
+    const options = {
+      ...settings,
+      debugChannel: {
+        activeId: (id: any) => {
+          this.activeId = id;
+          this.socket.emit('activePairId', id);
+        },
+        debugMessage: (msg: any) => {
+          this.debugMessages.push(`[${new Date().toLocaleString()}] ` + msg);
+          this.socket.emit('log', msg)
+        },
+      },
+      serializableCallback: (data: any) => {
+        this.socket.emit('serializableCallback', data);
+      },
+      binaryCallback: (data: string, mimetype: string) => {
+        this.socket.emit('binaryCallback', {data, mimetype});
+      }
+    }
+
+    const interpreter = new Interpreter(workflow, options);
+    this.interpreter = interpreter;
+
+    interpreter.on('flag', async (page, resume) => {
+      if (this.activeId !== null && this.breakpoints[this.activeId]) {
+        logger.log('debug',`breakpoint hit id: ${this.activeId}`);
+        this.socket.emit('breakpointHit');
+        this.interpretationIsPaused = true;
+      }
+
+      if (this.interpretationIsPaused) {
+        this.interpretationResume = resume;
+        logger.log('debug',`Paused inside of flag: ${page.url()}`);
+        updatePageOnPause(page);
+        this.socket.emit('log', '----- The interpretation has been paused -----', false);
+      } else {
+        resume();
+      }
+    });
+
+    this.socket.emit('log', '----- Starting the interpretation -----', false);
+
+    const status = await interpreter.run(page, params);
+
+    this.socket.emit('log', `----- The interpretation finished with status: ${status} -----`, false);
+
+    logger.log('debug',`Interpretation finished`);
+    this.interpreter = null;
+    this.socket.emit('activePairId', -1);
+    this.interpretationIsPaused = false;
+    this.interpretationResume = null;
+    this.socket.emit('finished');
+  };
+
+  
 }
