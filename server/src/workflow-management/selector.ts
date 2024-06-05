@@ -742,7 +742,3 @@ export const isRuleOvershadowing = async (selectors: string[], page: Page): Prom
   }
   return true;
 }
-
-
-
-
