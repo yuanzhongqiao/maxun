@@ -630,7 +630,7 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return new Set(
            attributes.filter((attr) => {
              const attrValue = element.getAttribute(attr);
-             
+             return attrValue != null && attrValue.length > 0;
            })
          );
        }
