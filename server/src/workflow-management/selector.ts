@@ -86,7 +86,41 @@ export const getElementInformation = async (
   }
 }
 
+/**
+ * Returns the best and unique css {@link Selectors} for the element on the page.
+ * Internally uses a finder function from https://github.com/antonmedv/finder/blob/master/finder.ts
+ * available as a npm package: @medv/finder
+ *
+ * The finder needs to be executed and defined inside a browser context. Meaning,
+ * the code needs to be available inside a page evaluate function.
+ * @param page The page instance.
+ * @param coordinates Coordinates of an element.
+ * @category WorkflowManagement-Selectors
+ * @returns {Promise<Selectors|null|undefined>}
+ */
+export const getSelectors = async (page: Page, coordinates: Coordinates) => {
+  try {
+     const selectors : any = await page.evaluate(async ({ x, y }) => {
 
+       type Options = {
+         root: Element;
+         idName: (name: string) => boolean;
+         className: (name: string) => boolean;
+         tagName: (name: string) => boolean;
+         attr: (name: string, value: string) => boolean;
+         seedMinLength: number;
+         optimizedMinLength: number;
+         threshold: number;
+         maxNumberOfTries: number;
+       };
+
+
+       
+
+};
+
+
+}
 
 
 
