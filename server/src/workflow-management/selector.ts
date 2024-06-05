@@ -411,6 +411,16 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return value !== null && value !== undefined;
        }
 
+       function* combinations(stack: Node[][], path: Node[] = []): Generator<Node[]> {
+         if (stack.length > 0) {
+           for (let node of stack[0]) {
+             yield* combinations(stack.slice(1, stack.length), path.concat(node));
+           }
+         } else {
+           yield path;
+         }
+       }
+
        
 
        
