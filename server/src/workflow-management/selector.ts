@@ -250,6 +250,12 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return path;
        }
 
+       function findUniquePath(
+         stack: Node[][],
+         fallback?: () => Path | null
+       ): Path | null {
+         const paths = sort(combinations(stack));
+       
 };
 
 
