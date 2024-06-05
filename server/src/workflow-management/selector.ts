@@ -529,6 +529,14 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
            }
            output += value;
          }
+
+         if (isIdentifier) {
+           if (/^-[-\d]/.test(output)) {
+             output = '\\-' + output.slice(1);
+           } else if (/\d/.test(firstChar)) {
+             output = '\\3' + firstChar + ' ' + output.slice(1);
+           }
+         }
        }
 
 
