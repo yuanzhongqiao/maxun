@@ -439,7 +439,13 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          }
        ): Generator<Node[]> {
          if (path.length > 2 && path.length > config.optimizedMinLength) {
-           
+           for (let i = 1; i < path.length - 1; i++) {
+             if (scope.counter > config.maxNumberOfTries) {
+               return; // Okay At least I tried!
+             }
+             scope.counter += 1;
+             
+           }
          }
        }
 
