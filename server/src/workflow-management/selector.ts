@@ -281,9 +281,9 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
              query = `${path[i].name} ${query}`;
            }
 
-           
+           node = path[i];
          }
-         
+         return query;
        }
 
        
