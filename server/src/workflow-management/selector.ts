@@ -361,6 +361,33 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          };
        }
 
+       function index(input: Element): number | null {
+         const parent = input.parentNode;
+         if (!parent) {
+           return null;
+         }
+
+         let child = parent.firstChild;
+         if (!child) {
+           return null;
+         }
+
+         let i = 0;
+         while (child) {
+           if (child.nodeType === Node.ELEMENT_NODE) {
+             i++;
+           }
+
+           if (child === input) {
+             break;
+           }
+
+           child = child.nextSibling;
+         }
+
+         return i;
+       }
+
        
        
 };
