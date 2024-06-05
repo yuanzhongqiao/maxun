@@ -250,42 +250,6 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return path;
        }
 
-
-
-
-
-      
-
-       
-       
-       
-
-       
-
-       
-
-       
-       
-
-       
-
-       
-
-       
-       
-
-       
-
-       
-
-       
-
-       
-
-       
-
-       
-
 };
 
 
