@@ -314,6 +314,14 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return null;
        }
 
+       function attr(input: Element): Node[] {
+         const attrs = Array.from(input.attributes).filter((attr) =>
+           config.attr(attr.name, attr.value)
+         );
+
+         
+       }
+
        
 
        
