@@ -50,6 +50,36 @@ export const getRect = async (page: Page, coordinates: Coordinates) => {
 }
 
 
+export const getElementInformation = async (
+  page: Page,
+  coordinates: Coordinates
+) => {
+  try {
+    const elementInfo = await page.evaluate(
+      async ({ x, y }) => {
+        const el = document.elementFromPoint(x, y) as HTMLElement;
+        if ( el ) {
+          const { parentElement } = el;
+          // Match the logic in recorder.ts for link clicks
+          const element = parentElement?.tagName === 'A' ? parentElement : el;
+          return {
+            tagName: element?.tagName ?? '',
+            hasOnlyText: element?.children?.length === 0 &&
+              element?.innerText?.length > 0,
+          }
+        }
+      },
+      { x: coordinates.x, y: coordinates.y },
+    );
+    return elementInfo;
+  } catch (error) {
+    const { message, stack } = error as Error;
+    logger.log('error', `Error while retrieving selector: ${message}`);
+    logger.log('error', `Stack: ${stack}`);
+  }
+}
+
+
 
 
 
