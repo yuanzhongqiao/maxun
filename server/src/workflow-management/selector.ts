@@ -558,7 +558,75 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
 
 
 
+       const genSelectors = (element: HTMLElement | null)  =>{
+         if (element == null) {
+           return null;
+         }
+
+         const href = element.getAttribute('href');
+
+         let generalSelector = null;
+         try {
+           generalSelector = finder(element);
+         } catch (e) {
+         }
+
+         let attrSelector = null;
+         try {
+           attrSelector = finder(element, { attr: () => true });
+         } catch (e) {
+         }
+
+         const hrefSelector = genSelectorForAttributes(element, ['href']);
+         const formSelector = genSelectorForAttributes(element, [
+           'name',
+           'placeholder',
+           'for',
+         ]);
+         const accessibilitySelector = genSelectorForAttributes(element, [
+           'aria-label',
+           'alt',
+           'title',
+         ]);
+
+         const testIdSelector = genSelectorForAttributes(element, [
+           'data-testid',
+           'data-test-id',
+           'data-testing',
+           'data-test',
+           'data-qa',
+           'data-cy',
+         ]);
+
+         // We won't use an id selector if the id is invalid (starts with a number)
+         let idSelector = null;
+         try {
+           idSelector =
+             isAttributesDefined(element, ['id']) &&
+             !isCharacterNumber(element.id?.[0])
+               ? // Certain apps don't have unique ids (ex. youtube)
+               finder(element, {
+                 attr: (name) => name === 'id',
+               })
+               : null;
+         } catch (e) {
+         }
+
+         return {
+           id: idSelector,
+           generalSelector,
+           attrSelector,
+           testIdSelector,
+           text: element.innerText,
+           href,
+           // Only try to pick an href selector if there is an href on the element
+           hrefSelector,
+           accessibilitySelector,
+           formSelector,
+         };
+       }
        
+
 };
 
 
