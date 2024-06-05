@@ -335,7 +335,12 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
        function classNames(input: Element): Node[] {
          const names = Array.from(input.classList).filter(config.className);
 
-        
+         return names.map(
+           (name): Node => ({
+             name: '.' + cssesc(name, { isIdentifier: true }),
+             penalty: 1,
+           })
+         );
        }
 
        
