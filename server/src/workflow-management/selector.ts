@@ -115,12 +115,25 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
        };
 
 
-       
+       function finder(input: Element, options?: Partial<Options>) {
 
-};
+         const defaults: Options = {
+           root: document.body,
+           idName: (name: string) => true,
+           className: (name: string) => true,
+           tagName: (name: string) => true,
+           attr: (name: string, value: string) => false,
+           seedMinLength: 1,
+           optimizedMinLength: 2,
+           threshold: 1000,
+           maxNumberOfTries: 10000,
+         };
+
+       }
 
 
 }
+
 
 
 
