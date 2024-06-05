@@ -255,6 +255,14 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          fallback?: () => Path | null
        ): Path | null {
          const paths = sort(combinations(stack));
+
+         if (paths.length > config.threshold) {
+           return fallback ? fallback() : null;
+         }
+
+         return null;
+       }
+
        
 };
 
