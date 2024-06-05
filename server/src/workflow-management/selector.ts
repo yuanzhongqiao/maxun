@@ -18,6 +18,11 @@ export const getRect = async (page: Page, coordinates: Coordinates) => {
     const rect = await page.evaluate(
       async ({ x, y }) => {
         const el = document.elementFromPoint(x, y) as HTMLElement;
+        if (el) {
+        const { parentElement } = el;
+        
+      }},
+    
     );
     
   } catch (error) {
