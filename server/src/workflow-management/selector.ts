@@ -430,7 +430,11 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          visited: Map<string, boolean>;
        };
 
-       
+
+       function same(path: Path, input: Element) {
+         return rootDocument.querySelector(selector(path)) === input;
+       }
+
        
 };
 
