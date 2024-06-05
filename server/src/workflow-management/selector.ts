@@ -343,7 +343,19 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          );
        }
 
+       function tagName(input: Element): Node | null {
+         const name = input.tagName.toLowerCase();
+         if (config.tagName(name)) {
+           return {
+             name,
+             penalty: 2,
+           };
+         }
+         return null;
+       }
+
        
+
        
 };
 
