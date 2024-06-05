@@ -450,7 +450,11 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
              if (scope.visited.has(newPathKey)) {
                return;
              }
-             
+             if (unique(newPath) && same(newPath, input)) {
+               yield newPath;
+               scope.visited.set(newPathKey, true);
+               yield* optimize(newPath, input, scope);
+             }
            }
          }
        }
