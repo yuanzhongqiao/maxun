@@ -483,7 +483,52 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          const quote = options.quotes == 'double' ? '"' : "'";
          const isIdentifier = options.isIdentifier;
 
-         
+         const firstChar = string.charAt(0);
+         let output = '';
+         let counter = 0;
+         const length = string.length;
+         while (counter < length) {
+           const character = string.charAt(counter++);
+           let codePoint = character.charCodeAt(0);
+           let value: string | undefined = void 0;
+           // If it’s not a printable ASCII character…
+           if (codePoint < 0x20 || codePoint > 0x7e) {
+             if (codePoint >= 0xd800 && codePoint <= 0xdbff && counter < length) {
+               // It’s a high surrogate, and there is a next character.
+               const extra = string.charCodeAt(counter++);
+               if ((extra & 0xfc00) == 0xdc00) {
+                 // next character is low surrogate
+                 codePoint = ((codePoint & 0x3ff) << 10) + (extra & 0x3ff) + 0x10000;
+               } else {
+                 // It’s an unmatched surrogate; only append this code unit, in case
+                 // the next code unit is the high surrogate of a surrogate pair.
+                 counter--;
+               }
+             }
+             value = '\\' + codePoint.toString(16).toUpperCase() + ' ';
+           } else {
+             if (options.escapeEverything) {
+               if (regexAnySingleEscape.test(character)) {
+                 value = '\\' + character;
+               } else {
+                 value = '\\' + codePoint.toString(16).toUpperCase() + ' ';
+               }
+             } else if (/[\t\n\f\r\x0B]/.test(character)) {
+               value = '\\' + codePoint.toString(16).toUpperCase() + ' ';
+             } else if (
+               character == '\\' ||
+               (!isIdentifier &&
+                 ((character == '"' && quote == character) ||
+                   (character == "'" && quote == character))) ||
+               (isIdentifier && regexSingleEscape.test(character))
+             ) {
+               value = '\\' + character;
+             } else {
+               value = character;
+             }
+           }
+           output += value;
+         }
        }
 
 
