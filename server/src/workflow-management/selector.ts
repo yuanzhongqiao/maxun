@@ -286,6 +286,10 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return query;
        }
 
+       function penalty(path: Path): number {
+         return path.map((node) => node.penalty).reduce((acc, i) => acc + i, 0);
+       }
+
        
 };
 
