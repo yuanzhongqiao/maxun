@@ -388,6 +388,13 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return i;
        }
 
+       function nthChild(node: Node, i: number): Node {
+         return {
+           name: node.name + `:nth-child(${i})`,
+           
+         };
+       }
+
        
        
 };
