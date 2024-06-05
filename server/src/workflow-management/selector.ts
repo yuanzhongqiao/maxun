@@ -447,6 +447,9 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
              const newPath = [...path];
              newPath.splice(i, 1);
              const newPathKey = selector(newPath);
+             if (scope.visited.has(newPathKey)) {
+               return;
+             }
              
            }
          }
