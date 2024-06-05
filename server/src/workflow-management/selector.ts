@@ -395,7 +395,12 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          };
        }
 
+       function dispensableNth(node: Node) {
+         return node.name !== 'html' && !node.name.startsWith('#');
+       }
+
        
+
        
 };
 
