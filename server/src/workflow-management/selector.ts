@@ -319,7 +319,17 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
            config.attr(attr.name, attr.value)
          );
 
-         
+         return attrs.map(
+           (attr): Node => ({
+             name:
+               '[' +
+               cssesc(attr.name, { isIdentifier: true }) +
+               '="' +
+               cssesc(attr.value) +
+               '"]',
+             penalty: 0.5,
+           })
+         );
        }
 
        
