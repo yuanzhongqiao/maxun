@@ -665,7 +665,19 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return char.length === 1 && char.match(/[0-9]/);
        }
 
-       
+        const hoveredElement = document.elementFromPoint(x, y) as HTMLElement;
+        if (
+          hoveredElement != null &&
+          !hoveredElement.closest('#overlay-controls') != null
+        ) {
+         const { parentElement } = hoveredElement;
+         // Match the logic in recorder.ts for link clicks
+         const element = parentElement?.tagName === 'A' ? parentElement : hoveredElement;
+         const generatedSelectors = genSelectors(element);
+         return generatedSelectors;
+       }
+      }, { x: coordinates.x, y: coordinates.y });
+    } 
 };
 
 
