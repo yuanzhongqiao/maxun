@@ -468,9 +468,28 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
        const regexExcessiveSpaces =
          /(^|\\+)?(\\[A-F0-9]{1,6})\x20(?![a-fA-F0-9\x20])/g;
 
+       const defaultOptions = {
+         escapeEverything: false,
+         isIdentifier: false,
+         quotes: 'single',
+         wrap: false,
+       };
+
+       function cssesc(string: string, opt: Partial<typeof defaultOptions> = {}) {
+         const options = { ...defaultOptions, ...opt };
+         if (options.quotes != 'single' && options.quotes != 'double') {
+           options.quotes = 'single';
+         }
+         const quote = options.quotes == 'double' ? '"' : "'";
+         const isIdentifier = options.isIdentifier;
+
+         
+       }
+
+
+
        
 };
-
 
 
 
