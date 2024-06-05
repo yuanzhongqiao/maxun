@@ -159,7 +159,10 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
 
          rootDocument = findRootDocument(config.root, defaults);
 
-         
+         let path = bottomUpSearch(input, Limit.All, () =>
+           bottomUpSearch(input, Limit.Two, () => bottomUpSearch(input, Limit.One))
+         );
+
        }
 
        function findRootDocument(rootNode: Element | Document, defaults: Options) {
