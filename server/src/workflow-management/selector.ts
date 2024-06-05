@@ -290,6 +290,19 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return path.map((node) => node.penalty).reduce((acc, i) => acc + i, 0);
        }
 
+       function unique(path: Path) {
+         switch (rootDocument.querySelectorAll(selector(path)).length) {
+           case 0:
+             throw new Error(
+               `Can't select any node with this selector: ${selector(path)}`
+             );
+           case 1:
+             return true;
+           default:
+             return false;
+         }
+       }
+
        
 };
 
