@@ -445,6 +445,8 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
              }
              scope.counter += 1;
              const newPath = [...path];
+             newPath.splice(i, 1);
+             
              
            }
          }
