@@ -651,7 +651,7 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          try {
            selector = isAttributesDefined(element, attributes)
              ? finder(element, {
-               idName: () => false, 
+               idName: () => false, // Don't use the id to generate a selector
                attr: genValidAttributeFilter(element, attributes),
              })
              : null;
