@@ -635,7 +635,11 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          );
        }
 
-       
+       function isAttributesDefined(element: HTMLElement, attributes: string[]) {
+         return genAttributeSet(element, attributes).size > 0;
+       }
+
+
 };
 
 
