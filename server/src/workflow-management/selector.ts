@@ -444,6 +444,7 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
                return; // Okay At least I tried!
              }
              scope.counter += 1;
+             const newPath = [...path];
              
            }
          }
