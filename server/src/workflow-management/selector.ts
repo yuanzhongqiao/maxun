@@ -625,9 +625,16 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
            formSelector,
          };
        }
-       
 
+       function genAttributeSet(element: HTMLElement, attributes: string[]) {
+         return new Set(
+           
+         );
+       }
+
+       
 };
+
 
 
 
