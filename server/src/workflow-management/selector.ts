@@ -677,6 +677,7 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return generatedSelectors;
        }
       }, { x: coordinates.x, y: coordinates.y });
+     return selectors;
     } 
 };
 
