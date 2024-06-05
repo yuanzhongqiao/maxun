@@ -303,6 +303,14 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          }
        }
 
+       function id(input: Element): Node | null {
+         const elementId = input.getAttribute('id');
+         
+         return null;
+       }
+
+       
+
        
 };
 
