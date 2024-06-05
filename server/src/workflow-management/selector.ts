@@ -269,6 +269,11 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return null;
        }
 
+       function selector(path: Path): string {
+         let node = path[0];
+         
+       }
+
        
 };
 
