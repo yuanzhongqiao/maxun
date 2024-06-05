@@ -678,7 +678,12 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
        }
       }, { x: coordinates.x, y: coordinates.y });
      return selectors;
-    } 
+    } catch (e) {
+      const { message, stack } = e as Error;
+      logger.log('error', `Error while retrieving element: ${message}`);
+      logger.log('error', `Stack: ${stack}`);
+    }
+    return null;
 };
 
 
