@@ -660,7 +660,12 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return selector;
        }
 
+// isCharacterNumber
+       function isCharacterNumber(char: string) {
+         return char.length === 1 && char.match(/[0-9]/);
+       }
 
+       
 };
 
 
