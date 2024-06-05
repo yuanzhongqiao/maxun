@@ -305,7 +305,12 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
 
        function id(input: Element): Node | null {
          const elementId = input.getAttribute('id');
-         
+         if (elementId && config.idName(elementId)) {
+           return {
+             name: '#' + cssesc(elementId, { isIdentifier: true }),
+             penalty: 0,
+           };
+         }
          return null;
        }
 
