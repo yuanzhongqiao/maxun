@@ -131,6 +131,15 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
 
        }
 
+       function findRootDocument(rootNode: Element | Document, defaults: Options) {
+         if (rootNode.nodeType === Node.DOCUMENT_NODE) {
+           return rootNode;
+         }
+         if (rootNode === defaults.root) {
+           return rootNode.ownerDocument as Document;
+         }
+         return rootNode;
+       }
 
 }
 
