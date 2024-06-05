@@ -20,6 +20,8 @@ export const getRect = async (page: Page, coordinates: Coordinates) => {
         const el = document.elementFromPoint(x, y) as HTMLElement;
         if (el) {
         const { parentElement } = el;
+        // Match the logic in recorder.ts for link clicks
+        const element = parentElement?.tagName === 'A' ? parentElement : el;
         
       }},
     
