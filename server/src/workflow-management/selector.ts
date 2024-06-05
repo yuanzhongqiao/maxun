@@ -23,11 +23,23 @@ export const getRect = async (page: Page, coordinates: Coordinates) => {
         // Match the logic in recorder.ts for link clicks
         const element = parentElement?.tagName === 'A' ? parentElement : el;
         const rectangle =  element?.getBoundingClientRect();
-        
+        // @ts-ignore
+        if (rectangle) {
+          return {
+            x: rectangle.x,
+            y: rectangle.y,
+            width: rectangle.width,
+            height: rectangle.height,
+            top: rectangle.top,
+            right: rectangle.right,
+            bottom: rectangle.bottom,
+            left: rectangle.left,
+          };
+        }
       }},
-    
+      { x: coordinates.x, y: coordinates.y },
     );
-    
+    return rect;
   } catch (error) {
     const { message, stack } = error as Error;
     logger.log('error', `Error while retrieving selector: ${message}`);
