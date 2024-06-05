@@ -628,7 +628,10 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
 
        function genAttributeSet(element: HTMLElement, attributes: string[]) {
          return new Set(
-           
+           attributes.filter((attr) => {
+             const attrValue = element.getAttribute(attr);
+             
+           })
          );
        }
 
