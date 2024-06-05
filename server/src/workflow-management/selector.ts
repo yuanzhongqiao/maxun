@@ -438,7 +438,9 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
            visited: new Map<string, boolean>(),
          }
        ): Generator<Node[]> {
-         
+         if (path.length > 2 && path.length > config.optimizedMinLength) {
+           
+         }
        }
 
        function same(path: Path, input: Element) {
