@@ -639,7 +639,14 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return genAttributeSet(element, attributes).size > 0;
        }
 
+// Gets all attributes that aren't null and empty
+       function genValidAttributeFilter(element: HTMLElement, attributes: string[]) {
+         const attrSet = genAttributeSet(element, attributes);
 
+         return (name: string) => attrSet.has(name);
+       }
+
+       
 };
 
 
