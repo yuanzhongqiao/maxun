@@ -399,8 +399,15 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return node.name !== 'html' && !node.name.startsWith('#');
        }
 
-       
+       function maybe(...level: (Node | null)[]): Node[] | null {
+         const list = level.filter(notEmpty);
+         if (list.length > 0) {
+           return list;
+         }
+         return null;
+       }
 
+       
        
 };
 
