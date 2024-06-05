@@ -354,8 +354,14 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return null;
        }
 
-       
+       function any(): Node {
+         return {
+           name: '*',
+           penalty: 3,
+         };
+       }
 
+       
        
 };
 
