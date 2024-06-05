@@ -49,7 +49,14 @@ export const getRect = async (page: Page, coordinates: Coordinates) => {
   }
 }
 
-
+/**
+ * Checks the basic info about an element and returns a {@link BaseActionInfo} object.
+ * If the element is not found, returns undefined.
+ * @param page The page instance.
+ * @param coordinates Coordinates of an element.
+ * @category WorkflowManagement-Selectors
+ * @returns {Promise<BaseActionInfo|undefined>}
+ */
 export const getElementInformation = async (
   page: Page,
   coordinates: Coordinates
