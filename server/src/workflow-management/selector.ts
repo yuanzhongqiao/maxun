@@ -277,9 +277,13 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
 
            if (node.level === level - 1) {
              query = `${path[i].name} > ${query}`;
-           } 
+           } else {
+             query = `${path[i].name} ${query}`;
+           }
+
+           
          }
-        
+         
        }
 
        
