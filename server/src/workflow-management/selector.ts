@@ -260,6 +260,12 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
            return fallback ? fallback() : null;
          }
 
+         for (let candidate of paths) {
+           if (unique(candidate)) {
+             
+           }
+         }
+
          return null;
        }
 
