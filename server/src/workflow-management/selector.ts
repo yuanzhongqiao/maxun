@@ -430,6 +430,16 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          visited: Map<string, boolean>;
        };
 
+       function* optimize(
+         path: Path,
+         input: Element,
+         scope: Scope = {
+           counter: 0,
+           visited: new Map<string, boolean>(),
+         }
+       ): Generator<Node[]> {
+         
+       }
 
        function same(path: Path, input: Element) {
          return rootDocument.querySelector(selector(path)) === input;
