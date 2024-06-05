@@ -537,6 +537,23 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
              output = '\\3' + firstChar + ' ' + output.slice(1);
            }
          }
+
+         // Remove spaces after `\HEX` escapes that are not followed by a hex digit,
+         // since they’re redundant. Note that this is only possible if the escape
+         // sequence isn’t preceded by an odd number of backslashes.
+         output = output.replace(regexExcessiveSpaces, function ($0, $1, $2) {
+           if ($1 && $1.length % 2) {
+             // It’s not safe to remove the space, so don’t.
+             return $0;
+           }
+           // Strip the space.
+           return ($1 || '') + $2;
+         });
+
+         if (!isIdentifier && options.wrap) {
+           return quote + output + quote;
+         }
+         return output;
        }
 
 
