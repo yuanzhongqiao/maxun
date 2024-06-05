@@ -139,6 +139,9 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
            throw new Error(`Can't generate CSS selector for non-element node type.`);
          }
 
+         if ('html' === input.tagName.toLowerCase()) {
+           return 'html';
+         }
 
          const defaults: Options = {
            root: document.body,
