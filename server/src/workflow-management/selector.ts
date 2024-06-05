@@ -163,6 +163,17 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
            bottomUpSearch(input, Limit.Two, () => bottomUpSearch(input, Limit.One))
          );
 
+         if (path) {
+           const optimized = sort(optimize(path, input));
+
+           if (optimized.length > 0) {
+             path = optimized[0];
+           }
+
+           return selector(path);
+         } else {
+           throw new Error(`Selector was not found.`);
+         }
        }
 
        function findRootDocument(rootNode: Element | Document, defaults: Options) {
