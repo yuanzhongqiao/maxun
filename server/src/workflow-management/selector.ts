@@ -421,7 +421,9 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          }
        }
 
-       
+       function sort(paths: Iterable<Path>): Path[] {
+         return Array.from(paths).sort((a, b) => penalty(a) - penalty(b));
+       }
 
        
 };
