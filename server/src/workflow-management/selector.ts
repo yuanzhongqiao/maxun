@@ -646,7 +646,21 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return (name: string) => attrSet.has(name);
        }
 
-       
+       function genSelectorForAttributes(element: HTMLElement, attributes: string[]) {
+         let selector = null;
+         try {
+           selector = isAttributesDefined(element, attributes)
+             ? finder(element, {
+               idName: () => false, 
+               attr: genValidAttributeFilter(element, attributes),
+             })
+             : null;
+         } catch (e) {}
+
+         return selector;
+       }
+
+
 };
 
 
