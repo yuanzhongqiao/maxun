@@ -4,6 +4,8 @@ import { WhereWhatPair, WorkflowFile } from "@wbr-project/wbr-interpret";
 import logger from "../logger";
 import { getBestSelectorForAction } from "./utils";
 
+type Workflow = WorkflowFile["workflow"];
+
 /**
  * Returns a {@link Rectangle} object representing
  * the coordinates, width, height and corner points of the element.
