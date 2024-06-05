@@ -332,8 +332,13 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          );
        }
 
-       
+       function classNames(input: Element): Node[] {
+         const names = Array.from(input.classList).filter(config.className);
 
+        
+       }
+
+       
        
 };
 
