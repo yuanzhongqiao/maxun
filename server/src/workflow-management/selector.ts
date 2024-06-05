@@ -463,6 +463,11 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return rootDocument.querySelector(selector(path)) === input;
        }
 
+       const regexAnySingleEscape = /[ -,\.\/:-@\[-\^`\{-~]/;
+       const regexSingleEscape = /[ -,\.\/:-@\[\]\^`\{-~]/;
+       const regexExcessiveSpaces =
+         /(^|\\+)?(\\[A-F0-9]{1,6})\x20(?![a-fA-F0-9\x20])/g;
+
        
 };
 
