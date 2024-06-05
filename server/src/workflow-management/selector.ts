@@ -425,6 +425,12 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return Array.from(paths).sort((a, b) => penalty(a) - penalty(b));
        }
 
+       type Scope = {
+         counter: number;
+         visited: Map<string, boolean>;
+       };
+
+       
        
 };
 
