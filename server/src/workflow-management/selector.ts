@@ -101,6 +101,22 @@ export const getElementInformation = async (
 export const getSelectors = async (page: Page, coordinates: Coordinates) => {
   try {
      const selectors : any = await page.evaluate(async ({ x, y }) => {
+       // version @medv/finder
+        // https://github.com/antonmedv/finder/blob/master/finder.ts
+
+       type Node = {
+         name: string;
+         penalty: number;
+         level?: number;
+       };
+
+       type Path = Node[];
+
+       enum Limit {
+         All,
+         Two,
+         One,
+       }
 
        type Options = {
          root: Element;
@@ -114,9 +130,12 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          maxNumberOfTries: number;
        };
 
+       let config: Options;
+
+       let rootDocument: Document | Element;
 
        function finder(input: Element, options?: Partial<Options>) {
-
+         
          const defaults: Options = {
            root: document.body,
            idName: (name: string) => true,
@@ -129,6 +148,11 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
            maxNumberOfTries: 10000,
          };
 
+         config = { ...defaults, ...options };
+
+         rootDocument = findRootDocument(config.root, defaults);
+
+         
        }
 
        function findRootDocument(rootNode: Element | Document, defaults: Options) {
@@ -141,7 +165,110 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
          return rootNode;
        }
 
-}
+       function bottomUpSearch(
+         input: Element,
+         limit: Limit,
+         fallback?: () => Path | null
+       ): Path | null {
+         let path: Path | null = null;
+         let stack: Node[][] = [];
+         let current: Element | null = input;
+         let i = 0;
+
+         while (current && current !== config.root.parentElement) {
+           let level: Node[] = maybe(id(current)) ||
+             maybe(...attr(current)) ||
+             maybe(...classNames(current)) ||
+             maybe(tagName(current)) || [any()];
+
+           const nth = index(current);
+
+           if (limit === Limit.All) {
+             if (nth) {
+               level = level.concat(
+                 level.filter(dispensableNth).map((node) => nthChild(node, nth))
+               );
+             }
+           } else if (limit === Limit.Two) {
+             level = level.slice(0, 1);
+
+             if (nth) {
+               level = level.concat(
+                 level.filter(dispensableNth).map((node) => nthChild(node, nth))
+               );
+             }
+           } else if (limit === Limit.One) {
+             const [node] = (level = level.slice(0, 1));
+
+             if (nth && dispensableNth(node)) {
+               level = [nthChild(node, nth)];
+             }
+           }
+
+           for (let node of level) {
+             node.level = i;
+           }
+
+           stack.push(level);
+
+           if (stack.length >= config.seedMinLength) {
+             path = findUniquePath(stack, fallback);
+             if (path) {
+               break;
+             }
+           }
+
+           current = current.parentElement;
+           i++;
+         }
+
+         if (!path) {
+           path = findUniquePath(stack, fallback);
+         }
+
+         return path;
+       }
+
+
+
+
+
+      
+
+       
+       
+       
+
+       
+
+       
+
+       
+       
+
+       
+
+       
+
+       
+       
+
+       
+
+       
+
+       
+
+       
+
+       
+
+       
+
+};
+
+
+
 
 
 
