@@ -705,6 +705,43 @@ export const selectorAlreadyInWorkflow = (selector: string, workflow: Workflow) 
   });
 };
 
+/**
+ * Checks whether the given selectors are visible on the page at the same time.
+ * @param selectors The selectors to check.
+ * @param page The page to use for the validation.
+ * @category WorkflowManagement
+ */
+export const isRuleOvershadowing = async(selectors: string[], page:Page): Promise<boolean> => {
+  for (const selector of selectors){
+    const areElsVisible = await page.$$eval(selector,
+      (elems) => {
+        const isVisible = ( elem: HTMLElement | SVGElement ) => {
+          if (elem instanceof HTMLElement) {
+            return !!(elem.offsetWidth
+              || elem.offsetHeight
+              || elem.getClientRects().length
+              && window.getComputedStyle(elem).visibility !== "hidden");
+          } else {
+            return !!(elem.getClientRects().length
+              && window.getComputedStyle(elem).visibility !== "hidden");
+          }
+        };
+
+        const visibility: boolean[] = [];
+        elems.forEach((el) => visibility.push(isVisible(el)))
+        return visibility;
+      })
+    if (areElsVisible.length === 0) {
+      return false
+    }
+
+    if (areElsVisible.includes(false)){
+      return false;
+    }
+  }
+  return true;
+}
+
 
 
 
