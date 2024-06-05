@@ -262,7 +262,7 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
 
          for (let candidate of paths) {
            if (unique(candidate)) {
-             
+             return candidate;
            }
          }
 
