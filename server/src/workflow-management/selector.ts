@@ -22,6 +22,7 @@ export const getRect = async (page: Page, coordinates: Coordinates) => {
         const { parentElement } = el;
         // Match the logic in recorder.ts for link clicks
         const element = parentElement?.tagName === 'A' ? parentElement : el;
+        const rectangle =  element?.getBoundingClientRect();
         
       }},
     
