@@ -686,9 +686,24 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
     return null;
 };
 
-
-
-
+/**
+ * Returns the first pair from the given workflow that contains the given selector
+ * inside the where condition, and it is the only selector there.
+ * If a match is not found, returns undefined.
+ * @param selector The selector to find.
+ * @param workflow The workflow to search in.
+ * @category WorkflowManagement
+ * @returns {Promise<WhereWhatPair|undefined>}
+ */
+export const selectorAlreadyInWorkflow = (selector: string, workflow: Workflow) => {
+  return workflow.find((pair: WhereWhatPair) => {
+    if (pair.where.selectors?.includes(selector)) {
+      if (pair.where.selectors?.length === 1) {
+        return pair;
+      }
+    }
+  });
+};
 
 
 
