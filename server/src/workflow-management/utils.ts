@@ -62,5 +62,31 @@ export const getBestSelectorForAction = (action: Action) => {
           null
         );
       }
-    
+      return (
+        selectors.testIdSelector ??
+        selectors?.id ??
+        selectors?.accessibilitySelector ??
+        selectors?.hrefSelector ??
+        selectors?.generalSelector ??
+        selectors?.attrSelector ??
+        null
+      );
+    }
+    case ActionType.Input:
+    case ActionType.Keydown: {
+      const selectors = action.selectors;
+      return (
+        selectors.testIdSelector ??
+        selectors?.id ??
+        selectors?.formSelector ??
+        selectors?.accessibilitySelector ??
+        selectors?.generalSelector ??
+        selectors?.attrSelector ??
+        null
+      );
+    }
+    default:
+      break;
+  }
+  return null;
 }
