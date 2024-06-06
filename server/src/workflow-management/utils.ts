@@ -43,7 +43,7 @@ export const getBestSelectorForAction = (action: Action) => {
         );
       }
 
-     
+      // Prefer text selectors for spans, ems over general selectors
       if (
         action.tagName === TagName.Span ||
         action.tagName === TagName.EM ||
