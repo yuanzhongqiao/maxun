@@ -43,5 +43,24 @@ export const getBestSelectorForAction = (action: Action) => {
         );
       }
 
-      
+     
+      if (
+        action.tagName === TagName.Span ||
+        action.tagName === TagName.EM ||
+        action.tagName === TagName.Cite ||
+        action.tagName === TagName.B ||
+        action.tagName === TagName.Strong
+      ) {
+        return (
+          selectors.testIdSelector ??
+          selectors?.id ??
+          selectors?.accessibilitySelector ??
+          selectors?.hrefSelector ??
+          textSelector ??
+          selectors?.generalSelector ??
+          selectors?.attrSelector ??
+          null
+        );
+      }
+    
 }
