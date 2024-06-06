@@ -15,8 +15,8 @@ export const getBestSelectorForAction = (action: Action) => {
       // less than 25 characters, and element only has text inside
       const textSelector =
         selectors?.text?.length != null &&
-        selectors?.text?.length < 25 &&
-        action.hasOnlyText
+          selectors?.text?.length < 25 &&
+          action.hasOnlyText
           ? `text=${selectors.text}`
           : null;
 
