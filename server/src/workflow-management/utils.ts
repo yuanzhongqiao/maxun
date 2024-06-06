@@ -31,6 +31,17 @@ export const getBestSelectorForAction = (action: Action) => {
           null
         );
       }
-     
-    
+      if (action.tagName === TagName.A) {
+        return (
+          selectors.testIdSelector ??
+          selectors?.id ??
+          selectors?.hrefSelector ??
+          selectors?.accessibilitySelector ??
+          selectors?.generalSelector ??
+          selectors?.attrSelector ??
+          null
+        );
+      }
+
+      
 }
