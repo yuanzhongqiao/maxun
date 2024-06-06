@@ -20,5 +20,17 @@ export const getBestSelectorForAction = (action: Action) => {
           ? `text=${selectors.text}`
           : null;
 
-    }
+      if (action.tagName === TagName.Input) {
+        return (
+          selectors.testIdSelector ??
+          selectors?.id ??
+          selectors?.formSelector ??
+          selectors?.accessibilitySelector ??
+          selectors?.generalSelector ??
+          selectors?.attrSelector ??
+          null
+        );
+      }
+     
+    
 }
