@@ -554,7 +554,14 @@ export class WorkflowGenerator {
     this.socket.emit('workflow', this.workflowRecord);
   }
 
-  
+  /**
+   * Checks and returns possible pairs that would get over-shadowed by the pair
+   * from the current workflow.
+   * @param pair The pair that could be over-shadowing.
+   * @param page The page to be used for checking the visibility and accessibility of the selectors.
+   * @private
+   * @returns {Promise<PossibleOverShadow[]>}
+   */
   private IsOverShadowingAction = async (pair: WhereWhatPair, page: Page) => {
     type possibleOverShadow = {
       index: number;
