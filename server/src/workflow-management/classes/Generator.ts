@@ -447,5 +447,23 @@ export class WorkflowGenerator {
     this.socket.emit('fileSaved');
   }
 
- 
+  
+  private generateSelector = async (page:Page, coordinates:Coordinates, action: ActionType) => {
+    const elementInfo = await getElementInformation(page, coordinates);
+    const bestSelector = getBestSelectorForAction(
+      {
+        type: action,
+        tagName: elementInfo?.tagName as TagName || '',
+        inputType: undefined,
+        value: undefined,
+        selectors: await getSelectors(page, coordinates) || {},
+        timestamp: 0,
+        isPassword: false,
+        hasOnlyText: elementInfo?.hasOnlyText || false,
+      } as Action,
+    );
+    return bestSelector;
+  }
+
+  
 }
