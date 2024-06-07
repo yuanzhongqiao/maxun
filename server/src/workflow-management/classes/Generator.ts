@@ -367,7 +367,12 @@ export class WorkflowGenerator {
     this.registerEventHandlers(socket);
   };
 
-  
+  /**
+   * Returns the currently generated workflow without all the generated flag actions.
+   * @param workflow The workflow for removing the generated flag actions from.
+   * @private
+   * @returns {WorkflowFile}
+   */
   private removeAllGeneratedFlags = (workflow: WorkflowFile): WorkflowFile => {
       for (let i = 0; i < workflow.workflow.length; i++) {
         if (
