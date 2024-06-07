@@ -633,7 +633,12 @@ export class WorkflowGenerator {
     return false;
   }
 
-  
+  /**
+   * Returns the best possible url representation for a where condition according to the heuristics.
+   * @param url The url to be checked and possibly replaced.
+   * @private
+   * @returns {string | {$regex: string}}
+   */
   private getBestUrl = (url: string) => {
     const parsedUrl = new URL(url);
     const protocol = parsedUrl.protocol === 'https:' || parsedUrl.protocol === 'http:' ? `${parsedUrl.protocol}//`: parsedUrl.protocol;
