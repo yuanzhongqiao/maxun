@@ -19,7 +19,7 @@ import { browserPool } from "../../server";
 
 interface PersistedGeneratedData {
   lastUsedSelector: string;
-  lastIndex: number|null;
+  lastIndex: number | null;
   lastAction: string;
 }
 
@@ -44,7 +44,7 @@ export class WorkflowGenerator {
    * The socket used to communicate with the client.
    * @private
    */
-  private socket : Socket;
+  private socket: Socket;
 
   /**
    * The public constructor of the WorkflowGenerator.
@@ -100,9 +100,9 @@ export class WorkflowGenerator {
     });
     socket.on('new-recording', () => this.workflowRecord = {
       workflow: [],
-    } );
+    });
     socket.on('activeIndex', (data) => this.generatedData.lastIndex = parseInt(data));
-    socket.on('decision', async ({pair, actionType, decision}) => {
+    socket.on('decision', async ({ pair, actionType, decision }) => {
       const id = browserPool.getActiveBrowserId();
       if (id) {
         const activeBrowser = browserPool.getRemoteBrowser(id);
@@ -148,7 +148,7 @@ export class WorkflowGenerator {
    * @private
    * @returns {Promise<void>}
    */
-  private addPairToWorkflowAndNotifyClient = async(pair: WhereWhatPair, page: Page) => {
+  private addPairToWorkflowAndNotifyClient = async (pair: WhereWhatPair, page: Page) => {
     let matched = false;
     // validate if a pair with the same where conditions is already present in the workflow
     if (pair.where.selectors && pair.where.selectors[0]) {
@@ -197,7 +197,7 @@ export class WorkflowGenerator {
       }
     }
     this.socket.emit('workflow', this.workflowRecord);
-    logger.log('info',`Workflow emitted`);
+    logger.log('info', `Workflow emitted`);
   };
 
   /**
@@ -235,14 +235,14 @@ export class WorkflowGenerator {
    * @param page The page to use for obtaining the needed data.
    * @returns {Promise<void>}
    */
-  public onChangeUrl = async(newUrl: string, page: Page) => {
+  public onChangeUrl = async (newUrl: string, page: Page) => {
     this.generatedData.lastUsedSelector = '';
     const pair: WhereWhatPair = {
       where: { url: this.getBestUrl(page.url()) },
       what: [
         {
-        action: 'goto',
-        args: [newUrl],
+          action: 'goto',
+          args: [newUrl],
         }
       ],
     }
@@ -284,7 +284,7 @@ export class WorkflowGenerator {
    */
   public customAction = async (action: CustomActions, settings: any, page: Page) => {
     const pair: WhereWhatPair = {
-      where: { url: this.getBestUrl(page.url())},
+      where: { url: this.getBestUrl(page.url()) },
       what: [{
         action,
         args: settings ? Array.isArray(settings) ? settings : [settings] : [],
@@ -297,7 +297,8 @@ export class WorkflowGenerator {
         lastData: {
           selector: this.generatedData.lastUsedSelector,
           action: this.generatedData.lastAction,
-        } });
+        }
+      });
     } else {
       await this.addPairToWorkflowAndNotifyClient(pair, page);
     }
@@ -337,7 +338,7 @@ export class WorkflowGenerator {
       logger.log('debug', `pair ${index}: Added to workflow file.`);
     } else if (index < this.workflowRecord.workflow.length && index >= 0) {
       this.workflowRecord.workflow.splice(
-        this.workflowRecord.workflow.length - index , 0, pair);
+        this.workflowRecord.workflow.length - index, 0, pair);
     } else {
       logger.log('error', `Add pair ${index}: Index out of range.`);
     }
@@ -362,7 +363,7 @@ export class WorkflowGenerator {
    * @param socket The socket to be used for communication.
    * @returns void
    */
-  public updateSocket = (socket: Socket) : void => {
+  public updateSocket = (socket: Socket): void => {
     this.socket = socket;
     this.registerEventHandlers(socket);
   };
@@ -374,15 +375,15 @@ export class WorkflowGenerator {
    * @returns {WorkflowFile}
    */
   private removeAllGeneratedFlags = (workflow: WorkflowFile): WorkflowFile => {
-      for (let i = 0; i < workflow.workflow.length; i++) {
-        if (
-          workflow.workflow[i].what[0] &&
-          workflow.workflow[i].what[0].action === 'flag' &&
-          workflow.workflow[i].what[0].args?.includes('generated')) {
-          workflow.workflow[i].what.splice(0, 1);
-        }
+    for (let i = 0; i < workflow.workflow.length; i++) {
+      if (
+        workflow.workflow[i].what[0] &&
+        workflow.workflow[i].what[0].action === 'flag' &&
+        workflow.workflow[i].what[0].args?.includes('generated')) {
+        workflow.workflow[i].what.splice(0, 1);
       }
-      return workflow;
+    }
+    return workflow;
   };
 
   /**
@@ -440,7 +441,7 @@ export class WorkflowGenerator {
         JSON.stringify({ recording_meta: this.recordingMeta, recording }, null, 2)
       );
     }
-     catch (e) {
+    catch (e) {
       const { message } = e as Error;
       logger.log('warn', `Cannot save the file to the local file system`)
     }
@@ -456,7 +457,7 @@ export class WorkflowGenerator {
    * @private
    * @returns {Promise<string|null>}
    */
-  private generateSelector = async (page:Page, coordinates:Coordinates, action: ActionType) => {
+  private generateSelector = async (page: Page, coordinates: Coordinates, action: ActionType) => {
     const elementInfo = await getElementInformation(page, coordinates);
     const bestSelector = getBestSelectorForAction(
       {
@@ -495,7 +496,7 @@ export class WorkflowGenerator {
    * @param fromNavBar Whether the navigation is from the simulated browser's navbar or not.
    * @returns void
    */
-  public notifyUrlChange = (url:string) => {
+  public notifyUrlChange = (url: string) => {
     if (this.socket) {
       this.socket.emit('urlChanged', url);
     }
@@ -530,7 +531,7 @@ export class WorkflowGenerator {
     //it's safe to always add a go back action to the first rule in the workflow
     this.workflowRecord.workflow[0].what.push({
       action: 'goBack',
-      args: [{waitUntil: 'commit'}],
+      args: [{ waitUntil: 'commit' }],
     });
     this.notifyUrlChange(newUrl);
     this.socket.emit('workflow', this.workflowRecord);
@@ -548,7 +549,7 @@ export class WorkflowGenerator {
     //it's safe to always add a go forward action to the first rule in the workflow
     this.workflowRecord.workflow[0].what.push({
       action: 'goForward',
-      args: [{waitUntil: 'commit'}],
+      args: [{ waitUntil: 'commit' }],
     });
     this.notifyUrlChange(newUrl);
     this.socket.emit('workflow', this.workflowRecord);
@@ -572,7 +573,7 @@ export class WorkflowGenerator {
     const haveSameUrl = this.workflowRecord.workflow
       .filter((p, index) => {
         if (p.where.url === pair.where.url) {
-          possibleOverShadow.push({index: index, isOverShadowing: false});
+          possibleOverShadow.push({ index: index, isOverShadowing: false });
           return true;
         } else {
           return false;
@@ -616,7 +617,7 @@ export class WorkflowGenerator {
                 break;
               } else {
                 // add new selector to the where part of the overshadowing pair
-                  this.workflowRecord.workflow[index].where.selectors?.push(selector);
+                this.workflowRecord.workflow[index].where.selectors?.push(selector);
               }
             }
           }
@@ -641,7 +642,7 @@ export class WorkflowGenerator {
    */
   private getBestUrl = (url: string) => {
     const parsedUrl = new URL(url);
-    const protocol = parsedUrl.protocol === 'https:' || parsedUrl.protocol === 'http:' ? `${parsedUrl.protocol}//`: parsedUrl.protocol;
+    const protocol = parsedUrl.protocol === 'https:' || parsedUrl.protocol === 'http:' ? `${parsedUrl.protocol}//` : parsedUrl.protocol;
     const regex = new RegExp(/(?=.*[A-Z])/g)
     // remove all params with uppercase letters, they are most likely dynamically generated
     // also escapes all regex characters from the params
@@ -670,7 +671,7 @@ export class WorkflowGenerator {
    * Returns parameters if present in the workflow or null.
    * @param workflow The workflow to be checked.
    */
-  private checkWorkflowForParams = (workflow: WorkflowFile): string[]|null => {
+  private checkWorkflowForParams = (workflow: WorkflowFile): string[] | null => {
     // for now the where condition cannot have any params, so we're checking only what part of the pair
     // where only the args part of what condition can have a parameter
     for (const pair of workflow.workflow) {
@@ -715,15 +716,17 @@ export class WorkflowGenerator {
         // when more than one press action is present, add a type action
         pair.what.splice(index - input.actionCounter, input.actionCounter, {
           action: 'type',
-          args: [input.selector, input.value], }, {
+          args: [input.selector, input.value],
+        }, {
           action: 'waitForLoadState',
-          args: ['networkidle'], });
+          args: ['networkidle'],
+        });
       }
     }
 
 
     for (const pair of workflow.workflow) {
-      pair.what.forEach( (condition, index) => {
+      pair.what.forEach((condition, index) => {
         if (condition.action === 'press') {
           if (condition.args && condition.args[1]) {
             if (!input.selector) {
@@ -741,7 +744,7 @@ export class WorkflowGenerator {
                   action: 'waitForLoadState',
                   args: ['networkidle'],
                 })
-                input = {selector: '', value: '', actionCounter: 0};
+                input = { selector: '', value: '', actionCounter: 0 };
               }
             } else {
               pushTheOptimizedAction(pair, index);
@@ -756,7 +759,7 @@ export class WorkflowGenerator {
           if (input.value.length !== 0) {
             pushTheOptimizedAction(pair, index);
             // clear the input
-            input = {selector: '', value: '', actionCounter: 0};
+            input = { selector: '', value: '', actionCounter: 0 };
           }
         }
       });
@@ -767,7 +770,7 @@ export class WorkflowGenerator {
   /**
    * Returns workflow params from the stored metadata.
    */
-  public getParams = (): string[]|null => {
+  public getParams = (): string[] | null => {
     return this.checkWorkflowForParams(this.workflowRecord);
   }
 
