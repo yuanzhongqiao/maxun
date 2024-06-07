@@ -385,5 +385,17 @@ export class WorkflowGenerator {
       return workflow;
   };
 
- 
+  
+  public AddGeneratedFlags = (workflow: WorkflowFile): WorkflowFile => {
+    const copy = JSON.parse(JSON.stringify(workflow));
+    for (let i = 0; i < workflow.workflow.length; i++) {
+      copy.workflow[i].what.unshift({
+        action: 'flag',
+        args: ['generated'],
+      });
+    }
+    return copy;
+  };
+
+  
 }
