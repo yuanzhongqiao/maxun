@@ -764,5 +764,10 @@ export class WorkflowGenerator {
     return workflow;
   }
 
+  
+  public getParams = (): string[]|null => {
+    return this.checkWorkflowForParams(this.workflowRecord);
+  }
 
+ 
 }
