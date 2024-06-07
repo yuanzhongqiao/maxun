@@ -57,12 +57,18 @@ export class WorkflowGenerator {
     this.registerEventHandlers(socket);
   }
 
-  
+  /**
+   * The current workflow being recorded.
+   * @private
+   */
   private workflowRecord: WorkflowFile = {
     workflow: [],
   };
 
-  
+  /**
+   * Metadata of the currently recorded workflow.
+   * @private
+   */
   private recordingMeta: MetaData = {
     name: '',
     create_date: '',
