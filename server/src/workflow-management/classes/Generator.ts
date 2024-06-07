@@ -115,7 +115,9 @@ export class WorkflowGenerator {
         }
       }
     })
-    
+    socket.on('updatePair', (data) => {
+      this.updatePairInWorkflow(data.index, data.pair);
+    })
   };
 
   
