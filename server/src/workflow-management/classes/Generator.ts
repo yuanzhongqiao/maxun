@@ -474,4 +474,13 @@ export class WorkflowGenerator {
   }
 
   
+  public generateDataForHighlighter = async (page: Page, coordinates: Coordinates) => {
+    const rect = await getRect(page, coordinates);
+    const displaySelector = await this.generateSelector(page, coordinates, ActionType.Click);
+    if (rect) {
+      this.socket.emit('highlighter', { rect, selector: displaySelector });
+    }
+  }
+
+ 
 }
