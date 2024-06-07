@@ -31,3 +31,14 @@ interface MetaData {
   params: string[],
 }
 
+export class WorkflowGenerator {
+ 
+  private socket : Socket;
+
+  public constructor(socket: Socket) {
+    this.socket = socket;
+    this.registerEventHandlers(socket);
+  }
+
+  
+}
