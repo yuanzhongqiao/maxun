@@ -96,6 +96,7 @@ export class WorkflowGenerator {
     socket.on('new-recording', () => this.workflowRecord = {
       workflow: [],
     } );
+    socket.on('activeIndex', (data) => this.generatedData.lastIndex = parseInt(data));
     
   };
 
