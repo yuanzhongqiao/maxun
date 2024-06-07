@@ -276,5 +276,27 @@ export class WorkflowGenerator {
     await this.addPairToWorkflowAndNotifyClient(pair, page);
   };
 
-  
+ 
+  public customAction = async (action: CustomActions, settings: any, page: Page) => {
+    const pair: WhereWhatPair = {
+      where: { url: this.getBestUrl(page.url())},
+      what: [{
+        action,
+        args: settings ? Array.isArray(settings) ? settings : [settings] : [],
+      }],
+    }
+
+    if (this.generatedData.lastUsedSelector) {
+      this.socket.emit('decision', {
+        pair, actionType: 'customAction',
+        lastData: {
+          selector: this.generatedData.lastUsedSelector,
+          action: this.generatedData.lastAction,
+        } });
+    } else {
+      await this.addPairToWorkflowAndNotifyClient(pair, page);
+    }
+  };
+
+ 
 }
