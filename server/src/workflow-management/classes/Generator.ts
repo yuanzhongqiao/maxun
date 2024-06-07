@@ -39,9 +39,19 @@ interface MetaData {
  * @category WorkflowManagement
  */
 export class WorkflowGenerator {
- 
+
+  /**
+   * The socket used to communicate with the client.
+   * @private
+   */
   private socket : Socket;
 
+  /**
+   * The public constructor of the WorkflowGenerator.
+   * Takes socket for communication as a parameter and registers some important events on it.
+   * @param socket The socket used to communicate with the client.
+   * @constructor
+   */
   public constructor(socket: Socket) {
     this.socket = socket;
     this.registerEventHandlers(socket);
