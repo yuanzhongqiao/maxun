@@ -311,7 +311,11 @@ export class WorkflowGenerator {
     return this.workflowRecord;
   };
 
-  
+  /**
+   * Removes a pair from the currently generated workflow.
+   * @param index The index of the pair to be removed.
+   * @returns void
+   */
   public removePairFromWorkflow = (index: number) => {
     if (index <= this.workflowRecord.workflow.length && index >= 0) {
       this.workflowRecord.workflow.splice(this.workflowRecord.workflow.length - (index + 1), 1);
