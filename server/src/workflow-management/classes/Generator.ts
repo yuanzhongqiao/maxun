@@ -110,7 +110,9 @@ export class WorkflowGenerator {
             default: break;
           }
         }
-        
+        if (currentPage) {
+          await this.addPairToWorkflowAndNotifyClient(pair, currentPage);
+        }
       }
     })
     
