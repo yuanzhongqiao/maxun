@@ -303,5 +303,10 @@ export class WorkflowGenerator {
     }
   };
 
+  
+  public getWorkflowFile = () => {
+    return this.workflowRecord;
+  };
+
  
 }
