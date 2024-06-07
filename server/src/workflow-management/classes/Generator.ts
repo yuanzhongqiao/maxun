@@ -312,4 +312,14 @@ export class WorkflowGenerator {
   };
 
   
+  public removePairFromWorkflow = (index: number) => {
+    if (index <= this.workflowRecord.workflow.length && index >= 0) {
+      this.workflowRecord.workflow.splice(this.workflowRecord.workflow.length - (index + 1), 1);
+      logger.log('debug', `pair ${index}: Removed from workflow file.`);
+    } else {
+      logger.log('error', `Delete pair ${index}: Index out of range.`);
+    }
+  };
+
+  
 }
