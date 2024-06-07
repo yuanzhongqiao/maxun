@@ -519,4 +519,15 @@ export class WorkflowGenerator {
   }
 
   
+  public onGoBack = (newUrl: string) => {
+    //it's safe to always add a go back action to the first rule in the workflow
+    this.workflowRecord.workflow[0].what.push({
+      action: 'goBack',
+      args: [{waitUntil: 'commit'}],
+    });
+    this.notifyUrlChange(newUrl);
+    this.socket.emit('workflow', this.workflowRecord);
+  }
+
+
 }
