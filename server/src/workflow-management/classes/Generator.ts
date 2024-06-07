@@ -303,10 +303,13 @@ export class WorkflowGenerator {
     }
   };
 
-  
+  /**
+   * Returns the currently generated workflow.
+   * @returns {WorkflowFile}
+   */
   public getWorkflowFile = () => {
     return this.workflowRecord;
   };
 
- 
+  
 }
