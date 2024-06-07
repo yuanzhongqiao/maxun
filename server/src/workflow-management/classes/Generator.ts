@@ -357,5 +357,15 @@ export class WorkflowGenerator {
     }
   };
 
+  /**
+   * Updates the socket used for communication with the client.
+   * @param socket The socket to be used for communication.
+   * @returns void
+   */
+  public updateSocket = (socket: Socket) : void => {
+    this.socket = socket;
+    this.registerEventHandlers(socket);
+  };
+
   
 }
