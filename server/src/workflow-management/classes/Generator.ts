@@ -130,7 +130,20 @@ export class WorkflowGenerator {
     let matched = false;
     // validate if a pair with the same where conditions is already present in the workflow
     if (pair.where.selectors && pair.where.selectors[0]) {
-     
+      const match = selectorAlreadyInWorkflow(pair.where.selectors[0], this.workflowRecord.workflow);
+      if (match) {
+        // if a match of where conditions is found, the new action is added into the matched rule
+        const matchedIndex = this.workflowRecord.workflow.indexOf(match);
+        if (pair.what[0].action !== 'waitForLoadState' && pair.what[0].action !== 'press') {
+          pair.what.push({
+            action: 'waitForLoadState',
+            args: ['networkidle'],
+          })
+        }
+        this.workflowRecord.workflow[matchedIndex].what = this.workflowRecord.workflow[matchedIndex].what.concat(pair.what);
+        logger.log('info', `Pushed ${JSON.stringify(this.workflowRecord.workflow[matchedIndex])} to workflow pair`);
+        matched = true;
+      }
     }
    
   };
