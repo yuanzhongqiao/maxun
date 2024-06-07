@@ -88,6 +88,11 @@ export class WorkflowGenerator {
     lastAction: '',
   }
 
+  /**
+   * Registers the event handlers for all generator-related events on the socket.
+   * @param socket The socket used to communicate with the client.
+   * @private
+   */
   private registerEventHandlers = (socket: Socket) => {
     socket.on('save', async (fileName: string) => {
       logger.log('debug', `Saving workflow ${fileName}`);
