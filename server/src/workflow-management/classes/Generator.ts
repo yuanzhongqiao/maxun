@@ -634,4 +634,32 @@ export class WorkflowGenerator {
   }
 
   
+  private getBestUrl = (url: string) => {
+    const parsedUrl = new URL(url);
+    const protocol = parsedUrl.protocol === 'https:' || parsedUrl.protocol === 'http:' ? `${parsedUrl.protocol}//`: parsedUrl.protocol;
+    const regex = new RegExp(/(?=.*[A-Z])/g)
+    // remove all params with uppercase letters, they are most likely dynamically generated
+    // also escapes all regex characters from the params
+    const search = parsedUrl.search
+      .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      .split('&').map((param, index) => {
+        if (!regex.test(param)) {
+          return param;
+        } else {
+          return '.*';
+        }
+      })
+      .join('&');
+    let bestUrl;
+    if (search) {
+      bestUrl = {
+        $regex: `^${protocol}${parsedUrl.host}${parsedUrl.pathname}${search}${parsedUrl.hash}`
+      }
+    } else {
+      bestUrl = `${protocol}${parsedUrl.host}${parsedUrl.pathname}${parsedUrl.hash}`;
+    }
+    return bestUrl;
+  }
+
+  
 }
