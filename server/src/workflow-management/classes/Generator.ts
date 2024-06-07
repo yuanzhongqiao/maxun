@@ -145,7 +145,36 @@ export class WorkflowGenerator {
         matched = true;
       }
     }
-   
+    // is the where conditions of the pair are not already in the workflow, we need to validate the where conditions
+    // for possible overshadowing of different rules and handle cases according to the recording logic
+    if (!matched) {
+      const handled = await this.handleOverShadowing(pair, page, this.generatedData.lastIndex || 0);
+      if (!handled) {
+        //adding waitForLoadState with networkidle, for better success rate of automatically recorded workflows
+        if (pair.what[0].action !== 'waitForLoadState' && pair.what[0].action !== 'press') {
+          pair.what.push({
+            action: 'waitForLoadState',
+            args: ['networkidle'],
+          })
+        }
+        if (this.generatedData.lastIndex === 0) {
+          this.generatedData.lastIndex = null;
+          // we want to have the most specific selectors at the beginning of the workflow
+          this.workflowRecord.workflow.unshift(pair);
+        } else {
+          this.workflowRecord.workflow.splice(this.generatedData.lastIndex || 0, 0, pair);
+          if (this.generatedData.lastIndex) {
+            this.generatedData.lastIndex = this.generatedData.lastIndex - 1;
+          }
+        }
+        logger.log('info',
+          `${JSON.stringify(pair)}: Added to workflow file on index: ${this.generatedData.lastIndex || 0}`);
+      } else {
+        logger.log('debug',
+          ` ${JSON.stringify(this.workflowRecord.workflow[this.generatedData.lastIndex || 0])} added action to workflow pair`);
+      }
+    }
+
   };
 
   
