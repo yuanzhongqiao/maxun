@@ -58,4 +58,18 @@ export class WorkflowGenerator {
   }
 
   
+  private workflowRecord: WorkflowFile = {
+    workflow: [],
+  };
+
+  
+  private recordingMeta: MetaData = {
+    name: '',
+    create_date: '',
+    pairs: 0,
+    update_date: '',
+    params: [],
+  }
+
+  
 }
