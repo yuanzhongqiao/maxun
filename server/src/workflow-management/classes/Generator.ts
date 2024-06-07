@@ -595,7 +595,15 @@ export class WorkflowGenerator {
   }
 
 
- 
+  /**
+   * General over-shadowing handler.
+   * Checks for possible over-shadowed pairs and if found,
+   * adds the pair to the workflow in the correct way.
+   * @param pair The pair that could be over-shadowing.
+   * @param page The page to be used for checking the visibility and accessibility of the selectors.
+   * @private
+   * @returns {Promise<boolean>}
+   */
   private handleOverShadowing = async (pair: WhereWhatPair, page: Page, index: number): Promise<boolean> => {
     const overShadowing = (await this.IsOverShadowingAction(pair, page))
       .filter((p) => p.isOverShadowing);
