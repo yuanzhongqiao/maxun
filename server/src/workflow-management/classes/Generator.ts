@@ -325,7 +325,12 @@ export class WorkflowGenerator {
     }
   };
 
- 
+  /**
+   * Adds a new pair to the currently generated workflow.
+   * @param index The index on which the pair should be added.
+   * @param pair The pair to be added.
+   * @returns void
+   */
   public addPairToWorkflow = (index: number, pair: WhereWhatPair) => {
     if (index === this.workflowRecord.workflow.length) {
       this.workflowRecord.workflow.unshift(pair);
