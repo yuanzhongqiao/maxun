@@ -200,7 +200,12 @@ export class WorkflowGenerator {
     logger.log('info',`Workflow emitted`);
   };
 
-  
+  /**
+   * Generates a pair for the click event.
+   * @param coordinates The coordinates of the click event.
+   * @param page The page to use for obtaining the needed data.
+   * @returns {Promise<void>}
+   */
   public onClick = async (coordinates: Coordinates, page: Page) => {
     let where: WhereWhatPair["where"] = { url: this.getBestUrl(page.url()) };
     const selector = await this.generateSelector(page, coordinates, ActionType.Click);
