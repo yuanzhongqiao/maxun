@@ -126,4 +126,14 @@ export class WorkflowGenerator {
   };
 
   
+  private addPairToWorkflowAndNotifyClient = async(pair: WhereWhatPair, page: Page) => {
+    let matched = false;
+    // validate if a pair with the same where conditions is already present in the workflow
+    if (pair.where.selectors && pair.where.selectors[0]) {
+     
+    }
+   
+  };
+
+  
 }
