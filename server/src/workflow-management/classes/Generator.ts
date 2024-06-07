@@ -343,7 +343,12 @@ export class WorkflowGenerator {
     }
   };
 
- 
+  /**
+   * Updates a pair in the currently generated workflow.
+   * @param index The index of the pair to be updated.
+   * @param pair The pair to be used as a replacement.
+   * @returns void
+   */
   public updatePairInWorkflow = (index: number, pair: WhereWhatPair) => {
     if (index <= this.workflowRecord.workflow.length && index >= 0) {
       this.workflowRecord.workflow[this.workflowRecord.workflow.length - (index + 1)] = pair;
