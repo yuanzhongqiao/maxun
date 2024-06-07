@@ -447,7 +447,15 @@ export class WorkflowGenerator {
     this.socket.emit('fileSaved');
   }
 
-  
+  /**
+   * Uses a system of functions to generate a correct and unique css selector
+   * according to the action being performed.
+   * @param page The page to be used for obtaining the information and selector.
+   * @param coordinates The coordinates of the element.
+   * @param action The action for which the selector is being generated.
+   * @private
+   * @returns {Promise<string|null>}
+   */
   private generateSelector = async (page:Page, coordinates:Coordinates, action: ActionType) => {
     const elementInfo = await getElementInformation(page, coordinates);
     const bestSelector = getBestSelectorForAction(
