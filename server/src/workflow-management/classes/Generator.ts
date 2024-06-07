@@ -204,7 +204,23 @@ export class WorkflowGenerator {
   public onClick = async (coordinates: Coordinates, page: Page) => {
     let where: WhereWhatPair["where"] = { url: this.getBestUrl(page.url()) };
     const selector = await this.generateSelector(page, coordinates, ActionType.Click);
-    
+    logger.log('debug', `Element's selector: ${selector}`);
+    //const element = await getElementMouseIsOver(page, coordinates);
+    //logger.log('debug', `Element: ${JSON.stringify(element, null, 2)}`);
+    if (selector) {
+      where.selectors = [selector];
+    }
+    const pair: WhereWhatPair = {
+      where,
+      what: [{
+        action: 'click',
+        args: [selector],
+      }],
+    }
+    if (selector) {
+      this.generatedData.lastUsedSelector = selector;
+      this.generatedData.lastAction = 'click';
+    }
   };
 
   
