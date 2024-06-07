@@ -107,7 +107,7 @@ export class WorkflowGenerator {
             case 'customAction':
               pair.where.selectors = [this.generatedData.lastUsedSelector];
               break;
-            
+            default: break;
           }
         }
         
