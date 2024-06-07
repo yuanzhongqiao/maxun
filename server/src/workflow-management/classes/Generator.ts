@@ -249,7 +249,13 @@ export class WorkflowGenerator {
     await this.addPairToWorkflowAndNotifyClient(pair, page);
   };
 
-  
+  /**
+   * Generates a pair for the keypress event.
+   * @param key The key to be pressed.
+   * @param coordinates The coordinates of the keypress event.
+   * @param page The page to use for obtaining the needed data.
+   * @returns {Promise<void>}
+   */
   public onKeyboardInput = async (key: string, coordinates: Coordinates, page: Page) => {
     let where: WhereWhatPair["where"] = { url: this.getBestUrl(page.url()) };
     const selector = await this.generateSelector(page, coordinates, ActionType.Keydown);
