@@ -31,6 +31,13 @@ interface MetaData {
   params: string[],
 }
 
+/**
+ * Workflow generator is used to transform the user's interactions into an automatically
+ * generated correct workflows, using the ability of internal state persistence and
+ * heuristic generative algorithms.
+ * This class also takes care of the selector generation.
+ * @category WorkflowManagement
+ */
 export class WorkflowGenerator {
  
   private socket : Socket;
