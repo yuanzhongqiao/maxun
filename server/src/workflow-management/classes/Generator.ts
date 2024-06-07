@@ -385,7 +385,12 @@ export class WorkflowGenerator {
       return workflow;
   };
 
-  
+  /**
+   * Adds generated flag actions to the workflow's pairs' what conditions.
+   * @param workflow The workflow for adding the generated flag actions from.
+   * @private
+   * @returns {WorkflowFile}
+   */
   public AddGeneratedFlags = (workflow: WorkflowFile): WorkflowFile => {
     const copy = JSON.parse(JSON.stringify(workflow));
     for (let i = 0; i < workflow.workflow.length; i++) {
