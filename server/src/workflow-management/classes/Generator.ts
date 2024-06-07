@@ -203,6 +203,7 @@ export class WorkflowGenerator {
   
   public onClick = async (coordinates: Coordinates, page: Page) => {
     let where: WhereWhatPair["where"] = { url: this.getBestUrl(page.url()) };
+    const selector = await this.generateSelector(page, coordinates, ActionType.Click);
     
   };
 
