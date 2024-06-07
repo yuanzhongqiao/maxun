@@ -595,5 +595,35 @@ export class WorkflowGenerator {
   }
 
 
+ 
+  private handleOverShadowing = async (pair: WhereWhatPair, page: Page, index: number): Promise<boolean> => {
+    const overShadowing = (await this.IsOverShadowingAction(pair, page))
+      .filter((p) => p.isOverShadowing);
+    if (overShadowing.length !== 0) {
+      for (const overShadowedAction of overShadowing) {
+        if (overShadowedAction.index === index) {
+          if (pair.where.selectors) {
+            for (const selector of pair.where.selectors) {
+              if (this.workflowRecord.workflow[index].where.selectors?.includes(selector)) {
+                break;
+              } else {
+                // add new selector to the where part of the overshadowing pair
+                  this.workflowRecord.workflow[index].where.selectors?.push(selector);
+              }
+            }
+          }
+          // push the action automatically to the first/the closest rule which would be overShadowed
+          this.workflowRecord.workflow[index].what =
+            this.workflowRecord.workflow[index].what.concat(pair.what);
+          return true;
+        } else {
+          // notify client about overshadowing a further rule
+          return false;
+        }
+      }
+    }
+    return false;
+  }
 
+  
 }
