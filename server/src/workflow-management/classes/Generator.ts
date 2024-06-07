@@ -488,5 +488,17 @@ export class WorkflowGenerator {
     }
   }
 
- 
+  /**
+   * Notifies the client about the change of the url if navigation
+   * happens after some performed action.
+   * @param url The new url.
+   * @param fromNavBar Whether the navigation is from the simulated browser's navbar or not.
+   * @returns void
+   */
+  public notifyUrlChange = (url:string) => {
+    if (this.socket) {
+      this.socket.emit('urlChanged', url);
+    }
+  }
+
 }
