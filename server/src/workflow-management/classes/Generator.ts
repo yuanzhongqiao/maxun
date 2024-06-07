@@ -99,6 +99,19 @@ export class WorkflowGenerator {
     socket.on('activeIndex', (data) => this.generatedData.lastIndex = parseInt(data));
     socket.on('decision', async ({pair, actionType, decision}) => {
       const id = browserPool.getActiveBrowserId();
+      if (id) {
+        const activeBrowser = browserPool.getRemoteBrowser(id);
+        const currentPage = activeBrowser?.getCurrentPage();
+        if (decision) {
+          switch (actionType) {
+            case 'customAction':
+              pair.where.selectors = [this.generatedData.lastUsedSelector];
+              break;
+            
+          }
+        }
+        
+      }
     })
     
   };
