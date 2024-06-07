@@ -325,5 +325,18 @@ export class WorkflowGenerator {
     }
   };
 
+ 
+  public addPairToWorkflow = (index: number, pair: WhereWhatPair) => {
+    if (index === this.workflowRecord.workflow.length) {
+      this.workflowRecord.workflow.unshift(pair);
+      logger.log('debug', `pair ${index}: Added to workflow file.`);
+    } else if (index < this.workflowRecord.workflow.length && index >= 0) {
+      this.workflowRecord.workflow.splice(
+        this.workflowRecord.workflow.length - index , 0, pair);
+    } else {
+      logger.log('error', `Add pair ${index}: Index out of range.`);
+    }
+  };
+
   
 }
