@@ -691,5 +691,78 @@ export class WorkflowGenerator {
     return null;
   }
 
-  
+  /**
+   * A function for workflow optimization once finished.
+   * @param workflow The workflow to be optimized.
+   */
+  private optimizeWorkflow = (workflow: WorkflowFile) => {
+
+    // replace a sequence of press actions by a single fill action
+    let input = {
+      selector: '',
+      value: '',
+      actionCounter: 0,
+    };
+
+    const pushTheOptimizedAction = (pair: WhereWhatPair, index: number) => {
+      if (input.value.length === 1) {
+        // when only one press action is present, keep it and add a waitForLoadState action
+        pair.what.splice(index + 1, 0, {
+          action: 'waitForLoadState',
+          args: ['networkidle'],
+        })
+      } else {
+        // when more than one press action is present, add a type action
+        pair.what.splice(index - input.actionCounter, input.actionCounter, {
+          action: 'type',
+          args: [input.selector, input.value], }, {
+          action: 'waitForLoadState',
+          args: ['networkidle'], });
+      }
+    }
+
+
+    for (const pair of workflow.workflow) {
+      pair.what.forEach( (condition, index) => {
+        if (condition.action === 'press') {
+          if (condition.args && condition.args[1]) {
+            if (!input.selector) {
+              input.selector = condition.args[0];
+            }
+            if (input.selector === condition.args[0]) {
+              input.actionCounter++;
+              if (condition.args[1].length === 1) {
+                input.value = input.value + condition.args[1];
+              } else if (condition.args[1] === 'Backspace') {
+                input.value = input.value.slice(0, -1);
+              } else if (condition.args[1] !== 'Shift') {
+                pushTheOptimizedAction(pair, index);
+                pair.what.splice(index + 1, 0, {
+                  action: 'waitForLoadState',
+                  args: ['networkidle'],
+                })
+                input = {selector: '', value: '', actionCounter: 0};
+              }
+            } else {
+              pushTheOptimizedAction(pair, index);
+              input = {
+                selector: condition.args[0],
+                value: condition.args[1],
+                actionCounter: 1,
+              };
+            }
+          }
+        } else {
+          if (input.value.length !== 0) {
+            pushTheOptimizedAction(pair, index);
+            // clear the input
+            input = {selector: '', value: '', actionCounter: 0};
+          }
+        }
+      });
+    }
+    return workflow;
+  }
+
+
 }
