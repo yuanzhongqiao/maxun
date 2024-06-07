@@ -276,7 +276,12 @@ export class WorkflowGenerator {
     await this.addPairToWorkflowAndNotifyClient(pair, page);
   };
 
- 
+  /**
+   * Generates a pair for the custom action event.
+   * @param action The type of the custom action.
+   * @param settings The settings of the custom action.
+   * @param page The page to use for obtaining the needed data.
+   */
   public customAction = async (action: CustomActions, settings: any, page: Page) => {
     const pair: WhereWhatPair = {
       where: { url: this.getBestUrl(page.url())},
