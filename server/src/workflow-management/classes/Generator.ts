@@ -97,6 +97,9 @@ export class WorkflowGenerator {
       workflow: [],
     } );
     socket.on('activeIndex', (data) => this.generatedData.lastIndex = parseInt(data));
+    socket.on('decision', async ({pair, actionType, decision}) => {
+      const id = browserPool.getActiveBrowserId();
+    })
     
   };
 
