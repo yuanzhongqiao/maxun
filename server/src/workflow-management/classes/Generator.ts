@@ -77,5 +77,16 @@ export class WorkflowGenerator {
     params: [],
   }
 
+  /**
+   * The persistent data from the whole workflow generation process.
+   * Used for correct generation of other user inputs.
+   * @private
+   */
+  private generatedData: PersistedGeneratedData = {
+    lastUsedSelector: '',
+    lastIndex: null,
+    lastAction: '',
+  }
+
   
 }
