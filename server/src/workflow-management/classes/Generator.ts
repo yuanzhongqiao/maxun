@@ -572,7 +572,18 @@ export class WorkflowGenerator {
         }
       });
 
-   
+    if (haveSameUrl.length !== 0) {
+      for (let i = 0; i < haveSameUrl.length; i++) {
+        //@ts-ignore
+        if (haveSameUrl[i].where.selectors && haveSameUrl[i].where.selectors.length > 0) {
+          //@ts-ignore
+          const isOverShadowing = await isRuleOvershadowing(haveSameUrl[i].where.selectors, page);
+          if (isOverShadowing) {
+            possibleOverShadow[i].isOverShadowing = true;
+          }
+        }
+      }
+    }
     return possibleOverShadow;
   }
 
