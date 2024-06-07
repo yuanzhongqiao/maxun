@@ -501,4 +501,17 @@ export class WorkflowGenerator {
     }
   }
 
+  
+  public notifyOnNewTab = (page: Page, pageIndex: number) => {
+    if (this.socket) {
+      page.on('close', () => {
+        this.socket.emit('tabHasBeenClosed', pageIndex);
+      })
+      const parsedUrl = new URL(page.url());
+      const host = parsedUrl.hostname?.match(/\b(?!www\.)[a-zA-Z0-9]+/g)?.join('.');
+      this.socket.emit('newTab', host ? host : 'new tab')
+    }
+  }
+
+  
 }
