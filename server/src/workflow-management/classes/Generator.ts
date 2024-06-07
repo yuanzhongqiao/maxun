@@ -249,5 +249,26 @@ export class WorkflowGenerator {
     await this.addPairToWorkflowAndNotifyClient(pair, page);
   };
 
- 
+  
+  public onKeyboardInput = async (key: string, coordinates: Coordinates, page: Page) => {
+    let where: WhereWhatPair["where"] = { url: this.getBestUrl(page.url()) };
+    const selector = await this.generateSelector(page, coordinates, ActionType.Keydown);
+    if (selector) {
+      where.selectors = [selector];
+    }
+    const pair: WhereWhatPair = {
+      where,
+      what: [{
+        action: 'press',
+        args: [selector, key],
+      }],
+    }
+    if (selector) {
+      this.generatedData.lastUsedSelector = selector;
+      this.generatedData.lastAction = 'press';
+    }
+    await this.addPairToWorkflowAndNotifyClient(pair, page);
+  };
+
+  
 }
