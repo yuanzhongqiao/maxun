@@ -221,6 +221,7 @@ export class WorkflowGenerator {
       this.generatedData.lastUsedSelector = selector;
       this.generatedData.lastAction = 'click';
     }
+    await this.addPairToWorkflowAndNotifyClient(pair, page);
   };
 
   
