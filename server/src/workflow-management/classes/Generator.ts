@@ -17,6 +17,11 @@ import fs from "fs";
 import { getBestSelectorForAction } from "../utils";
 import { browserPool } from "../../server";
 
+interface PersistedGeneratedData {
+  lastUsedSelector: string;
+  lastIndex: number|null;
+  lastAction: string;
+}
 
 interface MetaData {
   name: string;
@@ -25,5 +30,4 @@ interface MetaData {
   update_date: string;
   params: string[],
 }
-
 
