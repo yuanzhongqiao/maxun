@@ -501,7 +501,12 @@ export class WorkflowGenerator {
     }
   }
 
-  
+  /**
+   * Notifies the client about the new tab if popped-up
+   * @param page The page to be used for obtaining data.
+   * @param pageIndex The index of the page.
+   * @returns void
+   */
   public notifyOnNewTab = (page: Page, pageIndex: number) => {
     if (this.socket) {
       page.on('close', () => {
