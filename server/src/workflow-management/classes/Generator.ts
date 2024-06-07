@@ -554,5 +554,28 @@ export class WorkflowGenerator {
     this.socket.emit('workflow', this.workflowRecord);
   }
 
- 
+  
+  private IsOverShadowingAction = async (pair: WhereWhatPair, page: Page) => {
+    type possibleOverShadow = {
+      index: number;
+      isOverShadowing: boolean;
+    }
+
+    const possibleOverShadow: possibleOverShadow[] = [];
+    const haveSameUrl = this.workflowRecord.workflow
+      .filter((p, index) => {
+        if (p.where.url === pair.where.url) {
+          possibleOverShadow.push({index: index, isOverShadowing: false});
+          return true;
+        } else {
+          return false;
+        }
+      });
+
+   
+    return possibleOverShadow;
+  }
+
+
+
 }
