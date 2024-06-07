@@ -125,7 +125,29 @@ export class WorkflowGenerator {
     })
   };
 
-  
+  /**
+   * Adds a newly generated pair to the workflow and notifies the client about it by
+   * sending the updated workflow through socket.
+   *
+   * Checks some conditions for the correct addition of the pair.
+   * 1. The pair's action selector is already in the workflow as a different pair's where selector
+   *    If so, the what part of the pair is added to the pair with the same where selector.
+   * 2. The pair's where selector is located on the page at the same time as another pair's where selector,
+   * having the same url. This state is called over-shadowing an already existing pair.
+   *   If so, the pair is merged with the previous over-shadowed pair - what part is attached and
+   *   new selector added to the where selectors. In case the over-shadowed pair is further down the
+   *   workflow array, the new pair is added to the beginning of the workflow array.
+   *
+   * This function also makes sure to add a waitForLoadState and a generated flag
+   * action after every new action or pair added. The [waitForLoadState](https://playwright.dev/docs/api/class-frame#frame-wait-for-load-state)
+   * action waits for the networkidle event to be fired,
+   * and the generated flag action is used for making pausing the interpretation possible.
+   *
+   * @param pair The pair to add to the workflow.
+   * @param page The page to use for the state checking.
+   * @private
+   * @returns {Promise<void>}
+   */
   private addPairToWorkflowAndNotifyClient = async(pair: WhereWhatPair, page: Page) => {
     let matched = false;
     // validate if a pair with the same where conditions is already present in the workflow
