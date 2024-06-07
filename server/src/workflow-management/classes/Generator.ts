@@ -88,5 +88,13 @@ export class WorkflowGenerator {
     lastAction: '',
   }
 
+  private registerEventHandlers = (socket: Socket) => {
+    socket.on('save', async (fileName: string) => {
+      logger.log('debug', `Saving workflow ${fileName}`);
+      await this.saveNewWorkflow(fileName)
+    });
+    
+  };
+
   
 }
