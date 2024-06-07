@@ -666,5 +666,30 @@ export class WorkflowGenerator {
     return bestUrl;
   }
 
+  /**
+   * Returns parameters if present in the workflow or null.
+   * @param workflow The workflow to be checked.
+   */
+  private checkWorkflowForParams = (workflow: WorkflowFile): string[]|null => {
+    // for now the where condition cannot have any params, so we're checking only what part of the pair
+    // where only the args part of what condition can have a parameter
+    for (const pair of workflow.workflow) {
+      for (const condition of pair.what) {
+        if (condition.args) {
+          const params: any[] = [];
+          condition.args.forEach((arg) => {
+            if (arg.$param) {
+              params.push(arg.$param);
+            }
+          })
+          if (params.length !== 0) {
+            return params;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
   
 }
