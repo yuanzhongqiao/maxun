@@ -229,5 +229,20 @@ export class WorkflowGenerator {
     await this.addPairToWorkflowAndNotifyClient(pair, page);
   };
 
-  
+
+  public onChangeUrl = async(newUrl: string, page: Page) => {
+    this.generatedData.lastUsedSelector = '';
+    const pair: WhereWhatPair = {
+      where: { url: this.getBestUrl(page.url()) },
+      what: [
+        {
+        action: 'goto',
+        args: [newUrl],
+        }
+      ],
+    }
+    await this.addPairToWorkflowAndNotifyClient(pair, page);
+  };
+
+ 
 }
