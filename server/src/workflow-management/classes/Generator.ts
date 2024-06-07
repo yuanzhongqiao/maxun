@@ -93,6 +93,9 @@ export class WorkflowGenerator {
       logger.log('debug', `Saving workflow ${fileName}`);
       await this.saveNewWorkflow(fileName)
     });
+    socket.on('new-recording', () => this.workflowRecord = {
+      workflow: [],
+    } );
     
   };
 
