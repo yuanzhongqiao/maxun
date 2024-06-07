@@ -418,5 +418,34 @@ export class WorkflowGenerator {
     this.workflowRecord = workflowFile;
   }
 
+  /**
+   * Creates a recording metadata and stores the curren workflow
+   * with the metadata to the file system.
+   * @param fileName The name of the file.
+   * @returns {Promise<void>}
+   */
+  public saveNewWorkflow = async (fileName: string) => {
+    const recording = this.optimizeWorkflow(this.workflowRecord);
+    try {
+      this.recordingMeta = {
+        name: fileName,
+        create_date: this.recordingMeta.create_date || new Date().toLocaleString(),
+        pairs: recording.workflow.length,
+        update_date: new Date().toLocaleString(),
+        params: this.getParams() || [],
+      }
+      fs.mkdirSync('../storage/recordings', { recursive: true })
+      await saveFile(
+        `../storage/recordings/${fileName}.waw.json`,
+        JSON.stringify({ recording_meta: this.recordingMeta, recording }, null, 2)
+      );
+    }
+     catch (e) {
+      const { message } = e as Error;
+      logger.log('warn', `Cannot save the file to the local file system`)
+    }
+    this.socket.emit('fileSaved');
+  }
+
  
 }
