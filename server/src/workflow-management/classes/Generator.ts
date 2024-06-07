@@ -536,7 +536,14 @@ export class WorkflowGenerator {
     this.socket.emit('workflow', this.workflowRecord);
   }
 
-  
+  /**
+   * Generates a pair for navigating to the next page.
+   * This function alone adds the pair to the workflow and notifies the client.
+   * It's safe to always add a go forward action to the first rule in the workflow and do not check
+   * general conditions for adding a pair to the workflow.
+   * @param newUrl The next page's url.
+   * @returns void
+   */
   public onGoForward = (newUrl: string) => {
     //it's safe to always add a go forward action to the first rule in the workflow
     this.workflowRecord.workflow[0].what.push({
