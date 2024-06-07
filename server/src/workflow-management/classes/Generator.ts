@@ -402,5 +402,21 @@ export class WorkflowGenerator {
     return copy;
   };
 
-  
+  /**
+   * Enables to update the generated workflow file.
+   * Adds a generated flag action for possible pausing during the interpretation.
+   * Used for loading a recorded workflow to already initialized Generator.
+   * @param workflowFile The workflow file to be used as a replacement for the current generated workflow.
+   * @returns void
+   */
+  public updateWorkflowFile = (workflowFile: WorkflowFile, meta: MetaData) => {
+    this.recordingMeta = meta;
+    const params = this.checkWorkflowForParams(workflowFile);
+    if (params) {
+      this.recordingMeta.params = params;
+    }
+    this.workflowRecord = workflowFile;
+  }
+
+ 
 }
