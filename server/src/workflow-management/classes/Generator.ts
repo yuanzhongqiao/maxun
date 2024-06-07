@@ -174,7 +174,8 @@ export class WorkflowGenerator {
           ` ${JSON.stringify(this.workflowRecord.workflow[this.generatedData.lastIndex || 0])} added action to workflow pair`);
       }
     }
-
+    this.socket.emit('workflow', this.workflowRecord);
+    logger.log('info',`Workflow emitted`);
   };
 
   
