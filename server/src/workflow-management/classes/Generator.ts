@@ -536,5 +536,16 @@ export class WorkflowGenerator {
     this.socket.emit('workflow', this.workflowRecord);
   }
 
+  
+  public onGoForward = (newUrl: string) => {
+    //it's safe to always add a go forward action to the first rule in the workflow
+    this.workflowRecord.workflow[0].what.push({
+      action: 'goForward',
+      args: [{waitUntil: 'commit'}],
+    });
+    this.notifyUrlChange(newUrl);
+    this.socket.emit('workflow', this.workflowRecord);
+  }
 
+ 
 }
