@@ -229,7 +229,12 @@ export class WorkflowGenerator {
     await this.addPairToWorkflowAndNotifyClient(pair, page);
   };
 
-
+  /**
+   * Generates a pair for the change url event.
+   * @param newUrl The new url to be changed to.
+   * @param page The page to use for obtaining the needed data.
+   * @returns {Promise<void>}
+   */
   public onChangeUrl = async(newUrl: string, page: Page) => {
     this.generatedData.lastUsedSelector = '';
     const pair: WhereWhatPair = {
