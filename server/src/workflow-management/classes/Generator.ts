@@ -771,5 +771,10 @@ export class WorkflowGenerator {
     return this.checkWorkflowForParams(this.workflowRecord);
   }
 
- 
+  /**
+   * Clears the last generated data index.
+   */
+  public clearLastIndex = () => {
+    this.generatedData.lastIndex = null;
+  }
 }
