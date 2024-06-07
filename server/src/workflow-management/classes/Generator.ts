@@ -764,7 +764,9 @@ export class WorkflowGenerator {
     return workflow;
   }
 
-  
+  /**
+   * Returns workflow params from the stored metadata.
+   */
   public getParams = (): string[]|null => {
     return this.checkWorkflowForParams(this.workflowRecord);
   }
