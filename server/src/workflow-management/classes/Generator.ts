@@ -473,7 +473,13 @@ export class WorkflowGenerator {
     return bestSelector;
   }
 
-  
+  /**
+   * Generates data for highlighting the element on client side and emits the
+   * highlighter event to the client.
+   * @param page The page to be used for obtaining data.
+   * @param coordinates The coordinates of the element.
+   * @returns {Promise<void>}
+   */
   public generateDataForHighlighter = async (page: Page, coordinates: Coordinates) => {
     const rect = await getRect(page, coordinates);
     const displaySelector = await this.generateSelector(page, coordinates, ActionType.Click);
