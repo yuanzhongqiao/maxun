@@ -81,7 +81,12 @@ function promiseAllP(items: any, block: any) {
   return Promise.all(promises);
 }
 
-
+/**
+ * Reads all files from a directory and returns an array of their contents.
+ * @param dirname The path to the directory.
+ * @category WorkflowManagement-Storage
+ * @returns {Promise<string[]>}
+ */
 export const readFiles = (dirname: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {
     fs.readdir(dirname, function(err, filenames) {
