@@ -58,3 +58,23 @@ router.delete('/pair/:index', (req, res) => {
   return res.send(null);
 });
 
+/**
+ * POST endpoint for adding a pair to the generated workflow.
+ */
+router.post('/pair/:index', (req, res) => {
+  const id = browserPool.getActiveBrowserId();
+  if (id) {
+    const browser = browserPool.getRemoteBrowser(id);
+    logger.log('debug', `Adding pair to workflow`);
+    if (browser) {
+      logger.log('debug', `Adding pair to workflow: ${JSON.stringify(req.body)}`);
+      if (req.body.pair) {
+        browser.generator?.addPairToWorkflow(parseInt(req.params.index), req.body.pair);
+        const workflowFile = browser.generator?.getWorkflowFile();
+        return res.send(workflowFile);
+      }
+    }
+  }
+  return res.send(null);
+});
+
