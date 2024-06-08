@@ -1,5 +1,6 @@
 import {Namespace, Socket} from 'socket.io';
 import logger from "../logger";
+import registerInputHandlers from '../browser-management/inputHandlers'
 
 /**
  * Opens a websocket canal for duplex data transfer and registers all handlers for this data for the recording session.
@@ -14,6 +15,7 @@ export const createSocketConnection = (
     ) => {
     const onConnection = async (socket: Socket) => {
         logger.log('info',"Client connected " + socket.id);
+        registerInputHandlers(socket);
         socket.on('disconnect', () => logger.log('info', "Client disconnected " + socket.id));
         callback(socket);
     }
