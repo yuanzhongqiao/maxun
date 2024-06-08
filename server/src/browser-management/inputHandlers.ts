@@ -26,12 +26,12 @@ import { CustomActions } from "../../../src/shared/types";
  * @category HelperFunctions
  */
 const handleWrapper = async (
-  handleCallback: (
-    generator: WorkflowGenerator,
-    page: Page,
+    handleCallback: (
+        generator: WorkflowGenerator,
+        page: Page,
+        args?: any
+    ) => Promise<void>,
     args?: any
-  ) => Promise<void>,
-  args?: any
 ) => {
     const id = browserPool.getActiveBrowserId();
     if (id) {
@@ -83,9 +83,9 @@ const onGenerateAction = async (customActionEventData: CustomActionEventData) =>
  * @category BrowserManagement
  */
 const handleGenerateAction =
-  async (generator: WorkflowGenerator, page: Page, {action, settings}: CustomActionEventData) => {
-    await generator.customAction(action, settings, page);
-}
+    async (generator: WorkflowGenerator, page: Page, { action, settings }: CustomActionEventData) => {
+        await generator.customAction(action, settings, page);
+    }
 
 /**
  * A wrapper function for handling mousedown event.
@@ -120,7 +120,7 @@ const handleMousedown = async (generator: WorkflowGenerator, page: Page, { x, y 
             generator.notifyUrlChange(currentUrl);
         }
     } catch (e) {
-        const {message} = e as Error;
+        const { message } = e as Error;
     } //ignore possible timeouts
 
     // check if any new page was opened by the click
@@ -272,7 +272,7 @@ const handleChangeUrl = async (generator: WorkflowGenerator, page: Page, url: st
             await page.goto(url);
             logger.log('debug', `Went to ${url}`);
         } catch (e) {
-            const {message} = e as Error;
+            const { message } = e as Error;
             logger.log('error', message);
         }
     } else {
@@ -318,7 +318,7 @@ const onGoBack = async () => {
  * @category BrowserManagement
  */
 const handleGoBack = async (generator: WorkflowGenerator, page: Page) => {
-    await page.goBack({waitUntil: 'commit'});
+    await page.goBack({ waitUntil: 'commit' });
     generator.onGoBack(page.url());
     logger.log('debug', 'Page went back')
 };
@@ -340,7 +340,7 @@ const onGoForward = async () => {
  * @category BrowserManagement
  */
 const handleGoForward = async (generator: WorkflowGenerator, page: Page) => {
-    await page.goForward({waitUntil: 'commit'});
+    await page.goForward({ waitUntil: 'commit' });
     generator.onGoForward(page.url());
     logger.log('debug', 'Page went forward');
 };
