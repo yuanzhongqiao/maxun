@@ -66,3 +66,16 @@ router.get('/active', (req, res) => {
     const id = getActiveBrowserId();
     return res.send(id);
 });
+
+/**
+ * GET endpoint for getting the current url of the active remote browser.
+ */
+router.get('/active/url', (req, res) => {
+    const id = getActiveBrowserId();
+    if (id) {
+        const url = getRemoteBrowserCurrentUrl(id);
+        return res.send(url);
+    }
+    return res.send(null);
+});
+
