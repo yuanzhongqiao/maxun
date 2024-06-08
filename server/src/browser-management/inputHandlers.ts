@@ -207,7 +207,16 @@ const onKeydown = async (keyboardInput: KeyboardInput) => {
     await handleWrapper(handleKeydown, keyboardInput);
 }
 
-
+/**
+ * A keydown event handler.
+ * Reproduces the keydown event on the remote browser instance
+ * and generates the workflow pair data.
+ * @param generator - the workflow generator {@link Generator}
+ * @param page - the active page of the remote browser
+ * @param key - the pressed key
+ * @param coordinates - the coordinates, where the keydown event happened
+ * @category BrowserManagement
+ */
 const handleKeydown = async (generator: WorkflowGenerator, page: Page, { key, coordinates }: KeyboardInput) => {
     await page.keyboard.down(key);
     await generator.onKeyboardInput(key, coordinates, page);
