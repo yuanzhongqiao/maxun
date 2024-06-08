@@ -137,3 +137,13 @@ const handleMousedown = async (generator: WorkflowGenerator, page: Page, { x, y 
     logger.log('debug', `Clicked on position x:${x}, y:${y}`);
 };
 
+/**
+ * A wrapper function for handling the wheel event.
+ * @param scrollDeltas - the scroll deltas of the wheel event
+ * @category HelperFunctions
+ */
+const onWheel = async (scrollDeltas: ScrollDeltas) => {
+    logger.log('debug', 'Handling scroll event emitted from client');
+    await handleWrapper(handleWheel, scrollDeltas);
+};
+
