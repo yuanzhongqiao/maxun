@@ -104,6 +104,17 @@ const handleMousedown = async (generator: WorkflowGenerator, page: Page, { x, y 
     const tabsBeforeClick = page.context().pages().length;
     await page.mouse.click(x, y);
     
+    // check if any new page was opened by the click
+    const tabsAfterClick = page.context().pages().length;
+    const numOfNewPages = tabsAfterClick - tabsBeforeClick;
+    if (numOfNewPages > 0) {
+        for (let i = 1; i <= numOfNewPages; i++) {
+            const newPage = page.context().pages()[tabsAfterClick - i];
+            if (newPage) {
+                generator.notifyOnNewTab(newPage, tabsAfterClick - i);
+            }
+        }
+    }
     logger.log('debug', `Clicked on position x:${x}, y:${y}`);
 };
 
