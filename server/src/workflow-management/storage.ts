@@ -42,7 +42,12 @@ export const saveFile = (path: string, data: string): Promise<void> => {
   });
 };
 
-
+/**
+ * Deletes a file from the file system.
+ * @param path The path to the file.
+ * @returns {Promise<void>}
+ * @category WorkflowManagement-Storage
+ */
 export const deleteFile = (path: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     fs.unlink(path, (err) => {
