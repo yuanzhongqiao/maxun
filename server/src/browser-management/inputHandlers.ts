@@ -163,3 +163,13 @@ const handleWheel = async (generator: WorkflowGenerator, page: Page, { deltaX, d
     logger.log('debug', `Scrolled horizontally ${deltaX} pixels and vertically ${deltaY} pixels`);
 };
 
+/**
+ * A wrapper function for handling the mousemove event.
+ * @param coordinates - the coordinates of the mousemove event
+ * @category HelperFunctions
+ */
+const onMousemove = async (coordinates: Coordinates) => {
+    logger.log('debug', 'Handling mousemove event emitted from client');
+    await handleWrapper(handleMousemove, coordinates);
+}
+
