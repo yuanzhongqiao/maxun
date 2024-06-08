@@ -55,3 +55,8 @@ const handleWrapper = async (
     }
 }
 
+interface CustomActionEventData {
+    action: CustomActions;
+    settings: any;
+}
+
