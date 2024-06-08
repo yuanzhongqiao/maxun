@@ -61,3 +61,18 @@ export const AddPair = async(index: number, pair: WhereWhatPair): Promise<Workfl
   }
 };
 
+export const UpdatePair = async(index: number, pair: WhereWhatPair): Promise<WorkflowFile> => {
+  try {
+    const response = await axios.put(`http://localhost:8080/workflow/pair/${index}`, {
+      pair,
+    }, {headers: {'Content-Type': 'application/json'}});
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error('Something went wrong when fetching an updated workflow');
+    }
+  } catch (error: any) {
+    console.log(error);
+    return emptyWorkflow;
+  }
+};
