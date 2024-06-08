@@ -310,7 +310,13 @@ const onGoBack = async () => {
     await handleWrapper(handleGoBack);
 }
 
-
+/**
+ * A go back event handler.
+ * Navigates the page back and generates data for the workflow.
+ * @param generator - the workflow generator {@link Generator}
+ * @param page - the active page of the remote browser
+ * @category BrowserManagement
+ */
 const handleGoBack = async (generator: WorkflowGenerator, page: Page) => {
     await page.goBack({waitUntil: 'commit'});
     generator.onGoBack(page.url());
