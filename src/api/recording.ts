@@ -16,3 +16,11 @@ export const startRecording = async() : Promise<string> => {
   }
 };
 
+export const stopRecording = async (id: string): Promise<void> => {
+    await axios.get(`http://localhost:8080/record/stop/${id}`)
+        .then((response : AxiosResponse<boolean>)  => {
+        })
+        .catch((error: any) => {
+        });
+};
+
