@@ -59,3 +59,10 @@ router.get('/stop/:browserId', async (req, res) => {
     return res.send(success);
 });
 
+/**
+ * GET endpoint for getting the id of the active remote browser.
+ */
+router.get('/active', (req, res) => {
+    const id = getActiveBrowserId();
+    return res.send(id);
+});
