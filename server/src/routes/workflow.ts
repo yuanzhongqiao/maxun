@@ -30,3 +30,15 @@ router.get('/:browserId', (req, res) => {
   return res.send(workflowFile);
 });
 
+/**
+ * Get endpoint returning the parameter array of the recording associated with the browserId browser instance.
+ */
+router.get('/params/:browserId', (req, res) => {
+  const activeBrowser = browserPool.getRemoteBrowser(req.params.browserId);
+  let params = null;
+  if (activeBrowser && activeBrowser.generator) {
+    params = activeBrowser.generator.getParams();
+  }
+  return res.send(params);
+});
+
