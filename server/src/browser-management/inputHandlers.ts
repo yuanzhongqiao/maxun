@@ -64,3 +64,8 @@ interface CustomActionEventData {
     settings: any;
 }
 
+const onGenerateAction = async (customActionEventData: CustomActionEventData) => {
+    logger.log('debug', `Generating ${customActionEventData.action} action emitted from client`);
+    await handleWrapper(handleGenerateAction, customActionEventData);
+}
+
