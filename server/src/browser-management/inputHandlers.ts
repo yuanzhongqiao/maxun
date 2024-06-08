@@ -247,3 +247,13 @@ const handleKeyup = async (generator: WorkflowGenerator, page: Page, key: string
     logger.log('debug', `Key ${key} unpressed`);
 };
 
+/**
+ * A wrapper function for handling the url change event.
+ * @param url - the new url of the page
+ * @category HelperFunctions
+ */
+const onChangeUrl = async (url: string) => {
+    logger.log('debug', 'Handling change url event emitted from client');
+    await handleWrapper(handleChangeUrl, url);
+}
+
