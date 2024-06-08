@@ -13,7 +13,18 @@ import { Page } from "playwright";
 import { throttle } from "../../../src/helpers/inputHelpers";
 import { CustomActions } from "../../../src/shared/types";
 
-
+/**
+ * A wrapper function for handling user input.
+ * This function gets the active browser instance from the browser pool
+ * and passes necessary arguments to the appropriate handlers.
+ * e.g. {@link Generator}, {@link RemoteBrowser.currentPage}
+ *
+ * Also ignores any user input while interpretation is in progress.
+ *
+ * @param handleCallback The callback handler to be called
+ * @param args - arguments to be passed to the handler
+ * @category HelperFunctions
+ */
 const handleWrapper = async (
   handleCallback: (
     generator: WorkflowGenerator,
