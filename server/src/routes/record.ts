@@ -24,3 +24,17 @@ router.all('/', (req, res, next) => {
     next() // pass control to the next handler
 })
 
+/**
+ * GET endpoint for starting the remote browser recording session.
+ * returns session's id
+ */
+router.get('/start', (req, res) => {
+    const id = initializeRemoteBrowserForRecording({
+        browser: chromium,
+        launchOptions: {
+            headless: true,
+        }
+    });
+    return res.send(id);
+});
+
