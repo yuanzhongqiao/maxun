@@ -51,3 +51,16 @@ export const interpretCurrentRecording = async(): Promise<boolean> => {
     }
 };
 
+export const stopCurrentInterpretation = async(): Promise<void> => {
+  try {
+    const response = await axios.get('http://localhost:8080/record/interpret/stop');
+    if (response.status === 200) {
+      return;
+    } else {
+      throw new Error('Couldn\'t interpret current recording');
+    }
+  } catch(error: any) {
+    console.log(error);
+  }
+};
+
