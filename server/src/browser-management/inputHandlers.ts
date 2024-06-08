@@ -289,7 +289,13 @@ const onRefresh = async () => {
     await handleWrapper(handleRefresh);
 }
 
-
+/**
+ * A refresh event handler.
+ * Refreshes the page. This is not reflected in the workflow.
+ * @param generator - the workflow generator {@link Generator}
+ * @param page - the active page of the remote browser
+ * @category BrowserManagement
+ */
 const handleRefresh = async (generator: WorkflowGenerator, page: Page) => {
     await page.reload();
     logger.log('debug', `Page refreshed.`);
