@@ -257,7 +257,14 @@ const onChangeUrl = async (url: string) => {
     await handleWrapper(handleChangeUrl, url);
 }
 
-
+/**
+ * An url change event handler.
+ * Navigates the page to the given url and generates data for the workflow.
+ * @param generator - the workflow generator {@link Generator}
+ * @param page - the active page of the remote browser
+ * @param url - the new url of the page
+ * @category BrowserManagement
+ */
 const handleChangeUrl = async (generator: WorkflowGenerator, page: Page, url: string) => {
     if (url) {
         await generator.onChangeUrl(url, page);
