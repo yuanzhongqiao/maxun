@@ -81,3 +81,27 @@ function promiseAllP(items: any, block: any) {
   return Promise.all(promises);
 }
 
+
+export const readFiles = (dirname: string): Promise<string[]> => {
+  return new Promise((resolve, reject) => {
+    fs.readdir(dirname, function(err, filenames) {
+      if (err) return reject(err);
+      promiseAllP(filenames.filter((filename: string) => !filename.startsWith('.')),
+        (filename: string, index : number, resolve: any, reject: any) =>  {
+          fs.readFile(path.resolve(dirname, filename), 'utf-8', function(err, content) {
+            if (err) return reject(err);
+            return resolve(content);
+          });
+        })
+        .then(results => {
+          return resolve(results);
+        })
+        .catch(error => {
+          return reject(error);
+        });
+    });
+  });
+}
+
+
+
