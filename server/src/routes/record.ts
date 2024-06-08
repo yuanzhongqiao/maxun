@@ -79,3 +79,15 @@ router.get('/active/url', (req, res) => {
     return res.send(null);
 });
 
+/**
+ * GET endpoint for getting the current tabs of the active remote browser.
+ */
+router.get('/active/tabs', (req, res) => {
+    const id = getActiveBrowserId();
+    if (id) {
+        const hosts = getRemoteBrowserCurrentTabs(id);
+        return res.send(hosts);
+    }
+    return res.send([]);
+});
+
