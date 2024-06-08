@@ -23,3 +23,19 @@ export const readFile = (path: string): Promise<string> => {
   });
 };
 
+export const saveFile = (path: string, data: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(path, data, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+};
+
+
+
+
+
