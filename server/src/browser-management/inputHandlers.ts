@@ -311,4 +311,9 @@ const onGoBack = async () => {
 }
 
 
+const handleGoBack = async (generator: WorkflowGenerator, page: Page) => {
+    await page.goBack({waitUntil: 'commit'});
+    generator.onGoBack(page.url());
+    logger.log('debug', 'Page went back')
+};
 
