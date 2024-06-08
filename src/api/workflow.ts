@@ -31,3 +31,17 @@ export const getParamsOfActiveWorkflow = async(id: string) : Promise<string[]|nu
   }
 };
 
+export const deletePair = async(index: number): Promise<WorkflowFile> => {
+  try {
+   const response = await axios.delete(`http://localhost:8080/workflow/pair/${index}`);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error('Something went wrong when fetching an updated workflow');
+    }
+  } catch (error: any) {
+    console.log(error);
+    return emptyWorkflow;
+  }
+};
+
