@@ -55,6 +55,10 @@ const handleWrapper = async (
     }
 }
 
+/**
+ * An interface for custom action description.
+ * @category Types
+ */
 interface CustomActionEventData {
     action: CustomActions;
     settings: any;
