@@ -147,3 +147,8 @@ const onWheel = async (scrollDeltas: ScrollDeltas) => {
     await handleWrapper(handleWheel, scrollDeltas);
 };
 
+const handleWheel = async (generator: WorkflowGenerator, page: Page, { deltaX, deltaY }: ScrollDeltas) => {
+    await page.mouse.wheel(deltaX, deltaY);
+    logger.log('debug', `Scrolled horizontally ${deltaX} pixels and vertically ${deltaY} pixels`);
+};
+
