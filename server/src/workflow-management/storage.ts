@@ -43,6 +43,19 @@ export const saveFile = (path: string, data: string): Promise<void> => {
 };
 
 
+export const deleteFile = (path: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    fs.unlink(path, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+};
+
+
 
 
 
