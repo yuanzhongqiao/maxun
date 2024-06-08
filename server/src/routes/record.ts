@@ -38,7 +38,10 @@ router.get('/start', (req, res) => {
     return res.send(id);
 });
 
-
+/**
+ * POST endpoint for starting the remote browser recording session accepting browser launch options.
+ * returns session's id
+ */
 router.post('/start', (req, res) => {
     const id = initializeRemoteBrowserForRecording({
         browser: chromium,
