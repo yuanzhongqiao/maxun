@@ -97,7 +97,16 @@ const onMousedown = async (coordinates: Coordinates) => {
     await handleWrapper(handleMousedown, coordinates);
 }
 
-
+/**
+ * A mousedown event handler.
+ * Reproduces the click on the remote browser instance
+ * and generates pair data for the recorded workflow.
+ * @param generator - the workflow generator {@link Generator}
+ * @param page - the active page of the remote browser
+ * @param x - the x coordinate of the mousedown event
+ * @param y - the y coordinate of the mousedown event
+ * @category BrowserManagement
+ */
 const handleMousedown = async (generator: WorkflowGenerator, page: Page, { x, y }: Coordinates) => {
     await generator.onClick({ x, y }, page);
     const previousUrl = page.url();
