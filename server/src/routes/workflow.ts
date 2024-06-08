@@ -42,3 +42,19 @@ router.get('/params/:browserId', (req, res) => {
   return res.send(params);
 });
 
+/**
+ * DELETE endpoint for deleting a pair from the generated workflow.
+ */
+router.delete('/pair/:index', (req, res) => {
+  const id = browserPool.getActiveBrowserId();
+  if (id) {
+    const browser = browserPool.getRemoteBrowser(id);
+    if (browser) {
+      browser.generator?.removePairFromWorkflow(parseInt(req.params.index));
+      const workflowFile = browser.generator?.getWorkflowFile();
+      return res.send(workflowFile);
+    }
+  }
+  return res.send(null);
+});
+
