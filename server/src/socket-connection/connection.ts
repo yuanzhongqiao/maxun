@@ -1,4 +1,4 @@
-import {Namespace, Socket} from 'socket.io';
+import { Namespace, Socket } from 'socket.io';
 import logger from "../logger";
 import registerInputHandlers from '../browser-management/inputHandlers'
 
@@ -12,9 +12,9 @@ import registerInputHandlers from '../browser-management/inputHandlers'
 export const createSocketConnection = (
     io: Namespace,
     callback: (socket: Socket) => void,
-    ) => {
+) => {
     const onConnection = async (socket: Socket) => {
-        logger.log('info',"Client connected " + socket.id);
+        logger.log('info', "Client connected " + socket.id);
         registerInputHandlers(socket);
         socket.on('disconnect', () => logger.log('info', "Client disconnected " + socket.id));
         callback(socket);
@@ -31,11 +31,11 @@ export const createSocketConnection = (
  * @category BrowserManagement
  */
 export const createSocketConnectionForRun = (
-  io: Namespace,
-  callback: (socket: Socket) => void,
+    io: Namespace,
+    callback: (socket: Socket) => void,
 ) => {
     const onConnection = async (socket: Socket) => {
-        logger.log('info',"Client connected " + socket.id);
+        logger.log('info', "Client connected " + socket.id);
         socket.on('disconnect', () => logger.log('info', "Client disconnected " + socket.id));
         callback(socket);
     }
