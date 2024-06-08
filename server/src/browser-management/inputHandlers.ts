@@ -173,3 +173,17 @@ const onMousemove = async (coordinates: Coordinates) => {
     await handleWrapper(handleMousemove, coordinates);
 }
 
+
+const handleMousemove = async (generator: WorkflowGenerator, page: Page, { x, y }: Coordinates) => {
+    try {
+        await page.mouse.move(x, y);
+        throttle(async () => {
+            await generator.generateDataForHighlighter(page, { x, y });
+        }, 100)();
+        logger.log('debug', `Moved over position x:${x}, y:${y}`);
+    } catch (e) {
+        const { message } = e as Error;
+        logger.log('error', message);
+    }
+}
+
