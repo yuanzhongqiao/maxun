@@ -104,3 +104,10 @@ router.get('/interpret', async (req, res) => {
     }
 });
 
+/**
+ * GET endpoint for stopping an ongoing interpretation of the currently generated workflow.
+ */
+router.get('/interpret/stop', async (req, res) => {
+    await stopRunningInterpretation();
+    return res.send('interpretation stopped');
+});
