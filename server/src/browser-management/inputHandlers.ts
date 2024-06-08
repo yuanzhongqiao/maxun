@@ -333,3 +333,9 @@ const onGoForward = async () => {
 }
 
 
+const handleGoForward = async (generator: WorkflowGenerator, page: Page) => {
+    await page.goForward({waitUntil: 'commit'});
+    generator.onGoForward(page.url());
+    logger.log('debug', 'Page went forward');
+};
+
