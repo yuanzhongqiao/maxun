@@ -64,6 +64,11 @@ interface CustomActionEventData {
     settings: any;
 }
 
+/**
+ * A wrapper function for handling custom actions.
+ * @param customActionEventData The custom action event data
+ * @category HelperFunctions
+ */
 const onGenerateAction = async (customActionEventData: CustomActionEventData) => {
     logger.log('debug', `Generating ${customActionEventData.action} action emitted from client`);
     await handleWrapper(handleGenerateAction, customActionEventData);
