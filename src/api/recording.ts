@@ -24,3 +24,16 @@ export const stopRecording = async (id: string): Promise<void> => {
         });
 };
 
+export const getActiveBrowserId = async(): Promise<string> => {
+    try {
+        const response = await axios.get('http://localhost:8080/record/active');
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            throw new Error('Couldn\'t get active browser');
+        }
+    } catch(error: any) {
+        return '';
+    }
+};
+
