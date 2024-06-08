@@ -197,3 +197,13 @@ const handleMousemove = async (generator: WorkflowGenerator, page: Page, { x, y 
     }
 }
 
+/**
+ * A wrapper function for handling the keydown event.
+ * @param keyboardInput - the keyboard input of the keydown event
+ * @category HelperFunctions
+ */
+const onKeydown = async (keyboardInput: KeyboardInput) => {
+    logger.log('debug', 'Handling keydown event emitted from client');
+    await handleWrapper(handleKeydown, keyboardInput);
+}
+
