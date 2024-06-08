@@ -38,3 +38,12 @@ router.get('/start', (req, res) => {
     return res.send(id);
 });
 
+
+router.post('/start', (req, res) => {
+    const id = initializeRemoteBrowserForRecording({
+        browser: chromium,
+        launchOptions: req.body,
+    });
+    return res.send(id);
+});
+
