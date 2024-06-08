@@ -207,3 +207,10 @@ const onKeydown = async (keyboardInput: KeyboardInput) => {
     await handleWrapper(handleKeydown, keyboardInput);
 }
 
+
+const handleKeydown = async (generator: WorkflowGenerator, page: Page, { key, coordinates }: KeyboardInput) => {
+    await page.keyboard.down(key);
+    await generator.onKeyboardInput(key, coordinates, page);
+    logger.log('debug', `Key ${key} pressed`);
+};
+
