@@ -64,3 +64,18 @@ export const stopCurrentInterpretation = async(): Promise<void> => {
   }
 };
 
+export const getCurrentUrl = async (): Promise<string | null> => {
+  try {
+    const response = await axios.get('http://localhost:8080/record/active/url');
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error('Couldn\'t retrieve stored recordings');
+    }
+  } catch(error: any) {
+    console.log(error);
+    return null;
+  }
+};
+
+
