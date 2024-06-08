@@ -223,3 +223,13 @@ const handleKeydown = async (generator: WorkflowGenerator, page: Page, { key, co
     logger.log('debug', `Key ${key} pressed`);
 };
 
+/**
+ * A wrapper function for handling the keyup event.
+ * @param keyboardInput - the keyboard input of the keyup event
+ * @category HelperFunctions
+ */
+const onKeyup = async (keyboardInput: KeyboardInput) => {
+    logger.log('debug', 'Handling keyup event emitted from client');
+    await handleWrapper(handleKeyup, keyboardInput);
+}
+
