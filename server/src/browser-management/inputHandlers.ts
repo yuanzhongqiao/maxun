@@ -147,6 +147,17 @@ const onWheel = async (scrollDeltas: ScrollDeltas) => {
     await handleWrapper(handleWheel, scrollDeltas);
 };
 
+/**
+ * A wheel event handler.
+ * Reproduces the wheel event on the remote browser instance.
+ * Scroll is not generated for the workflow pair. This is because
+ * Playwright scrolls elements into focus on any action.
+ * @param generator - the workflow generator {@link Generator}
+ * @param page - the active page of the remote browser
+ * @param deltaX - the delta x of the wheel event
+ * @param deltaY - the delta y of the wheel event
+ * @category BrowserManagement
+ */
 const handleWheel = async (generator: WorkflowGenerator, page: Page, { deltaX, deltaY }: ScrollDeltas) => {
     await page.mouse.wheel(deltaX, deltaY);
     logger.log('debug', `Scrolled horizontally ${deltaX} pixels and vertically ${deltaY} pixels`);
