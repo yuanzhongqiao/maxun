@@ -233,7 +233,15 @@ const onKeyup = async (keyboardInput: KeyboardInput) => {
     await handleWrapper(handleKeyup, keyboardInput);
 }
 
-
+/**
+ * A keyup event handler.
+ * Reproduces the keyup event on the remote browser instance.
+ * Does not generate any data - keyup is not reflected in the workflow.
+ * @param generator - the workflow generator {@link Generator}
+ * @param page - the active page of the remote browser
+ * @param key - the released key
+ * @category BrowserManagement
+ */
 const handleKeyup = async (generator: WorkflowGenerator, page: Page, key: string) => {
     await page.keyboard.up(key);
     logger.log('debug', `Key ${key} unpressed`);
