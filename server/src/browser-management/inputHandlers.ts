@@ -289,3 +289,9 @@ const onRefresh = async () => {
     await handleWrapper(handleRefresh);
 }
 
+
+const handleRefresh = async (generator: WorkflowGenerator, page: Page) => {
+    await page.reload();
+    logger.log('debug', `Page refreshed.`);
+};
+
