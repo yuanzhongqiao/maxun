@@ -332,7 +332,13 @@ const onGoForward = async () => {
     await handleWrapper(handleGoForward);
 }
 
-
+/**
+ * A go forward event handler.
+ * Navigates the page forward and generates data for the workflow.
+ * @param generator - the workflow generator {@link Generator}
+ * @param page - the active page of the remote browser
+ * @category BrowserManagement
+ */
 const handleGoForward = async (generator: WorkflowGenerator, page: Page) => {
     await page.goForward({waitUntil: 'commit'});
     generator.onGoForward(page.url());
