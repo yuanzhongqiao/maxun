@@ -60,7 +60,24 @@ export const deleteFile = (path: string): Promise<void> => {
   });
 };
 
-
-
-
+/**
+ * A helper function to apply a callback to the all resolved
+ * promises made out of an array of the items.
+ * @param items An array of items.
+ * @param block The function to call for each item after the promise for it was resolved.
+ * @returns {Promise<any[]>}
+ * @category WorkflowManagement-Storage
+ */
+function promiseAllP(items: any, block: any) {
+  let promises: any = [];
+  items.forEach(function(item : any, index: number) {
+    promises.push( function(item,i) {
+      return new Promise(function(resolve, reject) {
+        // @ts-ignore
+        return block.apply(this,[item,index,resolve,reject]);
+      });
+    }(item,index))
+  });
+  return Promise.all(promises);
+}
 
