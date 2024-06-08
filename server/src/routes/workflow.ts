@@ -13,7 +13,7 @@ export const router = Router();
  * Logs information about workflow API.
  */
 router.all('/', (req, res, next) => {
-  logger.log('debug',`The workflow API was invoked: ${req.url}`)
+  logger.log('debug', `The workflow API was invoked: ${req.url}`)
   next() // pass control to the next handler
 })
 
@@ -116,7 +116,7 @@ router.put('/:browserId/:fileName', async (req, res) => {
     }
     return res.send(null);
   } catch (e) {
-    const {message} = e as Error;
+    const { message } = e as Error;
     logger.log('info', `Error while reading a recording with name: ${req.params.fileName}.waw.json`);
     return res.send(null);
   }
