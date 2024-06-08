@@ -74,3 +74,8 @@ const onGenerateAction = async (customActionEventData: CustomActionEventData) =>
     await handleWrapper(handleGenerateAction, customActionEventData);
 }
 
+const handleGenerateAction =
+  async (generator: WorkflowGenerator, page: Page, {action, settings}: CustomActionEventData) => {
+    await generator.customAction(action, settings, page);
+}
+
