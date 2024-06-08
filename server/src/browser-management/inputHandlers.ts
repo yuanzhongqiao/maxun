@@ -103,7 +103,17 @@ const handleMousedown = async (generator: WorkflowGenerator, page: Page, { x, y 
     const previousUrl = page.url();
     const tabsBeforeClick = page.context().pages().length;
     await page.mouse.click(x, y);
-    
+    // try if the click caused a navigation to a new url
+    try {
+        await page.waitForNavigation({ timeout: 2000 });
+        const currentUrl = page.url();
+        if (currentUrl !== previousUrl) {
+            generator.notifyUrlChange(currentUrl);
+        }
+    } catch (e) {
+        const {message} = e as Error;
+    } //ignore possible timeouts
+
     // check if any new page was opened by the click
     const tabsAfterClick = page.context().pages().length;
     const numOfNewPages = tabsAfterClick - tabsBeforeClick;
