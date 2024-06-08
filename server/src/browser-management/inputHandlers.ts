@@ -323,3 +323,13 @@ const handleGoBack = async (generator: WorkflowGenerator, page: Page) => {
     logger.log('debug', 'Page went back')
 };
 
+/**
+ * A wrapper function for handling the go forward event.
+ * @category HelperFunctions
+ */
+const onGoForward = async () => {
+    logger.log('debug', 'Handling refresh event emitted from client');
+    await handleWrapper(handleGoForward);
+}
+
+
