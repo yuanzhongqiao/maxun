@@ -97,3 +97,13 @@ const onMousedown = async (coordinates: Coordinates) => {
     await handleWrapper(handleMousedown, coordinates);
 }
 
+
+const handleMousedown = async (generator: WorkflowGenerator, page: Page, { x, y }: Coordinates) => {
+    await generator.onClick({ x, y }, page);
+    const previousUrl = page.url();
+    const tabsBeforeClick = page.context().pages().length;
+    await page.mouse.click(x, y);
+    
+    logger.log('debug', `Clicked on position x:${x}, y:${y}`);
+};
+
