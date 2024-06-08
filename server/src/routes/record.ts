@@ -50,3 +50,12 @@ router.post('/start', (req, res) => {
     return res.send(id);
 });
 
+/**
+ * GET endpoint for terminating the remote browser recording session.
+ * returns whether the termination was successful
+ */
+router.get('/stop/:browserId', async (req, res) => {
+    const success = await destroyRemoteBrowser(req.params.browserId);
+    return res.send(success);
+});
+
