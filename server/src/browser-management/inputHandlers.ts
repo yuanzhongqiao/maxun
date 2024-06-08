@@ -233,3 +233,9 @@ const onKeyup = async (keyboardInput: KeyboardInput) => {
     await handleWrapper(handleKeyup, keyboardInput);
 }
 
+
+const handleKeyup = async (generator: WorkflowGenerator, page: Page, key: string) => {
+    await page.keyboard.up(key);
+    logger.log('debug', `Key ${key} unpressed`);
+};
+
