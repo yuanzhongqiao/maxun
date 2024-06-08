@@ -78,3 +78,23 @@ router.post('/pair/:index', (req, res) => {
   return res.send(null);
 });
 
+/**
+ * PUT endpoint for updating a pair in the generated workflow.
+ */
+router.put('/pair/:index', (req, res) => {
+  const id = browserPool.getActiveBrowserId();
+  if (id) {
+    const browser = browserPool.getRemoteBrowser(id);
+    logger.log('debug', `Updating pair in workflow`);
+    if (browser) {
+      logger.log('debug', `New value: ${JSON.stringify(req.body)}`);
+      if (req.body.pair) {
+        browser.generator?.updatePairInWorkflow(parseInt(req.params.index), req.body.pair);
+        const workflowFile = browser.generator?.getWorkflowFile();
+        return res.send(workflowFile);
+      }
+    }
+  }
+  return res.send(null);
+});
+
