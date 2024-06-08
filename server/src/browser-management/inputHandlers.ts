@@ -345,3 +345,17 @@ const handleGoForward = async (generator: WorkflowGenerator, page: Page) => {
     logger.log('debug', 'Page went forward');
 };
 
+const registerInputHandlers = (socket: Socket) => {
+    socket.on("input:mousedown", onMousedown);
+    socket.on("input:wheel", onWheel);
+    socket.on("input:mousemove", onMousemove);
+    socket.on("input:keydown", onKeydown);
+    socket.on("input:keyup", onKeyup);
+    socket.on("input:url", onChangeUrl);
+    socket.on("input:refresh", onRefresh);
+    socket.on("input:back", onGoBack);
+    socket.on("input:forward", onGoForward);
+    socket.on("action", onGenerateAction);
+};
+
+export default registerInputHandlers;
