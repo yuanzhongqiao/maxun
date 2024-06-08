@@ -20,7 +20,7 @@ export const router = Router();
  * Logs information about remote browser recording session.
  */
 router.all('/', (req, res, next) => {
-    logger.log('debug',`The record API was invoked: ${req.url}`)
+    logger.log('debug', `The record API was invoked: ${req.url}`)
     next() // pass control to the next handler
 })
 
