@@ -345,6 +345,29 @@ const handleGoForward = async (generator: WorkflowGenerator, page: Page) => {
     logger.log('debug', 'Page went forward');
 };
 
+/**
+ * Helper function for registering the handlers onto established websocket connection.
+ * Registers:
+ * - mousedownHandler
+ * - wheelHandler
+ * - mousemoveHandler
+ * - keydownHandler
+ * - keyupHandler
+ * - changeUrlHandler
+ * - refreshHandler
+ * - goBackHandler
+ * - goForwardHandler
+ * - onGenerateAction
+ * input handlers.
+ *
+ * All these handlers first generates the workflow pair data
+ * and then calls the corresponding playwright's function to emulate the input.
+ * They also ignore any user input while interpretation is in progress.
+ *
+ * @param socket websocket with established connection
+ * @returns void
+ * @category BrowserManagement
+ */
 const registerInputHandlers = (socket: Socket) => {
     socket.on("input:mousedown", onMousedown);
     socket.on("input:wheel", onWheel);
