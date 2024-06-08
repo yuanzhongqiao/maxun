@@ -301,3 +301,14 @@ const handleRefresh = async (generator: WorkflowGenerator, page: Page) => {
     logger.log('debug', `Page refreshed.`);
 };
 
+/**
+ * A wrapper function for handling the go back event.
+ * @category HelperFunctions
+ */
+const onGoBack = async () => {
+    logger.log('debug', 'Handling refresh event emitted from client');
+    await handleWrapper(handleGoBack);
+}
+
+
+
