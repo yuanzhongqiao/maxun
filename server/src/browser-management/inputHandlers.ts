@@ -280,3 +280,12 @@ const handleChangeUrl = async (generator: WorkflowGenerator, page: Page, url: st
     }
 };
 
+/**
+ * A wrapper function for handling the refresh event.
+ * @category HelperFunctions
+ */
+const onRefresh = async () => {
+    logger.log('debug', 'Handling refresh event emitted from client');
+    await handleWrapper(handleRefresh);
+}
+
