@@ -257,3 +257,19 @@ const onChangeUrl = async (url: string) => {
     await handleWrapper(handleChangeUrl, url);
 }
 
+
+const handleChangeUrl = async (generator: WorkflowGenerator, page: Page, url: string) => {
+    if (url) {
+        await generator.onChangeUrl(url, page);
+        try {
+            await page.goto(url);
+            logger.log('debug', `Went to ${url}`);
+        } catch (e) {
+            const {message} = e as Error;
+            logger.log('error', message);
+        }
+    } else {
+        logger.log('warn', `No url provided`);
+    }
+};
+
