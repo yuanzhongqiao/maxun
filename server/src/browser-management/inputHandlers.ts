@@ -87,3 +87,13 @@ const handleGenerateAction =
     await generator.customAction(action, settings, page);
 }
 
+/**
+ * A wrapper function for handling mousedown event.
+ * @param coordinates - coordinates of the mouse click
+ * @category HelperFunctions
+ */
+const onMousedown = async (coordinates: Coordinates) => {
+    logger.log('debug', 'Handling mousedown event emitted from client');
+    await handleWrapper(handleMousedown, coordinates);
+}
+
