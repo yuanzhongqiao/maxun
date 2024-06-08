@@ -91,3 +91,16 @@ router.get('/active/tabs', (req, res) => {
     return res.send([]);
 });
 
+/**
+ * GET endpoint for starting an interpretation of the currently generated workflow.
+ */
+router.get('/interpret', async (req, res) => {
+    try {
+        await interpretWholeWorkflow();
+        return res.send('interpretation done');
+    } catch (e) {
+        return res.send('interpretation done');
+        return res.status(400);
+    }
+});
+
