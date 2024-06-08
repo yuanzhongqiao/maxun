@@ -23,6 +23,13 @@ export const readFile = (path: string): Promise<string> => {
   });
 };
 
+/**
+ * Writes a string to a file. If the file already exists, it is overwritten.
+ * @param path The path to the file.
+ * @param data The data to write to the file.
+ * @returns {Promise<void>}
+ * @category WorkflowManagement-Storage
+ */
 export const saveFile = (path: string, data: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     fs.writeFile(path, data, (err) => {
