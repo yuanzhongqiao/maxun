@@ -75,7 +75,7 @@ const onGenerateAction = async (customActionEventData: CustomActionEventData) =>
 }
 
 /**
- * Handles the generation of a cutom action workflow pair.
+ * Handles the generation of a custom action workflow pair.
  * @param generator The workflow generator
  * @param page The active page
  * @param action The custom action
