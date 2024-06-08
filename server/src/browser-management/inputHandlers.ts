@@ -173,7 +173,17 @@ const onMousemove = async (coordinates: Coordinates) => {
     await handleWrapper(handleMousemove, coordinates);
 }
 
-
+/**
+ * A mousemove event handler.
+ * Reproduces the mousemove event on the remote browser instance
+ * and generates data for the client's highlighter.
+ * Mousemove is also not reflected in the workflow.
+ * @param generator - the workflow generator {@link Generator}
+ * @param page - the active page of the remote browser
+ * @param x - the x coordinate of the mousemove event
+ * @param y - the y coordinate of the mousemove event
+ * @category BrowserManagement
+ */
 const handleMousemove = async (generator: WorkflowGenerator, page: Page, { x, y }: Coordinates) => {
     try {
         await page.mouse.move(x, y);
