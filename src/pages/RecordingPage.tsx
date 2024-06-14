@@ -44,7 +44,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
   };
 
   //resize browser content when loaded event is fired
-   useEffect(() => changeBrowserDimensions(), [isLoaded])
+  useEffect(() => changeBrowserDimensions(), [isLoaded])
 
   useEffect(() => {
     let isCancelled = false;
@@ -74,7 +74,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
     if (browserContentRef.current) {
       const currentWidth = Math.floor(browserContentRef.current.getBoundingClientRect().width);
       const innerHeightWithoutNavBar = window.innerHeight - 54.5;
-      if ( innerHeightWithoutNavBar <= (currentWidth / 1.6)) {
+      if (innerHeightWithoutNavBar <= (currentWidth / 1.6)) {
         setWidth(currentWidth - 10);
         setHasScrollbar(true);
       } else {
@@ -115,13 +115,13 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
             />
           </Grid> */}
           <Grid id="browser-content" ref={browserContentRef} item xs>
-            <BrowserContent/>
+            <BrowserContent />
           </Grid>
           {/* <Grid item xs={2}>
             <RightSidePanel pairForEdit={pairForEdit} changeBrowserDimensions={changeBrowserDimensions}/>
           </Grid> */}
         </Grid>
-        : <Loader/>}
+        : <Loader />}
     </div>
   );
 };
