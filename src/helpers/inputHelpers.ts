@@ -45,7 +45,7 @@ export const getMappedCoordinates = (
 
 const getCoordinates = (event: MouseEvent, canvas: HTMLCanvasElement | null): Coordinates => {
   if (!canvas) {
-    return { x: 0, y: 0};
+    return { x: 0, y: 0 };
   }
   return {
     x: event.pageX - canvas.offsetLeft,
@@ -126,7 +126,7 @@ const mapPixelFromSmallerToLarger = (
   onePercentOfSmallerScreen: number,
   onePercentOfLargerScreen: number,
   pixel: number
-) : number => {
+): number => {
   const xPercentOfScreen = pixel / onePercentOfSmallerScreen;
   return xPercentOfScreen * onePercentOfLargerScreen;
 };
@@ -135,7 +135,7 @@ const mapPixelFromLargerToSmaller = (
   onePercentOfSmallerScreen: number,
   onePercentOfLargerScreen: number,
   pixel: number
-) : number => {
+): number => {
   const xPercentOfScreen = pixel / onePercentOfLargerScreen;
   return Math.round(xPercentOfScreen * onePercentOfSmallerScreen);
 };
