@@ -43,3 +43,13 @@ export const getMappedCoordinates = (
   };
 };
 
+const getCoordinates = (event: MouseEvent, canvas: HTMLCanvasElement | null): Coordinates => {
+  if (!canvas) {
+    return { x: 0, y: 0};
+  }
+  return {
+    x: event.pageX - canvas.offsetLeft,
+    y: event.pageY - canvas.offsetTop
+  };
+};
+
