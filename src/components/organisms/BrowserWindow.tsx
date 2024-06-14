@@ -8,23 +8,23 @@ export const BrowserWindow = () => {
 
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
     const [screenShot, setScreenShot] = useState<string>("");
-    const [highlighterData, setHighlighterData] = useState<{rect: DOMRect, selector: string} | null>(null);
+    const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string } | null>(null);
 
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
 
     console.log('Use browser dimensions:', width, height)
 
-    const onMouseMove = (e: MouseEvent) =>{
+    const onMouseMove = (e: MouseEvent) => {
         if (canvasRef && canvasRef.current && highlighterData) {
             const canvasRect = canvasRef.current.getBoundingClientRect();
             // mousemove outside the browser window
             if (
-              e.pageX < canvasRect.left
-              || e.pageX > canvasRect.right
-              || e.pageY < canvasRect.top
-              || e.pageY > canvasRect.bottom
-            ){
+                e.pageX < canvasRect.left
+                || e.pageX > canvasRect.right
+                || e.pageY < canvasRect.top
+                || e.pageY > canvasRect.bottom
+            ) {
                 setHighlighterData(null);
             }
         }
@@ -34,7 +34,7 @@ export const BrowserWindow = () => {
         setScreenShot(data);
     }, [screenShot]);
 
-    useEffect(() =>  {
+    useEffect(() => {
         if (socket) {
             socket.on("screencast", screencastHandler);
         }
@@ -50,12 +50,12 @@ export const BrowserWindow = () => {
     }, [screenShot, canvasRef, socket, screencastHandler]);
 
 
-    const highlighterHandler = useCallback((data: {rect: DOMRect, selector: string}) => {
+    const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string }) => {
         setHighlighterData(data);
         console.log('Highlighter Rect via socket:', data.rect)
     }, [highlighterData])
 
-    useEffect(() =>  {
+    useEffect(() => {
         document.addEventListener('mousemove', onMouseMove, false);
         if (socket) {
             socket.on("highlighter", highlighterHandler);
@@ -68,26 +68,26 @@ export const BrowserWindow = () => {
     }, [socket, onMouseMove]);
 
     return (
-      <>
-          {(highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
-           < Highlighter
-              unmodifiedRect={highlighterData?.rect}
-              displayedSelector={highlighterData?.selector}
-              width={width}
-              height={height}
-              canvasRect={canvasRef.current.getBoundingClientRect()}
+        <>
+            {(highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
+                < Highlighter
+                    unmodifiedRect={highlighterData?.rect}
+                    displayedSelector={highlighterData?.selector}
+                    width={width}
+                    height={height}
+                    canvasRect={canvasRef.current.getBoundingClientRect()}
+                />
+                : null}
+            <Canvas
+                onCreateRef={setCanvasReference}
+                width={width}
+                height={height}
             />
-            : null }
-        <Canvas
-            onCreateRef={setCanvasReference}
-            width={width}
-            height={height}
-        />
-      </>
+        </>
     );
 };
 
-const drawImage = (image: string, canvas: HTMLCanvasElement) :void => {
+const drawImage = (image: string, canvas: HTMLCanvasElement): void => {
 
     const ctx = canvas.getContext('2d');
 
