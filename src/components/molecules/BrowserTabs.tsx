@@ -64,7 +64,7 @@ export const BrowserTabs = (
           })}
         </Tabs>
       </Box>
-      <AddButton handleClick={handleAddNewTab}/>
+      <AddButton handleClick={handleAddNewTab} />
     </Box>
   );
 }
@@ -81,11 +81,13 @@ const CloseButton = ({ closeTab, disabled }: CloseButtonProps) => {
       size={"small"}
       onClick={closeTab}
       disabled={disabled}
-      sx={{ height: '34px',
-        '&:hover': { color: 'white', backgroundColor: '#1976d2' } }}
+      sx={{
+        height: '34px',
+        '&:hover': { color: 'white', backgroundColor: '#1976d2' }
+      }}
       component="span"
     >
-      <Close/>
+      <Close />
     </IconButton>
   );
 }
