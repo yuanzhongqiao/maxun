@@ -19,3 +19,27 @@ export const throttle = (callback: any, limit: number) => {
   }
 }
 
+export const getMappedCoordinates = (
+  event: MouseEvent,
+  canvas: HTMLCanvasElement | null,
+  browserWidth: number,
+  browserHeight: number,
+): Coordinates => {
+  const clientCoordinates = getCoordinates(event, canvas);
+  const mappedX = mapPixelFromSmallerToLarger(
+    browserWidth / 100,
+    ONE_PERCENT_OF_VIEWPORT_W,
+    clientCoordinates.x,
+  );
+  const mappedY = mapPixelFromSmallerToLarger(
+    browserHeight / 100,
+    ONE_PERCENT_OF_VIEWPORT_H,
+    clientCoordinates.y,
+  );
+
+  return {
+    x: mappedX,
+    y: mappedY
+  };
+};
+
