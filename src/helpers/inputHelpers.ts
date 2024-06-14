@@ -53,3 +53,73 @@ const getCoordinates = (event: MouseEvent, canvas: HTMLCanvasElement | null): Co
   };
 };
 
+export const mapRect = (
+  rect: DOMRect,
+  browserWidth: number,
+  browserHeight: number,
+) => {
+  const mappedX = mapPixelFromSmallerToLarger(
+    browserWidth / 100,
+    ONE_PERCENT_OF_VIEWPORT_W,
+    rect.x,
+  );
+  const mappedLeft = mapPixelFromSmallerToLarger(
+    browserWidth / 100,
+    ONE_PERCENT_OF_VIEWPORT_W,
+    rect.left,
+  );
+  const mappedRight = mapPixelFromSmallerToLarger(
+    browserWidth / 100,
+    ONE_PERCENT_OF_VIEWPORT_W,
+    rect.right,
+  );
+  const mappedWidth = mapPixelFromSmallerToLarger(
+    browserWidth / 100,
+    ONE_PERCENT_OF_VIEWPORT_W,
+    rect.width,
+  );
+  const mappedY = mapPixelFromSmallerToLarger(
+    browserHeight / 100,
+    ONE_PERCENT_OF_VIEWPORT_H,
+    rect.y,
+  );
+  const mappedTop = mapPixelFromSmallerToLarger(
+    browserHeight / 100,
+    ONE_PERCENT_OF_VIEWPORT_H,
+    rect.top,
+  );
+  const mappedBottom = mapPixelFromSmallerToLarger(
+    browserHeight / 100,
+    ONE_PERCENT_OF_VIEWPORT_H,
+    rect.bottom,
+  );
+  const mappedHeight = mapPixelFromSmallerToLarger(
+    browserHeight / 100,
+    ONE_PERCENT_OF_VIEWPORT_H,
+    rect.height,
+  );
+
+  console.log('Mapped:', {
+    x: mappedX,
+    y: mappedY,
+    width: mappedWidth,
+    height: mappedHeight,
+    top: mappedTop,
+    right: mappedRight,
+    bottom: mappedBottom,
+    left: mappedLeft,
+  })
+
+  return {
+    x: mappedX,
+    y: mappedY,
+    width: mappedWidth,
+    height: mappedHeight,
+    top: mappedTop,
+    right: mappedRight,
+    bottom: mappedBottom,
+    left: mappedLeft,
+  };
+};
+
+
