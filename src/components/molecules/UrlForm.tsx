@@ -1,11 +1,11 @@
-import {useState, useCallback, useEffect,} from 'react';
+import { useState, useCallback, useEffect, } from 'react';
 import type { SyntheticEvent, } from 'react';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 import { NavBarForm, NavBarInput } from "../atoms/form";
 import { UrlFormButton } from "../atoms/buttons/buttons";
 import { useSocketStore } from '../../context/socket';
-import {Socket} from "socket.io-client";
+import { Socket } from "socket.io-client";
 
 type Props = {
     currentAddress: string;
@@ -66,7 +66,7 @@ export const UrlForm = ({
                 onChange={onChange}
             />
             <UrlFormButton type="submit">
-                <KeyboardArrowRightIcon/>
+                <KeyboardArrowRightIcon />
             </UrlFormButton>
         </NavBarForm>
     );
