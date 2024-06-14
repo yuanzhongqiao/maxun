@@ -122,4 +122,13 @@ export const mapRect = (
   };
 };
 
+const mapPixelFromSmallerToLarger = (
+  onePercentOfSmallerScreen: number,
+  onePercentOfLargerScreen: number,
+  pixel: number
+) : number => {
+  const xPercentOfScreen = pixel / onePercentOfSmallerScreen;
+  return xPercentOfScreen * onePercentOfLargerScreen;
+};
+
 
