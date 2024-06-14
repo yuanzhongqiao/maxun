@@ -131,4 +131,11 @@ const mapPixelFromSmallerToLarger = (
   return xPercentOfScreen * onePercentOfLargerScreen;
 };
 
-
+const mapPixelFromLargerToSmaller = (
+  onePercentOfSmallerScreen: number,
+  onePercentOfLargerScreen: number,
+  pixel: number
+) : number => {
+  const xPercentOfScreen = pixel / onePercentOfLargerScreen;
+  return Math.round(xPercentOfScreen * onePercentOfSmallerScreen);
+};
