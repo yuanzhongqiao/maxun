@@ -1,7 +1,6 @@
-import React  from 'react';
+import React from 'react';
 
 import styled from "styled-components";
-import { mapRect } from "../../helpers/inputHelpers";
 
 interface HighlighterProps {
   unmodifiedRect: DOMRect;
@@ -11,7 +10,7 @@ interface HighlighterProps {
   canvasRect: DOMRect;
 };
 
-export const Highlighter = ({ unmodifiedRect, displayedSelector = '', width, height, canvasRect}: HighlighterProps) => {
+export const Highlighter = ({ unmodifiedRect, displayedSelector = '', width, height, canvasRect }: HighlighterProps) => {
   if (!unmodifiedRect) {
     return null;
   } else {
@@ -30,7 +29,7 @@ export const Highlighter = ({ unmodifiedRect, displayedSelector = '', width, hei
 
     const rect = {
       top: unmodifiedRect.top + canvasRect.top,
-      left: unmodifiedRect.left +  canvasRect.left,
+      left: unmodifiedRect.left + canvasRect.left,
       right: unmodifiedRect.right + canvasRect.left,
       bottom: unmodifiedRect.bottom + canvasRect.top,
       width: unmodifiedRect.width,
@@ -113,7 +112,7 @@ const HighlighterLabel = styled.div<HighlighterLabelProps>`
   left: ${(p: HighlighterLabelProps) => p.left}px;
 `;
 
-interface HighlighterLabelProps{
+interface HighlighterLabelProps {
   top: number;
   left: number;
 }
