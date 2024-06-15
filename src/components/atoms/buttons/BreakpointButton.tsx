@@ -1,6 +1,5 @@
 import { IconButton } from "@mui/material";
 import { Circle } from "@mui/icons-material";
-import React, { FC } from "react";
 
 interface BreakpointButtonProps {
   handleClick: () => void;
