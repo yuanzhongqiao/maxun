@@ -10,7 +10,7 @@ interface BoxProps {
   children?: JSX.Element,
 };
 
-export const SimpleBox = ({width, height, background, radius, children}: BoxProps) => {
+export const SimpleBox = ({ width, height, background, radius, children }: BoxProps) => {
   return (
     <Box
       sx={{
