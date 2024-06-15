@@ -8,13 +8,13 @@ interface PairDisplayDivProps {
   pair: WhereWhatPair;
 }
 
-export const PairDisplayDiv: FC<PairDisplayDivProps> = ({index, pair}) => {
+export const PairDisplayDiv: FC<PairDisplayDivProps> = ({ index, pair }) => {
 
   return (
     <div>
-      <Typography sx={{ marginBottom: '10px', marginTop: '25px'}} id="pair-index" variant="h6" component="h2">
+      <Typography sx={{ marginBottom: '10px', marginTop: '25px' }} id="pair-index" variant="h6" component="h2">
         {`Index: ${index}`}
-        { pair.id ? `, Id: ${pair.id}` : ''}
+        {pair.id ? `, Id: ${pair.id}` : ''}
       </Typography>
       <Typography id="where-title" variant="h6" component="h2">
         {"Where:"}
@@ -26,7 +26,7 @@ export const PairDisplayDiv: FC<PairDisplayDivProps> = ({index, pair}) => {
         {"What:"}
       </Typography>
       <DescriptionWrapper id="what-description">
-        <pre>{JSON.stringify(pair?.what,undefined, 2)}</pre>
+        <pre>{JSON.stringify(pair?.what, undefined, 2)}</pre>
       </DescriptionWrapper>
     </div>
   );
