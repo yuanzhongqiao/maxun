@@ -3,8 +3,8 @@ import { Stack } from "@mui/material";
 
 export const Loader = () => {
   return (
-    <Stack direction="column" sx={{margin: "30px 0px 291px 0px"}}>
-      <StyledLoader/>
+    <Stack direction="column" sx={{ margin: "30px 0px 291px 0px" }}>
+      <StyledLoader />
       <StyledParagraph >Loading...</StyledParagraph>
     </Stack>
   );
