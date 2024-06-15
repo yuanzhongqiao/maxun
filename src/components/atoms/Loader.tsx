@@ -5,7 +5,9 @@ export const Loader = () => {
   return (
     <Stack direction="column" sx={{ margin: "30px 0px 291px 0px" }}>
       <StyledLoader />
-      <StyledParagraph >Loading...</StyledParagraph>
+      <StyledParagraph>
+        Loading...
+      </StyledParagraph>
     </Stack>
   );
 }
