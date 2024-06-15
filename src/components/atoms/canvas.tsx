@@ -1,22 +1,16 @@
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useSocketStore } from '../../context/socket';
 import { getMappedCoordinates } from "../../helpers/inputHelpers";
 import { useGlobalInfoStore } from "../../context/globalInfo";
 
 interface CreateRefCallback {
-
     (ref: React.RefObject<HTMLCanvasElement>): void;
-
 }
 
 interface CanvasProps {
-
     width: number;
-
     height: number;
-
     onCreateRef: CreateRefCallback;
-
 }
 
 /**
@@ -40,7 +34,7 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     };
 
     const lastMousePosition = useRef<Coordinates>({ x: 0, y: 0 });
-     //const lastWheelPosition = useRef<ScrollDeltas>({ deltaX: 0, deltaY: 0 });
+    //const lastWheelPosition = useRef<ScrollDeltas>({ deltaX: 0, deltaY: 0 });
 
     const onMouseEvent = useCallback((event: MouseEvent) => {
         if (socket) {
@@ -57,12 +51,12 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
                 case 'mousemove':
                     const coordinates = getMappedCoordinates(event, canvasRef.current, width, height);
                     if (lastMousePosition.current.x !== coordinates.x ||
-                      lastMousePosition.current.y !== coordinates.y) {
+                        lastMousePosition.current.y !== coordinates.y) {
                         lastMousePosition.current = {
                             x: coordinates.x,
                             y: coordinates.y,
                         };
-                        socket.emit('input:mousemove',  {
+                        socket.emit('input:mousemove', {
                             x: coordinates.x,
                             y: coordinates.y,
                         });
@@ -122,21 +116,21 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
                 }
 
             };
-        }else {
+        } else {
             console.log('Canvas not initialized');
         }
 
     }, [onMouseEvent]);
 
     return (
-            // <canvas tabIndex={0} ref={canvasRef}  height={height} width={width} />
-            <canvas
-      tabIndex={0}
-      ref={canvasRef}
-      height={720}
-      width={1280}
-      style={{ width: '1280px', height: '720px' }} // Ensure dimensions are explicitly set
-    />
+        // <canvas tabIndex={0} ref={canvasRef}  height={height} width={width} />
+        <canvas
+            tabIndex={0}
+            ref={canvasRef}
+            height={720}
+            width={1280}
+            style={{ width: '1280px', height: '720px' }} // Ensure dimensions are explicitly set
+        />
     );
 
 };
