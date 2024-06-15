@@ -10,8 +10,8 @@ interface RemoveButtonProps {
 export const RemoveButton: FC<RemoveButtonProps> = ({ handleClick, size }) => {
   return (
     <IconButton aria-label="add" size={size || "small"} onClick={handleClick}
-                sx={{'&:hover': { color: '#1976d2', backgroundColor: 'transparent' }}}>
-      <Remove/>
+      sx={{ '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
+      <Remove />
     </IconButton>
   );
 };
