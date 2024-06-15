@@ -11,24 +11,24 @@ interface ModalProps {
 }
 
 export const GenericModal: FC<ModalProps> = (
-  { isOpen, onClose, children, modalStyle , canBeClosed= true}) => {
+  { isOpen, onClose, children, modalStyle, canBeClosed = true }) => {
 
   return (
-        <Modal open={isOpen} onClose={canBeClosed ? onClose : ()=>{}} >
-          <Box sx={modalStyle ?  {...modalStyle,   boxShadow: 24, position: 'absolute',} : defaultModalStyle}>
-            {canBeClosed ?
-              <IconButton onClick={onClose} sx={{ float: "right" }}>
-                <Clear sx={{ fontSize: 20 }}/>
-              </IconButton>
-              : null
-            }
-            {children}
-          </Box>
-        </Modal>
-    );
+    <Modal open={isOpen} onClose={canBeClosed ? onClose : () => { }} >
+      <Box sx={modalStyle ? { ...modalStyle, boxShadow: 24, position: 'absolute', } : defaultModalStyle}>
+        {canBeClosed ?
+          <IconButton onClick={onClose} sx={{ float: "right" }}>
+            <Clear sx={{ fontSize: 20 }} />
+          </IconButton>
+          : null
+        }
+        {children}
+      </Box>
+    </Modal>
+  );
 };
 
- const defaultModalStyle = {
+const defaultModalStyle = {
   position: 'absolute',
   top: '50%',
   left: '50%',
@@ -37,8 +37,8 @@ export const GenericModal: FC<ModalProps> = (
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
-  height:'60%',
-  display:'block',
-  overflow:'scroll',
+  height: '60%',
+  display: 'block',
+  overflow: 'scroll',
   padding: '5px 25px 10px 25px',
 };
