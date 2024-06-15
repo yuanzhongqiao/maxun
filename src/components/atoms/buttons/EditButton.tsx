@@ -10,8 +10,8 @@ interface EditButtonProps {
 export const EditButton: FC<EditButtonProps> = ({ handleClick, size }) => {
   return (
     <IconButton aria-label="add" size={size || "small"} onClick={handleClick}
-                sx={{ color: 'inherit', '&:hover': { color: '#1976d2', backgroundColor: 'transparent' }}}>
-      <Edit/>
+      sx={{ color: 'inherit', '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
+      <Edit />
     </IconButton>
   );
 };
