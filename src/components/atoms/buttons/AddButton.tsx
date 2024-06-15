@@ -13,10 +13,10 @@ interface AddButtonProps {
 
 export const AddButton: FC<AddButtonProps> = (
   { handleClick,
-    size ,
+    size,
     title,
     disabled = false,
-    hoverEffect= true,
+    hoverEffect = true,
     style
   }) => {
   return (
@@ -25,12 +25,12 @@ export const AddButton: FC<AddButtonProps> = (
       size={size || "small"}
       onClick={handleClick}
       disabled={disabled}
-      sx={ hoverEffect
-        ? {...style, '&:hover': { background: 'rgba(0, 0, 0, 0.05)', color: 'rgba(0, 0, 0, 0.54)' }}
-        : {...style, '&:hover': { color: '#1976d2', backgroundColor: 'white' }}
-    }
+      sx={hoverEffect
+        ? { ...style, '&:hover': { background: 'rgba(0, 0, 0, 0.05)', color: 'rgba(0, 0, 0, 0.54)' } }
+        : { ...style, '&:hover': { color: '#1976d2', backgroundColor: 'white' } }
+      }
     >
-      <Add/>  {title}
+      <Add />  {title}
     </IconButton>
   );
 };
