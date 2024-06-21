@@ -9,7 +9,7 @@ interface SocketState {
   setId: (id: string) => void;
 };
 
-class SocketStore implements Partial<SocketState>{
+class SocketStore implements Partial<SocketState> {
   socket = null;
   id = '';
 };
@@ -38,15 +38,15 @@ export const SocketProvider = ({ children }: { children: JSX.Element }) => {
     setActiveId(id);
   }, [setSocket]);
 
-    return (
-        <socketStoreContext.Provider
-          value={{
-            socket,
-            id,
-            setId,
-          }}
-        >
-          {children}
-        </socketStoreContext.Provider>
-    );
+  return (
+    <socketStoreContext.Provider
+      value={{
+        socket,
+        id,
+        setId,
+      }}
+    >
+      {children}
+    </socketStoreContext.Provider>
+  );
 };
