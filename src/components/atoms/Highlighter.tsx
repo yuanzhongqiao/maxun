@@ -36,8 +36,6 @@ export const Highlighter = ({ unmodifiedRect, displayedSelector = '', width, hei
       height: unmodifiedRect.height,
     };
 
-    const adjustedWidth = Math.min(rect.width, width - rect.left); // Adjust width if it extends beyond canvas boundary
-    const adjustedHeight = Math.min(rect.height, height - rect.top); // Adjust height if it extends beyond canvas boundary
 
     console.log('unmodifiedRect:', unmodifiedRect)
     console.log('rectangle:', rect)
