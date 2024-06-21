@@ -24,6 +24,7 @@ export const SocketProvider = ({ children }: { children: JSX.Element }) => {
   const [id, setActiveId] = useState<string>(socketStore.id);
 
   const setId = useCallback((id: string) => {
+    // the socket client connection is recomputed whenever id changes -> the new browser has been initialized
     const socket =
       io(`${SERVER_ENDPOINT}/${id}`, {
         transports: ["websocket"],
