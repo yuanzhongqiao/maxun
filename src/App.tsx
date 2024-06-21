@@ -3,11 +3,11 @@ import React from 'react';
 import { GlobalInfoProvider } from "./context/globalInfo";
 import { PageWrapper } from "./pages/PageWrappper";
 
-function App () {
+function App() {
 
   return (
     <GlobalInfoProvider>
-      <PageWrapper/>
+      <PageWrapper />
     </GlobalInfoProvider>
   );
 }
