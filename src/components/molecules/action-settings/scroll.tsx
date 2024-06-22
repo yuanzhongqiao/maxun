@@ -11,7 +11,7 @@ export const ScrollSettings = forwardRef((props, ref) => {
 
   return (
     <TextField
-      sx={{marginLeft: '15px'}}
+      sx={{ marginLeft: '15px' }}
       type="number"
       label="Number of pages"
       required

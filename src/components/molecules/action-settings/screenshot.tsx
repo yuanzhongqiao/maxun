@@ -6,7 +6,7 @@ import { SelectChangeEvent } from "@mui/material/Select/Select";
 import { Dropdown } from "../../atoms/DropdownMui";
 
 export const ScreenshotSettings = forwardRef((props, ref) => {
-  const [settings, setSettings] = React.useState<Settings>({ });
+  const [settings, setSettings] = React.useState<Settings>({});
   useImperativeHandle(ref, () => ({
     getSettings() {
       return settings;
@@ -48,7 +48,7 @@ export const ScreenshotSettings = forwardRef((props, ref) => {
         <MenuItem value="jpeg">jpeg</MenuItem>
         <MenuItem value="png">png</MenuItem>
       </Dropdown>
-      { settings.type === "jpeg" ?
+      {settings.type === "jpeg" ?
         <TextField
           type="number"
           id="quality"
@@ -60,7 +60,7 @@ export const ScreenshotSettings = forwardRef((props, ref) => {
       }
       <TextField
         type="number"
-        id = "timeout"
+        id="timeout"
         label="timeout"
         size='small'
         onChange={handleInput}
@@ -75,7 +75,7 @@ export const ScreenshotSettings = forwardRef((props, ref) => {
         <MenuItem value="disabled">disabled</MenuItem>
         <MenuItem value="allow">allow</MenuItem>
       </Dropdown>
-      { settings.type === "png" ?
+      {settings.type === "png" ?
         <Dropdown
           id="omitBackground"
           label="omitBackground"

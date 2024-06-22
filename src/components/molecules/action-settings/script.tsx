@@ -21,7 +21,7 @@ export const ScriptSettings = forwardRef((props, ref) => {
   return (
     <EditorWrapper>
       <WarningText>
-        <InfoIcon color='warning'/>
+        <InfoIcon color='warning' />
         Allows to run an arbitrary asynchronous function evaluated at the server
         side accepting the current page instance argument.
       </WarningText>
