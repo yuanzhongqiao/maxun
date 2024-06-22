@@ -15,14 +15,14 @@ export const EnqueueLinksSettings = forwardRef((props, ref) => {
   return (
     <Stack direction="column">
       <TextField
-        sx={{marginLeft: '15px', marginRight: '15px'}}
+        sx={{ marginLeft: '15px', marginRight: '15px' }}
         type="string"
         label="Selector"
         required
         onChange={(e) => setSettings(e.target.value)}
       />
       <WarningText>
-        <InfoIcon color='warning'/>
+        <InfoIcon color='warning' />
         Reads elements targeted by the selector and stores their links in a queue.
         Those pages are then processed using the same workflow as the initial page
         (in parallel if the maxConcurrency parameter is greater than 1).
