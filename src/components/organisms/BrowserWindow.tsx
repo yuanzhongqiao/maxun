@@ -58,7 +58,7 @@ export const BrowserWindow = () => {
 
     const handleClick = useCallback(() => {
         if (highlighterData) {
-            setSelectedElement(highlighterData);
+            setSelectedElement(prev => [...prev, highlighterData]);
         }
     }, [highlighterData]);
 
