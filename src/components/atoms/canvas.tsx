@@ -123,7 +123,6 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     }, [onMouseEvent]);
 
     return (
-        // <canvas tabIndex={0} ref={canvasRef}  height={height} width={width} />
         <canvas
             tabIndex={0}
             ref={canvasRef}
