@@ -44,7 +44,7 @@ export const NavBar = ({newRecording, recordingName, isRecording}:NavBarProps) =
         justifyContent: 'flex-start',
       }}>
       <RecordingIcon/>
-      <div style={{padding: '11px'}}><ProjectName>Browser Recorder</ProjectName></div>
+      <div style={{padding: '11px'}}><ProjectName>Maxun</ProjectName></div>
       </div>
       <div style={{
         display: 'flex',
