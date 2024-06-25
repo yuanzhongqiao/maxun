@@ -110,8 +110,8 @@ export const BrowserWindow = () => {
                 />
                 : null}
             {selectedElements.map((element, index) => (
-                canvasRef?.current ? 
-                <Highlighter 
+                canvasRef?.current ?
+                    <Highlighter
                         key={index}
                         unmodifiedRect={element?.rect}
                         displayedSelector={element?.selector}
@@ -119,8 +119,8 @@ export const BrowserWindow = () => {
                         height={height}
                         canvasRect={canvasRef.current.getBoundingClientRect()}
                         isSelected={true}
-                />
-            : null
+                    />
+                    : null
             ))}
             <Canvas
                 onCreateRef={setCanvasReference}
