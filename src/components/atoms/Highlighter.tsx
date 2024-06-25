@@ -8,9 +8,10 @@ interface HighlighterProps {
   width: number;
   height: number;
   canvasRect: DOMRect;
+  isSelected: boolean;
 };
 
-export const Highlighter = ({ unmodifiedRect, displayedSelector = '', width, height, canvasRect }: HighlighterProps) => {
+export const Highlighter = ({ unmodifiedRect, displayedSelector = '', width, height, canvasRect, isSelected }: HighlighterProps) => {
   if (!unmodifiedRect) {
     return null;
   } else {
@@ -69,6 +70,10 @@ export const Highlighter = ({ unmodifiedRect, displayedSelector = '', width, hei
           left={rect.left}
           width={rect.width}
           height={rect.height}
+          style={{
+            background: isSelected ? '#ff0000' : '#ff5d5b26',
+            outline: isSelected ? '2px solid red' : '2px solid pink',
+          }}
         />
         <HighlighterLabel
           id="Highlighter-label"
