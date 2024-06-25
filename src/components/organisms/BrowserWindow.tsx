@@ -9,7 +9,7 @@ export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
     const [screenShot, setScreenShot] = useState<string>("");
     const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string } | null>(null);
-    const [selectedElement, setSelectedElement] = useState<{ rect: DOMRect, selector: string } | null>(null);
+    const [selectedElement, setSelectedElement] = useState<Array<{ rect: DOMRect, selector: string }>>([]);
 
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
