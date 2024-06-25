@@ -100,7 +100,7 @@ export const BrowserWindow = () => {
     return (
         <>
             {(highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
-                < Highlighter
+                <Highlighter
                     unmodifiedRect={highlighterData?.rect}
                     displayedSelector={highlighterData?.selector}
                     width={width}
