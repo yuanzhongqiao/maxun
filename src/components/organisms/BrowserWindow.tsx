@@ -58,7 +58,7 @@ export const BrowserWindow = () => {
 
     const handleClick = useCallback(() => {
         if (highlighterData) {
-            setSelectedElement(prev => [...prev, highlighterData]);
+            setSelectedElements(prev => [...prev, highlighterData]);
         }
     }, [highlighterData]);
 
@@ -76,6 +76,27 @@ export const BrowserWindow = () => {
         };
     }, [socket, onMouseMove, handleClick]);
 
+    // Adjust selected elements' positions after scroll
+    useEffect(() => {
+        const handleScroll = () => {
+            if (canvasRef && canvasRef.current) {
+                const canvasRect = canvasRef.current.getBoundingClientRect();
+                setSelectedElements(prev => prev.map(element => ({
+                    ...element,
+                    rect: new DOMRect(
+                        element.rect.x,
+                        element.rect.y,
+                        element.rect.width,
+                        element.rect.height
+                    )
+                })));
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [canvasRef]);
+
     return (
         <>
             {(highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
@@ -88,16 +109,19 @@ export const BrowserWindow = () => {
                     isSelected={false}
                 />
                 : null}
-            {selectedElement && canvasRef?.current ? 
-            <Highlighter 
-                    unmodifiedRect={selectedElement?.rect}
-                    displayedSelector={selectedElement?.selector}
-                    width={width}
-                    height={height}
-                    canvasRect={canvasRef.current.getBoundingClientRect()}
-                    isSelected={false}
-            />
-        : null}
+            {selectedElements.map((element, index) => (
+                canvasRef?.current ? 
+                <Highlighter 
+                        key={index}
+                        unmodifiedRect={element?.rect}
+                        displayedSelector={element?.selector}
+                        width={width}
+                        height={height}
+                        canvasRect={canvasRef.current.getBoundingClientRect()}
+                        isSelected={false}
+                />
+            : null
+            ))}
             <Canvas
                 onCreateRef={setCanvasReference}
                 width={width}
