@@ -118,7 +118,7 @@ export const BrowserWindow = () => {
                         width={width}
                         height={height}
                         canvasRect={canvasRef.current.getBoundingClientRect()}
-                        isSelected={false}
+                        isSelected={true}
                 />
             : null
             ))}
