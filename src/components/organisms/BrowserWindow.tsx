@@ -76,26 +76,6 @@ export const BrowserWindow = () => {
         };
     }, [socket, onMouseMove, handleClick]);
 
-    // Adjust selected elements' positions after scroll
-    useEffect(() => {
-        const handleScroll = () => {
-            if (canvasRef && canvasRef.current) {
-                const canvasRect = canvasRef.current.getBoundingClientRect();
-                setSelectedElements(prev => prev.map(element => ({
-                    ...element,
-                    rect: new DOMRect(
-                        element.rect.x,
-                        element.rect.y,
-                        element.rect.width,
-                        element.rect.height
-                    )
-                })));
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [canvasRef]);
 
     return (
         <>
