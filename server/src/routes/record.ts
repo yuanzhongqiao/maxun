@@ -100,7 +100,6 @@ router.get('/interpret', async (req, res) => {
         return res.send('interpretation done');
     } catch (e) {
         return res.send('interpretation failed');
-        return res.status(400);
     }
 });
 
