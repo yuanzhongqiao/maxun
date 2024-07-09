@@ -143,7 +143,7 @@ export class RemoteBrowser {
             return;
         }
         this.client.on('Page.screencastFrame', ({ data: base64, sessionId }) => {
-            this.emitScreenshot(base64);
+            this.emitScreenshot(base64)
             setTimeout(async () => {
                 try {
                     if (!this.client) {
@@ -174,21 +174,22 @@ export class RemoteBrowser {
         }
     };
 
-   /**
+    /**
      * Makes and emits a single screenshot to the client side.
      * @returns {Promise<void>}
      */
     public makeAndEmitScreenshot = async (): Promise<void> => {
         try {
-            const screenshot = await this.currentPage?.screenshot();
+            const screenshot = await this.currentPage?.content();
             if (screenshot) {
-                this.emitScreenshot(screenshot.toString('base64'));
+                const base64Html = Buffer.from(screenshot).toString('base64');
+                this.emitScreenshot(base64Html);
             }
         } catch (e) {
             const { message } = e as Error;
             logger.log('error', message);
         }
-    }; 
+    };
 
     /**
      * Updates the active socket instance.
@@ -337,7 +338,7 @@ export class RemoteBrowser {
      * @returns void
      */
     private emitScreenshot = (payload: any): void => {
-        const dataWithMimeType = ('data:image/jpeg;base64,').concat(payload);
+    const dataWithMimeType = (',').concat(payload);
         this.socket.emit('screencast', dataWithMimeType);
         logger.log('debug', `Screenshot emitted`);
     };
