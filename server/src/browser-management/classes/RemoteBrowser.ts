@@ -314,7 +314,7 @@ export class RemoteBrowser {
             logger.log('warn', 'client is not initialized');
             return;
         }
-        await this.client.send('Page.startScreencast', { format: 'jpeg', quality: 75 });
+        await this.client.send('Page.startScreencast');
         logger.log('info', `Browser started with screencasting a page.`);
     };
 
