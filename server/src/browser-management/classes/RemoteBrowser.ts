@@ -180,10 +180,9 @@ export class RemoteBrowser {
      */
     public makeAndEmitScreenshot = async (): Promise<void> => {
         try {
-            const screenshot = await this.currentPage?.content();
+            const screenshot = await this.currentPage?.screenshot();
             if (screenshot) {
-                const base64Html = Buffer.from(screenshot).toString('base64');
-                this.emitScreenshot(base64Html);
+                this.emitScreenshot(screenshot.toString('base64'));
             }
         } catch (e) {
             const { message } = e as Error;
