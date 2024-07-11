@@ -337,7 +337,7 @@ export class RemoteBrowser {
      * @returns void
      */
     private emitScreenshot = (payload: any): void => {
-    const dataWithMimeType = ('data:text/html;base64,').concat(payload);
+        const dataWithMimeType = ('data:image/jpeg;base64,').concat(payload);
         this.socket.emit('screencast', dataWithMimeType);
         logger.log('debug', `Screenshot emitted`);
     };
