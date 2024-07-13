@@ -87,7 +87,7 @@ export const RightSidePanel = ({pairForEdit, changeBrowserDimensions}: RightSide
             }
           </React.Fragment>
         )
-        : <PairDetail pair={pairForEdit.pair} index={pairForEdit.index}/>
+        : null
       }
     </Paper>
   );
