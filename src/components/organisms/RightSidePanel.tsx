@@ -57,10 +57,6 @@ export const RightSidePanel = ({pairForEdit, changeBrowserDimensions}: RightSide
         </Typography>
       </SimpleBox>
 
-      <Tabs value={content} onChange={handleChange} centered>
-        <Tab label="Actions" value="action" />
-      </Tabs>
-
       {content === 'action' ? (
           <React.Fragment>
             <ActionDescription>Type of action:</ActionDescription>
