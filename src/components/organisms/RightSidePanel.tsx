@@ -7,7 +7,6 @@ import { SelectChangeEvent } from "@mui/material/Select/Select";
 import { SimpleBox } from "../atoms/Box";
 import Typography from "@mui/material/Typography";
 import { useGlobalInfoStore } from "../../context/globalInfo";
-import { PairDetail } from "../molecules/PairDetail";
 import { PairForEdit } from "../../pages/RecordingPage";
 
 interface RightSidePanelProps {
