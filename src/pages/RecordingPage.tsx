@@ -10,6 +10,7 @@ import { useBrowserDimensionsStore } from "../context/browserDimensions";
 import { useGlobalInfoStore } from "../context/globalInfo";
 import { editRecordingFromStorage } from "../api/storage";
 import { WhereWhatPair } from "@wbr-project/wbr-interpret";
+import styled from "styled-components";
 
 interface RecordingPageProps {
   recordingName?: string;
@@ -106,22 +107,29 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
     <div>
       {isLoaded ?
         <Grid container direction="row" spacing={0}>
-          {/* <Grid item xs={2} ref={workflowListRef} style={{ display: "flex", flexDirection: "row" }}>
+          <Grid item xs={2} ref={workflowListRef} style={{ display: "flex", flexDirection: "row" }}>
             <LeftSidePanel
               sidePanelRef={workflowListRef.current}
               alreadyHasScrollbar={hasScrollbar}
               recordingName={recordingName ? recordingName : ''}
               handleSelectPairForEdit={handleSelectPairForEdit}
             />
-          </Grid> */}
+          </Grid> 
           <Grid id="browser-content" ref={browserContentRef} item xs>
             <BrowserContent />
           </Grid>
-          {/* <Grid item xs={2}>
-            <RightSidePanel pairForEdit={pairForEdit} changeBrowserDimensions={changeBrowserDimensions}/>
-          </Grid> */}
+          <Grid item xs={2}>
+            <RightSidePanel pairForEdit={pairForEdit} />
+          </Grid> 
         </Grid>
         : <Loader />}
     </div>
   );
 };
+
+const RecordingPageWrapper = styled.div`
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+`;
