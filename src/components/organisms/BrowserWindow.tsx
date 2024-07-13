@@ -9,7 +9,6 @@ export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
     const [screenShot, setScreenShot] = useState<string>("");
     const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string } | null>(null);
-    const [selectedElements, setSelectedElements] = useState<Array<{ rect: DOMRect, selector: string }>>([]);
 
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
@@ -56,52 +55,29 @@ export const BrowserWindow = () => {
         console.log('Highlighter Rect via socket:', data.rect)
     }, [highlighterData])
 
-    const handleClick = useCallback(() => {
-        if (highlighterData) {
-            setSelectedElements(prev => [...prev, highlighterData]);
-        }
-    }, [highlighterData]);
-
     useEffect(() => {
         document.addEventListener('mousemove', onMouseMove, false);
-        document.addEventListener('click', handleClick);
         if (socket) {
             socket.on("highlighter", highlighterHandler);
         }
         //cleaning function
         return () => {
             document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('click', handleClick);
             socket?.off("highlighter", highlighterHandler);
         };
-    }, [socket, onMouseMove, handleClick]);
-
+    }, [socket, onMouseMove]);
 
     return (
         <>
             {(highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
-                <Highlighter
+                < Highlighter
                     unmodifiedRect={highlighterData?.rect}
                     displayedSelector={highlighterData?.selector}
                     width={width}
                     height={height}
                     canvasRect={canvasRef.current.getBoundingClientRect()}
-                    isSelected={false}
                 />
                 : null}
-            {selectedElements.map((element, index) => (
-                canvasRef?.current ?
-                    <Highlighter
-                        key={index}
-                        unmodifiedRect={element?.rect}
-                        displayedSelector={element?.selector}
-                        width={width}
-                        height={height}
-                        canvasRect={canvasRef.current.getBoundingClientRect()}
-                        isSelected={true}
-                    />
-                    : null
-            ))}
             <Canvas
                 onCreateRef={setCanvasReference}
                 width={width}
@@ -120,9 +96,7 @@ const drawImage = (image: string, canvas: HTMLCanvasElement): void => {
     img.src = image;
     img.onload = () => {
         URL.revokeObjectURL(img.src);
-        //ctx?.clearRect(0, 0, canvas?.width || 0, VIEWPORT_H || 0);
-        // ctx?.drawImage(img, 0, 0, canvas.width , canvas.height);
-        ctx?.drawImage(img, 0, 0, 1280, 720); // Explicitly draw image at 1280 x 720
+        ctx?.drawImage(img, 0, 0, 1280, 720);
         console.log('Image drawn on canvas:', img.width, img.height);
         console.log('Image drawn on canvas:', canvas.width, canvas.height);
     };
