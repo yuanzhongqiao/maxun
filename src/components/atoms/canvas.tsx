@@ -128,7 +128,6 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
             ref={canvasRef}
             height={720}
             width={1280}
-            style={{ width: '1280px', height: '720px' }} // Ensure dimensions are explicitly set
         />
     );
 
