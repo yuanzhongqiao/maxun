@@ -180,7 +180,9 @@ export class RemoteBrowser {
      */
     public makeAndEmitScreenshot = async (): Promise<void> => {
         try {
-            const screenshot = await this.currentPage?.screenshot();
+            const screenshot = await this.currentPage?.screenshot(
+                { type: 'jpeg', quality: 90, fullPage: true }
+            );
             if (screenshot) {
                 this.emitScreenshot(screenshot.toString('base64'));
             }
