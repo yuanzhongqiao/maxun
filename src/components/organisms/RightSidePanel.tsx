@@ -60,7 +60,6 @@ export const RightSidePanel = ({pairForEdit, changeBrowserDimensions}: RightSide
 
       <Tabs value={content} onChange={handleChange} centered>
         <Tab label="Actions" value="action" />
-        <Tab label="Pair detail" value="detail"/>
       </Tabs>
 
       {content === 'action' ? (
