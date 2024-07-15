@@ -119,7 +119,7 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
   // as long as we don't merge any two elements by substituing them for their parents,
   // we substitute.
   while (out.map((x) => x.parentElement).every(different)
-  && out.forEach((x) => x.parentElement !== null)) {
+    && out.forEach((x) => x.parentElement !== null)) {
     out = out.map((x) => x.parentElement ?? x);
   }
 
