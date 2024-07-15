@@ -68,14 +68,30 @@ export const getElementInformation = async (
         const el = document.elementFromPoint(x, y) as HTMLElement;
         if (el) {
           const { parentElement } = el;
-          // Match the logic in recorder.ts for link clicks
           const element = parentElement?.tagName === 'A' ? parentElement : el;
-          return {
+
+          let info: {
+            tagName: string;
+            hasOnlyText?: boolean;
+            innerText?: string;
+            url?: string;
+            imageUrl?: string;
+          } = {
             tagName: element?.tagName ?? '',
-            hasOnlyText: element?.children?.length === 0 &&
-              element?.innerText?.length > 0,
-            innerText: element?.innerText ?? '', // Add innerText to the returned object
           };
+
+          if (element?.tagName === 'A') {
+            info.url = (element as HTMLAnchorElement).href;
+            info.innerText = element.innerText ?? '';
+          } else if (element?.tagName === 'IMG') {
+            info.imageUrl = (element as HTMLImageElement).src;
+          } else {
+            info.hasOnlyText = element?.children?.length === 0 &&
+              element?.innerText?.length > 0;
+            info.innerText = element?.innerText ?? '';
+          }
+
+          return info;
         }
         return null;
       },
@@ -83,9 +99,19 @@ export const getElementInformation = async (
     );
 
     if (elementInfo) {
-      console.log(`Element : ${elementInfo.innerText}`); // Print innerText to the console
+      if (elementInfo.tagName === 'A') {
+        if (elementInfo.innerText) {
+          console.log(`Link text: ${elementInfo.innerText}, URL: ${elementInfo.url}`);
+        } else {
+          console.log(`URL: ${elementInfo.url}`);
+        }
+      } else if (elementInfo.tagName === 'IMG') {
+        console.log(`Image URL: ${elementInfo.imageUrl}`);
+      } else {
+        console.log(`Element innerText: ${elementInfo.innerText}`);
+      }
     }
-    
+
     return elementInfo;
   } catch (error) {
     const { message, stack } = error as Error;
