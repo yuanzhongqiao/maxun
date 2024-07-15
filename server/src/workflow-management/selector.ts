@@ -74,18 +74,26 @@ export const getElementInformation = async (
             tagName: element?.tagName ?? '',
             hasOnlyText: element?.children?.length === 0 &&
               element?.innerText?.length > 0,
-          }
+            innerText: element?.innerText ?? '', // Add innerText to the returned object
+          };
         }
+        return null;
       },
       { x: coordinates.x, y: coordinates.y },
     );
+
+    if (elementInfo) {
+      console.log(`Element : ${elementInfo.innerText}`); // Print innerText to the console
+    }
+    
     return elementInfo;
   } catch (error) {
     const { message, stack } = error as Error;
-    logger.log('error', `Error while retrieving selector: ${message}`);
-    logger.log('error', `Stack: ${stack}`);
+    console.error('Error while retrieving selector:', message);
+    console.error('Stack:', stack);
   }
-}
+};
+
 
 /**
  * Returns the best and unique css {@link Selectors} for the element on the page.
