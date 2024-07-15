@@ -11,7 +11,7 @@ export type Meta = typeof meta[number];
 
 export type SelectorArray = string[];
 
-type RegexableString = string | { '$regex':string };
+type RegexableString = string | { '$regex': string };
 
 type BaseConditions = {
   'url': RegexableString,
@@ -20,9 +20,9 @@ type BaseConditions = {
 } & Record<Meta, RegexableString>;
 
 export type Where =
-Partial<{ [key in NAryOperator]: Where[] }> & // either a logic operator (arity N)
-Partial<{ [key in UnaryOperator]: Where }> & // or an unary operator
-Partial<BaseConditions>; // or one of the base conditions
+  Partial<{ [key in NAryOperator]: Where[] }> & // either a logic operator (arity N)
+  Partial<{ [key in UnaryOperator]: Where }> & // or an unary operator
+  Partial<BaseConditions>; // or one of the base conditions
 
 type MethodNames<T> = {
   [K in keyof T]: T[K] extends Function ? K : never;
