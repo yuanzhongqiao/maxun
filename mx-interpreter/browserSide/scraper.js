@@ -174,3 +174,53 @@ function scrape(selector = null) {
 
   return crudeRecords;
 }
+
+/**
+ * Given an object with named lists of elements,
+ *  groups the elements by their distance in the DOM tree.
+ * @param {Object.<string, object[]>} lists The named lists of HTML elements.
+ * @returns {Array.<Object.<string, string>>}
+ */
+function scrapeSchema(lists) {
+  function omap(object, f, kf = (x) => x) {
+    return Object.fromEntries(
+      Object.entries(object)
+        .map(([k, v]) => [kf(k), f(v)]),
+    );
+  }
+
+  function ofilter(object, f) {
+    return Object.fromEntries(
+      Object.entries(object)
+        .filter(([k, v]) => f(k, v)),
+    );
+  }
+
+  function getSeedKey(listObj) {
+    const maxLength = Math.max(...Object.values(omap(listObj, (x) => x.length)));
+    return Object.keys(ofilter(listObj, (_, v) => v.length === maxLength))[0];
+  }
+
+  function getMBEs(elements) {
+    return elements.map((element) => {
+      let candidate = element;
+      const isUniqueChild = (e) => elements
+        .filter((elem) => e.parentNode?.contains(elem))
+        .length === 1;
+
+      while (candidate && isUniqueChild(candidate)) {
+        candidate = candidate.parentNode;
+      }
+
+      return candidate;
+    });
+  }
+
+  const seedName = getSeedKey(lists);
+  const MBEs = getMBEs(lists[seedName]);
+
+  return MBEs.map((mbe) => omap(
+    lists,
+    (listOfElements) => listOfElements.find((elem) => mbe.contains(elem))?.innerText,
+  ));
+}
