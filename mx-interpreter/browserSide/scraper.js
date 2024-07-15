@@ -126,3 +126,51 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
   return out;
 }
 
+/**
+ * Returns a "scrape" result from the current page.
+ * @returns {Array<Object>} *Curated* array of scraped information (with sparse rows removed)
+ */
+function scrape(selector = null) {
+  /**
+   * **crudeRecords** contains uncurated rundowns of "scrapable" elements
+   * @type {Array<Object>}
+   */
+  const crudeRecords = (selector
+    ? Array.from(document.querySelectorAll(selector))
+    : scrapableHeuristics())
+    .map((record) => ({
+      ...Array.from(record.querySelectorAll('img'))
+        .reduce((p, x, i) => {
+          let url = null;
+          if (x.srcset) {
+            const urls = x.srcset.split(', ');
+            [url] = urls[urls.length - 1].split(' ');
+          }
+
+          /**
+             * Contains the largest elements from `srcset` - if `srcset` is not present, contains
+             * URL from the `src` attribute
+             *
+             * If the `src` attribute contains a data url, imgUrl contains `undefined`.
+             */
+          let imgUrl;
+          if (x.srcset) {
+            imgUrl = url;
+          } else if (x.src.indexOf('data:') === -1) {
+            imgUrl = x.src;
+          }
+
+          return ({
+            ...p,
+            ...(imgUrl ? { [`img_${i}`]: imgUrl } : {}),
+          });
+        }, {}),
+      ...record.innerText.split('\n')
+        .reduce((p, x, i) => ({
+          ...p,
+          [`record_${String(i).padStart(4, '0')}`]: x.trim(),
+        }), {}),
+    }));
+
+  return crudeRecords;
+}
