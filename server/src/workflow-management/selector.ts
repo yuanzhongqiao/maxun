@@ -68,24 +68,58 @@ export const getElementInformation = async (
         const el = document.elementFromPoint(x, y) as HTMLElement;
         if (el) {
           const { parentElement } = el;
-          // Match the logic in recorder.ts for link clicks
           const element = parentElement?.tagName === 'A' ? parentElement : el;
-          return {
+
+          let info: {
+            tagName: string;
+            hasOnlyText?: boolean;
+            innerText?: string;
+            url?: string;
+            imageUrl?: string;
+          } = {
             tagName: element?.tagName ?? '',
-            hasOnlyText: element?.children?.length === 0 &&
-              element?.innerText?.length > 0,
+          };
+
+          if (element?.tagName === 'A') {
+            info.url = (element as HTMLAnchorElement).href;
+            info.innerText = element.innerText ?? '';
+          } else if (element?.tagName === 'IMG') {
+            info.imageUrl = (element as HTMLImageElement).src;
+          } else {
+            info.hasOnlyText = element?.children?.length === 0 &&
+              element?.innerText?.length > 0;
+            info.innerText = element?.innerText ?? '';
           }
+
+          return info;
         }
+        return null;
       },
       { x: coordinates.x, y: coordinates.y },
     );
+
+    if (elementInfo) {
+      if (elementInfo.tagName === 'A') {
+        if (elementInfo.innerText) {
+          console.log(`Link text: ${elementInfo.innerText}, URL: ${elementInfo.url}`);
+        } else {
+          console.log(`URL: ${elementInfo.url}`);
+        }
+      } else if (elementInfo.tagName === 'IMG') {
+        console.log(`Image URL: ${elementInfo.imageUrl}`);
+      } else {
+        console.log(`Element innerText: ${elementInfo.innerText}`);
+      }
+    }
+
     return elementInfo;
   } catch (error) {
     const { message, stack } = error as Error;
-    logger.log('error', `Error while retrieving selector: ${message}`);
-    logger.log('error', `Stack: ${stack}`);
+    console.error('Error while retrieving selector:', message);
+    console.error('Stack:', stack);
   }
-}
+};
+
 
 /**
  * Returns the best and unique css {@link Selectors} for the element on the page.

@@ -70,7 +70,7 @@ export const BrowserWindow = () => {
     return (
         <>
             {(highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
-                < Highlighter
+                <Highlighter
                     unmodifiedRect={highlighterData?.rect}
                     displayedSelector={highlighterData?.selector}
                     width={width}
@@ -96,9 +96,7 @@ const drawImage = (image: string, canvas: HTMLCanvasElement): void => {
     img.src = image;
     img.onload = () => {
         URL.revokeObjectURL(img.src);
-        //ctx?.clearRect(0, 0, canvas?.width || 0, VIEWPORT_H || 0);
-        // ctx?.drawImage(img, 0, 0, canvas.width , canvas.height);
-        ctx?.drawImage(img, 0, 0, 1280, 720); // Explicitly draw image at 1280 x 720
+        ctx?.drawImage(img, 0, 0, 1280, 720);
         console.log('Image drawn on canvas:', img.width, img.height);
         console.log('Image drawn on canvas:', canvas.width, canvas.height);
     };

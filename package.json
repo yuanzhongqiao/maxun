@@ -24,6 +24,7 @@
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
     "fortawesome": "^0.0.1-security",
+    "html2canvas-pro": "^1.5.3",
     "joi": "^17.6.0",
     "loglevel": "^1.8.0",
     "loglevel-plugin-remote": "^0.6.8",

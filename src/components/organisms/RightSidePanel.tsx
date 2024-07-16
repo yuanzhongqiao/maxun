@@ -7,15 +7,13 @@ import { SelectChangeEvent } from "@mui/material/Select/Select";
 import { SimpleBox } from "../atoms/Box";
 import Typography from "@mui/material/Typography";
 import { useGlobalInfoStore } from "../../context/globalInfo";
-import { PairDetail } from "../molecules/PairDetail";
 import { PairForEdit } from "../../pages/RecordingPage";
 
 interface RightSidePanelProps {
   pairForEdit: PairForEdit;
-  changeBrowserDimensions: () => void;
 }
 
-export const RightSidePanel = ({pairForEdit, changeBrowserDimensions}: RightSidePanelProps) => {
+export const RightSidePanel = ({pairForEdit}: RightSidePanelProps) => {
 
   const [content, setContent] = useState<string>('action');
   const [action, setAction] = React.useState<string>('');
@@ -48,20 +46,12 @@ export const RightSidePanel = ({pairForEdit, changeBrowserDimensions}: RightSide
         backgroundColor: 'white',
         alignItems: "center",
       }}>
-      <Button onClick={() => {
-        changeBrowserDimensions();
-      }}>resize browser</Button>
       <SimpleBox height={60} width='100%' background='lightGray' radius='0%'>
         <Typography sx={{ padding: '10px' }}>
           Last action:
           {` ${lastAction}`}
         </Typography>
       </SimpleBox>
-
-      <Tabs value={content} onChange={handleChange} centered>
-        <Tab label="Actions" value="action" />
-        <Tab label="Pair detail" value="detail"/>
-      </Tabs>
 
       {content === 'action' ? (
           <React.Fragment>
@@ -87,7 +77,7 @@ export const RightSidePanel = ({pairForEdit, changeBrowserDimensions}: RightSide
             }
           </React.Fragment>
         )
-        : <PairDetail pair={pairForEdit.pair} index={pairForEdit.index}/>
+        : null
       }
     </Paper>
   );

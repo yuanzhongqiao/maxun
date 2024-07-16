@@ -123,13 +123,11 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     }, [onMouseEvent]);
 
     return (
-        // <canvas tabIndex={0} ref={canvasRef}  height={height} width={width} />
         <canvas
             tabIndex={0}
             ref={canvasRef}
             height={720}
             width={1280}
-            style={{ width: '1280px', height: '720px' }} // Ensure dimensions are explicitly set
         />
     );
 

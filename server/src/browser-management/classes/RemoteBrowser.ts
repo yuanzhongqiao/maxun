@@ -143,7 +143,7 @@ export class RemoteBrowser {
             return;
         }
         this.client.on('Page.screencastFrame', ({ data: base64, sessionId }) => {
-            this.emitScreenshot(base64);
+            this.emitScreenshot(base64)
             setTimeout(async () => {
                 try {
                     if (!this.client) {
@@ -180,7 +180,9 @@ export class RemoteBrowser {
      */
     public makeAndEmitScreenshot = async (): Promise<void> => {
         try {
-            const screenshot = await this.currentPage?.screenshot();
+            const screenshot = await this.currentPage?.screenshot(
+                { type: 'jpeg', quality: 90, fullPage: true }
+            );
             if (screenshot) {
                 this.emitScreenshot(screenshot.toString('base64'));
             }
@@ -313,7 +315,7 @@ export class RemoteBrowser {
             logger.log('warn', 'client is not initialized');
             return;
         }
-        await this.client.send('Page.startScreencast', { format: 'jpeg', quality: 75 });
+        await this.client.send('Page.startScreencast', { format: 'jpeg', quality: 90 });
         logger.log('info', `Browser started with screencasting a page.`);
     };
 
