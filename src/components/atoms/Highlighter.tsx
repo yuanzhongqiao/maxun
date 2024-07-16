@@ -8,29 +8,15 @@ interface HighlighterProps {
   width: number;
   height: number;
   canvasRect: DOMRect;
-  isSelected: boolean;
 };
 
-export const Highlighter = ({ unmodifiedRect, displayedSelector = '', width, height, canvasRect, isSelected }: HighlighterProps) => {
+export const Highlighter = ({ unmodifiedRect, displayedSelector = '', width, height, canvasRect }: HighlighterProps) => {
   if (!unmodifiedRect) {
     return null;
   } else {
-    // const unshiftedRect = mapRect(unmodifiedRect, width, height);
-    // console.log('unshiftedRect', unshiftedRect)
-    // const rect = {
-    //   bottom: unshiftedRect.bottom + canvasRect.top,
-    //   top: unshiftedRect.top + canvasRect.top,
-    //   left: unshiftedRect.left + canvasRect.left,
-    //   right: unshiftedRect.right + canvasRect.left,
-    //   x: unshiftedRect.x + canvasRect.left,
-    //   y: unshiftedRect.y + canvasRect.top,
-    //   width: unshiftedRect.width,
-    //   height: unshiftedRect.height,
-    // }
-
     const rect = {
-      top: unmodifiedRect.top + canvasRect.top,
-      left: unmodifiedRect.left + canvasRect.left,
+      top: unmodifiedRect.top + canvasRect.top + window.scrollY,
+      left: unmodifiedRect.left + canvasRect.left + window.scrollX,
       right: unmodifiedRect.right + canvasRect.left,
       bottom: unmodifiedRect.bottom + canvasRect.top,
       width: unmodifiedRect.width,
@@ -42,26 +28,6 @@ export const Highlighter = ({ unmodifiedRect, displayedSelector = '', width, hei
     console.log('rectangle:', rect)
     console.log('canvas rectangle:', canvasRect)
 
-    // make the highlighting rectangle stay in browser window boundaries
-    // if (rect.bottom > canvasRect.bottom) {
-    //   rect.height = height - unshiftedRect.top;
-    // }
-
-    // if (rect.top < canvasRect.top) {
-    //   rect.height = rect.height - (canvasRect.top - rect.top);
-    //   rect.top = canvasRect.top;
-    // }
-
-    // if (rect.right > canvasRect.right) {
-    //   rect.width = width - unshiftedRect.left;
-    // }
-
-    // if (rect.left < canvasRect.left) {
-    //   rect.width = rect.width - (canvasRect.left - rect.left);
-    //   rect.left = canvasRect.left;
-    // }
-
-
     return (
       <div>
         <HighlighterOutline
@@ -70,10 +36,6 @@ export const Highlighter = ({ unmodifiedRect, displayedSelector = '', width, hei
           left={rect.left}
           width={rect.width}
           height={rect.height}
-          style={{
-            background: isSelected ? '#ff0000' : '#ff5d5b26',
-            outline: isSelected ? '2px solid red' : '2px solid pink',
-          }}
         />
         <HighlighterLabel
           id="Highlighter-label"
@@ -93,9 +55,9 @@ const HighlighterOutline = styled.div<HighlighterOutlineProps>`
   position: fixed !important;
   background: #ff5d5b26 !important;
   outline: 4px solid pink !important;
-  // border: 4px solid #ff5d5b !important;
+  //border: 4px solid #ff5d5b !important;
   z-index: 2147483647 !important;
-  // border-radius: 5px;
+  //border-radius: 5px;
   top: ${(p: HighlighterOutlineProps) => p.top}px;
   left: ${(p: HighlighterOutlineProps) => p.left}px;
   width: ${(p: HighlighterOutlineProps) => p.width}px;
