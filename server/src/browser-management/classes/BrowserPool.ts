@@ -38,7 +38,7 @@ export class BrowserPool {
     /**
      * Holds all the instances of remote browsers.
      */
-    private pool : PoolDictionary = {};
+    private pool: PoolDictionary = {};
 
     /**
      * Adds a remote browser instance to the pool indexed by the id.
@@ -62,12 +62,12 @@ export class BrowserPool {
      * @param id remote browser instance's id
      * @returns true if the browser was removed successfully, false otherwise
      */
-    public deleteRemoteBrowser = (id: string) : boolean => {
+    public deleteRemoteBrowser = (id: string): boolean => {
         if (!this.pool[id]) {
             logger.log('warn', `Remote browser with id: ${id} does not exist in the pool`);
             return false;
         }
-        delete(this.pool[id]);
+        delete (this.pool[id]);
         logger.log('debug', `Remote browser with id: ${id} deleted from the pool`);
         return true;
     };
@@ -77,7 +77,7 @@ export class BrowserPool {
      * @param id remote browser instance's id
      * @returns remote browser instance or undefined if it does not exist in the pool
      */
-    public getRemoteBrowser = (id: string) : RemoteBrowser | undefined => {
+    public getRemoteBrowser = (id: string): RemoteBrowser | undefined => {
         logger.log('debug', `Remote browser with id: ${id} retrieved from the pool`);
         return this.pool[id]?.browser;
     };
@@ -88,7 +88,7 @@ export class BrowserPool {
      * If there are multiple active browsers, it returns the first one.
      * @returns the first remote active browser instance's id from the pool
      */
-    public getActiveBrowserId = () : string | null => {
+    public getActiveBrowserId = (): string | null => {
         for (const id of Object.keys(this.pool)) {
             if (this.pool[id].active) {
                 return id;
