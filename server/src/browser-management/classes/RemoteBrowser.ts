@@ -5,6 +5,8 @@ import {
     BrowserContext,
 } from 'playwright';
 import { Socket } from "socket.io";
+import { fullLists, PlaywrightBlocker, Request } from '@cliqz/adblocker-playwright';
+import fetch from 'cross-fetch';
 
 import logger from '../../logger';
 import { InterpreterSettings, RemoteBrowserOptions } from "../../types";
