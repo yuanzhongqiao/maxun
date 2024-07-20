@@ -5,11 +5,15 @@ import {
     BrowserContext,
 } from 'playwright';
 import { Socket } from "socket.io";
+import { fullLists, PlaywrightBlocker, Request } from '@cliqz/adblocker-playwright';
+import fetch from 'cross-fetch';
 
 import logger from '../../logger';
 import { InterpreterSettings, RemoteBrowserOptions } from "../../types";
 import { WorkflowGenerator } from "../../workflow-management/classes/Generator";
 import { WorkflowInterpreter } from "../../workflow-management/classes/Interpreter";
+
+
 
 /**
  * This class represents a remote browser instance.
@@ -88,7 +92,10 @@ export class RemoteBrowser {
         this.browser = <Browser>(await options.browser.launch(options.launchOptions));
         const context = await this.browser.newContext();
         this.currentPage = await context.newPage();
+        const blocker = await PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch);
+        await blocker.enableBlockingInPage(this.currentPage);
         this.client = await this.currentPage.context().newCDPSession(this.currentPage);
+        await blocker.disableBlockingInPage(this.currentPage);
     };
 
     /**

@@ -11,10 +11,12 @@ import {
     stopRunningInterpretation,
     getRemoteBrowserCurrentUrl, getRemoteBrowserCurrentTabs,
 } from '../browser-management/controller'
-import { chromium } from "playwright";
+import { chromium } from 'playwright-extra';
+import stealthPlugin from 'puppeteer-extra-plugin-stealth';
 import logger from "../logger";
 
 export const router = Router();
+chromium.use(stealthPlugin());
 
 /**
  * Logs information about remote browser recording session.
