@@ -95,6 +95,7 @@ export class RemoteBrowser {
         const blocker = await PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch);
         blocker.enableBlockingInPage(this.currentPage);
         this.client = await this.currentPage.context().newCDPSession(this.currentPage);
+        await blocker.disableBlockingInPage(this.currentPage);
     };
 
     /**
