@@ -3,12 +3,42 @@ import { useSocketStore } from '../../context/socket';
 import Canvas from "../atoms/canvas";
 import { useBrowserDimensionsStore } from "../../context/browserDimensions";
 import { Highlighter } from "../atoms/Highlighter";
+import { GenericModal } from '../atoms/GenericModal';
+import { Button, Typography, Box } from '@mui/material';
+
+interface ConfirmationBoxProps {
+    selector: string;
+    onYes: () => void;
+    onNo: () => void;
+}
+
+// New component for the confirmation box inside the modal
+const ConfirmationBox = ({ selector, onYes, onNo }: ConfirmationBoxProps) => {
+  return (
+    <Box sx={{ textAlign: 'center' }}>
+      <Typography variant="h6" component="h2" gutterBottom>
+        Confirmation
+      </Typography>
+      <Typography variant="body1" gutterBottom>
+        Do you want to interact with the element: {selector}?
+      </Typography>
+      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center', gap: 2 }}>
+        <Button variant="contained" color="primary" onClick={onYes}>
+          Yes
+        </Button>
+        <Button variant="contained" color="secondary" onClick={onNo}>
+          No
+        </Button>
+      </Box>
+    </Box>
+  );
+};
 
 export const BrowserWindow = () => {
-
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
     const [screenShot, setScreenShot] = useState<string>("");
     const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string } | null>(null);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
@@ -46,9 +76,7 @@ export const BrowserWindow = () => {
         return () => {
             socket?.off("screencast", screencastHandler);
         }
-
     }, [screenShot, canvasRef, socket, screencastHandler]);
-
 
     const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string }) => {
         setHighlighterData(data);
@@ -60,15 +88,53 @@ export const BrowserWindow = () => {
         if (socket) {
             socket.on("highlighter", highlighterHandler);
         }
-        //cleaning function
         return () => {
             document.removeEventListener('mousemove', onMouseMove);
             socket?.off("highlighter", highlighterHandler);
         };
     }, [socket, onMouseMove]);
 
+    const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (highlighterData && canvasRef?.current) {
+            const canvasRect = canvasRef.current.getBoundingClientRect();
+            const clickX = e.clientX - canvasRect.left;
+            const clickY = e.clientY - canvasRect.top;
+            
+            const highlightRect = highlighterData.rect;
+            if (
+                clickX >= highlightRect.left &&
+                clickX <= highlightRect.right &&
+                clickY >= highlightRect.top &&
+                clickY <= highlightRect.bottom
+            ) {
+                setShowConfirmation(true);
+            }
+        }
+    };
+
+    const handleConfirmation = (confirmed: boolean) => {
+        if (confirmed) {
+            console.log(`User confirmed interaction with: ${highlighterData?.selector}`);
+            // Here you can add logic to interact with the element
+        } else {
+            console.log('User declined interaction');
+        }
+        setShowConfirmation(false);
+    };
+
     return (
-        <>
+        <div onClick={handleClick}>
+            <GenericModal 
+                isOpen={showConfirmation} 
+                onClose={() => setShowConfirmation(false)}
+                canBeClosed={false}
+            >
+                <ConfirmationBox
+                    selector={highlighterData?.selector || ''}
+                    onYes={() => handleConfirmation(true)}
+                    onNo={() => handleConfirmation(false)}
+                />
+            </GenericModal>
             {(highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
                 <Highlighter
                     unmodifiedRect={highlighterData?.rect}
@@ -83,7 +149,7 @@ export const BrowserWindow = () => {
                 width={width}
                 height={height}
             />
-        </>
+        </div>
     );
 };
 
