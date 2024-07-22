@@ -12,7 +12,6 @@ interface ConfirmationBoxProps {
     onNo: () => void;
 }
 
-// New component for the confirmation box inside the modal
 const ConfirmationBox = ({ selector, onYes, onNo }: ConfirmationBoxProps) => {
   return (
     <Box sx={{ textAlign: 'center' }}>
