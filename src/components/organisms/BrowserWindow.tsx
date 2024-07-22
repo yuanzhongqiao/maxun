@@ -42,7 +42,7 @@ export const BrowserWindow = () => {
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
 
-    console.log('Use browser dimensions:', width, height)
+    // console.log('Use browser dimensions:', width, height)
 
     const onMouseMove = (e: MouseEvent) => {
         if (canvasRef && canvasRef.current && highlighterData) {
@@ -79,7 +79,7 @@ export const BrowserWindow = () => {
 
     const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string }) => {
         setHighlighterData(data);
-        console.log('Highlighter Rect via socket:', data.rect)
+        // console.log('Highlighter Rect via socket:', data.rect)
     }, [highlighterData])
 
     useEffect(() => {
@@ -162,8 +162,8 @@ const drawImage = (image: string, canvas: HTMLCanvasElement): void => {
     img.onload = () => {
         URL.revokeObjectURL(img.src);
         ctx?.drawImage(img, 0, 0, 1280, 720);
-        console.log('Image drawn on canvas:', img.width, img.height);
-        console.log('Image drawn on canvas:', canvas.width, canvas.height);
+        //console.log('Image drawn on canvas:', img.width, img.height);
+        //console.log('Image drawn on canvas:', canvas.width, canvas.height);
     };
 
 };
