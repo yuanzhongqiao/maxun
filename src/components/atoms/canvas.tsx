@@ -45,9 +45,15 @@ const ConfirmationBox = ({ selector, onYes, onNo }: { selector: string; onYes: (
 const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const { socket } = useSocketStore();
-    const { setLastAction } = useGlobalInfoStore();
+    const { setLastAction, lastAction } = useGlobalInfoStore();
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [pendingClick, setPendingClick] = useState<Coordinates | null>(null);
+
+    const notifyLastAction = (action: string) => {
+        if (lastAction !== action) {
+            setLastAction(action);
+        }
+    };
 
     const lastMousePosition = useRef<Coordinates>({ x: 0, y: 0 });
 
