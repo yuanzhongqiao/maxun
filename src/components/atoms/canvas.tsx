@@ -72,7 +72,7 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
                             x: coordinates.x,
                             y: coordinates.y,
                         });
-                        setLastAction('move');
+                        notifyLastAction('move');
                     }
                     break;
                 case 'wheel':
@@ -82,7 +82,7 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
                         deltaY: Math.round(wheelEvent.deltaY),
                     };
                     socket.emit('input:wheel', deltas);
-                    setLastAction('scroll');
+                    notifyLastAction('scroll');
                     break;
                 default:
                     console.log('Default mouseEvent registered');
@@ -96,7 +96,7 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
             switch (event.type) {
                 case 'keydown':
                     socket.emit('input:keydown', { key: event.key, coordinates: lastMousePosition.current });
-                    setLastAction(`${event.key} pressed`);
+                    notifyLastAction(`${event.key} pressed`);
                     break;
                 case 'keyup':
                     socket.emit('input:keyup', event.key);
@@ -133,7 +133,7 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
                 height
             );
             socket.emit('input:mousedown', mappedCoordinates);
-            setLastAction('click');
+            notifyLastAction('click');
         }
         setShowConfirmation(false);
         setPendingClick(null);
