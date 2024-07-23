@@ -36,6 +36,8 @@ export const BrowserWindow = () => {
         }
         if (canvasRef?.current) {
             drawImage(screenShot, canvasRef.current);
+        } else {
+            console.log('Canvas is not initialized');
         }
         return () => {
             socket?.off("screencast", screencastHandler);
