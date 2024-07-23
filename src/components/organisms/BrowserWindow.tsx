@@ -38,6 +38,7 @@ export const BrowserWindow = () => {
     const [screenShot, setScreenShot] = useState<string>("");
     const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string } | null>(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [isClickConfirmed, setIsClickConfirmed] = useState(false);
 
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
