@@ -50,6 +50,7 @@ const Canvas = ({ width, height, onCreateRef, isClickConfirmed, resetClickConfir
                     if (isClickConfirmed) {
                         socket.emit('input:mousedown', clickCoordinates);
                         notifyLastAction('click');
+                        resetClickConfirmation();
                     }
                     break;
                 case 'mousemove':
