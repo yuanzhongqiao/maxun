@@ -69,7 +69,7 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
                         lastMousePosition.current.y !== coordinates.y) {
                         lastMousePosition.current = coordinates;
                         socket.emit('input:mousemove', coordinates);
-                        setLastAction('move');
+                        notifyLastAction('move');
                     }
                     break;
                 case 'mousedown':
@@ -85,11 +85,11 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
                             setShowConfirmation(true);
                         } else {
                             socket.emit('input:mousedown', coordinates);
-                            setLastAction('click');
+                            notifyLastAction('click');
                         }
                     } else {
                         socket.emit('input:mousedown', coordinates);
-                        setLastAction('click');
+                        notifyLastAction('click');
                     }
                     break;
                 case 'wheel':
@@ -99,7 +99,7 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
                         deltaY: Math.round(wheelEvent.deltaY),
                     };
                     socket.emit('input:wheel', deltas);
-                    setLastAction('scroll');
+                    notifyLastAction('scroll');
                     break;
             }
         }
@@ -110,7 +110,7 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
             switch (event.type) {
                 case 'keydown':
                     socket.emit('input:keydown', { key: event.key, coordinates: lastMousePosition.current });
-                    setLastAction(`${event.key} pressed`);
+                    notifyLastAction(`${event.key} pressed`);
                     break;
                 case 'keyup':
                     socket.emit('input:keyup', event.key);
@@ -122,7 +122,7 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
     const handleConfirmation = (confirmed: boolean) => {
         if (confirmed && pendingClick && socket) {
             socket.emit('input:mousedown', pendingClick);
-            setLastAction('click');
+            notifyLastAction('click');
         }
         setShowConfirmation(false);
         setPendingClick(null);
