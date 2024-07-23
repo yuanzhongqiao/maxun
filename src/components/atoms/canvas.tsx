@@ -62,7 +62,10 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
                             x: coordinates.x,
                             y: coordinates.y,
                         };
-                        socket.emit('input:mousemove', coordinates);
+                        socket.emit('input:mousemove', {
+                            x: coordinates.x,
+                            y: coordinates.y,
+                        });
                         setLastAction('move');
                     }
                     break;
