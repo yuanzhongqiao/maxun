@@ -147,7 +147,7 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
 
     return (
         <>
-        <canvas
+            <canvas
                 tabIndex={0}
                 ref={canvasRef}
                 height={720}
