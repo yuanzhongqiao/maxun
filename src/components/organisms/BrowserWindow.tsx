@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSocketStore } from '../../context/socket';
 import Canvas from "../atoms/canvas";
 import { useBrowserDimensionsStore } from "../../context/browserDimensions";
+import { Highlighter } from "../atoms/Highlighter";
 
 export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
@@ -10,6 +11,20 @@ export const BrowserWindow = () => {
 
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
+
+    const onMouseMove = (e: MouseEvent) => {
+        if (canvasRef && canvasRef.current && highlighterData) {
+            const canvasRect = canvasRef.current.getBoundingClientRect();
+            if (
+                e.pageX < canvasRect.left
+                || e.pageX > canvasRect.right
+                || e.pageY < canvasRect.top
+                || e.pageY > canvasRect.bottom
+            ) {
+                setHighlighterData(null);
+            }
+        }
+    };
 
     const screencastHandler = useCallback((data: string) => {
         setScreenShot(data);
@@ -32,16 +47,27 @@ export const BrowserWindow = () => {
     }, [])
 
     useEffect(() => {
+        document.addEventListener('mousemove', onMouseMove, false);
         if (socket) {
             socket.on("highlighter", highlighterHandler);
         }
         return () => {
+            document.removeEventListener('mousemove', onMouseMove);
             socket?.off("highlighter", highlighterHandler);
         };
-    }, [socket, highlighterHandler]);
+    }, [socket, onMouseMove]);
 
     return (
-        <div style={{ position: 'relative' }}>
+        <div>
+            {(highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
+                <Highlighter
+                    unmodifiedRect={highlighterData?.rect}
+                    displayedSelector={highlighterData?.selector}
+                    width={width}
+                    height={height}
+                    canvasRect={canvasRef.current.getBoundingClientRect()}
+                />
+                : null}
             <Canvas
                 onCreateRef={setCanvasReference}
                 width={width}
