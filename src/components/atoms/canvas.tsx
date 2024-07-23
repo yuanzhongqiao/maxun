@@ -81,19 +81,8 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
                     break;
                 case 'mousedown':
                     if (highlighterData) {
-                        const highlightRect = highlighterData.rect;
-                        if (
-                            coordinates.x >= highlightRect.left &&
-                            coordinates.x <= highlightRect.right &&
-                            coordinates.y >= highlightRect.top &&
-                            coordinates.y <= highlightRect.bottom
-                        ) {
-                            setPendingClick(coordinates);
-                            setShowConfirmation(true);
-                        } else {
-                            socket.emit('input:mousedown', coordinates);
-                            notifyLastAction('click');
-                        }
+                        setPendingClick(coordinates);
+                        setShowConfirmation(true);
                     } else {
                         socket.emit('input:mousedown', coordinates);
                         notifyLastAction('click');
