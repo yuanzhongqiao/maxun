@@ -12,6 +12,7 @@ interface CanvasProps {
     height: number;
     onCreateRef: CreateRefCallback;
     isClickConfirmed: boolean;
+    resetClickConfirmation: () => void;
 }
 
 /**
