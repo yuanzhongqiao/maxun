@@ -78,6 +78,9 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
                     socket.emit('input:wheel', deltas);
                     setLastAction('scroll');
                     break;
+                default:
+                    console.log('Default mouseEvent registered');
+                    return;
             }
         }
     }, [socket, width, height, setLastAction]);
