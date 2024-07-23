@@ -46,7 +46,7 @@ export const BrowserWindow = () => {
 
     const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string }) => {
         setHighlighterData(data);
-    }, [])
+    }, [highlighterData])
 
     useEffect(() => {
         document.addEventListener('mousemove', onMouseMove, false);
