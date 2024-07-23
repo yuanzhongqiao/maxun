@@ -47,9 +47,10 @@ const Canvas = ({ width, height, onCreateRef, isClickConfirmed, resetClickConfir
             switch (event.type) {
                 case 'mousedown':
                     const clickCoordinates = getMappedCoordinates(event, canvasRef.current, width, height);
-                    //socket.emit('input:mousedown', clickCoordinates);
-                    console.log('you clicked on:', clickCoordinates);
-                    notifyLastAction('click');
+                    if (isClickConfirmed) {
+                        socket.emit('input:mousedown', clickCoordinates);
+                        notifyLastAction('click');
+                    }
                     break;
                 case 'mousemove':
                     const coordinates = getMappedCoordinates(event, canvasRef.current, width, height);
