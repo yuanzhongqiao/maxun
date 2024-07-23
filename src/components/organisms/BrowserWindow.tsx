@@ -116,8 +116,10 @@ export const BrowserWindow = () => {
         if (confirmed) {
             console.log(`User confirmed interaction with: ${highlighterData?.selector}`);
             // Here you can add logic to interact with the element
+            setIsClickConfirmed(true);
         } else {
             console.log('User declined interaction');
+            setIsClickConfirmed(true);
         }
         setShowConfirmation(false);
     };
