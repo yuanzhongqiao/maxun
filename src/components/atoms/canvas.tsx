@@ -4,7 +4,6 @@ import { getMappedCoordinates } from "../../helpers/inputHelpers";
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { GenericModal } from '../atoms/GenericModal';
 import { Box, Button, Typography } from '@mui/material';
-import { Highlighter } from "../atoms/Highlighter"
 
 interface CreateRefCallback {
     (ref: React.RefObject<HTMLCanvasElement>): void;
@@ -81,8 +80,19 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
                     break;
                 case 'mousedown':
                     if (highlighterData) {
-                        setPendingClick(coordinates);
-                        setShowConfirmation(true);
+                        const highlightRect = highlighterData.rect;
+                        if (
+                            coordinates.x >= highlightRect.left &&
+                            coordinates.x <= highlightRect.right &&
+                            coordinates.y >= highlightRect.top &&
+                            coordinates.y <= highlightRect.bottom
+                        ) {
+                            setPendingClick(coordinates);
+                            setShowConfirmation(true);
+                        } else {
+                            socket.emit('input:mousedown', coordinates);
+                            notifyLastAction('click');
+                        }
                     } else {
                         socket.emit('input:mousedown', coordinates);
                         notifyLastAction('click');
@@ -147,21 +157,6 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
 
     return (
         <>
-            <canvas
-                tabIndex={0}
-                ref={canvasRef}
-                height={720}
-                width={1280}
-            />
-            {!showConfirmation && highlighterData && canvasRef.current && (
-                <Highlighter
-                    unmodifiedRect={highlighterData.rect}
-                    displayedSelector={highlighterData.selector}
-                    width={width}
-                    height={height}
-                    canvasRect={canvasRef.current.getBoundingClientRect()}
-                />
-            )}
             <GenericModal
                 isOpen={showConfirmation}
                 onClose={() => setShowConfirmation(false)}
@@ -173,6 +168,12 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
                     onNo={() => handleConfirmation(false)}
                 />
             </GenericModal>
+            <canvas
+                tabIndex={0}
+                ref={canvasRef}
+                height={720}
+                width={1280}
+            />
         </>
     );
 };
