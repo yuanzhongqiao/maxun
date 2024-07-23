@@ -119,7 +119,7 @@ export const BrowserWindow = () => {
             setIsClickConfirmed(true);
         } else {
             console.log('User declined interaction');
-            setIsClickConfirmed(true);
+            setIsClickConfirmed(false);
         }
         setShowConfirmation(false);
     };
@@ -150,6 +150,7 @@ export const BrowserWindow = () => {
                 onCreateRef={setCanvasReference}
                 width={width}
                 height={height}
+                isClickConfirmed={isClickConfirmed}
             />
         </div>
     );
