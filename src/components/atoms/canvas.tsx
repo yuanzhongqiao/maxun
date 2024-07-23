@@ -8,7 +8,9 @@ import { Box, Button, Typography } from '@mui/material';
 interface CreateRefCallback {
     (ref: React.RefObject<HTMLCanvasElement>): void;
 }
-
+/**
+ * Interface for mouse's x,y coordinates
+ */
 interface CanvasProps {
     width: number;
     height: number;
