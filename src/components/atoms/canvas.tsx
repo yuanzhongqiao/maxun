@@ -58,7 +58,10 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
                 case 'mousemove':
                     if (lastMousePosition.current.x !== coordinates.x ||
                         lastMousePosition.current.y !== coordinates.y) {
-                        lastMousePosition.current = coordinates;
+                        lastMousePosition.current = {
+                            x: coordinates.x,
+                            y: coordinates.y,
+                        };
                         socket.emit('input:mousemove', coordinates);
                         setLastAction('move');
                     }
