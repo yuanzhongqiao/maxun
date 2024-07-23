@@ -151,6 +151,7 @@ export const BrowserWindow = () => {
                 width={width}
                 height={height}
                 isClickConfirmed={isClickConfirmed}
+                resetClickConfirmation={() => setIsClickConfirmed(false)}
             />
         </div>
     );
