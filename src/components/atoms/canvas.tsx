@@ -4,6 +4,7 @@ import { getMappedCoordinates } from "../../helpers/inputHelpers";
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { GenericModal } from '../atoms/GenericModal';
 import { Box, Button, Typography } from '@mui/material';
+import { Highlighter } from "../atoms/Highlighter"
 
 interface CreateRefCallback {
     (ref: React.RefObject<HTMLCanvasElement>): void;
@@ -157,6 +158,21 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
 
     return (
         <>
+        <canvas
+                tabIndex={0}
+                ref={canvasRef}
+                height={720}
+                width={1280}
+            />
+            {!showConfirmation && highlighterData && canvasRef.current && (
+                <Highlighter
+                    unmodifiedRect={highlighterData.rect}
+                    displayedSelector={highlighterData.selector}
+                    width={width}
+                    height={height}
+                    canvasRect={canvasRef.current.getBoundingClientRect()}
+                />
+            )}
             <GenericModal
                 isOpen={showConfirmation}
                 onClose={() => setShowConfirmation(false)}
@@ -168,12 +184,6 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
                     onNo={() => handleConfirmation(false)}
                 />
             </GenericModal>
-            <canvas
-                tabIndex={0}
-                ref={canvasRef}
-                height={720}
-                width={1280}
-            />
         </>
     );
 };
