@@ -45,34 +45,43 @@ const ConfirmationBox = ({ selector, onYes, onNo }: { selector: string; onYes: (
 const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const { socket } = useSocketStore();
-    const { setLastAction, lastAction } = useGlobalInfoStore();
+    const { setLastAction } = useGlobalInfoStore();
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [pendingClick, setPendingClick] = useState<Coordinates | null>(null);
-
-    const notifyLastAction = (action: string) => {
-        if (lastAction !== action) {
-            setLastAction(action);
-        }
-    };
 
     const lastMousePosition = useRef<Coordinates>({ x: 0, y: 0 });
 
     const onMouseEvent = useCallback((event: MouseEvent) => {
-        if (socket) {
+        if (socket && canvasRef.current) {
             const coordinates = getMappedCoordinates(event, canvasRef.current, width, height);
+            
             switch (event.type) {
                 case 'mousemove':
                     if (lastMousePosition.current.x !== coordinates.x ||
                         lastMousePosition.current.y !== coordinates.y) {
-                        lastMousePosition.current = {
-                            x: coordinates.x,
-                            y: coordinates.y,
-                        };
-                        socket.emit('input:mousemove', {
-                            x: coordinates.x,
-                            y: coordinates.y,
-                        });
-                        notifyLastAction('move');
+                        lastMousePosition.current = coordinates;
+                        socket.emit('input:mousemove', coordinates);
+                        setLastAction('move');
+                    }
+                    break;
+                case 'mousedown':
+                    if (highlighterData) {
+                        const highlightRect = highlighterData.rect;
+                        if (
+                            coordinates.x >= highlightRect.left &&
+                            coordinates.x <= highlightRect.right &&
+                            coordinates.y >= highlightRect.top &&
+                            coordinates.y <= highlightRect.bottom
+                        ) {
+                            setPendingClick(coordinates);
+                            setShowConfirmation(true);
+                        } else {
+                            socket.emit('input:mousedown', coordinates);
+                            setLastAction('click');
+                        }
+                    } else {
+                        socket.emit('input:mousedown', coordinates);
+                        setLastAction('click');
                     }
                     break;
                 case 'wheel':
@@ -82,21 +91,18 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
                         deltaY: Math.round(wheelEvent.deltaY),
                     };
                     socket.emit('input:wheel', deltas);
-                    notifyLastAction('scroll');
+                    setLastAction('scroll');
                     break;
-                default:
-                    console.log('Default mouseEvent registered');
-                    return;
             }
         }
-    }, [socket, width, height, setLastAction]);
+    }, [socket, width, height, setLastAction, highlighterData]);
 
     const onKeyboardEvent = useCallback((event: KeyboardEvent) => {
         if (socket) {
             switch (event.type) {
                 case 'keydown':
                     socket.emit('input:keydown', { key: event.key, coordinates: lastMousePosition.current });
-                    notifyLastAction(`${event.key} pressed`);
+                    setLastAction(`${event.key} pressed`);
                     break;
                 case 'keyup':
                     socket.emit('input:keyup', event.key);
@@ -105,35 +111,10 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
         }
     }, [socket, setLastAction]);
 
-    const handleCanvasClick = useCallback((event: MouseEvent) => {
-        if (canvasRef.current && highlighterData) {
-            const canvasRect = canvasRef.current.getBoundingClientRect();
-            const clickX = event.clientX - canvasRect.left;
-            const clickY = event.clientY - canvasRect.top;
-
-            const highlightRect = highlighterData.rect;
-            if (
-                clickX >= highlightRect.left &&
-                clickX <= highlightRect.right &&
-                clickY >= highlightRect.top &&
-                clickY <= highlightRect.bottom
-            ) {
-                setPendingClick({ x: clickX, y: clickY });
-                setShowConfirmation(true);
-            }
-        }
-    }, [highlighterData]);
-
     const handleConfirmation = (confirmed: boolean) => {
-        if (confirmed && pendingClick && socket && canvasRef.current) {
-            const mappedCoordinates = getMappedCoordinates(
-                { clientX: pendingClick.x, clientY: pendingClick.y } as MouseEvent,
-                canvasRef.current,
-                width,
-                height
-            );
-            socket.emit('input:mousedown', mappedCoordinates);
-            notifyLastAction('click');
+        if (confirmed && pendingClick && socket) {
+            socket.emit('input:mousedown', pendingClick);
+            setLastAction('click');
         }
         setShowConfirmation(false);
         setPendingClick(null);
@@ -142,7 +123,7 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
     useEffect(() => {
         if (canvasRef.current) {
             onCreateRef(canvasRef);
-            canvasRef.current.addEventListener('click', handleCanvasClick);
+            canvasRef.current.addEventListener('mousedown', onMouseEvent);
             canvasRef.current.addEventListener('mousemove', onMouseEvent);
             canvasRef.current.addEventListener('wheel', onMouseEvent, { passive: true });
             canvasRef.current.addEventListener('keydown', onKeyboardEvent);
@@ -150,7 +131,7 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
 
             return () => {
                 if (canvasRef.current) {
-                    canvasRef.current.removeEventListener('click', handleCanvasClick);
+                    canvasRef.current.removeEventListener('mousedown', onMouseEvent);
                     canvasRef.current.removeEventListener('mousemove', onMouseEvent);
                     canvasRef.current.removeEventListener('wheel', onMouseEvent);
                     canvasRef.current.removeEventListener('keydown', onKeyboardEvent);
@@ -158,7 +139,7 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
                 }
             };
         }
-    }, [onMouseEvent, onKeyboardEvent, handleCanvasClick, onCreateRef]);
+    }, [onMouseEvent, onKeyboardEvent, onCreateRef]);
 
     return (
         <>
