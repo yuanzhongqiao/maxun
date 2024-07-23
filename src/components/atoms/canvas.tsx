@@ -23,7 +23,7 @@ export interface Coordinates {
     y: number;
 };
 
-const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
+const Canvas = ({ width, height, onCreateRef, isClickConfirmed, resetClickConfirmation }: CanvasProps) => {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const { socket } = useSocketStore();
