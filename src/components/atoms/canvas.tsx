@@ -11,6 +11,7 @@ interface CanvasProps {
     width: number;
     height: number;
     onCreateRef: CreateRefCallback;
+    isClickConfirmed: boolean;
 }
 
 /**
@@ -45,7 +46,8 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
             switch (event.type) {
                 case 'mousedown':
                     const clickCoordinates = getMappedCoordinates(event, canvasRef.current, width, height);
-                    socket.emit('input:mousedown', clickCoordinates);
+                    //socket.emit('input:mousedown', clickCoordinates);
+                    console.log('you clicked on:', clickCoordinates);
                     notifyLastAction('click');
                     break;
                 case 'mousemove':
