@@ -62,7 +62,7 @@ const Canvas = ({ width, height, onCreateRef, highlighterData }: CanvasProps) =>
     const onMouseEvent = useCallback((event: MouseEvent) => {
         if (socket && canvasRef.current) {
             const coordinates = getMappedCoordinates(event, canvasRef.current, width, height);
-            
+
             switch (event.type) {
                 case 'mousemove':
                     if (lastMousePosition.current.x !== coordinates.x ||
