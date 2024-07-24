@@ -83,7 +83,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
         : null
       }
 
-      <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px'}}>
+      <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
         {!getText && !getScreenshot && (
           <Button variant="contained" onClick={startGetText}>
             Capture Text
