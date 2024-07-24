@@ -124,7 +124,9 @@ export const BrowserWindow = () => {
 
     return (
         <div onClick={handleClick}>
-            <GenericModal 
+            {
+                showConfirmation ? (
+                    <GenericModal 
                 isOpen={showConfirmation} 
                 onClose={() => setShowConfirmation(false)}
                 canBeClosed={false}
@@ -135,6 +137,8 @@ export const BrowserWindow = () => {
                     onNo={() => handleConfirmation(false)}
                 />
             </GenericModal>
+                ) : null
+            }
             {(!showConfirmation && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
                 <Highlighter
                     unmodifiedRect={highlighterData?.rect}
