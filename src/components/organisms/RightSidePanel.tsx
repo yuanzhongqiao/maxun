@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, MenuItem, Paper, Stack, Tabs, Tab } from "@mui/material";
+import { Button, MenuItem, Paper, Stack, Tabs, Tab, Box } from "@mui/material";
 import { Dropdown as MuiDropdown } from '../atoms/DropdownMui';
 import styled from "styled-components";
 import { ActionSettings } from "../molecules/ActionSettings";
@@ -83,27 +83,29 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
         : null
       }
 
-      {!getText && !getScreenshot && (
-        <Button variant="contained" onClick={startGetText}>
-          Capture Text
-        </Button>
-      )}
-      {getText && (
-        <Button variant="contained" onClick={stopGetText}>
-          Stop Capture Text
-        </Button>
-      )}
+      <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px'}}>
+        {!getText && !getScreenshot && (
+          <Button variant="contained" onClick={startGetText}>
+            Capture Text
+          </Button>
+        )}
+        {getText && (
+          <Button variant="contained" onClick={stopGetText}>
+            Stop Capture Text
+          </Button>
+        )}
 
-      {!getText && !getScreenshot && (
-        <Button variant="contained" onClick={startGetScreenshot}>
-          Capture Screenshot
-        </Button>
-      )}
-      {getScreenshot && (
-        <Button variant="contained" onClick={stopGetScreenshot}>
-          Stop Capture Screenshot
-        </Button>
-      )}
+        {!getText && !getScreenshot && (
+          <Button variant="contained" onClick={startGetScreenshot}>
+            Capture Screenshot
+          </Button>
+        )}
+        {getScreenshot && (
+          <Button variant="contained" onClick={stopGetScreenshot}>
+            Stop Capture Screenshot
+          </Button>
+        )}
+      </Box>
     </Paper>
   );
 };
