@@ -44,8 +44,6 @@ export const BrowserWindow = () => {
     const { width, height } = useBrowserDimensionsStore();
     const { getText, getScreenshot } = useActionContext();
 
-    console.log('Use browser dimensions:', width, height)
-
     const onMouseMove = (e: MouseEvent) => {
         if (canvasRef && canvasRef.current && highlighterData) {
             const canvasRect = canvasRef.current.getBoundingClientRect();
@@ -81,7 +79,6 @@ export const BrowserWindow = () => {
 
     const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string }) => {
         setHighlighterData(data);
-        console.log('Highlighter Rect via socket:', data.rect)
     }, [highlighterData])
 
     useEffect(() => {
@@ -116,7 +113,6 @@ export const BrowserWindow = () => {
     const handleConfirmation = (confirmed: boolean) => {
         if (confirmed) {
             console.log(`User confirmed interaction with: ${highlighterData?.selector}`);
-            // Here you can add logic to interact with the element
         } else {
             console.log('User declined interaction');
         }
@@ -168,8 +164,6 @@ const drawImage = (image: string, canvas: HTMLCanvasElement): void => {
     img.onload = () => {
         URL.revokeObjectURL(img.src);
         ctx?.drawImage(img, 0, 0, 1280, 720);
-        console.log('Image drawn on canvas:', img.width, img.height);
-        console.log('Image drawn on canvas:', canvas.width, canvas.height);
     };
 
 };
