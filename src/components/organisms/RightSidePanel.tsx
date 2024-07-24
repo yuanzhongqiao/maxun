@@ -21,7 +21,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   const [isSettingsDisplayed, setIsSettingsDisplayed] = React.useState<boolean>(false);
 
   const { lastAction } = useGlobalInfoStore();
-  const { handleGetText, handleGetScreenshot } = useActionContext();
+  const { getText, getScreenshot, startGetText, stopGetText, startGetScreenshot, stopGetScreenshot } = useActionContext();
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setContent(newValue);
@@ -38,6 +38,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
       setContent('detail');
     }
   }, [pairForEdit])
+
 
   return (
     <Paper
@@ -82,12 +83,18 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
         : null
       }
 
-      <Button variant="contained" onClick={handleGetText}>
-        Capture Text
-      </Button>
-      <Button variant="contained" onClick={handleGetScreenshot}>
-        Capture Screenshot
-      </Button>
+<Button variant="contained" onClick={startGetText} disabled={getText}>
+                Capture Text
+            </Button>
+            <Button variant="contained" onClick={stopGetText} disabled={!getText}>
+                Stop Capture Text
+            </Button>
+            <Button variant="contained" onClick={startGetScreenshot} disabled={getScreenshot}>
+                Capture Screenshot
+            </Button>
+            <Button variant="contained" onClick={stopGetScreenshot} disabled={!getScreenshot}>
+                Stop Capture Screenshot
+            </Button>
     </Paper>
   );
 };
