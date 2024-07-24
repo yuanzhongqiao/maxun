@@ -18,3 +18,21 @@ export const useActionContext = (): ActionContextType => {
     return context;
 };
 
+interface ActionProviderProps {
+    children: ReactNode;
+}
+
+export const ActionProvider: React.FC<ActionProviderProps> = ({ children }) => {
+    const [getText, setGetText] = useState<boolean>(false);
+    const [getScreenshot, setGetScreenshot] = useState<boolean>(false);
+
+    const handleGetText = () => setGetText(true);
+    const handleGetScreenshot = () => setGetScreenshot(true);
+
+
+    return (
+        <ActionContext.Provider value={{ getText, getScreenshot, handleGetText, handleGetScreenshot, resetActions }}>
+            {children}
+        </ActionContext.Provider>
+    );
+};
