@@ -15,7 +15,7 @@ export const PageWrapper = () => {
   const [recordingName, setRecordingName] = useState('');
   const [open, setOpen] = useState(false);
 
-  const { browserId, setBrowserId, notification } =  useGlobalInfoStore();
+  const { browserId, setBrowserId, notification } = useGlobalInfoStore();
 
   const handleNewRecording = () => {
     setBrowserId('new-recording');
@@ -27,15 +27,15 @@ export const PageWrapper = () => {
     setBrowserId('new-recording');
   }
 
-  const isNotification = (): boolean=> {
-    if (notification.isOpen && !open){
+  const isNotification = (): boolean => {
+    if (notification.isOpen && !open) {
       setOpen(true);
     }
     return notification.isOpen;
   }
 
   useEffect(() => {
-    const isRecordingInProgress = async() => {
+    const isRecordingInProgress = async () => {
       const id = await getActiveBrowserId();
       if (id) {
         setBrowserId(id);
@@ -48,26 +48,26 @@ export const PageWrapper = () => {
     <div>
       <SocketProvider>
         <React.Fragment>
-          <NavBar newRecording={handleNewRecording} recordingName={recordingName} isRecording={!!browserId}/>
-            {browserId
-              ? (
-                  <BrowserDimensionsProvider>
-                    <React.Fragment>
-                      <RecordingPage recordingName={recordingName}/>
-                      <InterpretationLog/> 
-                    </React.Fragment>
-                  </BrowserDimensionsProvider>
-              )
-              : <MainPage
-                handleEditRecording={handleEditRecording}
-              />
-            }
+          <NavBar newRecording={handleNewRecording} recordingName={recordingName} isRecording={!!browserId} />
+          {browserId
+            ? (
+              <BrowserDimensionsProvider>
+                <React.Fragment>
+                  <RecordingPage recordingName={recordingName} />
+                  <InterpretationLog />
+                </React.Fragment>
+              </BrowserDimensionsProvider>
+            )
+            : <MainPage
+              handleEditRecording={handleEditRecording}
+            />
+          }
         </React.Fragment>
       </SocketProvider>
-      { isNotification() ?
+      {isNotification() ?
         <AlertSnackbar severity={notification.severity}
-                       message={notification.message}
-                       isOpen={notification.isOpen}/>
+          message={notification.message}
+          isOpen={notification.isOpen} />
         : null
       }
     </div>
