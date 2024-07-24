@@ -40,11 +40,9 @@ export const BrowserWindow = () => {
     const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string } | null>(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
 
-
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
-    const { getText, getScreenshot } = useActionContext(); 
-
+    const { getText, getScreenshot } = useActionContext();
 
     console.log('Use browser dimensions:', width, height)
 
