@@ -14,7 +14,7 @@ interface RightSidePanelProps {
   pairForEdit: PairForEdit;
 }
 
-export const RightSidePanel = ({pairForEdit}: RightSidePanelProps) => {
+export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
 
   const [content, setContent] = useState<string>('action');
   const [action, setAction] = React.useState<string>('');
@@ -56,34 +56,38 @@ export const RightSidePanel = ({pairForEdit}: RightSidePanelProps) => {
       </SimpleBox>
 
       {content === 'action' ? (
-          <React.Fragment>
-            <ActionDescription>Type of action:</ActionDescription>
-            <ActionTypeWrapper>
-              <MuiDropdown
-                id="action"
-                label="Action"
-                value={action}
-                handleSelect={handleActionSelect}>
-                <MenuItem value="mouse.click">click on coordinates</MenuItem>
-                <MenuItem value="enqueueLinks">enqueueLinks</MenuItem>
-                <MenuItem value="scrape">scrape</MenuItem>
-                <MenuItem value="scrapeSchema">scrapeSchema</MenuItem>
-                <MenuItem value="screenshot">screenshot</MenuItem>
-                <MenuItem value="script">script</MenuItem>
-                <MenuItem value="scroll">scroll</MenuItem>
-              </MuiDropdown>
-            </ActionTypeWrapper>
+        <React.Fragment>
+          <ActionDescription>Type of action:</ActionDescription>
+          <ActionTypeWrapper>
+            <MuiDropdown
+              id="action"
+              label="Action"
+              value={action}
+              handleSelect={handleActionSelect}>
+              <MenuItem value="mouse.click">click on coordinates</MenuItem>
+              <MenuItem value="enqueueLinks">enqueueLinks</MenuItem>
+              <MenuItem value="scrape">scrape</MenuItem>
+              <MenuItem value="scrapeSchema">scrapeSchema</MenuItem>
+              <MenuItem value="screenshot">screenshot</MenuItem>
+              <MenuItem value="script">script</MenuItem>
+              <MenuItem value="scroll">scroll</MenuItem>
+            </MuiDropdown>
+          </ActionTypeWrapper>
 
-            {isSettingsDisplayed &&
-                <ActionSettings action={action}/>
-            }
-          </React.Fragment>
-        )
+          {isSettingsDisplayed &&
+            <ActionSettings action={action} />
+          }
+        </React.Fragment>
+      )
         : null
       }
 
-   <Button variant="contained" onClick={handleGetText}>Capture Text</Button>
-   <Button variant="contained" onClick={handleGetScreenshot}>Capture Screenshot</Button>
+      <Button variant="contained" onClick={handleGetText}>
+        Capture Text
+      </Button>
+      <Button variant="contained" onClick={handleGetScreenshot}>
+        Capture Screenshot
+      </Button>
     </Paper>
   );
 };
