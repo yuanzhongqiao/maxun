@@ -54,7 +54,7 @@ export const PageWrapper = () => {
                   <BrowserDimensionsProvider>
                     <React.Fragment>
                       <RecordingPage recordingName={recordingName}/>
-                      <InterpretationLog/>
+                      <InterpretationLog/> 
                     </React.Fragment>
                   </BrowserDimensionsProvider>
               )
