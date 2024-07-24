@@ -29,6 +29,11 @@ export const ActionProvider: React.FC<ActionProviderProps> = ({ children }) => {
     const handleGetText = () => setGetText(true);
     const handleGetScreenshot = () => setGetScreenshot(true);
 
+    // Reset actions (optional)
+    const resetActions = () => {
+        setGetText(false);
+        setGetScreenshot(false);
+    };
 
     return (
         <ActionContext.Provider value={{ getText, getScreenshot, handleGetText, handleGetScreenshot, resetActions }}>
