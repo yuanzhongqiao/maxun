@@ -5,6 +5,7 @@ import { useBrowserDimensionsStore } from "../../context/browserDimensions";
 import { Highlighter } from "../atoms/Highlighter";
 import { GenericModal } from '../atoms/GenericModal';
 import { Button, Typography, Box } from '@mui/material';
+import { useActionContext } from '../../context/browserActions';
 
 interface ConfirmationBoxProps {
     selector: string;
@@ -40,8 +41,11 @@ export const BrowserWindow = () => {
     const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string } | null>(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
 
+
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
+    const { getText, getScreenshot, resetActions } = useActionContext(); 
+
 
     console.log('Use browser dimensions:', width, height)
 
@@ -139,7 +143,7 @@ export const BrowserWindow = () => {
                     </GenericModal>
                 ) : null
             }
-            {(!showConfirmation && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
+            {(getText && !showConfirmation && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
                 <Highlighter
                     unmodifiedRect={highlighterData?.rect}
                     displayedSelector={highlighterData?.selector}
