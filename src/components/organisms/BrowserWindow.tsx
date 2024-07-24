@@ -44,7 +44,7 @@ export const BrowserWindow = () => {
 
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
-    const { getText, getScreenshot, resetActions } = useActionContext(); 
+    const { getText, getScreenshot } = useActionContext(); 
 
 
     console.log('Use browser dimensions:', width, height)
