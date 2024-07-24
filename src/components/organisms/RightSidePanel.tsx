@@ -83,18 +83,27 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
         : null
       }
 
-      <Button variant="contained" onClick={startGetText} disabled={getText}>
-        Capture Text
-      </Button>
-      <Button variant="contained" onClick={stopGetText} disabled={!getText}>
-        Stop Capture Text
-      </Button>
-      <Button variant="contained" onClick={startGetScreenshot} disabled={getScreenshot}>
-        Capture Screenshot
-      </Button>
-      <Button variant="contained" onClick={stopGetScreenshot} disabled={!getScreenshot}>
-        Stop Capture Screenshot
-      </Button>
+      {!getText && (
+        <Button variant="contained" onClick={startGetText}>
+          Capture Text
+        </Button>
+      )}
+      {getText && (
+        <Button variant="contained" onClick={stopGetText}>
+          Stop Capture Text
+        </Button>
+      )}
+
+      {!getScreenshot && (
+        <Button variant="contained" onClick={startGetScreenshot}>
+          Capture Screenshot
+        </Button>
+      )}
+      {getScreenshot && (
+        <Button variant="contained" onClick={stopGetScreenshot}>
+          Stop Capture Screenshot
+        </Button>
+      )}
     </Paper>
   );
 };
