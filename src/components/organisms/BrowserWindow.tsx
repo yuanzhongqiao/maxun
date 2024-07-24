@@ -122,7 +122,7 @@ export const BrowserWindow = () => {
     return (
         <div onClick={handleClick}>
             {
-                showConfirmation ? (
+                getText && showConfirmation ? (
                     <GenericModal
                         isOpen={showConfirmation}
                         onClose={() => setShowConfirmation(false)}
