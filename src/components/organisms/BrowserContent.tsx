@@ -134,14 +134,3 @@ export const BrowserContent = () => {
 const BrowserContentWrapper = styled.div`
   grid-area: browser;
 `;
-
-// const BrowserContentWrapper = styled.div`
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   width: 100%;
-//   height: 100%;
-//   overflow: hidden; /* To ensure no scrollbars appear */
-//   display: flex;
-//   flex-direction: column;
-// `;
