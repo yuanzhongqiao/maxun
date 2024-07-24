@@ -83,7 +83,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
         : null
       }
 
-      {!getText && (
+      {!getText && !getScreenshot && (
         <Button variant="contained" onClick={startGetText}>
           Capture Text
         </Button>
@@ -94,7 +94,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
         </Button>
       )}
 
-      {!getScreenshot && (
+      {!getText && !getScreenshot && (
         <Button variant="contained" onClick={startGetScreenshot}>
           Capture Screenshot
         </Button>
