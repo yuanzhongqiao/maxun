@@ -8,6 +8,7 @@ import { SimpleBox } from "../atoms/Box";
 import Typography from "@mui/material/Typography";
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { PairForEdit } from "../../pages/RecordingPage";
+import { useActionContext } from '../../context/browserActions';
 
 interface RightSidePanelProps {
   pairForEdit: PairForEdit;
@@ -79,6 +80,9 @@ export const RightSidePanel = ({pairForEdit}: RightSidePanelProps) => {
         )
         : null
       }
+
+   <Button variant="contained">Capture Text</Button>
+   <Button variant="contained">Capture Screenshot</Button>
     </Paper>
   );
 };
