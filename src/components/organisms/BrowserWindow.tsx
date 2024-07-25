@@ -109,7 +109,7 @@ export const BrowserWindow = () => {
                     </GenericModal>
                 ) : null
             }
-            {(getText && !showConfirmation && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
+            {(getText === true && !showConfirmation && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
                 <Highlighter
                     unmodifiedRect={highlighterData?.rect}
                     displayedSelector={highlighterData?.selector}
