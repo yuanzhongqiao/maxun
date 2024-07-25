@@ -37,7 +37,6 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     };
 
     const lastMousePosition = useRef<Coordinates>({ x: 0, y: 0 });
-    //const lastWheelPosition = useRef<ScrollDeltas>({ deltaX: 0, deltaY: 0 });
 
     useEffect(() => {
         getTextRef.current = getText;
