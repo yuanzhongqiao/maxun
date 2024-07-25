@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
 
 interface ConfirmationBoxProps {
