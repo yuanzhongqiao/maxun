@@ -3,22 +3,22 @@ import styled from 'styled-components';
 import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
 
 interface ConfirmationBoxProps {
-    selector: string;
-    onClose: () => void;
+  selector: string;
+  onClose: () => void;
 }
 
 const ConfirmationBox = ({ selector, onClose }: ConfirmationBoxProps) => {
-    return (
-            <React.Fragment>
-          <Typography>
-          Do you want to proceed?
-        </Typography>
-        <Box style={{marginTop: '4px'}}>
-              Selector: {selector}
-          <pre>{selector}</pre>
-        </Box>
-          </React.Fragment>
-    );
+  return (
+    <React.Fragment>
+      <Typography>
+        Do you want to proceed?
+      </Typography>
+      <Box style={{ marginTop: '4px' }}>
+        Selector: {selector}
+        <pre>{selector}</pre>
+      </Box>
+    </React.Fragment>
+  );
 };
 
 const ConfirmationBoxContainer = styled.div`
