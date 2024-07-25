@@ -37,8 +37,6 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
 
     const lastMousePosition = useRef<Coordinates>({ x: 0, y: 0 });
 
-    
-
     const onMouseEvent = useCallback((event: MouseEvent) => {
         if (socket) {
             const coordinates = {
