@@ -120,7 +120,7 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
                 handleMouseEventForGetText(event);
             };
 
-            canvasRef.current.addEventListener('mousedown', onMouseEvent);
+            canvasRef.current.addEventListener('mousedown', combinedMouseEventHandler);
             canvasRef.current.addEventListener('mousemove', onMouseEvent);
             canvasRef.current.addEventListener('wheel', onMouseEvent, { passive: true });
             canvasRef.current.addEventListener('keydown', onKeyboardEvent);
@@ -128,7 +128,7 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
 
             return () => {
                 if (canvasRef.current) {
-                    canvasRef.current.removeEventListener('mousedown', onMouseEvent);
+                    canvasRef.current.removeEventListener('mousedown', combinedMouseEventHandler);
                     canvasRef.current.removeEventListener('mousemove', onMouseEvent);
                     canvasRef.current.removeEventListener('wheel', onMouseEvent);
                     canvasRef.current.removeEventListener('keydown', onKeyboardEvent);
