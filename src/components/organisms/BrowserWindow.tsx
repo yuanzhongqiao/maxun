@@ -95,7 +95,7 @@ export const BrowserWindow = () => {
     return (
         <div onClick={handleClick}>
             {
-                getText && showConfirmation ? (
+                getText === true && showConfirmation ? (
                     <GenericModal
                         isOpen={showConfirmation}
                         onClose={() => setShowConfirmation(false)}
