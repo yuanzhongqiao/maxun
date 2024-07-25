@@ -28,6 +28,7 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     const { socket } = useSocketStore();
     const { setLastAction, lastAction } = useGlobalInfoStore();
     const { getText, getScreenshot } = useActionContext();
+    const getTextRef = useRef(getText);
 
     const notifyLastAction = (action: string) => {
         if (lastAction !== action) {
@@ -38,6 +39,10 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     const lastMousePosition = useRef<Coordinates>({ x: 0, y: 0 });
     //const lastWheelPosition = useRef<ScrollDeltas>({ deltaX: 0, deltaY: 0 });
 
+    useEffect(() => {
+        getTextRef.current = getText;
+    }, [getText]);
+
     const onMouseEvent = useCallback((event: MouseEvent) => {
         if (socket) {
             const coordinates = {
@@ -47,7 +52,7 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
             switch (event.type) {
                 case 'mousedown':
                     const clickCoordinates = getMappedCoordinates(event, canvasRef.current, width, height);
-                    if (getText === true) {
+                    if (getTextRef.current === true) {
                         console.log('get text')
                     } else {
                         socket.emit('input:mousedown', clickCoordinates);
@@ -82,7 +87,7 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
                     return;
             }
         }
-    }, [socket, getText]);
+    }, [socket]);
 
     const onKeyboardEvent = useCallback((event: KeyboardEvent) => {
         if (socket) {
