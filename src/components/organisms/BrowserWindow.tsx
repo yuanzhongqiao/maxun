@@ -6,33 +6,8 @@ import { Highlighter } from "../atoms/Highlighter";
 import { GenericModal } from '../atoms/GenericModal';
 import { Button, Typography, Box } from '@mui/material';
 import { useActionContext } from '../../context/browserActions';
+import { ConfirmationBox } from "../atoms/ConfirmationBox";
 
-interface ConfirmationBoxProps {
-    selector: string;
-    onYes: () => void;
-    onNo: () => void;
-}
-
-const ConfirmationBox = ({ selector, onYes, onNo }: ConfirmationBoxProps) => {
-    return (
-        <Box sx={{ textAlign: 'center' }}>
-            <Typography variant="h6" component="h2" gutterBottom>
-                Confirmation
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-                Do you want to interact with the element: {selector}?
-            </Typography>
-            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center', gap: 2 }}>
-                <Button variant="contained" color="primary" onClick={onYes}>
-                    Yes
-                </Button>
-                <Button variant="contained" color="secondary" onClick={onNo}>
-                    No
-                </Button>
-            </Box>
-        </Box>
-    );
-};
 
 export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
