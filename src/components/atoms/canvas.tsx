@@ -38,18 +38,6 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     const lastMousePosition = useRef<Coordinates>({ x: 0, y: 0 });
     //const lastWheelPosition = useRef<ScrollDeltas>({ deltaX: 0, deltaY: 0 });
 
-    const handleMouseEventForGetText = useCallback((event: MouseEvent) => {
-        if (socket && getText) {
-            switch (event.type) {
-                case 'mousedown':
-                    console.log('Handling text selection logic');
-                    break;
-                default:
-                    return;
-            }
-        }
-    }, [socket, getText]);
-
     const onMouseEvent = useCallback((event: MouseEvent) => {
         if (socket) {
             const coordinates = {
@@ -59,8 +47,11 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
             switch (event.type) {
                 case 'mousedown':
                     const clickCoordinates = getMappedCoordinates(event, canvasRef.current, width, height);
+                    if (getText === true) {
+                        console.log('get text')
+                    } else {
                         socket.emit('input:mousedown', clickCoordinates);
-                        notifyLastAction('click');
+                    }
                     break;
                 case 'mousemove':
                     const coordinates = getMappedCoordinates(event, canvasRef.current, width, height);
@@ -91,7 +82,7 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
                     return;
             }
         }
-    }, [socket]);
+    }, [socket, getText]);
 
     const onKeyboardEvent = useCallback((event: KeyboardEvent) => {
         if (socket) {
@@ -114,13 +105,7 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     useEffect(() => {
         if (canvasRef.current) {
             onCreateRef(canvasRef);
-
-            const combinedMouseEventHandler = (event: MouseEvent) => {
-                onMouseEvent(event);
-                handleMouseEventForGetText(event);
-            };
-
-            canvasRef.current.addEventListener('mousedown', combinedMouseEventHandler);
+            canvasRef.current.addEventListener('mousedown', onMouseEvent);
             canvasRef.current.addEventListener('mousemove', onMouseEvent);
             canvasRef.current.addEventListener('wheel', onMouseEvent, { passive: true });
             canvasRef.current.addEventListener('keydown', onKeyboardEvent);
@@ -128,7 +113,7 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
 
             return () => {
                 if (canvasRef.current) {
-                    canvasRef.current.removeEventListener('mousedown', combinedMouseEventHandler);
+                    canvasRef.current.removeEventListener('mousedown', onMouseEvent);
                     canvasRef.current.removeEventListener('mousemove', onMouseEvent);
                     canvasRef.current.removeEventListener('wheel', onMouseEvent);
                     canvasRef.current.removeEventListener('keydown', onKeyboardEvent);
