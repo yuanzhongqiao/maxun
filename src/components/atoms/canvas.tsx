@@ -38,6 +38,18 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     const lastMousePosition = useRef<Coordinates>({ x: 0, y: 0 });
     //const lastWheelPosition = useRef<ScrollDeltas>({ deltaX: 0, deltaY: 0 });
 
+    const handleMouseEventForGetText = useCallback((event: MouseEvent) => {
+        if (socket && getText) {
+            switch (event.type) {
+                case 'mousedown':
+                    console.log('Handling text selection logic');
+                    break;
+                default:
+                    return;
+            }
+        }
+    }, [socket, getText]);
+
     const onMouseEvent = useCallback((event: MouseEvent) => {
         if (socket) {
             const coordinates = {
