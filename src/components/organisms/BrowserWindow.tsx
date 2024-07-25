@@ -8,7 +8,6 @@ import { Button, Typography, Box } from '@mui/material';
 import { useActionContext } from '../../context/browserActions';
 import { ConfirmationBox } from "../atoms/ConfirmationBox";
 
-
 export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
     const [screenShot, setScreenShot] = useState<string>("");
