@@ -36,6 +36,7 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     };
 
     const lastMousePosition = useRef<Coordinates>({ x: 0, y: 0 });
+    //const lastWheelPosition = useRef<ScrollDeltas>({ deltaX: 0, deltaY: 0 });
 
     const onMouseEvent = useCallback((event: MouseEvent) => {
         if (socket) {
@@ -51,7 +52,6 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
                     } else {
                         socket.emit('input:mousedown', clickCoordinates);
                     }
-                    notifyLastAction('click');
                     break;
                 case 'mousemove':
                     const coordinates = getMappedCoordinates(event, canvasRef.current, width, height);
@@ -82,7 +82,7 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
                     return;
             }
         }
-    }, [socket, getText]);
+    }, [socket]);
 
     const onKeyboardEvent = useCallback((event: KeyboardEvent) => {
         if (socket) {
