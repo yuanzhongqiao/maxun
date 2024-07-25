@@ -4,7 +4,6 @@ import Canvas from "../atoms/canvas";
 import { useBrowserDimensionsStore } from "../../context/browserDimensions";
 import { Highlighter } from "../atoms/Highlighter";
 import { GenericModal } from '../atoms/GenericModal';
-import { Button, Typography, Box } from '@mui/material';
 import { useActionContext } from '../../context/browserActions';
 import { ConfirmationBox } from "../atoms/ConfirmationBox";
 
