@@ -114,6 +114,12 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     useEffect(() => {
         if (canvasRef.current) {
             onCreateRef(canvasRef);
+
+            const combinedMouseEventHandler = (event: MouseEvent) => {
+                onMouseEvent(event);
+                handleMouseEventForGetText(event);
+            };
+
             canvasRef.current.addEventListener('mousedown', onMouseEvent);
             canvasRef.current.addEventListener('mousemove', onMouseEvent);
             canvasRef.current.addEventListener('wheel', onMouseEvent, { passive: true });
