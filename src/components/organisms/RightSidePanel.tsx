@@ -25,12 +25,13 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   const [content, setContent] = useState<string>('action');
   const [action, setAction] = useState<string>('');
   const [isSettingsDisplayed, setIsSettingsDisplayed] = useState<boolean>(false);
-  const [stepLabel, setStepLabel] = useState<string>('');
+  const [labels, setLabels] = useState<{ [id: number]: string }>({});
   const [stepDescription, setStepDescription] = useState<string>('');
+  
 
   const { lastAction } = useGlobalInfoStore();
   const { getText, getScreenshot, startGetText, stopGetText, startGetScreenshot, stopGetScreenshot } = useActionContext();
-  const { browserSteps } = useBrowserSteps();
+  const { browserSteps, updateBrowserStepLabel, deleteBrowserStep } = useBrowserSteps();
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setContent(newValue);
@@ -55,6 +56,20 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   //   setStepLabel('');
   //   setStepDescription('');
   // };
+
+  const handleLabelChange = (id: number, label: string) => {
+    setLabels(prevLabels => ({ ...prevLabels, [id]: label }));
+};
+
+const handleConfirm = (id: number) => {
+    if (labels[id]) {
+      updateBrowserStepLabel(id, labels[id]);
+    }
+};
+
+const handleDiscard = (id: number) => {
+    deleteBrowserStep(id);
+};
 
   return (
     <Paper
@@ -122,13 +137,27 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
       </Box>
 
       <Box>
-        {browserSteps.map(step => (
-          <Box key={step.id} sx={{ border: '1px solid black', padding: '10px' }}>
-            <Typography variant="h6">{step.label}</Typography>
-            <Typography>{step.value}</Typography>
-          </Box>
-        ))}
-      </Box>
+            {browserSteps.map(step => (
+                <Box key={step.id} sx={{ border: '1px solid black', padding: '10px', marginBottom: '10px' }}>
+                    <TextField
+                        label="Label"
+                        value={labels[step.id] || step.label || ''}
+                        onChange={(e) => handleLabelChange(step.id, e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <Typography variant="h6">Description: {step.value}</Typography>
+                    <Box display="flex" justifyContent="space-between" gap={2}>
+                        <Button variant="contained" onClick={() => handleConfirm(step.id)}>
+                            Confirm
+                        </Button>
+                        <Button variant="contained" onClick={() => handleDiscard(step.id)}>
+                            Discard
+                        </Button>
+                    </Box>
+                </Box>
+            ))}
+        </Box>
     </Paper>
   );
 };
