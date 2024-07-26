@@ -20,7 +20,7 @@ interface ElementInfo {
 export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
     const [screenShot, setScreenShot] = useState<string>("");
-    const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string, elementInfo: {} } | null>(null);
+    const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string, elementInfo: ElementInfo | null;} | null>(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
 
     const { socket } = useSocketStore();
@@ -61,7 +61,7 @@ export const BrowserWindow = () => {
         }
     }, [screenShot, canvasRef, socket, screencastHandler]);
 
-    const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: {} }) => {
+    const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: ElementInfo | null }) => {
         setHighlighterData(data);
     }, [highlighterData])
 
