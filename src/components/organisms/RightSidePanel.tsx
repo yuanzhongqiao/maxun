@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, MenuItem, Paper, Box, TextField } from "@mui/material";
 import { Dropdown as MuiDropdown } from '../atoms/DropdownMui';
 import styled from "styled-components";
@@ -26,6 +26,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   const [isSettingsDisplayed, setIsSettingsDisplayed] = useState<boolean>(false);
   const [browserSteps, setBrowserSteps] = useState<BrowserStep[]>([]);
   const [stepLabel, setStepLabel] = useState<string>('');
+  const [stepDescription, setStepDescription] = useState<string>('');
 
   const { lastAction } = useGlobalInfoStore();
   const { getText, getScreenshot, startGetText, stopGetText, startGetScreenshot, stopGetScreenshot } = useActionContext();
@@ -40,24 +41,18 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
     setIsSettingsDisplayed(true);
   };
 
-  useEffect(() => {
-    if (content !== 'detail' && pairForEdit.pair !== null) {
-      setContent('detail');
-    }
-  }, [pairForEdit]);
-
-  const addBrowserStep = () => {
-    setBrowserSteps([...browserSteps, { id: Date.now(), label: stepLabel, description: 'Description of the step' }]);
+  const confirmStep = () => {
+    setBrowserSteps([
+      ...browserSteps,
+      { id: Date.now(), label: stepLabel, description: stepDescription }
+    ]);
     setStepLabel('');
+    setStepDescription('');
   };
 
-  const confirmStep = (id: number) => {
-    console.log(`Step with ID ${id} confirmed.`);
-    // Implement your logic here
-  };
-
-  const discardStep = (id: number) => {
-    setBrowserSteps(browserSteps.filter(step => step.id !== id));
+  const discardStep = () => {
+    setStepLabel('');
+    setStepDescription('');
   };
 
   return (
@@ -127,22 +122,30 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
 
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
         <TextField
-          label="Step Label"
+          label="Label"
           value={stepLabel}
           onChange={(e) => setStepLabel(e.target.value)}
         />
-        <Button variant="contained" onClick={addBrowserStep}>
-          Add Browser Step
-        </Button>
+        <TextField
+          label="Description"
+          value={stepDescription}
+          onChange={(e) => setStepDescription(e.target.value)}
+        />
+        <Box display="flex" justifyContent="space-between" gap={2}>
+          <Button variant="contained" onClick={confirmStep}>
+            Confirm
+          </Button>
+          <Button variant="contained" onClick={discardStep}>
+            Discard
+          </Button>
+        </Box>
       </Box>
 
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
         {browserSteps.map(step => (
           <Box key={step.id} sx={{ border: '1px solid black', padding: '10px' }}>
-            <Typography>{step.label}</Typography>
+            <Typography variant="h6">{step.label}</Typography>
             <Typography>{step.description}</Typography>
-            <Button variant="contained" onClick={() => confirmStep(step.id)}>Confirm</Button>
-            <Button variant="contained" onClick={() => discardStep(step.id)}>Discard</Button>
           </Box>
         ))}
       </Box>
