@@ -143,7 +143,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
 
       <Box>
         {browserSteps.map(step => (
-          <Box key={step.id} sx={{ border: '1px solid black', padding: '10px', marginBottom: '10px' }}>
+          <Box key={step.id} sx={{ padding: '10px', marginBottom: '10px' }}>
             <TextField
               label="Label"
               value={labels[step.id] || step.label || ''}
