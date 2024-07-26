@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, MenuItem, Paper, Stack, Tabs, Tab, Box } from "@mui/material";
+import { Button, MenuItem, Paper, Box, TextField } from "@mui/material";
 import { Dropdown as MuiDropdown } from '../atoms/DropdownMui';
 import styled from "styled-components";
 import { ActionSettings } from "../molecules/ActionSettings";
@@ -14,11 +14,18 @@ interface RightSidePanelProps {
   pairForEdit: PairForEdit;
 }
 
-export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
+interface BrowserStep {
+  id: number;
+  label: string;
+  description: string;
+}
 
+export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   const [content, setContent] = useState<string>('action');
-  const [action, setAction] = React.useState<string>('');
-  const [isSettingsDisplayed, setIsSettingsDisplayed] = React.useState<boolean>(false);
+  const [action, setAction] = useState<string>('');
+  const [isSettingsDisplayed, setIsSettingsDisplayed] = useState<boolean>(false);
+  const [browserSteps, setBrowserSteps] = useState<BrowserStep[]>([]);
+  const [stepLabel, setStepLabel] = useState<string>('');
 
   const { lastAction } = useGlobalInfoStore();
   const { getText, getScreenshot, startGetText, stopGetText, startGetScreenshot, stopGetScreenshot } = useActionContext();
@@ -37,8 +44,21 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
     if (content !== 'detail' && pairForEdit.pair !== null) {
       setContent('detail');
     }
-  }, [pairForEdit])
+  }, [pairForEdit]);
 
+  const addBrowserStep = () => {
+    setBrowserSteps([...browserSteps, { id: Date.now(), label: stepLabel, description: 'Description of the step' }]);
+    setStepLabel('');
+  };
+
+  const confirmStep = (id: number) => {
+    console.log(`Step with ID ${id} confirmed.`);
+    // Implement your logic here
+  };
+
+  const discardStep = (id: number) => {
+    setBrowserSteps(browserSteps.filter(step => step.id !== id));
+  };
 
   return (
     <Paper
@@ -79,9 +99,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
             <ActionSettings action={action} />
           }
         </React.Fragment>
-      )
-        : null
-      }
+      ) : null}
 
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
         {!getText && !getScreenshot && (
@@ -105,6 +123,28 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
             Stop Capture Screenshot
           </Button>
         )}
+      </Box>
+
+      <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
+        <TextField
+          label="Step Label"
+          value={stepLabel}
+          onChange={(e) => setStepLabel(e.target.value)}
+        />
+        <Button variant="contained" onClick={addBrowserStep}>
+          Add Browser Step
+        </Button>
+      </Box>
+
+      <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
+        {browserSteps.map(step => (
+          <Box key={step.id} sx={{ border: '1px solid black', padding: '10px' }}>
+            <Typography>{step.label}</Typography>
+            <Typography>{step.description}</Typography>
+            <Button variant="contained" onClick={() => confirmStep(step.id)}>Confirm</Button>
+            <Button variant="contained" onClick={() => discardStep(step.id)}>Discard</Button>
+          </Box>
+        ))}
       </Box>
     </Paper>
   );
