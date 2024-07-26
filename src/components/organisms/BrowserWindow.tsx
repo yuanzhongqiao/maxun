@@ -14,13 +14,13 @@ interface ElementInfo {
     innerText?: string;
     url?: string;
     imageUrl?: string;
-  }
-  
+}
+
 
 export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
     const [screenShot, setScreenShot] = useState<string>("");
-    const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string, elementInfo: ElementInfo | null;} | null>(null);
+    const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string, elementInfo: ElementInfo | null; } | null>(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
 
     const { socket } = useSocketStore();
