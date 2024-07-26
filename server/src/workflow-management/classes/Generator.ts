@@ -485,7 +485,6 @@ export class WorkflowGenerator {
     const rect = await getRect(page, coordinates);
     const displaySelector = await this.generateSelector(page, coordinates, ActionType.Click);
     const elementInfo = await getElementInformation(page, coordinates);
-    //console.log('Backend Rectangle:', rect)
     if (rect) {
       this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo });
     }
