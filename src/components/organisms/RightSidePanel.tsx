@@ -156,7 +156,15 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
                 readOnly: confirmedSteps[step.id]
             }}
             />
-            <Typography variant="h6">{step.value}</Typography>
+            <TextField
+              label="Data"
+              value={step.value}
+              fullWidth
+              margin="normal"
+              InputProps={{
+                readOnly: confirmedSteps[step.id]
+            }}
+            />
             {!confirmedSteps[step.id] && (
               <Box display="flex" justifyContent="space-between" gap={2}>
                 <Button
