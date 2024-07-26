@@ -42,20 +42,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
     setIsSettingsDisplayed(true);
   };
 
-  // const confirmStep = () => {
-  //   setBrowserSteps([
-  //     ...browserSteps,
-  //     { id: Date.now(), label: stepLabel, description: stepDescription }
-  //   ]);
-  //   setStepLabel('');
-  //   setStepDescription('');
-  // };
-
-  // const discardStep = () => {
-  //   setStepLabel('');
-  //   setStepDescription('');
-  // };
-
+  
   const handleLabelChange = (id: number, label: string) => {
     setLabels(prevLabels => ({ ...prevLabels, [id]: label }));
 };
