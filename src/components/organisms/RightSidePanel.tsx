@@ -152,7 +152,9 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
               margin="normal"
               error={!!errors[step.id]}
               helperText={errors[step.id]}
-              disabled={confirmedSteps[step.id]}
+              InputProps={{
+                readOnly: confirmedSteps[step.id]
+            }}
             />
             <Typography variant="h6">{step.value}</Typography>
             {!confirmedSteps[step.id] && (
