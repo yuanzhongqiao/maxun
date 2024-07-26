@@ -154,7 +154,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
               helperText={errors[step.id]}
               InputProps={{
                 readOnly: confirmedSteps[step.id]
-            }}
+              }}
             />
             <TextField
               label="Data"
@@ -163,7 +163,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
               margin="normal"
               InputProps={{
                 readOnly: confirmedSteps[step.id]
-            }}
+              }}
             />
             {!confirmedSteps[step.id] && (
               <Box display="flex" justifyContent="space-between" gap={2}>
