@@ -8,6 +8,7 @@ import { Loader } from "../components/atoms/Loader";
 import { useSocketStore } from "../context/socket";
 import { useBrowserDimensionsStore } from "../context/browserDimensions";
 import { ActionProvider } from "../context/browserActions"
+import { BrowserStepsProvider } from '../context/browserSteps';
 import { useGlobalInfoStore } from "../context/globalInfo";
 import { editRecordingFromStorage } from "../api/storage";
 import { WhereWhatPair } from "@wbr-project/wbr-interpret";
@@ -106,6 +107,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
 
   return (
     <ActionProvider>
+      <BrowserStepsProvider>
       <div>
         {isLoaded ?
           <Grid container direction="row" spacing={0}>
@@ -126,6 +128,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
           </Grid>
           : <Loader />}
       </div>
+      </BrowserStepsProvider>
     </ActionProvider>
   );
 };
