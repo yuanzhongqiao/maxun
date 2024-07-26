@@ -154,7 +154,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
               helperText={errors[step.id]}
               disabled={confirmedSteps[step.id]}
             />
-            <Typography variant="h6">Description: {step.value}</Typography>
+            <Typography variant="h6">{step.value}</Typography>
             {!confirmedSteps[step.id] && (
               <Box display="flex" justifyContent="space-between" gap={2}>
                 <Button
