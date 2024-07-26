@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { PairForEdit } from "../../pages/RecordingPage";
 import { useActionContext } from '../../context/browserActions';
+import { useBrowserSteps } from '../../context/browserSteps';
 
 interface RightSidePanelProps {
   pairForEdit: PairForEdit;
@@ -24,12 +25,12 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   const [content, setContent] = useState<string>('action');
   const [action, setAction] = useState<string>('');
   const [isSettingsDisplayed, setIsSettingsDisplayed] = useState<boolean>(false);
-  const [browserSteps, setBrowserSteps] = useState<BrowserStep[]>([]);
   const [stepLabel, setStepLabel] = useState<string>('');
   const [stepDescription, setStepDescription] = useState<string>('');
 
   const { lastAction } = useGlobalInfoStore();
   const { getText, getScreenshot, startGetText, stopGetText, startGetScreenshot, stopGetScreenshot } = useActionContext();
+  const { browserSteps } = useBrowserSteps();
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setContent(newValue);
@@ -41,19 +42,19 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
     setIsSettingsDisplayed(true);
   };
 
-  const confirmStep = () => {
-    setBrowserSteps([
-      ...browserSteps,
-      { id: Date.now(), label: stepLabel, description: stepDescription }
-    ]);
-    setStepLabel('');
-    setStepDescription('');
-  };
+  // const confirmStep = () => {
+  //   setBrowserSteps([
+  //     ...browserSteps,
+  //     { id: Date.now(), label: stepLabel, description: stepDescription }
+  //   ]);
+  //   setStepLabel('');
+  //   setStepDescription('');
+  // };
 
-  const discardStep = () => {
-    setStepLabel('');
-    setStepDescription('');
-  };
+  // const discardStep = () => {
+  //   setStepLabel('');
+  //   setStepDescription('');
+  // };
 
   return (
     <Paper
@@ -120,35 +121,14 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
         )}
       </Box>
 
-      <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
-        <TextField
-          label="Label"
-          value={stepLabel}
-          onChange={(e) => setStepLabel(e.target.value)}
-        />
-        <TextField
-          label="Description"
-          value={stepDescription}
-          onChange={(e) => setStepDescription(e.target.value)}
-        />
-        <Box display="flex" justifyContent="space-between" gap={2}>
-          <Button variant="contained" onClick={confirmStep}>
-            Confirm
-          </Button>
-          <Button variant="contained" onClick={discardStep}>
-            Discard
-          </Button>
+      <Box>
+            {browserSteps.map(step => (
+                <Box key={step.id} sx={{ border: '1px solid black', padding: '10px' }}>
+                    <Typography variant="h6">{step.label}</Typography>
+                    <Typography>{step.value}</Typography>
+                </Box>
+            ))}
         </Box>
-      </Box>
-
-      <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
-        {browserSteps.map(step => (
-          <Box key={step.id} sx={{ border: '1px solid black', padding: '10px' }}>
-            <Typography variant="h6">{step.label}</Typography>
-            <Typography>{step.description}</Typography>
-          </Box>
-        ))}
-      </Box>
     </Paper>
   );
 };
