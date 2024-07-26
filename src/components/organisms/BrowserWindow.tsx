@@ -5,6 +5,7 @@ import { useBrowserDimensionsStore } from "../../context/browserDimensions";
 import { Highlighter } from "../atoms/Highlighter";
 import { GenericModal } from '../atoms/GenericModal';
 import { useActionContext } from '../../context/browserActions';
+import { useBrowserSteps } from '../../context/browserSteps';
 import { ConfirmationBox } from "../atoms/ConfirmationBox";
 
 export const BrowserWindow = () => {
@@ -16,6 +17,7 @@ export const BrowserWindow = () => {
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
     const { getText, getScreenshot } = useActionContext();
+    const { addBrowserStep } = useBrowserSteps();
 
     const onMouseMove = (e: MouseEvent) => {
         if (canvasRef && canvasRef.current && highlighterData) {
@@ -78,7 +80,7 @@ export const BrowserWindow = () => {
                 clickY >= highlightRect.top &&
                 clickY <= highlightRect.bottom
             ) {
-                setShowConfirmation(true);
+                addBrowserStep('Label 1', highlighterData.selector); 
             }
         }
     };
