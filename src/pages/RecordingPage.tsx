@@ -108,26 +108,26 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
   return (
     <ActionProvider>
       <BrowserStepsProvider>
-      <div>
-        {isLoaded ?
-          <Grid container direction="row" spacing={0}>
-            <Grid item xs={2} ref={workflowListRef} style={{ display: "flex", flexDirection: "row" }}>
-              <LeftSidePanel
-                sidePanelRef={workflowListRef.current}
-                alreadyHasScrollbar={hasScrollbar}
-                recordingName={recordingName ? recordingName : ''}
-                handleSelectPairForEdit={handleSelectPairForEdit}
-              />
+        <div>
+          {isLoaded ?
+            <Grid container direction="row" spacing={0}>
+              <Grid item xs={2} ref={workflowListRef} style={{ display: "flex", flexDirection: "row" }}>
+                <LeftSidePanel
+                  sidePanelRef={workflowListRef.current}
+                  alreadyHasScrollbar={hasScrollbar}
+                  recordingName={recordingName ? recordingName : ''}
+                  handleSelectPairForEdit={handleSelectPairForEdit}
+                />
+              </Grid>
+              <Grid id="browser-content" ref={browserContentRef} item xs>
+                <BrowserContent />
+              </Grid>
+              <Grid item xs={2}>
+                <RightSidePanel pairForEdit={pairForEdit} />
+              </Grid>
             </Grid>
-            <Grid id="browser-content" ref={browserContentRef} item xs>
-              <BrowserContent />
-            </Grid>
-            <Grid item xs={2}>
-              <RightSidePanel pairForEdit={pairForEdit} />
-            </Grid>
-          </Grid>
-          : <Loader />}
-      </div>
+            : <Loader />}
+        </div>
       </BrowserStepsProvider>
     </ActionProvider>
   );
