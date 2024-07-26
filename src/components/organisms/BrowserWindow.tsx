@@ -8,6 +8,15 @@ import { useActionContext } from '../../context/browserActions';
 import { useBrowserSteps } from '../../context/browserSteps';
 import { ConfirmationBox } from "../atoms/ConfirmationBox";
 
+interface ElementInfo {
+    tagName: string;
+    hasOnlyText?: boolean;
+    innerText?: string;
+    url?: string;
+    imageUrl?: string;
+  }
+  
+
 export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
     const [screenShot, setScreenShot] = useState<string>("");
