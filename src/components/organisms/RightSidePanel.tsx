@@ -26,6 +26,8 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   const [action, setAction] = useState<string>('');
   const [isSettingsDisplayed, setIsSettingsDisplayed] = useState<boolean>(false);
   const [labels, setLabels] = useState<{ [id: number]: string }>({});
+  const [errors, setErrors] = useState<{ [id: number]: string }>({});
+    const [confirmedSteps, setConfirmedSteps] = useState<{ [id: number]: boolean }>({});
   
 
   const { lastAction } = useGlobalInfoStore();
@@ -42,19 +44,36 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
     setIsSettingsDisplayed(true);
   };
 
-  
+
   const handleLabelChange = (id: number, label: string) => {
     setLabels(prevLabels => ({ ...prevLabels, [id]: label }));
+    if (!label.trim()) {
+        setErrors(prevErrors => ({ ...prevErrors, [id]: 'Label cannot be empty' }));
+    } else {
+        setErrors(prevErrors => ({ ...prevErrors, [id]: '' }));
+    }
 };
 
 const handleConfirm = (id: number) => {
-    if (labels[id]) {
-      updateBrowserStepLabel(id, labels[id]);
+    const label = labels[id]?.trim();
+    if (label) {
+        updateBrowserStepLabel(id, label);
+        setConfirmedSteps(prev => ({ ...prev, [id]: true }));
+    } else {
+        setErrors(prevErrors => ({ ...prevErrors, [id]: 'Label cannot be empty' }));
     }
 };
 
 const handleDiscard = (id: number) => {
     deleteBrowserStep(id);
+    setLabels(prevLabels => {
+        const { [id]: _, ...rest } = prevLabels;
+        return rest;
+    });
+    setErrors(prevErrors => {
+        const { [id]: _, ...rest } = prevErrors;
+        return rest;
+    });
 };
 
   return (
@@ -131,16 +150,25 @@ const handleDiscard = (id: number) => {
                         onChange={(e) => handleLabelChange(step.id, e.target.value)}
                         fullWidth
                         margin="normal"
+                        error={!!errors[step.id]}
+                        helperText={errors[step.id]}
+                        disabled={confirmedSteps[step.id]}
                     />
-                    <Typography variant="h6">Description: {step.value}</Typography>
-                    <Box display="flex" justifyContent="space-between" gap={2}>
-                        <Button variant="contained" onClick={() => handleConfirm(step.id)}>
-                            Confirm
-                        </Button>
-                        <Button variant="contained" onClick={() => handleDiscard(step.id)}>
-                            Discard
-                        </Button>
-                    </Box>
+                                        <Typography variant="h6">Description: {step.value}</Typography>
+                    {!confirmedSteps[step.id] && (
+                        <Box display="flex" justifyContent="space-between" gap={2}>
+                            <Button
+                                variant="contained"
+                                onClick={() => handleConfirm(step.id)}
+                                disabled={!labels[step.id]?.trim()}
+                            >
+                                Confirm
+                            </Button>
+                            <Button variant="contained" onClick={() => handleDiscard(step.id)}>
+                                Discard
+                            </Button>
+                        </Box>
+                    )}
                 </Box>
             ))}
         </Box>
