@@ -80,7 +80,7 @@ export const BrowserWindow = () => {
                 clickY >= highlightRect.top &&
                 clickY <= highlightRect.bottom
             ) {
-                addBrowserStep('Label 1', highlighterData.selector); 
+                addBrowserStep('Enter Label Here...', highlighterData.selector); 
             }
         }
     };
