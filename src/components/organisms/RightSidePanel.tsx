@@ -26,7 +26,6 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   const [action, setAction] = useState<string>('');
   const [isSettingsDisplayed, setIsSettingsDisplayed] = useState<boolean>(false);
   const [labels, setLabels] = useState<{ [id: number]: string }>({});
-  const [stepDescription, setStepDescription] = useState<string>('');
   
 
   const { lastAction } = useGlobalInfoStore();
