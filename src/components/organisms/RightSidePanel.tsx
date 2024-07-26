@@ -122,13 +122,13 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
       </Box>
 
       <Box>
-            {browserSteps.map(step => (
-                <Box key={step.id} sx={{ border: '1px solid black', padding: '10px' }}>
-                    <Typography variant="h6">{step.label}</Typography>
-                    <Typography>{step.value}</Typography>
-                </Box>
-            ))}
-        </Box>
+        {browserSteps.map(step => (
+          <Box key={step.id} sx={{ border: '1px solid black', padding: '10px' }}>
+            <Typography variant="h6">{step.label}</Typography>
+            <Typography>{step.value}</Typography>
+          </Box>
+        ))}
+      </Box>
     </Paper>
   );
 };
