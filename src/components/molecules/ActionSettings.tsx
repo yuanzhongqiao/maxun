@@ -26,8 +26,6 @@ export const ActionSettings = ({ action }: ActionSettingsProps) => {
         return <Settings.ScrapeSchemaSettings ref={settingsRef} />;
       case 'enqueueLinks':
         return <Settings.EnqueueLinksSettings ref={settingsRef} />;
-      case 'mouse.click':
-        return <Settings.ClickOnCoordinatesSettings ref={settingsRef} />;
       default:
         return null;
     }
