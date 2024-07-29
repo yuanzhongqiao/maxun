@@ -24,8 +24,6 @@ export const ActionSettings = ({ action }: ActionSettingsProps) => {
         return <Settings.ScrapeSettings ref={settingsRef} />;
       case 'scrapeSchema':
         return <Settings.ScrapeSchemaSettings ref={settingsRef} />;
-      case 'enqueueLinks':
-        return <Settings.EnqueueLinksSettings ref={settingsRef} />;
       default:
         return null;
     }
