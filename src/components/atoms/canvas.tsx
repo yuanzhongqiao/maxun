@@ -52,7 +52,7 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
                 case 'mousedown':
                     const clickCoordinates = getMappedCoordinates(event, canvasRef.current, width, height);
                     if (getTextRef.current === true) {
-                        return;
+                        console.log('get text')
                     } else {
                         socket.emit('input:mousedown', clickCoordinates);
                     }
