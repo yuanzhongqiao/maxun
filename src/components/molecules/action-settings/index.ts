@@ -3,7 +3,6 @@ import { ScreenshotSettings } from "./screenshot";
 import { ScrapeSettings } from "./scrape";
 import { ScrapeSchemaSettings } from "./scrapeSchema";
 import { EnqueueLinksSettings } from "./enqueueLinks";
-import { ClickOnCoordinatesSettings } from "./clickOnCoordinates";
 
 export {
   ScrollSettings,
