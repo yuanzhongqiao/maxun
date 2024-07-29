@@ -9,7 +9,5 @@ export {
   ScreenshotSettings,
   ScrapeSettings,
   ScrapeSchemaSettings,
-  ScriptSettings,
   EnqueueLinksSettings,
-  ClickOnCoordinatesSettings,
 };
