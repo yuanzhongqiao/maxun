@@ -20,8 +20,6 @@ export const ActionSettings = ({ action }: ActionSettingsProps) => {
         return <Settings.ScreenshotSettings ref={settingsRef} />;
       case 'scroll':
         return <Settings.ScrollSettings ref={settingsRef} />;
-      case 'scrape':
-        return <Settings.ScrapeSettings ref={settingsRef} />;
       case 'scrapeSchema':
         return <Settings.ScrapeSchemaSettings ref={settingsRef} />;
       default:
