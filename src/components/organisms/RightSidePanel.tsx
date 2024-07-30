@@ -74,8 +74,8 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   const createSettingsObject = useCallback(() => {
     const settings: Record<string, string> = {};
     browserSteps.forEach(step => {
-      if (step.label && step.value) {
-        settings[step.label] = step.value;
+      if (step.label && step.selector) {
+        settings[step.label] = step.selector;
       }
     });
     console.log(`settings from getText:`, settings);
