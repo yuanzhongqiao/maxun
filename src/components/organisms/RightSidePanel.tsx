@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button, MenuItem, Paper, Box, TextField } from "@mui/material";
 import { Dropdown as MuiDropdown } from '../atoms/DropdownMui';
 import styled from "styled-components";
@@ -10,15 +10,10 @@ import { useGlobalInfoStore } from "../../context/globalInfo";
 import { PairForEdit } from "../../pages/RecordingPage";
 import { useActionContext } from '../../context/browserActions';
 import { useBrowserSteps } from '../../context/browserSteps';
+import { useSocketStore } from '../../context/socket';
 
 interface RightSidePanelProps {
   pairForEdit: PairForEdit;
-}
-
-interface BrowserStep {
-  id: number;
-  label: string;
-  description: string;
 }
 
 export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
@@ -29,10 +24,10 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   const [errors, setErrors] = useState<{ [id: number]: string }>({});
   const [confirmedSteps, setConfirmedSteps] = useState<{ [id: number]: boolean }>({});
 
-
   const { lastAction } = useGlobalInfoStore();
   const { getText, getScreenshot, startGetText, stopGetText, startGetScreenshot, stopGetScreenshot } = useActionContext();
   const { browserSteps, updateBrowserStepLabel, deleteBrowserStep } = useBrowserSteps();
+  const { socket } = useSocketStore();
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setContent(newValue);
@@ -43,7 +38,6 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
     setAction(value);
     setIsSettingsDisplayed(true);
   };
-
 
   const handleLabelChange = (id: number, label: string) => {
     setLabels(prevLabels => ({ ...prevLabels, [id]: label }));
@@ -76,31 +70,36 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
     });
   };
 
+  // Create settings object when stopping text capture
+  const createSettingsObject = useCallback(() => {
+    const settings: Record<string, string> = {};
+    browserSteps.forEach(step => {
+      if (step.label && step.value) {
+        settings[step.label] = step.value;
+      }
+    });
+    console.log(`settings from getText:`, settings);
+    return settings;
+  }, [browserSteps]);
+
+  // Stop text capture and emit settings object
+  const stopCaptureAndEmitSettings = useCallback(() => {
+    stopGetText();
+    const settings = createSettingsObject();
+    socket?.emit('action', { action: 'settings', settings });
+  }, [stopGetText, createSettingsObject, socket]);
+
   return (
-    <Paper
-      variant="outlined"
-      sx={{
-        height: '100%',
-        width: '100%',
-        backgroundColor: 'white',
-        alignItems: "center",
-      }}>
+    <Paper variant="outlined" sx={{ height: '100%', width: '100%', backgroundColor: 'white', alignItems: "center" }}>
       <SimpleBox height={60} width='100%' background='lightGray' radius='0%'>
-        <Typography sx={{ padding: '10px' }}>
-          Last action:
-          {` ${lastAction}`}
-        </Typography>
+        <Typography sx={{ padding: '10px' }}>Last action: {` ${lastAction}`}</Typography>
       </SimpleBox>
 
-      {content === 'action' ? (
-        <React.Fragment>
+      {content === 'action' && (
+        <>
           <ActionDescription>Type of action:</ActionDescription>
           <ActionTypeWrapper>
-            <MuiDropdown
-              id="action"
-              label="Action"
-              value={action}
-              handleSelect={handleActionSelect}>
+            <MuiDropdown id="action" label="Action" value={action} handleSelect={handleActionSelect}>
               <MenuItem value="mouse.click">click on coordinates</MenuItem>
               <MenuItem value="enqueueLinks">enqueueLinks</MenuItem>
               <MenuItem value="scrape">scrape</MenuItem>
@@ -111,44 +110,20 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
             </MuiDropdown>
           </ActionTypeWrapper>
 
-          {isSettingsDisplayed &&
-            <ActionSettings action={action} />
-          }
-        </React.Fragment>
-      ) : null}
+          {isSettingsDisplayed && <ActionSettings action={action} />}
+        </>
+      )}
 
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
-        {!getText && !getScreenshot && (
-          <Button variant="contained" onClick={startGetText}>
-            Capture Text
-          </Button>
-        )}
-        {getText && (
-          <Button variant="contained" onClick={stopGetText}>
-            Stop Capture Text
-          </Button>
-        )}
-
-        {!getText && !getScreenshot && (
-          <Button variant="contained" onClick={startGetScreenshot}>
-            Capture Screenshot
-          </Button>
-        )}
-        {getScreenshot && (
-          <Button variant="contained" onClick={stopGetScreenshot}>
-            Stop Capture Screenshot
-          </Button>
-        )}
+        {!getText && !getScreenshot && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
+        {getText && <Button variant="contained" onClick={stopCaptureAndEmitSettings}>Stop Capture Text</Button>}
+        {!getText && !getScreenshot && <Button variant="contained" onClick={startGetScreenshot}>Capture Screenshot</Button>}
+        {getScreenshot && <Button variant="contained" onClick={stopGetScreenshot}>Stop Capture Screenshot</Button>}
       </Box>
 
       <Box>
         {browserSteps.map(step => (
-          <Box key={step.id} sx={{
-            boxShadow: 5,
-            padding: '10px',
-            margin: '10px',
-            borderRadius: '4px',
-          }}>
+          <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }}>
             <TextField
               label="Label"
               value={labels[step.id] || step.label || ''}
@@ -157,31 +132,19 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
               margin="normal"
               error={!!errors[step.id]}
               helperText={errors[step.id]}
-              InputProps={{
-                readOnly: confirmedSteps[step.id]
-              }}
+              InputProps={{ readOnly: confirmedSteps[step.id] }}
             />
             <TextField
               label="Data"
               value={step.value}
               fullWidth
               margin="normal"
-              InputProps={{
-                readOnly: confirmedSteps[step.id]
-              }}
+              InputProps={{ readOnly: confirmedSteps[step.id] }}
             />
             {!confirmedSteps[step.id] && (
               <Box display="flex" justifyContent="space-between" gap={2}>
-                <Button
-                  variant="contained"
-                  onClick={() => handleConfirm(step.id)}
-                  disabled={!labels[step.id]?.trim()}
-                >
-                  Confirm
-                </Button>
-                <Button variant="contained" onClick={() => handleDiscard(step.id)}>
-                  Discard
-                </Button>
+                <Button variant="contained" onClick={() => handleConfirm(step.id)} disabled={!labels[step.id]?.trim()}>Confirm</Button>
+                <Button variant="contained" onClick={() => handleDiscard(step.id)}>Discard</Button>
               </Box>
             )}
           </Box>
