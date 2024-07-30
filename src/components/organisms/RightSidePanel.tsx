@@ -70,7 +70,6 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
     });
   };
 
-  // Create settings object when stopping text capture
   const createSettingsObject = useCallback(() => {
     const settings: Record<string, string> = {};
     browserSteps.forEach(step => {
