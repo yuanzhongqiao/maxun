@@ -77,11 +77,9 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
         settings[step.label] = step.selector;
       }
     });
-    console.log(`settings from getText:`, settings);
     return settings;
   }, [browserSteps]);
 
-  // Stop text capture and emit settings object
   const stopCaptureAndEmitSettings = useCallback(() => {
     stopGetText();
     const settings = createSettingsObject();
