@@ -8,7 +8,7 @@ import { operators } from './types/logic';
 * Class for static processing the workflow files/objects.
 */
 export default class Preprocessor {
-  static validateWorkflow(workflow: WorkflowFile) : any {
+  static validateWorkflow(workflow: WorkflowFile): any {
     const regex = Joi.object({
       $regex: Joi.string().required(),
     });
@@ -51,8 +51,8 @@ export default class Preprocessor {
 * @param {WorkflowFile} workflow The given workflow
 * @returns {String[]} List of parameters' names.
 */
-  static getParams(workflow: WorkflowFile) : string[] {
-    const getParamsRecurse = (object : any) : string[] => {
+  static getParams(workflow: WorkflowFile): string[] {
+    const getParamsRecurse = (object: any): string[] => {
       if (typeof object === 'object') {
         // Recursion base case
         if (object.$param) {
@@ -61,7 +61,7 @@ export default class Preprocessor {
 
         // Recursion general case
         return Object.values(object)
-          .reduce((p: string[], v : any) : string[] => [...p, ...getParamsRecurse(v)], []);
+          .reduce((p: string[], v: any): string[] => [...p, ...getParamsRecurse(v)], []);
       }
       return [];
     };
@@ -74,12 +74,12 @@ export default class Preprocessor {
 * field in WHERE clauses so far)
 */
   // TODO : add recursive selector search (also in click/fill etc. events?)
-  static extractSelectors(workflow: Workflow) : SelectorArray {
+  static extractSelectors(workflow: Workflow): SelectorArray {
     /**
 * Given a Where condition, this function extracts
 * all the existing selectors from it (recursively).
 */
-    const selectorsFromCondition = (where: Where) : SelectorArray => {
+    const selectorsFromCondition = (where: Where): SelectorArray => {
       // the `selectors` field is either on the top level
       let out = where.selectors ?? [];
       if (!Array.isArray(out)) {
@@ -112,7 +112,7 @@ export default class Preprocessor {
 * with the defined value.
 * @returns {Workflow} Copy of the given workflow, modified (the initial workflow is left untouched).
 */
-  static initWorkflow(workflow: Workflow, params?: ParamType) : Workflow {
+  static initWorkflow(workflow: Workflow, params?: ParamType): Workflow {
     const paramNames = this.getParams({ workflow });
 
     if (Object.keys(params ?? {}).sort().join(',') !== paramNames.sort().join(',')) {
@@ -133,7 +133,7 @@ export default class Preprocessor {
       object: unknown,
       k: string,
       f: (value: string) => unknown,
-    ) : unknown => {
+    ): unknown => {
       if (!object || typeof object !== 'object') {
         return object;
       }
@@ -174,6 +174,6 @@ export default class Preprocessor {
       (regex) => new RegExp(regex),
     );
 
-    return <Workflow> workflowCopy;
+    return <Workflow>workflowCopy;
   }
 }
