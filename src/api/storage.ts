@@ -1,5 +1,5 @@
 import { default as axios } from "axios";
-import { WorkflowFile } from "@wbr-project/wbr-interpret";
+import { WorkflowFile } from "maxun-core";
 import { RunSettings } from "../components/molecules/RunSettings";
 import { CreateRunResponse } from "../pages/MainPage";
 
