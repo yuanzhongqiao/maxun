@@ -46,7 +46,7 @@ export default class Preprocessor {
     return error;
   }
 
-  /**
+/**
 * Extracts parameter names from the workflow.
 * @param {WorkflowFile} workflow The given workflow
 * @returns {String[]} List of parameters' names.
@@ -69,7 +69,7 @@ export default class Preprocessor {
     return getParamsRecurse(workflow.workflow);
   }
 
-  /**
+/**
 * List all the selectors used in the given workflow (only literal "selector"
 * field in WHERE clauses so far)
 */
@@ -107,7 +107,7 @@ export default class Preprocessor {
     ], []);
   }
 
-  /**
+/**
 * Recursively crawl `object` and initializes params - replaces the `{$param : paramName}` objects
 * with the defined value.
 * @returns {Workflow} Copy of the given workflow, modified (the initial workflow is left untouched).
