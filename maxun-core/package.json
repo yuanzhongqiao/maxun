@@ -1,0 +1,29 @@
+{
+  "name": "maxun-core",
+  "version": "0.0.1",
+  "description": "Smart Workflow interpreter",
+  "main": "build/index.js",
+  "typings": "build/index.d.ts",
+  "scripts": {
+    "test": "jest",
+    "build": "npm run clean && tsc",
+    "lint": "eslint .",
+    "clean": "rimraf ./build"
+  },
+  "files": [
+    "build/*"
+  ],
+  "keywords": [
+    "web",
+    "automation",
+    "workflow",
+    "interpret",
+    "scraping"
+  ],
+  "author": "Karishma Shukla",
+  "license": "MIT",
+  "dependencies": {
+    "joi": "^17.6.0",
+    "playwright": "^1.20.1"
+  }
+}
