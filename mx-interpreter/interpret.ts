@@ -415,5 +415,45 @@ export default class Interpreter extends EventEmitter {
     }
   }
 
-  
+  /**
+   * Spawns a browser context and runs given workflow.
+   * \
+   * Resolves after the playback is finished.
+   * @param {Page} [page] Page to run the workflow on.
+   * @param {ParamType} params Workflow specific, set of parameters
+   *  for the `{$param: nameofparam}` fields.
+   */
+  public async run(page: Page, params? : ParamType) : Promise<void> {
+    if (this.stopper) {
+      throw new Error('This Interpreter is already running a workflow. To run another workflow, please, spawn another Interpreter.');
+    }
+    /**
+     * `this.workflow` with the parameters initialized.
+     */
+    this.initializedWorkflow = Preprocessor.initWorkflow(this.workflow, params);
+
+    // @ts-ignore
+    if (await page.evaluate(() => !<any>window.scrape)) {
+      page.context().addInitScript({ path: path.join(__dirname, 'browserSide', 'scraper.js') });
+    }
+
+    this.stopper = () => {
+      this.stopper = null;
+    };
+
+    this.concurrency.addJob(() => this.runLoop(page, this.initializedWorkflow!));
+
+    await this.concurrency.waitForCompletion();
+
+    this.stopper = null;
+  }
+
+  public async stop() : Promise<void> {
+    if (this.stopper) {
+      await this.stopper();
+      this.stopper = null;
+    } else {
+      throw new Error('Cannot stop, there is no running workflow!');
+    }
+  }
 }
