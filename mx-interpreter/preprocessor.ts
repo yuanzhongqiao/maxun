@@ -69,5 +69,43 @@ export default class Preprocessor {
     return getParamsRecurse(workflow.workflow);
   }
 
+  /**
+* List all the selectors used in the given workflow (only literal "selector"
+* field in WHERE clauses so far)
+*/
+  // TODO : add recursive selector search (also in click/fill etc. events?)
+  static extractSelectors(workflow: Workflow) : SelectorArray {
+    /**
+* Given a Where condition, this function extracts
+* all the existing selectors from it (recursively).
+*/
+    const selectorsFromCondition = (where: Where) : SelectorArray => {
+      // the `selectors` field is either on the top level
+      let out = where.selectors ?? [];
+      if (!Array.isArray(out)) {
+        out = [out];
+      }
+
+      // or nested in the "operator" array
+      operators.forEach((op) => {
+        let condWhere = where[op];
+        if (condWhere) {
+          condWhere = Array.isArray(condWhere) ? condWhere : [condWhere];
+          (condWhere).forEach((subWhere) => {
+            out = [...out, ...selectorsFromCondition(subWhere)];
+          });
+        }
+      });
+
+      return out;
+    };
+
+    // Iterate through all the steps and extract the selectors from all of them.
+    return workflow.reduce((p: SelectorArray, step) => [
+      ...p,
+      ...selectorsFromCondition(step.where).filter((x) => !p.includes(x)),
+    ], []);
+  }
+
  
 }
