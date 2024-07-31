@@ -136,5 +136,94 @@ export default class Interpreter extends EventEmitter {
     };
   }
 
+  /**
+   * Tests if the given action is applicable with the given context.
+   * @param where Tested *where* condition
+   * @param context Current browser context.
+   * @returns True if `where` is applicable in the given context, false otherwise
+   */
+  private applicable(where: Where, context: PageState, usedActions : string[] = []) : boolean {
+    /**
+     * Given two arbitrary objects, determines whether `subset` is a subset of `superset`.\
+     * \
+     * For every key in `subset`, there must be a corresponding key with equal scalar
+     * value in `superset`, or `inclusive(subset[key], superset[key])` must hold.
+     * @param subset Arbitrary non-cyclic JS object (where clause)
+     * @param superset Arbitrary non-cyclic JS object (browser context)
+     * @returns `true` if `subset <= superset`, `false` otherwise.
+     */
+    const inclusive = (subset: Record<string, unknown>, superset: Record<string, unknown>)
+    : boolean => (
+      Object.entries(subset).every(
+        ([key, value]) => {
+          /**
+           * Arrays are compared without order (are transformed into objects before comparison).
+           */
+          const parsedValue = Array.isArray(value) ? arrayToObject(value) : value;
+
+          const parsedSuperset : Record<string, unknown> = {};
+          parsedSuperset[key] = Array.isArray(superset[key])
+            ? arrayToObject(<any>superset[key])
+            : superset[key];
+
+          // Every `subset` key must exist in the `superset` and
+          // have the same value (strict equality), or subset[key] <= superset[key]
+          return parsedSuperset[key]
+          && (
+            (parsedSuperset[key] === parsedValue)
+            || ((parsedValue).constructor.name === 'RegExp' && (<RegExp>parsedValue).test(<string>parsedSuperset[key]))
+            || (
+              (parsedValue).constructor.name !== 'RegExp'
+              && typeof parsedValue === 'object' && inclusive(<typeof subset>parsedValue, <typeof superset>parsedSuperset[key])
+            )
+          );
+        },
+      )
+    );
+
+    // Every value in the "where" object should be compliant to the current state.
+    return Object.entries(where).every(
+      ([key, value]) => {
+        if (operators.includes(<any>key)) {
+          const array = Array.isArray(value)
+            ? value as Where[]
+            : Object.entries(value).map((a) => Object.fromEntries([a]));
+            // every condition is treated as a single context
+
+          switch (key as keyof typeof operators) {
+            case '$and':
+              return array?.every((x) => this.applicable(x, context));
+            case '$or':
+              return array?.some((x) => this.applicable(x, context));
+            case '$not':
+              return !this.applicable(<Where>value, context); // $not should be a unary operator
+            default:
+              throw new Error('Undefined logic operator.');
+          }
+        } else if (meta.includes(<any>key)) {
+          const testRegexString = (x: string) => {
+            if (typeof value === 'string') {
+              return x === value;
+            }
+
+            return (<RegExp><unknown>value).test(x);
+          };
+
+          switch (key as keyof typeof meta) {
+            case '$before':
+              return !usedActions.find(testRegexString);
+            case '$after':
+              return !!usedActions.find(testRegexString);
+            default:
+              throw new Error('Undefined meta operator.');
+          }
+        } else {
+          // Current key is a base condition (url, cookies, selectors)
+          return inclusive({ [key]: value }, context);
+        }
+      },
+    );
+  }
+
   
 }
