@@ -1,4 +1,4 @@
-import { WorkflowFile } from "@wbr-project/wbr-interpret";
+import { WorkflowFile } from "maxun-core";
 import { Locator } from "playwright";
 
 export type Workflow = WorkflowFile["workflow"];
@@ -15,7 +15,7 @@ export interface ScreenshotSettings {
   fullPage?: boolean;
   mask?: Locator[];
   omitBackground?: boolean;
-  // is this still needed? - @wbr-project/wbr-interpret outputs to a binary output
+  // is this still needed? - maxun-core outputs to a binary output
   path?: string;
   quality?: number;
   scale?: "css" | "device";

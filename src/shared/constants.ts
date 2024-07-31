@@ -1,3 +1,3 @@
-import { WorkflowFile } from "@wbr-project/wbr-interpret";
+import { WorkflowFile } from "maxun-core";
 
 export const emptyWorkflow: WorkflowFile = { workflow: [] };

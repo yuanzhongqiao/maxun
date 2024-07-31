@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Box from "@mui/material/Box";
 import { Pair } from "./Pair";
-import { WhereWhatPair, WorkflowFile } from "@wbr-project/wbr-interpret";
+import { WhereWhatPair, WorkflowFile } from "maxun-core";
 import { useSocketStore } from "../../context/socket";
 import { Add } from "@mui/icons-material";
 import { Socket } from "socket.io-client";

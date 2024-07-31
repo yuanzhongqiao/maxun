@@ -8,7 +8,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { useEffect } from "react";
-import { WorkflowFile } from "@wbr-project/wbr-interpret";
+import { WorkflowFile } from "maxun-core";
 import { IconButton } from "@mui/material";
 import { Assignment, DeleteForever, Edit, PlayCircle } from "@mui/icons-material";
 import { useGlobalInfoStore } from "../../context/globalInfo";

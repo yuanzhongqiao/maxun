@@ -2,7 +2,7 @@ import { Box, Paper, Tab, Tabs } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import { getActiveWorkflow, getParamsOfActiveWorkflow } from "../../api/workflow";
 import { useSocketStore } from '../../context/socket';
-import { WhereWhatPair, WorkflowFile } from "@wbr-project/wbr-interpret";
+import { WhereWhatPair, WorkflowFile } from "maxun-core";
 import { SidePanelHeader } from "../molecules/SidePanelHeader";
 import { emptyWorkflow } from "../../shared/constants";
 import { LeftSidePanelContent } from "../molecules/LeftSidePanelContent";

@@ -11,7 +11,7 @@ import { ActionProvider } from "../context/browserActions"
 import { BrowserStepsProvider } from '../context/browserSteps';
 import { useGlobalInfoStore } from "../context/globalInfo";
 import { editRecordingFromStorage } from "../api/storage";
-import { WhereWhatPair } from "@wbr-project/wbr-interpret";
+import { WhereWhatPair } from "maxun-core";
 import styled from "styled-components";
 
 interface RecordingPageProps {

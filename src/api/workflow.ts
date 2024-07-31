@@ -1,4 +1,4 @@
-import { WhereWhatPair, WorkflowFile } from "@wbr-project/wbr-interpret";
+import { WhereWhatPair, WorkflowFile } from "maxun-core";
 import { emptyWorkflow } from "../shared/constants";
 
 const axios = require('axios').default;

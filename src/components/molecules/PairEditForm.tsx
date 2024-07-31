@@ -1,6 +1,6 @@
 import { Button, TextField, Typography } from "@mui/material";
 import React, { FC } from "react";
-import { Preprocessor, WhereWhatPair } from "@wbr-project/wbr-interpret";
+import { Preprocessor, WhereWhatPair } from "maxun-core";
 
 interface PairProps {
   index: string;

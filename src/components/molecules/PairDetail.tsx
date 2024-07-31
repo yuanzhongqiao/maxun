@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
-import { WhereWhatPair } from "@wbr-project/wbr-interpret";
+import { WhereWhatPair } from "maxun-core";
 import { Box, Button, IconButton, MenuItem, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import { Close, KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import TreeView from '@mui/lab/TreeView';
