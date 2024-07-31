@@ -78,5 +78,63 @@ export default class Interpreter extends EventEmitter {
     }
   }
 
+  /**
+    * Returns the context object from given Page and the current workflow.\
+    * \
+    * `workflow` is used for selector extraction - function searches for used selectors to
+    * look for later in the page's context.
+    * @param page Playwright Page object
+    * @param workflow Current **initialized** workflow (array of where-what pairs).
+    * @returns {PageState} State of the current page.
+    */
+  private async getState(page: Page, workflow: Workflow) : Promise<PageState> {
+    /**
+     * All the selectors present in the current Workflow
+     */
+    const selectors = Preprocessor.extractSelectors(workflow);
+
+    /**
+      * Determines whether the element targetted by the selector is [actionable](https://playwright.dev/docs/actionability).
+      * @param selector Selector to be queried
+      * @returns True if the targetted element is actionable, false otherwise.
+      */
+    const actionable = async (selector: string) : Promise<boolean> => {
+      try {
+        const proms = [
+          page.isEnabled(selector, { timeout: 500 }),
+          page.isVisible(selector, { timeout: 500 }),
+        ];
+
+        return await Promise.all(proms).then((bools) => bools.every((x) => x));
+      } catch (e) {
+        // log(<Error>e, Level.ERROR);
+        return false;
+      }
+    };
+
+    /**
+      * Object of selectors present in the current page.
+      */
+    const presentSelectors : SelectorArray = await Promise.all(
+      selectors.map(async (selector) => {
+        if (await actionable(selector)) {
+          return [selector];
+        }
+        return [];
+      }),
+    ).then((x) => x.flat());
+
+    return {
+      url: page.url(),
+      cookies: (await page.context().cookies([page.url()]))
+        .reduce((p, cookie) => (
+          {
+            ...p,
+            [cookie.name]: cookie.value,
+          }), {}),
+      selectors: presentSelectors,
+    };
+  }
+
   
 }
