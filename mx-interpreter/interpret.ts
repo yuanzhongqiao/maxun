@@ -225,5 +225,124 @@ export default class Interpreter extends EventEmitter {
     );
   }
 
+  /**
+ * Given a Playwright's page object and a "declarative" list of actions, this function
+ * calls all mentioned functions on the Page object.\
+ * \
+ * Manipulates the iterator indexes (experimental feature, likely to be removed in
+ * the following versions of waw-interpreter)
+ * @param page Playwright Page object
+ * @param steps Array of actions.
+ */
+  private async carryOutSteps(page: Page, steps: What[]) : Promise<void> {
+  /**
+   * Defines overloaded (or added) methods/actions usable in the workflow.
+   * If a method overloads any existing method of the Page class, it accepts the same set
+   * of parameters *(but can override some!)*\
+   * \
+   * Also, following piece of code defines functions to be run in the browser's context.
+   * Beware of false linter errors - here, we know better!
+   */
+    const wawActions : Record<CustomFunctions, (...args: any[]) => void> = {
+      screenshot: async (params: PageScreenshotOptions) => {
+        const screenshotBuffer = await page.screenshot({
+          ...params, path: undefined,
+        });
+        await this.options.binaryCallback(screenshotBuffer, 'image/png');
+      },
+      enqueueLinks: async (selector : string) => {
+        const links : string[] = await page.locator(selector)
+          .evaluateAll(
+            // @ts-ignore
+            (elements) => elements.map((a) => a.href).filter((x) => x),
+          );
+        const context = page.context();
+
+        for (const link of links) {
+          // eslint-disable-next-line
+          this.concurrency.addJob(async () => {
+            try {
+              const newPage = await context.newPage();
+              await newPage.goto(link);
+              await newPage.waitForLoadState('networkidle');
+              await this.runLoop(newPage, this.initializedWorkflow!);
+            } catch (e) {
+              // `runLoop` uses soft mode, so it recovers from it's own exceptions
+              // but newPage(), goto() and waitForLoadState() don't (and will kill
+              // the interpreter by throwing).
+              this.log(<Error>e, Level.ERROR);
+            }
+          });
+        }
+        await page.close();
+      },
+      scrape: async (selector?: string) => {
+        const scrapeResults : Record<string, string>[] = <any> await page
+          // eslint-disable-next-line
+          // @ts-ignore
+          .evaluate((s) => scrape(s ?? null), selector);
+        await this.options.serializableCallback(scrapeResults);
+      },
+      scrapeSchema: async (schema: Record<string, string>) => {
+        const handleLists = await Promise.all(
+          Object.values(schema).map((selector) => page.$$(selector)),
+        );
+
+        const namedHandleLists = Object.fromEntries(
+          Object.keys(schema).map((key, i) => [key, handleLists[i]]),
+        );
+
+        const scrapeResult = await page.evaluate((n) => scrapeSchema(n), namedHandleLists);
+
+        this.options.serializableCallback(scrapeResult);
+      },
+      scroll: async (pages? : number) => {
+        await page.evaluate(async (pagesInternal) => {
+          for (let i = 1; i <= (pagesInternal ?? 1); i += 1) {
+            // @ts-ignore
+            window.scrollTo(0, window.scrollY + window.innerHeight);
+          }
+        }, pages ?? 1);
+      },
+      script: async (code : string) => {
+        const AsyncFunction : FunctionConstructor = Object.getPrototypeOf(
+          async () => {},
+        ).constructor;
+        const x = new AsyncFunction('page', 'log', code);
+        await x(page, this.log);
+      },
+      flag: async () => new Promise((res) => {
+        this.emit('flag', page, res);
+      }),
+    };
+
+    for (const step of steps) {
+      this.log(`Launching ${step.action}`, Level.LOG);
+
+      if (step.action in wawActions) {
+        // "Arrayifying" here should not be needed (TS + syntax checker - only arrays; but why not)
+        const params = !step.args || Array.isArray(step.args) ? step.args : [step.args];
+        await wawActions[step.action as CustomFunctions](...(params ?? []));
+      } else {
+      // Implements the dot notation for the "method name" in the workflow
+        const levels = step.action.split('.');
+        const methodName = levels[levels.length - 1];
+
+        let invokee : any = page;
+        for (const level of levels.splice(0, levels.length - 1)) {
+          invokee = invokee[level];
+        }
+
+        if (!step.args || Array.isArray(step.args)) {
+          await (<any>invokee[methodName])(...(step.args ?? []));
+        } else {
+          await (<any>invokee[methodName])(step.args);
+        }
+      }
+
+      await new Promise((res) => { setTimeout(res, 500); });
+    }
+  }
+
   
 }
