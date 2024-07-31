@@ -111,7 +111,7 @@ export const getElementInformation = async (
         console.log(`Element innerText: ${elementInfo.innerText}`);
       }
     }
-
+    
     return elementInfo;
   } catch (error) {
     const { message, stack } = error as Error;
