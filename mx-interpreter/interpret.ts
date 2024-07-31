@@ -344,5 +344,76 @@ export default class Interpreter extends EventEmitter {
     }
   }
 
+  private async runLoop(p : Page, workflow: Workflow) {
+    const usedActions : string[] = [];
+    let lastAction = null;
+    let repeatCount = 0;
+
+    /**
+    *  Enables the interpreter functionality for popup windows.
+    * User-requested concurrency should be entirely managed by the concurrency manager,
+    * e.g. via `enqueueLinks`.
+    */
+    p.on('popup', (popup) => {
+      this.concurrency.addJob(() => this.runLoop(popup, workflow));
+    });
+
+    /* eslint no-constant-condition: ["warn", { "checkLoops": false }] */
+    while (true) {
+      // Checks whether the page was closed from outside,
+      //  or the workflow execution has been stopped via `interpreter.stop()`
+      if (p.isClosed() || !this.stopper) {
+        return;
+      }
+
+      try {
+        await p.waitForLoadState();
+      } catch (e) {
+        await p.close();
+        return;
+      }
+
+      let pageState = {};
+      try {
+        pageState = await this.getState(p, workflow);
+      } catch (e: any) {
+        this.log('The browser has been closed.');
+        return;
+      }
+
+      if (this.options.debug) {
+        this.log(`Current state is: \n${JSON.stringify(pageState, null, 2)}`, Level.WARN);
+      }
+      const actionId = workflow.findIndex(
+        (step) => this.applicable(step.where, pageState, usedActions),
+      );
+
+      const action = workflow[actionId];
+
+      this.log(`Matched ${JSON.stringify(action?.where)}`, Level.LOG);
+
+      if (action) { // action is matched
+        if (this.options.debugChannel?.activeId) {
+          this.options.debugChannel.activeId(actionId);
+        }
+
+        repeatCount = action === lastAction ? repeatCount + 1 : 0;
+        if (this.options.maxRepeats && repeatCount >= this.options.maxRepeats) {
+          return;
+        }
+        lastAction = action;
+
+        try {
+          await this.carryOutSteps(p, action.what);
+          usedActions.push(action.id ?? 'undefined');
+        } catch (e) {
+          this.log(<Error>e, Level.ERROR);
+        }
+      } else {
+        return;
+      }
+    }
+  }
+
   
 }
