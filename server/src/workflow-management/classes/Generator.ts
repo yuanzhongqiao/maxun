@@ -1,5 +1,5 @@
 import { Action, ActionType, Coordinates, TagName } from "../../types";
-import { WhereWhatPair, WorkflowFile } from '@wbr-project/wbr-interpret';
+import { WhereWhatPair, WorkflowFile } from 'maxun-core';
 import logger from "../../logger";
 import { Socket } from "socket.io";
 import { Page } from "playwright";

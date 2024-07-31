@@ -1,6 +1,6 @@
 import { Page } from "playwright";
 import { Action, ActionType, Coordinates, TagName } from "../types";
-import { WhereWhatPair, WorkflowFile } from "@wbr-project/wbr-interpret";
+import { WhereWhatPair, WorkflowFile } from "maxun-core";
 import logger from "../logger";
 import { getBestSelectorForAction } from "./utils";
 
