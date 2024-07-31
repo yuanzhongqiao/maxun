@@ -39,11 +39,11 @@ export default class Interpreter extends EventEmitter {
 
   private options: InterpreterOptions;
 
-  private concurrency : Concurrency;
+  private concurrency: Concurrency;
 
-  private stopper : Function | null = null;
+  private stopper: Function | null = null;
 
-  private log : typeof log;
+  private log: typeof log;
 
   constructor(workflow: WorkflowFile, options?: Partial<InterpreterOptions>) {
     super();
@@ -87,7 +87,7 @@ export default class Interpreter extends EventEmitter {
     * @param workflow Current **initialized** workflow (array of where-what pairs).
     * @returns {PageState} State of the current page.
     */
-  private async getState(page: Page, workflow: Workflow) : Promise<PageState> {
+  private async getState(page: Page, workflow: Workflow): Promise<PageState> {
     /**
      * All the selectors present in the current Workflow
      */
@@ -98,7 +98,7 @@ export default class Interpreter extends EventEmitter {
       * @param selector Selector to be queried
       * @returns True if the targetted element is actionable, false otherwise.
       */
-    const actionable = async (selector: string) : Promise<boolean> => {
+    const actionable = async (selector: string): Promise<boolean> => {
       try {
         const proms = [
           page.isEnabled(selector, { timeout: 500 }),
@@ -115,7 +115,7 @@ export default class Interpreter extends EventEmitter {
     /**
       * Object of selectors present in the current page.
       */
-    const presentSelectors : SelectorArray = await Promise.all(
+    const presentSelectors: SelectorArray = await Promise.all(
       selectors.map(async (selector) => {
         if (await actionable(selector)) {
           return [selector];
@@ -142,7 +142,7 @@ export default class Interpreter extends EventEmitter {
    * @param context Current browser context.
    * @returns True if `where` is applicable in the given context, false otherwise
    */
-  private applicable(where: Where, context: PageState, usedActions : string[] = []) : boolean {
+  private applicable(where: Where, context: PageState, usedActions: string[] = []): boolean {
     /**
      * Given two arbitrary objects, determines whether `subset` is a subset of `superset`.\
      * \
@@ -153,7 +153,7 @@ export default class Interpreter extends EventEmitter {
      * @returns `true` if `subset <= superset`, `false` otherwise.
      */
     const inclusive = (subset: Record<string, unknown>, superset: Record<string, unknown>)
-    : boolean => (
+      : boolean => (
       Object.entries(subset).every(
         ([key, value]) => {
           /**
@@ -161,7 +161,7 @@ export default class Interpreter extends EventEmitter {
            */
           const parsedValue = Array.isArray(value) ? arrayToObject(value) : value;
 
-          const parsedSuperset : Record<string, unknown> = {};
+          const parsedSuperset: Record<string, unknown> = {};
           parsedSuperset[key] = Array.isArray(superset[key])
             ? arrayToObject(<any>superset[key])
             : superset[key];
@@ -169,14 +169,14 @@ export default class Interpreter extends EventEmitter {
           // Every `subset` key must exist in the `superset` and
           // have the same value (strict equality), or subset[key] <= superset[key]
           return parsedSuperset[key]
-          && (
-            (parsedSuperset[key] === parsedValue)
-            || ((parsedValue).constructor.name === 'RegExp' && (<RegExp>parsedValue).test(<string>parsedSuperset[key]))
-            || (
-              (parsedValue).constructor.name !== 'RegExp'
-              && typeof parsedValue === 'object' && inclusive(<typeof subset>parsedValue, <typeof superset>parsedSuperset[key])
-            )
-          );
+            && (
+              (parsedSuperset[key] === parsedValue)
+              || ((parsedValue).constructor.name === 'RegExp' && (<RegExp>parsedValue).test(<string>parsedSuperset[key]))
+              || (
+                (parsedValue).constructor.name !== 'RegExp'
+                && typeof parsedValue === 'object' && inclusive(<typeof subset>parsedValue, <typeof superset>parsedSuperset[key])
+              )
+            );
         },
       )
     );
@@ -188,7 +188,7 @@ export default class Interpreter extends EventEmitter {
           const array = Array.isArray(value)
             ? value as Where[]
             : Object.entries(value).map((a) => Object.fromEntries([a]));
-            // every condition is treated as a single context
+          // every condition is treated as a single context
 
           switch (key as keyof typeof operators) {
             case '$and':
@@ -234,24 +234,24 @@ export default class Interpreter extends EventEmitter {
  * @param page Playwright Page object
  * @param steps Array of actions.
  */
-  private async carryOutSteps(page: Page, steps: What[]) : Promise<void> {
-  /**
-   * Defines overloaded (or added) methods/actions usable in the workflow.
-   * If a method overloads any existing method of the Page class, it accepts the same set
-   * of parameters *(but can override some!)*\
-   * \
-   * Also, following piece of code defines functions to be run in the browser's context.
-   * Beware of false linter errors - here, we know better!
-   */
-    const wawActions : Record<CustomFunctions, (...args: any[]) => void> = {
+  private async carryOutSteps(page: Page, steps: What[]): Promise<void> {
+    /**
+     * Defines overloaded (or added) methods/actions usable in the workflow.
+     * If a method overloads any existing method of the Page class, it accepts the same set
+     * of parameters *(but can override some!)*\
+     * \
+     * Also, following piece of code defines functions to be run in the browser's context.
+     * Beware of false linter errors - here, we know better!
+     */
+    const wawActions: Record<CustomFunctions, (...args: any[]) => void> = {
       screenshot: async (params: PageScreenshotOptions) => {
         const screenshotBuffer = await page.screenshot({
           ...params, path: undefined,
         });
         await this.options.binaryCallback(screenshotBuffer, 'image/png');
       },
-      enqueueLinks: async (selector : string) => {
-        const links : string[] = await page.locator(selector)
+      enqueueLinks: async (selector: string) => {
+        const links: string[] = await page.locator(selector)
           .evaluateAll(
             // @ts-ignore
             (elements) => elements.map((a) => a.href).filter((x) => x),
@@ -277,7 +277,7 @@ export default class Interpreter extends EventEmitter {
         await page.close();
       },
       scrape: async (selector?: string) => {
-        const scrapeResults : Record<string, string>[] = <any> await page
+        const scrapeResults: Record<string, string>[] = <any>await page
           // eslint-disable-next-line
           // @ts-ignore
           .evaluate((s) => scrape(s ?? null), selector);
@@ -296,7 +296,7 @@ export default class Interpreter extends EventEmitter {
 
         this.options.serializableCallback(scrapeResult);
       },
-      scroll: async (pages? : number) => {
+      scroll: async (pages?: number) => {
         await page.evaluate(async (pagesInternal) => {
           for (let i = 1; i <= (pagesInternal ?? 1); i += 1) {
             // @ts-ignore
@@ -304,9 +304,9 @@ export default class Interpreter extends EventEmitter {
           }
         }, pages ?? 1);
       },
-      script: async (code : string) => {
-        const AsyncFunction : FunctionConstructor = Object.getPrototypeOf(
-          async () => {},
+      script: async (code: string) => {
+        const AsyncFunction: FunctionConstructor = Object.getPrototypeOf(
+          async () => { },
         ).constructor;
         const x = new AsyncFunction('page', 'log', code);
         await x(page, this.log);
@@ -324,11 +324,11 @@ export default class Interpreter extends EventEmitter {
         const params = !step.args || Array.isArray(step.args) ? step.args : [step.args];
         await wawActions[step.action as CustomFunctions](...(params ?? []));
       } else {
-      // Implements the dot notation for the "method name" in the workflow
+        // Implements the dot notation for the "method name" in the workflow
         const levels = step.action.split('.');
         const methodName = levels[levels.length - 1];
 
-        let invokee : any = page;
+        let invokee: any = page;
         for (const level of levels.splice(0, levels.length - 1)) {
           invokee = invokee[level];
         }
@@ -344,8 +344,8 @@ export default class Interpreter extends EventEmitter {
     }
   }
 
-  private async runLoop(p : Page, workflow: Workflow) {
-    const usedActions : string[] = [];
+  private async runLoop(p: Page, workflow: Workflow) {
+    const usedActions: string[] = [];
     let lastAction = null;
     let repeatCount = 0;
 
@@ -423,7 +423,7 @@ export default class Interpreter extends EventEmitter {
    * @param {ParamType} params Workflow specific, set of parameters
    *  for the `{$param: nameofparam}` fields.
    */
-  public async run(page: Page, params? : ParamType) : Promise<void> {
+  public async run(page: Page, params?: ParamType): Promise<void> {
     if (this.stopper) {
       throw new Error('This Interpreter is already running a workflow. To run another workflow, please, spawn another Interpreter.');
     }
@@ -448,7 +448,7 @@ export default class Interpreter extends EventEmitter {
     this.stopper = null;
   }
 
-  public async stop() : Promise<void> {
+  public async stop(): Promise<void> {
     if (this.stopper) {
       await this.stopper();
       this.stopper = null;
