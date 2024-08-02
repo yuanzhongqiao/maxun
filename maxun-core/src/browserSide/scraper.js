@@ -130,58 +130,65 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
  * Returns a "scrape" result from the current page.
  * @returns {Array<Object>} *Curated* array of scraped information (with sparse rows removed)
  */
-function scrape(selector = null) {
+// Wrap the entire function in an IIFE (Immediately Invoked Function Expression)
+// and attach it to the window object
+(function(window) {
   /**
-   * **crudeRecords** contains uncurated rundowns of "scrapable" elements
-   * @type {Array<Object>}
+   * Returns a "scrape" result from the current page.
+   * @returns {Array<Object>} *Curated* array of scraped information (with sparse rows removed)
    */
-  const crudeRecords = (selector
-    ? Array.from(document.querySelectorAll(selector))
-    : scrapableHeuristics())
-    .map((record) => ({
-      ...Array.from(record.querySelectorAll('img'))
-        .reduce((p, x, i) => {
-          let url = null;
-          if (x.srcset) {
-            const urls = x.srcset.split(', ');
-            [url] = urls[urls.length - 1].split(' ');
-          }
+  window.scrape = function(selector = null) {
+    /**
+     * **crudeRecords** contains uncurated rundowns of "scrapable" elements
+     * @type {Array<Object>}
+     */
+    const crudeRecords = (selector
+      ? Array.from(document.querySelectorAll(selector))
+      : scrapableHeuristics())
+      .map((record) => ({
+        ...Array.from(record.querySelectorAll('img'))
+          .reduce((p, x, i) => {
+            let url = null;
+            if (x.srcset) {
+              const urls = x.srcset.split(', ');
+              [url] = urls[urls.length - 1].split(' ');
+            }
 
-          /**
-             * Contains the largest elements from `srcset` - if `srcset` is not present, contains
-             * URL from the `src` attribute
-             *
-             * If the `src` attribute contains a data url, imgUrl contains `undefined`.
-             */
-          let imgUrl;
-          if (x.srcset) {
-            imgUrl = url;
-          } else if (x.src.indexOf('data:') === -1) {
-            imgUrl = x.src;
-          }
+            /**
+               * Contains the largest elements from `srcset` - if `srcset` is not present, contains
+               * URL from the `src` attribute
+               *
+               * If the `src` attribute contains a data url, imgUrl contains `undefined`.
+               */
+            let imgUrl;
+            if (x.srcset) {
+              imgUrl = url;
+            } else if (x.src.indexOf('data:') === -1) {
+              imgUrl = x.src;
+            }
 
-          return ({
+            return ({
+              ...p,
+              ...(imgUrl ? { [`img_${i}`]: imgUrl } : {}),
+            });
+          }, {}),
+        ...record.innerText.split('\n')
+          .reduce((p, x, i) => ({
             ...p,
-            ...(imgUrl ? { [`img_${i}`]: imgUrl } : {}),
-          });
-        }, {}),
-      ...record.innerText.split('\n')
-        .reduce((p, x, i) => ({
-          ...p,
-          [`record_${String(i).padStart(4, '0')}`]: x.trim(),
-        }), {}),
-    }));
+            [`record_${String(i).padStart(4, '0')}`]: x.trim(),
+          }), {}),
+      }));
 
-  return crudeRecords;
-}
+    return crudeRecords;
+  };
 
-/**
+  /**
  * Given an object with named lists of elements,
  *  groups the elements by their distance in the DOM tree.
  * @param {Object.<string, object[]>} lists The named lists of HTML elements.
  * @returns {Array.<Object.<string, string>>}
  */
-function scrapeSchema(lists) {
+window.scrapeSchema = function (lists) {
   function omap(object, f, kf = (x) => x) {
     return Object.fromEntries(
       Object.entries(object)
@@ -224,3 +231,6 @@ function scrapeSchema(lists) {
     (listOfElements) => listOfElements.find((elem) => mbe.contains(elem))?.innerText,
   ));
 }
+
+
+})(window);
