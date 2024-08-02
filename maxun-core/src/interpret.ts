@@ -278,26 +278,26 @@ export default class Interpreter extends EventEmitter {
       },
       scrape: async (selector?: string) => {
         await this.ensureScriptsLoaded(page);
-    
+
         const scrapeResults: Record<string, string>[] = await page.evaluate((s) => window.scrape(s ?? null), selector);
         await this.options.serializableCallback(scrapeResults);
-    },
-    
-    scrapeSchema: async (schema: Record<string, string>) => {
-      await this.ensureScriptsLoaded(page);
-    
+      },
+
+      scrapeSchema: async (schema: Record<string, string>) => {
+        await this.ensureScriptsLoaded(page);
+
         const handleLists = await Promise.all(
-            Object.values(schema).map((selector) => page.$$(selector)),
+          Object.values(schema).map((selector) => page.$$(selector)),
         );
-    
+
         const namedHandleLists = Object.fromEntries(
-            Object.keys(schema).map((key, i) => [key, handleLists[i]]),
+          Object.keys(schema).map((key, i) => [key, handleLists[i]]),
         );
-    
+
         const scrapeResult = await page.evaluate((n) => window.scrapeSchema(n), namedHandleLists);
         await this.options.serializableCallback(scrapeResult);
-    },
-    
+      },
+
       scroll: async (pages?: number) => {
         await page.evaluate(async (pagesInternal) => {
           for (let i = 1; i <= (pagesInternal ?? 1); i += 1) {
