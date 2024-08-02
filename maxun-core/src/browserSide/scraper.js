@@ -126,12 +126,7 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
   return out;
 }
 
-/**
- * Returns a "scrape" result from the current page.
- * @returns {Array<Object>} *Curated* array of scraped information (with sparse rows removed)
- */
-// Wrap the entire function in an IIFE (Immediately Invoked Function Expression)
-// and attach it to the window object
+// wrap inside an IIFE to avoid polluting the global scope
 (function (window) {
   /**
    * Returns a "scrape" result from the current page.
