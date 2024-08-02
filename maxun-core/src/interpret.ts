@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop, no-restricted-syntax */
-import { Page, PageScreenshotOptions, BrowserContextOptions } from 'playwright';
+import { Page, PageScreenshotOptions } from 'playwright';
 import path from 'path';
 
 import { EventEmitter } from 'events';
