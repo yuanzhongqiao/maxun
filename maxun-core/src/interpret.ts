@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop, no-restricted-syntax */
-import { Page, PageScreenshotOptions } from 'playwright';
+import { Page, PageScreenshotOptions, BrowserContextOptions } from 'playwright';
 import path from 'path';
 
 import { EventEmitter } from 'events';
@@ -277,26 +277,28 @@ export default class Interpreter extends EventEmitter {
         await page.close();
       },
       scrape: async (selector?: string) => {
+        await this.ensureScriptsLoaded(page);
         // Check if 'scrape' function is available in the page context
-        const isScrapeAvailable = await page.evaluate(() => typeof window.scrape === 'function');
+        // const isScrapeAvailable = await page.evaluate(() => typeof window.scrape === 'function');
     
-        if (!isScrapeAvailable) {
-            // Inject the script that defines the 'scrape' function
-            await page.addScriptTag({ path: path.join(__dirname, 'browserSide', 'scraper.js') });
-        }
+        // if (!isScrapeAvailable) {
+        //     // Inject the script that defines the 'scrape' function
+        //     await page.addScriptTag({ path: path.join(__dirname, 'browserSide', 'scraper.js') });
+        // }
     
         const scrapeResults: Record<string, string>[] = await page.evaluate((s) => window.scrape(s ?? null), selector);
         await this.options.serializableCallback(scrapeResults);
     },
     
     scrapeSchema: async (schema: Record<string, string>) => {
+      await this.ensureScriptsLoaded(page);
         // Check if 'scrapeSchema' function is available in the page context
-        const isScrapeSchemaAvailable = await page.evaluate(() => typeof window.scrapeSchema === 'function');
+        // const isScrapeSchemaAvailable = await page.evaluate(() => typeof window.scrapeSchema === 'function');
     
-        if (!isScrapeSchemaAvailable) {
-            // Inject the script that defines the 'scrapeSchema' function
-            await page.addScriptTag({ path: path.join(__dirname, 'browserSide', 'scraper.js') });
-        }
+        // if (!isScrapeSchemaAvailable) {
+        //     // Inject the script that defines the 'scrapeSchema' function
+        //     await page.addScriptTag({ path: path.join(__dirname, 'browserSide', 'scraper.js') });
+        // }
     
         const handleLists = await Promise.all(
             Object.values(schema).map((selector) => page.$$(selector)),
@@ -429,6 +431,13 @@ export default class Interpreter extends EventEmitter {
     }
   }
 
+  private async ensureScriptsLoaded(page: Page) {
+    const isScriptLoaded = await page.evaluate(() => typeof window.scrape === 'function' && typeof window.scrapeSchema === 'function');
+    if (!isScriptLoaded) {
+      await page.addInitScript({ path: path.join(__dirname, 'browserSide', 'scraper.js') });
+    }
+  }
+
   /**
    * Spawns a browser context and runs given workflow.
    * \
@@ -446,15 +455,16 @@ export default class Interpreter extends EventEmitter {
      */
     this.initializedWorkflow = Preprocessor.initWorkflow(this.workflow, params);
 
+    await this.ensureScriptsLoaded(page);
+
     // @ts-ignore
     // if (await page.evaluate(() => !<any>window.scrape)) {
     //   page.context().addInitScript({ path: path.join(__dirname, 'browserSide', 'scraper.js') });
     // }
 
-    // Enable CSP bypass for the page
-    await page.context().setExtraHTTPHeaders({
-      'Content-Security-Policy': ''
-    });
+    // await page.context({
+    //   bypassCSP: true,
+    // })
 
     this.stopper = () => {
       this.stopper = null;
