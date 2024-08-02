@@ -126,7 +126,7 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
   return out;
 }
 
-// wrap inside an IIFE to avoid polluting the global scope
+// wrap inside an IIFE to avoid polluting the global scope: https://github.com/microsoft/playwright/issues/31864
 (function (window) {
   /**
    * Returns a "scrape" result from the current page.
