@@ -451,6 +451,11 @@ export default class Interpreter extends EventEmitter {
     //   page.context().addInitScript({ path: path.join(__dirname, 'browserSide', 'scraper.js') });
     // }
 
+    // Enable CSP bypass for the page
+    await page.context().setExtraHTTPHeaders({
+      'Content-Security-Policy': ''
+    });
+
     this.stopper = () => {
       this.stopper = null;
     };
