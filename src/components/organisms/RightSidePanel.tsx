@@ -71,7 +71,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   };
 
   const createSettingsObject = useCallback(() => {
-    const settings: Record<string, { selector: string; tag?: string; [key: string]: any }> = {};
+    const settings: Record<string, { selector: string; tag?: string;[key: string]: any }> = {};
     browserSteps.forEach(step => {
       if (step.label && step.selectorObj && step.selectorObj.selector) {
         settings[step.label] = step.selectorObj;
