@@ -3,13 +3,13 @@ import React, { createContext, useContext, useState } from 'react';
 interface BrowserStep {
     id: number;
     label: string;
-    value: string;
+    data: string;
     selector: string;
 }
 
 interface BrowserStepsContextType {
     browserSteps: BrowserStep[];
-    addBrowserStep: (label: string, value: string, selector: string) => void;
+    addBrowserStep: (label: string, data: string, selector: string) => void;
     deleteBrowserStep: (id: number) => void;
     updateBrowserStepLabel: (id: number, newLabel: string) => void;
 }
@@ -19,10 +19,10 @@ const BrowserStepsContext = createContext<BrowserStepsContextType | undefined>(u
 export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [browserSteps, setBrowserSteps] = useState<BrowserStep[]>([]);
 
-    const addBrowserStep = (label: string, value: string, selector: string) => {
+    const addBrowserStep = (label: string, data: string, selector: string) => {
         setBrowserSteps(prevSteps => [
             ...prevSteps,
-            { id: Date.now(), label, value, selector }
+            { id: Date.now(), label, data, selector }
         ]);
     };
 
