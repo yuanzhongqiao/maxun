@@ -133,7 +133,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
             />
             <TextField
               label="Data"
-              value={step.value}
+              value={step.data}
               fullWidth
               margin="normal"
               InputProps={{ readOnly: confirmedSteps[step.id] }}
