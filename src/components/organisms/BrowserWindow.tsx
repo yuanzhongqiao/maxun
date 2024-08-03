@@ -40,12 +40,15 @@ const getAttributeOptions = (tagName: string): AttributeOption[] => {
 };
 
 
-
 export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
     const [screenShot, setScreenShot] = useState<string>("");
     const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string, elementInfo: ElementInfo | null; } | null>(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [showAttributeModal, setShowAttributeModal] = useState(false);
+    const [attributeOptions, setAttributeOptions] = useState<AttributeOption[]>([]);
+    const [selectedElement, setSelectedElement] = useState<{selector: string, info: ElementInfo | null} | null>(null);
+
 
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
@@ -113,13 +116,49 @@ export const BrowserWindow = () => {
                 clickY >= highlightRect.top &&
                 clickY <= highlightRect.bottom
             ) {
-                addBrowserStep('', highlighterData.elementInfo?.innerText || '', {
-                    selector: highlighterData.selector,
-                    tag: highlighterData.elementInfo?.tagName
-                });
+                const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '');
+                if (options.length > 1) {
+                    setAttributeOptions(options);
+                    setSelectedElement({
+                        selector: highlighterData.selector,
+                        info: highlighterData.elementInfo
+                    });
+                    setShowAttributeModal(true);
+                } else {
+                    addBrowserStep('', highlighterData.elementInfo?.innerText || '', {
+                        selector: highlighterData.selector,
+                        tag: highlighterData.elementInfo?.tagName,
+                        attribute: 'innerText'
+                    });
+                }
             }
         }
     };
+
+    const handleAttributeSelection = (attribute: string) => {
+        if (selectedElement) {
+            let data = '';
+            switch (attribute) {
+                case 'href':
+                    data = selectedElement.info?.url || '';
+                    break;
+                case 'src':
+                    data = selectedElement.info?.imageUrl || '';
+                    break;
+                default:
+                    data = selectedElement.info?.innerText || '';
+            }
+
+            addBrowserStep('', data, {
+                selector: selectedElement.selector,
+                tag: selectedElement.info?.tagName,
+                attribute: attribute
+            });
+        }
+        setShowAttributeModal(false);
+    };
+
+
 
     const handleConfirmation = (confirmed: boolean) => {
         if (confirmed) {
@@ -133,21 +172,30 @@ export const BrowserWindow = () => {
     return (
         <div onClick={handleClick}>
             {
-                getText === true && showConfirmation ? (
+                getText === true ? (
                     <GenericModal
-                        isOpen={showConfirmation}
-                        onClose={() => setShowConfirmation(false)}
+                        isOpen={showAttributeModal}
+                        onClose={() => {}}
                         canBeClosed={false}
                     >
-                        <ConfirmationBox
+                        {/* <ConfirmationBox
                             selector={highlighterData?.selector || ''}
                             onYes={() => handleConfirmation(true)}
                             onNo={() => handleConfirmation(false)}
-                        />
+                        /> */}
+                        <div>
+                    <h2>Select Attribute</h2>
+                    {attributeOptions.map((option) => (
+                        <button key={option.value} onClick={() => handleAttributeSelection(option.value)}>
+                            {option.label}
+                        </button>
+                    ))}
+                </div>
+
                     </GenericModal>
                 ) : null
             }
-            {(getText === true && !showConfirmation && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
+            {(getText === true && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
                 <Highlighter
                     unmodifiedRect={highlighterData?.rect}
                     displayedSelector={highlighterData?.selector}
