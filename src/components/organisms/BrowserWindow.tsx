@@ -6,7 +6,6 @@ import { Highlighter } from "../atoms/Highlighter";
 import { GenericModal } from '../atoms/GenericModal';
 import { useActionContext } from '../../context/browserActions';
 import { useBrowserSteps } from '../../context/browserSteps';
-import { ConfirmationBox } from "../atoms/ConfirmationBox";
 
 interface ElementInfo {
     tagName: string;
@@ -44,7 +43,6 @@ export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
     const [screenShot, setScreenShot] = useState<string>("");
     const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string, elementInfo: ElementInfo | null; } | null>(null);
-    const [showConfirmation, setShowConfirmation] = useState(false);
     const [showAttributeModal, setShowAttributeModal] = useState(false);
     const [attributeOptions, setAttributeOptions] = useState<AttributeOption[]>([]);
     const [selectedElement, setSelectedElement] = useState<{selector: string, info: ElementInfo | null} | null>(null);
