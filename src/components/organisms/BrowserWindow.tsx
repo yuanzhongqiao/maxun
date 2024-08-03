@@ -160,15 +160,6 @@ export const BrowserWindow = () => {
 
 
 
-    const handleConfirmation = (confirmed: boolean) => {
-        if (confirmed) {
-            console.log(`User confirmed interaction with: ${highlighterData?.selector}`);
-        } else {
-            console.log('User declined interaction');
-        }
-        setShowConfirmation(false);
-    };
-
     return (
         <div onClick={handleClick}>
             {
