@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState } from 'react';
 interface SelectorObject {
     selector: string;
     tag?: string;
+    attribute?: string;
     // todo: allow for additional properties like what did user select for a, img, etc.
     [key: string]: any; 
 }
