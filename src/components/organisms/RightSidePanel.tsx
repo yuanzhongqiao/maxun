@@ -71,14 +71,15 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   };
 
   const createSettingsObject = useCallback(() => {
-    const settings: Record<string, string> = {};
+    const settings: Record<string, { selector: string; tag?: string; [key: string]: any }> = {};
     browserSteps.forEach(step => {
-      if (step.label && step.selector) {
-        settings[step.label] = step.selector;
+      if (step.label && step.selectorObj && step.selectorObj.selector) {
+        settings[step.label] = step.selectorObj;
       }
     });
     return settings;
   }, [browserSteps]);
+
 
   const stopCaptureAndEmitSettings = useCallback(() => {
     stopGetText();
