@@ -182,7 +182,7 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
     return crudeRecords;
   };
 
- /**
+/**
  * Given an object with named lists of elements,
  *  groups the elements by their distance in the DOM tree.
  * @param {Object.<string, {selector: string, tag: string}>} lists The named lists of HTML elements.
@@ -229,11 +229,11 @@ window.scrapeSchema = function (lists) {
 
   return MBEs.map((mbe) => omap(
     lists,
-    ({ selector }) => {
+    ({ selector }, key) => {
       const elem = Array.from(document.querySelectorAll(selector)).find((elem) => mbe.contains(elem));
       return elem ? elem.innerText : undefined;
     },
-    (key) => lists[key].selector // Use the selector as the key in the output
+    (key) => key // Use the original key in the output
   ));
 }
 
