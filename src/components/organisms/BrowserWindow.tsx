@@ -20,7 +20,6 @@ interface AttributeOption {
     value: string;
 }
 
-
 const getAttributeOptions = (tagName: string): AttributeOption[] => {
     switch (tagName.toLowerCase()) {
         case 'a':
@@ -38,7 +37,6 @@ const getAttributeOptions = (tagName: string): AttributeOption[] => {
     }
 };
 
-
 export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
     const [screenShot, setScreenShot] = useState<string>("");
@@ -46,7 +44,6 @@ export const BrowserWindow = () => {
     const [showAttributeModal, setShowAttributeModal] = useState(false);
     const [attributeOptions, setAttributeOptions] = useState<AttributeOption[]>([]);
     const [selectedElement, setSelectedElement] = useState<{ selector: string, info: ElementInfo | null } | null>(null);
-
 
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
@@ -155,8 +152,6 @@ export const BrowserWindow = () => {
         }
         setShowAttributeModal(false);
     };
-
-
 
     return (
         <div onClick={handleClick}>
