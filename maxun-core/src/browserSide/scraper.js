@@ -126,13 +126,18 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
   return out;
 }
 
-// wrap inside an IIFE to avoid polluting the global scope: https://github.com/microsoft/playwright/issues/31864
-(function (window) {
+/**
+ * Returns a "scrape" result from the current page.
+ * @returns {Array<Object>} *Curated* array of scraped information (with sparse rows removed)
+ */
+// Wrap the entire function in an IIFE (Immediately Invoked Function Expression)
+// and attach it to the window object
+(function(window) {
   /**
    * Returns a "scrape" result from the current page.
    * @returns {Array<Object>} *Curated* array of scraped information (with sparse rows removed)
    */
-  window.scrape = function (selector = null) {
+  window.scrape = function(selector = null) {
     /**
      * **crudeRecords** contains uncurated rundowns of "scrapable" elements
      * @type {Array<Object>}
@@ -177,54 +182,59 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
     return crudeRecords;
   };
 
-  /**
+ /**
  * Given an object with named lists of elements,
  *  groups the elements by their distance in the DOM tree.
- * @param {Object.<string, object[]>} lists The named lists of HTML elements.
+ * @param {Object.<string, {selector: string, tag: string}>} lists The named lists of HTML elements.
  * @returns {Array.<Object.<string, string>>}
  */
-  window.scrapeSchema = function (lists) {
-    function omap(object, f, kf = (x) => x) {
-      return Object.fromEntries(
-        Object.entries(object)
-          .map(([k, v]) => [kf(k), f(v)]),
-      );
-    }
-
-    function ofilter(object, f) {
-      return Object.fromEntries(
-        Object.entries(object)
-          .filter(([k, v]) => f(k, v)),
-      );
-    }
-
-    function getSeedKey(listObj) {
-      const maxLength = Math.max(...Object.values(omap(listObj, (x) => x.length)));
-      return Object.keys(ofilter(listObj, (_, v) => v.length === maxLength))[0];
-    }
-
-    function getMBEs(elements) {
-      return elements.map((element) => {
-        let candidate = element;
-        const isUniqueChild = (e) => elements
-          .filter((elem) => e.parentNode?.contains(elem))
-          .length === 1;
-
-        while (candidate && isUniqueChild(candidate)) {
-          candidate = candidate.parentNode;
-        }
-
-        return candidate;
-      });
-    }
-
-    const seedName = getSeedKey(lists);
-    const MBEs = getMBEs(lists[seedName]);
-
-    return MBEs.map((mbe) => omap(
-      lists,
-      (listOfElements) => listOfElements.find((elem) => mbe.contains(elem))?.innerText,
-    ));
+window.scrapeSchema = function (lists) {
+  function omap(object, f, kf = (x) => x) {
+    return Object.fromEntries(
+      Object.entries(object)
+        .map(([k, v]) => [kf(k), f(v)]),
+    );
   }
+
+  function ofilter(object, f) {
+    return Object.fromEntries(
+      Object.entries(object)
+        .filter(([k, v]) => f(k, v)),
+    );
+  }
+
+  function getSeedKey(listObj) {
+    const maxLength = Math.max(...Object.values(omap(listObj, (x) => document.querySelectorAll(x.selector).length)));
+    return Object.keys(ofilter(listObj, (_, v) => document.querySelectorAll(v.selector).length === maxLength))[0];
+  }
+
+  function getMBEs(elements) {
+    return elements.map((element) => {
+      let candidate = element;
+      const isUniqueChild = (e) => elements
+        .filter((elem) => e.parentNode?.contains(elem))
+        .length === 1;
+
+      while (candidate && isUniqueChild(candidate)) {
+        candidate = candidate.parentNode;
+      }
+
+      return candidate;
+    });
+  }
+
+  const seedName = getSeedKey(lists);
+  const seedElements = Array.from(document.querySelectorAll(lists[seedName].selector));
+  const MBEs = getMBEs(seedElements);
+
+  return MBEs.map((mbe) => omap(
+    lists,
+    ({ selector }) => {
+      const elem = Array.from(document.querySelectorAll(selector)).find((elem) => mbe.contains(elem));
+      return elem ? elem.innerText : undefined;
+    },
+    (key) => lists[key].selector // Use the selector as the key in the output
+  ));
+}
 
 })(window);
