@@ -283,18 +283,10 @@ export default class Interpreter extends EventEmitter {
         await this.options.serializableCallback(scrapeResults);
       },
 
-      scrapeSchema: async (schema: Record<string, string>) => {
+      scrapeSchema: async (schema: Record<string, { selector: string; tag: string }>) => {
         await this.ensureScriptsLoaded(page);
-
-        const handleLists = await Promise.all(
-          Object.values(schema).map((selector) => page.$$(selector)),
-        );
-
-        const namedHandleLists = Object.fromEntries(
-          Object.keys(schema).map((key, i) => [key, handleLists[i]]),
-        );
-
-        const scrapeResult = await page.evaluate((n) => window.scrapeSchema(n), namedHandleLists);
+      
+        const scrapeResult = await page.evaluate((schemaObj) => window.scrapeSchema(schemaObj), schema);
         await this.options.serializableCallback(scrapeResult);
       },
 
