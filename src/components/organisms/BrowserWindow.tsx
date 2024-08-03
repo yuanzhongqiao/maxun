@@ -45,7 +45,7 @@ export const BrowserWindow = () => {
     const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string, elementInfo: ElementInfo | null; } | null>(null);
     const [showAttributeModal, setShowAttributeModal] = useState(false);
     const [attributeOptions, setAttributeOptions] = useState<AttributeOption[]>([]);
-    const [selectedElement, setSelectedElement] = useState<{selector: string, info: ElementInfo | null} | null>(null);
+    const [selectedElement, setSelectedElement] = useState<{ selector: string, info: ElementInfo | null } | null>(null);
 
 
     const { socket } = useSocketStore();
@@ -164,17 +164,17 @@ export const BrowserWindow = () => {
                 getText === true ? (
                     <GenericModal
                         isOpen={showAttributeModal}
-                        onClose={() => {}}
+                        onClose={() => { }}
                         canBeClosed={false}
                     >
                         <div>
-                    <h2>Select Attribute</h2>
-                    {attributeOptions.map((option) => (
-                        <button key={option.value} onClick={() => handleAttributeSelection(option.value)}>
-                            {option.label}
-                        </button>
-                    ))}
-                </div>
+                            <h2>Select Attribute</h2>
+                            {attributeOptions.map((option) => (
+                                <button key={option.value} onClick={() => handleAttributeSelection(option.value)}>
+                                    {option.label}
+                                </button>
+                            ))}
+                        </div>
 
                     </GenericModal>
                 ) : null
