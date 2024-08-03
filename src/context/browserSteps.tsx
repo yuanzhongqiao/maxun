@@ -1,15 +1,22 @@
 import React, { createContext, useContext, useState } from 'react';
 
+interface SelectorObject {
+    selector: string;
+    tag?: string;
+    // todo: allow for additional properties like what did user select for a, img, etc.
+    [key: string]: any; 
+}
+
 interface BrowserStep {
     id: number;
     label: string;
     data: string;
-    selector: string;
+    selectorObj: SelectorObject;
 }
 
 interface BrowserStepsContextType {
     browserSteps: BrowserStep[];
-    addBrowserStep: (label: string, data: string, selector: string) => void;
+    addBrowserStep: (label: string, data: string, selectorObj: SelectorObject) => void;
     deleteBrowserStep: (id: number) => void;
     updateBrowserStepLabel: (id: number, newLabel: string) => void;
 }
@@ -19,10 +26,10 @@ const BrowserStepsContext = createContext<BrowserStepsContextType | undefined>(u
 export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [browserSteps, setBrowserSteps] = useState<BrowserStep[]>([]);
 
-    const addBrowserStep = (label: string, data: string, selector: string) => {
+    const addBrowserStep = (label: string, data: string, selectorObj: SelectorObject) => {
         setBrowserSteps(prevSteps => [
             ...prevSteps,
-            { id: Date.now(), label, data, selector }
+            { id: Date.now(), label, data, selectorObj }
         ]);
     };
 
@@ -38,8 +45,14 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         );
     };
 
+
     return (
-        <BrowserStepsContext.Provider value={{ browserSteps, addBrowserStep, deleteBrowserStep, updateBrowserStepLabel }}>
+        <BrowserStepsContext.Provider value={{ 
+            browserSteps, 
+            addBrowserStep, 
+            deleteBrowserStep, 
+            updateBrowserStepLabel,
+        }}>
             {children}
         </BrowserStepsContext.Provider>
     );
