@@ -16,6 +16,30 @@ interface ElementInfo {
     imageUrl?: string;
 }
 
+interface AttributeOption {
+    label: string;
+    value: string;
+}
+
+
+const getAttributeOptions = (tagName: string): AttributeOption[] => {
+    switch (tagName.toLowerCase()) {
+        case 'a':
+            return [
+                { label: 'Text', value: 'innerText' },
+                { label: 'URL', value: 'href' }
+            ];
+        case 'img':
+            return [
+                { label: 'Alt Text', value: 'alt' },
+                { label: 'Source URL', value: 'src' }
+            ];
+        default:
+            return [{ label: 'Text', value: 'innerText' }];
+    }
+};
+
+
 
 export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
