@@ -89,7 +89,10 @@ export const BrowserWindow = () => {
                 clickY >= highlightRect.top &&
                 clickY <= highlightRect.bottom
             ) {
-                addBrowserStep('', highlighterData.elementInfo?.innerText || '', highlighterData.selector);
+                addBrowserStep('', highlighterData.elementInfo?.innerText || '', {
+                    selector: highlighterData.selector,
+                    tag: highlighterData.elementInfo?.tagName
+                });
             }
         }
     };
