@@ -178,11 +178,6 @@ export const BrowserWindow = () => {
                         onClose={() => {}}
                         canBeClosed={false}
                     >
-                        {/* <ConfirmationBox
-                            selector={highlighterData?.selector || ''}
-                            onYes={() => handleConfirmation(true)}
-                            onNo={() => handleConfirmation(false)}
-                        /> */}
                         <div>
                     <h2>Select Attribute</h2>
                     {attributeOptions.map((option) => (
