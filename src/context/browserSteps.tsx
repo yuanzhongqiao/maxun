@@ -4,7 +4,7 @@ interface SelectorObject {
     selector: string;
     tag?: string;
     attribute?: string;
-    [key: string]: any; 
+    [key: string]: any;
 }
 
 interface BrowserStep {
@@ -45,12 +45,11 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         );
     };
 
-
     return (
-        <BrowserStepsContext.Provider value={{ 
-            browserSteps, 
-            addBrowserStep, 
-            deleteBrowserStep, 
+        <BrowserStepsContext.Provider value={{
+            browserSteps,
+            addBrowserStep,
+            deleteBrowserStep,
             updateBrowserStepLabel,
         }}>
             {children}
