@@ -230,24 +230,24 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
     return MBEs.map((mbe) => omap(
       lists,
       ({ selector, attribute }, key) => {
-          const elem = Array.from(document.querySelectorAll(selector)).find((elem) => mbe.contains(elem));
-          if (!elem) return undefined;
+        const elem = Array.from(document.querySelectorAll(selector)).find((elem) => mbe.contains(elem));
+        if (!elem) return undefined;
 
-          switch (attribute) {
-              case 'href':
-                  return elem.getAttribute('href');
-              case 'src':
-                  return elem.getAttribute('src');
-              case 'innerText':
-                  return elem.innerText;
-              case 'textContent':
-                  return elem.textContent;
-              default:
-                  return elem.innerText;
-          }
+        switch (attribute) {
+          case 'href':
+            return elem.getAttribute('href');
+          case 'src':
+            return elem.getAttribute('src');
+          case 'innerText':
+            return elem.innerText;
+          case 'textContent':
+            return elem.textContent;
+          default:
+            return elem.innerText;
+        }
       },
       (key) => key // Use the original key in the output
-  ));
+    ));
   }
 
 })(window);
