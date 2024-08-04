@@ -84,7 +84,9 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   const stopCaptureAndEmitSettings = useCallback(() => {
     stopGetText();
     const settings = createSettingsObject();
-    socket?.emit('action', { action: 'scrapeSchema', settings });
+    if (browserSteps.length > 0) {
+      socket?.emit('action', { action: 'scrapeSchema', settings });
+    }
   }, [stopGetText, createSettingsObject, socket]);
 
   return (
