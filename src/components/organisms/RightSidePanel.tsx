@@ -13,7 +13,7 @@ export const RightSidePanel = () => {
   const [textLabels, setTextLabels] = useState<{ [id: number]: string }>({});
   const [errors, setErrors] = useState<{ [id: number]: string }>({});
   const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: number]: boolean }>({});
-
+  
   const { lastAction } = useGlobalInfoStore();
   const { getText, getScreenshot, startGetText, stopGetText, startGetScreenshot, stopGetScreenshot } = useActionContext();
   const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep } = useBrowserSteps();
@@ -21,11 +21,10 @@ export const RightSidePanel = () => {
 
   const handleTextLabelChange = (id: number, label: string) => {
     setTextLabels(prevLabels => ({ ...prevLabels, [id]: label }));
-    if (!label.trim()) {
-      setErrors(prevErrors => ({ ...prevErrors, [id]: 'Label cannot be empty' }));
-    } else {
-      setErrors(prevErrors => ({ ...prevErrors, [id]: '' }));
-    }
+    setErrors(prevErrors => ({
+      ...prevErrors,
+      [id]: label.trim() ? '' : 'Label cannot be empty'
+    }));
   };
 
   const handleTextStepConfirm = (id: number) => {
@@ -51,7 +50,7 @@ export const RightSidePanel = () => {
   };
 
   const getTextSettingsObject = useCallback(() => {
-    const settings: Record<string, { selector: string; tag?: string;[key: string]: any }> = {};
+    const settings: Record<string, { selector: string; tag?: string; [key: string]: any }> = {};
     browserSteps.forEach(step => {
       if (step.type === 'text' && step.label && step.selectorObj?.selector) {
         settings[step.label] = step.selectorObj;
@@ -59,7 +58,6 @@ export const RightSidePanel = () => {
     });
     return settings;
   }, [browserSteps]);
-
 
   const stopCaptureAndEmitGetTextSettings = useCallback(() => {
     stopGetText();
@@ -69,7 +67,6 @@ export const RightSidePanel = () => {
       socket?.emit('action', { action: 'scrapeSchema', settings });
     }
   }, [stopGetText, getTextSettingsObject, socket, browserSteps]);
-
 
   const captureScreenshot = (fullPage: boolean) => {
     const screenshotSettings: ScreenshotSettings = {
@@ -84,6 +81,14 @@ export const RightSidePanel = () => {
     addScreenshotStep(fullPage);
   };
 
+  const handleBack = () => {
+    if (getText) {
+      stopGetText();
+    } else if (getScreenshot) {
+      stopGetScreenshot();
+    }
+  };
+
   return (
     <Paper variant="outlined" sx={{ height: '100%', width: '100%', backgroundColor: 'white', alignItems: "center" }}>
       <SimpleBox height={60} width='100%' background='lightGray' radius='0%'>
@@ -92,60 +97,62 @@ export const RightSidePanel = () => {
 
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
         {!getText && !getScreenshot && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
-        {getText && <Button variant="outlined" color="error" onClick={stopCaptureAndEmitGetTextSettings}>Discard</Button>}
+        {getText && <Button variant="contained" onClick={stopCaptureAndEmitGetTextSettings}>Stop Capture Text</Button>}
         {!getText && !getScreenshot && <Button variant="contained" onClick={startGetScreenshot}>Capture Screenshot</Button>}
         {getScreenshot && (
           <Box display="flex" flexDirection="column" gap={2}>
             <Button variant="contained" onClick={() => captureScreenshot(true)}>Capture Fullpage</Button>
             <Button variant="contained" onClick={() => captureScreenshot(false)}>Capture Visible Part</Button>
-            <Button variant="outlined" color="error" onClick={stopGetScreenshot}>Discard</Button>
           </Box>
         )}
       </Box>
 
-      {
-        getText || getScreenshot ? (
+      {(getText || getScreenshot) && (
+        <Box>
+          <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
+            <Button variant="outlined" onClick={handleBack}>Back</Button>
+            <Button variant="outlined" color="error" onClick={handleBack}>Discard</Button>
+          </Box>
+
           <Box>
             {browserSteps.map(step => (
               <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }}>
-                {
-                  step.type === 'text' ? (
-                    <>
-                      <TextField
-                        label="Label"
-                        value={textLabels[step.id] || step.label || ''}
-                        onChange={(e) => handleTextLabelChange(step.id, e.target.value)}
-                        fullWidth
-                        margin="normal"
-                        error={!!errors[step.id]}
-                        helperText={errors[step.id]}
-                        InputProps={{ readOnly: confirmedTextSteps[step.id] }}
-                      />
-                      <TextField
-                        label="Data"
-                        value={step.data}
-                        fullWidth
-                        margin="normal"
-                        InputProps={{ readOnly: confirmedTextSteps[step.id] }}
-                      />
-                      {!confirmedTextSteps[step.id] && (
-                        <Box display="flex" justifyContent="space-between" gap={2}>
-                          <Button variant="contained" onClick={() => handleTextStepConfirm(step.id)} disabled={!textLabels[step.id]?.trim()}>Confirm</Button>
-                          <Button variant="contained" onClick={() => handleTextStepDiscard(step.id)}>Discard</Button>
-                        </Box>
-                      )}
-                    </>
-                  ) : (
-                    step.type === 'screenshot' && (
-                      <Typography>{`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}</Typography>
-                    )
+                {step.type === 'text' ? (
+                  <>
+                    <TextField
+                      label="Label"
+                      value={textLabels[step.id] || step.label || ''}
+                      onChange={(e) => handleTextLabelChange(step.id, e.target.value)}
+                      fullWidth
+                      margin="normal"
+                      error={!!errors[step.id]}
+                      helperText={errors[step.id]}
+                      InputProps={{ readOnly: confirmedTextSteps[step.id] }}
+                    />
+                    <TextField
+                      label="Data"
+                      value={step.data}
+                      fullWidth
+                      margin="normal"
+                      InputProps={{ readOnly: confirmedTextSteps[step.id] }}
+                    />
+                    {!confirmedTextSteps[step.id] && (
+                      <Box display="flex" justifyContent="space-between" gap={2}>
+                        <Button variant="contained" onClick={() => handleTextStepConfirm(step.id)} disabled={!textLabels[step.id]?.trim()}>Confirm</Button>
+                        <Button variant="contained" onClick={() => handleTextStepDiscard(step.id)}>Discard</Button>
+                      </Box>
+                    )}
+                  </>
+                ) : (
+                  step.type === 'screenshot' && (
+                    <Typography>{`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}</Typography>
                   )
-                }
+                )}
               </Box>
             ))}
           </Box>
-        ) : null
-      }
+        </Box>
+      )}
     </Paper>
   );
 };
