@@ -61,13 +61,15 @@ export const RightSidePanel = () => {
 }, [browserSteps]);
 
 
-  const stopCaptureAndEmitGetTextSettings = useCallback(() => {
-    stopGetText();
-    const settings = getTextSettingsObject();
-    if (browserSteps.length > 0) {
+const stopCaptureAndEmitGetTextSettings = useCallback(() => {
+  stopGetText();
+  const settings = getTextSettingsObject();
+  const hasTextSteps = browserSteps.some(step => step.type === 'text');
+  if (hasTextSteps) {
       socket?.emit('action', { action: 'scrapeSchema', settings });
-    }
-  }, [stopGetText, getTextSettingsObject, socket]);
+  }
+}, [stopGetText, getTextSettingsObject, socket, browserSteps]);
+
 
   const captureScreenshot = (fullPage: boolean) => {
     const screenshotSettings: ScreenshotSettings = {
