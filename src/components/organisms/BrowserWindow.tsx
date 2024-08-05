@@ -111,6 +111,7 @@ export const BrowserWindow = () => {
                 clickY >= highlightRect.top &&
                 clickY <= highlightRect.bottom
             ) {
+                if (getText === true) {
                 const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '');
                 if (options.length > 1) {
                     setAttributeOptions(options);
@@ -126,6 +127,7 @@ export const BrowserWindow = () => {
                         attribute: 'innerText'
                     });
                 }
+            }
             }
         }
     };
@@ -144,11 +146,15 @@ export const BrowserWindow = () => {
                     data = selectedElement.info?.innerText || '';
             }
 
-            addBrowserStep('', data, {
-                selector: selectedElement.selector,
-                tag: selectedElement.info?.tagName,
-                attribute: attribute
-            });
+            {
+                if (getText === true) {
+                    addBrowserStep('', data, {
+                        selector: selectedElement.selector,
+                        tag: selectedElement.info?.tagName,
+                        attribute: attribute
+                    });
+                }
+            }
         }
         setShowAttributeModal(false);
     };
