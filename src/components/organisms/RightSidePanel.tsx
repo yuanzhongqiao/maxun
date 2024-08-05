@@ -104,7 +104,7 @@ export const RightSidePanel = () => {
       </Box>
 
       {
-        getText ? (
+        getText || getScreenshot ? (
           <Box>
             {browserSteps.map(step => (
               <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }}>
