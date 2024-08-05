@@ -9,6 +9,7 @@ import { PairForEdit } from "../../pages/RecordingPage";
 import { useActionContext } from '../../context/browserActions';
 import { useBrowserSteps } from '../../context/browserSteps';
 import { useSocketStore } from '../../context/socket';
+import { ScreenshotSettings } from "../../shared/types";
 
 interface RightSidePanelProps {
   pairForEdit: PairForEdit;
