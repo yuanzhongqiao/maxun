@@ -24,7 +24,6 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   const { browserSteps, updateBrowserStepLabel, deleteBrowserStep } = useBrowserSteps();
   const { socket } = useSocketStore();
 
-
   const handleLabelChange = (id: number, label: string) => {
     setLabels(prevLabels => ({ ...prevLabels, [id]: label }));
     if (!label.trim()) {
@@ -57,7 +56,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   };
 
   const createSettingsObject = useCallback(() => {
-    const settings: Record<string, { selector: string; tag?: string;[key: string]: any }> = {};
+    const settings: Record<string, { selector: string; tag?: string; [key: string]: any }> = {};
     browserSteps.forEach(step => {
       if (step.label && step.selectorObj && step.selectorObj.selector) {
         settings[step.label] = step.selectorObj;
@@ -66,7 +65,6 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
     return settings;
   }, [browserSteps]);
 
-
   const stopCaptureAndEmitSettings = useCallback(() => {
     stopGetText();
     const settings = createSettingsObject();
@@ -74,6 +72,12 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
       socket?.emit('action', { action: 'scrapeSchema', settings });
     }
   }, [stopGetText, createSettingsObject, socket]);
+
+  const handleCaptureFullpage = () => {
+  };
+
+  const handleCaptureVisiblePart = () => {
+  };
 
   return (
     <Paper variant="outlined" sx={{ height: '100%', width: '100%', backgroundColor: 'white', alignItems: "center" }}>
@@ -85,7 +89,13 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
         {!getText && !getScreenshot && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
         {getText && <Button variant="contained" onClick={stopCaptureAndEmitSettings}>Stop Capture Text</Button>}
         {!getText && !getScreenshot && <Button variant="contained" onClick={startGetScreenshot}>Capture Screenshot</Button>}
-        {getScreenshot && <Button variant="contained" onClick={stopGetScreenshot}>Stop Capture Screenshot</Button>}
+        {getScreenshot && (
+          <Box display="flex" flexDirection="column" gap={2}>
+            <Button variant="contained" onClick={handleCaptureFullpage}>Capture Fullpage</Button>
+            <Button variant="contained" onClick={handleCaptureVisiblePart}>Capture Visible Part</Button>
+            <Button variant="contained" onClick={stopGetScreenshot}>Stop Capture Screenshot</Button>
+          </Box>
+        )}
       </Box>
 
       <Box>
@@ -120,8 +130,6 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
     </Paper>
   );
 };
-
-
 
 export const ActionDescription = styled.p`
   margin-left: 15px;
