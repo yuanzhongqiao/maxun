@@ -51,24 +51,24 @@ export const RightSidePanel = () => {
   };
 
   const getTextSettingsObject = useCallback(() => {
-    const settings: Record<string, { selector: string; tag?: string; [key: string]: any }> = {};
+    const settings: Record<string, { selector: string; tag?: string;[key: string]: any }> = {};
     browserSteps.forEach(step => {
-        if (step.type === 'text' && step.label && step.selectorObj?.selector) {
-            settings[step.label] = step.selectorObj;
-        }
+      if (step.type === 'text' && step.label && step.selectorObj?.selector) {
+        settings[step.label] = step.selectorObj;
+      }
     });
     return settings;
-}, [browserSteps]);
+  }, [browserSteps]);
 
 
-const stopCaptureAndEmitGetTextSettings = useCallback(() => {
-  stopGetText();
-  const settings = getTextSettingsObject();
-  const hasTextSteps = browserSteps.some(step => step.type === 'text');
-  if (hasTextSteps) {
+  const stopCaptureAndEmitGetTextSettings = useCallback(() => {
+    stopGetText();
+    const settings = getTextSettingsObject();
+    const hasTextSteps = browserSteps.some(step => step.type === 'text');
+    if (hasTextSteps) {
       socket?.emit('action', { action: 'scrapeSchema', settings });
-  }
-}, [stopGetText, getTextSettingsObject, socket, browserSteps]);
+    }
+  }, [stopGetText, getTextSettingsObject, socket, browserSteps]);
 
 
   const captureScreenshot = (fullPage: boolean) => {
@@ -108,35 +108,35 @@ const stopCaptureAndEmitGetTextSettings = useCallback(() => {
           <Box>
             {browserSteps.map(step => (
               <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }}>
-               {
-                step.type === 'text' ? (
-                  <>
-                   <TextField
-                  label="Label"
-                  value={textLabels[step.id] || step.label || ''}
-                  onChange={(e) => handleTextLabelChange(step.id, e.target.value)}
-                  fullWidth
-                  margin="normal"
-                  error={!!errors[step.id]}
-                  helperText={errors[step.id]}
-                  InputProps={{ readOnly: confirmedTextSteps[step.id] }}
-                />
-                <TextField
-                  label="Data"
-                  value={step.data}
-                  fullWidth
-                  margin="normal"
-                  InputProps={{ readOnly: confirmedTextSteps[step.id] }}
-                />
-                {!confirmedTextSteps[step.id] && (
-                  <Box display="flex" justifyContent="space-between" gap={2}>
-                    <Button variant="contained" onClick={() => handleTextStepConfirm(step.id)} disabled={!textLabels[step.id]?.trim()}>Confirm</Button>
-                    <Button variant="contained" onClick={() => handleTextStepDiscard(step.id)}>Discard</Button>
-                  </Box>
-                )}
-                  </>
-                ) : null
-               }
+                {
+                  step.type === 'text' ? (
+                    <>
+                      <TextField
+                        label="Label"
+                        value={textLabels[step.id] || step.label || ''}
+                        onChange={(e) => handleTextLabelChange(step.id, e.target.value)}
+                        fullWidth
+                        margin="normal"
+                        error={!!errors[step.id]}
+                        helperText={errors[step.id]}
+                        InputProps={{ readOnly: confirmedTextSteps[step.id] }}
+                      />
+                      <TextField
+                        label="Data"
+                        value={step.data}
+                        fullWidth
+                        margin="normal"
+                        InputProps={{ readOnly: confirmedTextSteps[step.id] }}
+                      />
+                      {!confirmedTextSteps[step.id] && (
+                        <Box display="flex" justifyContent="space-between" gap={2}>
+                          <Button variant="contained" onClick={() => handleTextStepConfirm(step.id)} disabled={!textLabels[step.id]?.trim()}>Confirm</Button>
+                          <Button variant="contained" onClick={() => handleTextStepDiscard(step.id)}>Discard</Button>
+                        </Box>
+                      )}
+                    </>
+                  ) : null
+                }
               </Box>
             ))}
           </Box>
