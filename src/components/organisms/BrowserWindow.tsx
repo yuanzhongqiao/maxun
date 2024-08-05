@@ -112,22 +112,22 @@ export const BrowserWindow = () => {
                 clickY <= highlightRect.bottom
             ) {
                 if (getText === true) {
-                const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '');
-                if (options.length > 1) {
-                    setAttributeOptions(options);
-                    setSelectedElement({
-                        selector: highlighterData.selector,
-                        info: highlighterData.elementInfo
-                    });
-                    setShowAttributeModal(true);
-                } else {
-                    addBrowserStep('', highlighterData.elementInfo?.innerText || '', {
-                        selector: highlighterData.selector,
-                        tag: highlighterData.elementInfo?.tagName,
-                        attribute: 'innerText'
-                    });
+                    const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '');
+                    if (options.length > 1) {
+                        setAttributeOptions(options);
+                        setSelectedElement({
+                            selector: highlighterData.selector,
+                            info: highlighterData.elementInfo
+                        });
+                        setShowAttributeModal(true);
+                    } else {
+                        addBrowserStep('', highlighterData.elementInfo?.innerText || '', {
+                            selector: highlighterData.selector,
+                            tag: highlighterData.elementInfo?.tagName,
+                            attribute: 'innerText'
+                        });
+                    }
                 }
-            }
             }
         }
     };
@@ -145,7 +145,6 @@ export const BrowserWindow = () => {
                 default:
                     data = selectedElement.info?.innerText || '';
             }
-
             {
                 if (getText === true) {
                     addBrowserStep('', data, {
