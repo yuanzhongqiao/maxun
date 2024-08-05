@@ -8,5 +8,4 @@ export {
   ScreenshotSettings,
   ScrapeSettings,
   ScrapeSchemaSettings,
-  ,
 };
