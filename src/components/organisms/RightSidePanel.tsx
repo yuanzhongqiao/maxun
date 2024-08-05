@@ -2,8 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Button, MenuItem, Paper, Box, TextField } from "@mui/material";
 import { Dropdown as MuiDropdown } from '../atoms/DropdownMui';
 import styled from "styled-components";
-import { ActionSettings } from "../molecules/ActionSettings";
-import { SelectChangeEvent } from "@mui/material/Select/Select";
 import { SimpleBox } from "../atoms/Box";
 import Typography from "@mui/material/Typography";
 import { useGlobalInfoStore } from "../../context/globalInfo";
