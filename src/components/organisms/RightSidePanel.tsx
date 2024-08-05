@@ -94,13 +94,13 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
 
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
         {!getText && !getScreenshot && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
-        {getText && <Button variant="outlined" color="error" onClick={stopCaptureAndEmitSettings}>Stop Capture Text</Button>}
+        {getText && <Button variant="outlined" color="error" onClick={stopCaptureAndEmitSettings}>Discard</Button>}
         {!getText && !getScreenshot && <Button variant="contained" onClick={startGetScreenshot}>Capture Screenshot</Button>}
         {getScreenshot && (
           <Box display="flex" flexDirection="column" gap={2}>
             <Button variant="contained" onClick={() => captureScreenshot(true)}>Capture Fullpage</Button>
             <Button variant="contained" onClick={() => captureScreenshot(false)}>Capture Visible Part</Button>
-            <Button variant="outlined" color="error" onClick={stopGetScreenshot}>Stop Capture Screenshot</Button>
+            <Button variant="outlined" color="error" onClick={stopGetScreenshot}>Discard</Button>
           </Box>
         )}
       </Box>
