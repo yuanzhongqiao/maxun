@@ -11,10 +11,6 @@ import { useBrowserSteps } from '../../context/browserSteps';
 import { useSocketStore } from '../../context/socket';
 import { ScreenshotSettings } from '../../shared/types';
 
-interface RightSidePanelProps {
-  pairForEdit: PairForEdit;
-}
-
 export const RightSidePanel = () => {
   const [textLabels, setTextLabels] = useState<{ [id: number]: string }>({});
   const [errors, setErrors] = useState<{ [id: number]: string }>({});
