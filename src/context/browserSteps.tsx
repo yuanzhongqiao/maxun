@@ -47,7 +47,7 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     const addScreenshotStep = (label: string, fullPage: boolean) => {
         setBrowserSteps(prevSteps => [
             ...prevSteps,
-            { id: Date.now(), type: 'screenshot', label, fullPage }
+            { id: Date.now(), type: 'screenshot', fullPage }
         ]);
     };
 
