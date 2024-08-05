@@ -16,7 +16,7 @@ export const RightSidePanel = () => {
 
   const { lastAction } = useGlobalInfoStore();
   const { getText, getScreenshot, startGetText, stopGetText, startGetScreenshot, stopGetScreenshot } = useActionContext();
-  const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep } = useBrowserSteps();
+  const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep } = useBrowserSteps();
   const { socket } = useSocketStore();
 
   const handleTextLabelChange = (id: number, label: string) => {
@@ -79,6 +79,7 @@ export const RightSidePanel = () => {
       scale: 'device',
     };
     socket?.emit('action', { action: 'screenshot', settings: screenshotSettings });
+    addScreenshotStep(fullPage);
   };
 
   return (
