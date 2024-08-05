@@ -14,7 +14,7 @@ export const RightSidePanel = () => {
   const [errors, setErrors] = useState<{ [id: number]: string }>({});
   const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: number]: boolean }>({});
 
-  const { lastAction } = useGlobalInfoStore();
+  const { lastAction, notify } = useGlobalInfoStore();
   const { getText, getScreenshot, startGetText, stopGetText, startGetScreenshot, stopGetScreenshot } = useActionContext();
   const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep } = useBrowserSteps();
   const { socket } = useSocketStore();
@@ -64,7 +64,7 @@ export const RightSidePanel = () => {
   const stopCaptureAndEmitGetTextSettings = useCallback(() => {
     const hasUnconfirmedTextSteps = browserSteps.some(step => step.type === 'text' && !confirmedTextSteps[step.id]);
     if (hasUnconfirmedTextSteps) {
-      alert('Please confirm all text labels before proceeding.');
+      notify('error', 'Please confirm no labels are empty');
       return;
     }
     stopGetText();
