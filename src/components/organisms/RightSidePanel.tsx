@@ -29,15 +29,6 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   const { browserSteps, updateBrowserStepLabel, deleteBrowserStep } = useBrowserSteps();
   const { socket } = useSocketStore();
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setContent(newValue);
-  };
-
-  const handleActionSelect = (event: SelectChangeEvent) => {
-    const { value } = event.target;
-    setAction(value);
-    setIsSettingsDisplayed(true);
-  };
 
   const handleLabelChange = (id: number, label: string) => {
     setLabels(prevLabels => ({ ...prevLabels, [id]: label }));
