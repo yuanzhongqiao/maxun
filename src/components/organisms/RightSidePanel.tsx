@@ -100,7 +100,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
           <Box display="flex" flexDirection="column" gap={2}>
             <Button variant="contained" onClick={() => captureScreenshot(true)}>Capture Fullpage</Button>
             <Button variant="contained" onClick={() => captureScreenshot(false)}>Capture Visible Part</Button>
-            <Button variant="contained" onClick={stopGetScreenshot}>Stop Capture Screenshot</Button>
+            <Button variant="outlined" color="error" onClick={stopGetScreenshot}>Stop Capture Screenshot</Button>
           </Box>
         )}
       </Box>
