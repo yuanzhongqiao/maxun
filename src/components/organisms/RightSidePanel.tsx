@@ -75,8 +75,6 @@ export const RightSidePanel = () => {
     }
   }, [stopGetText, getTextSettingsObject, socket, browserSteps, confirmedTextSteps]);
 
-
-
   const captureScreenshot = (fullPage: boolean) => {
     const screenshotSettings: ScreenshotSettings = {
       fullPage,
