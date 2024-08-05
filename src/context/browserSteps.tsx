@@ -27,7 +27,7 @@ interface SelectorObject {
 interface BrowserStepsContextType {
     browserSteps: BrowserStep[];
     addTextStep: (label: string, data: string, selectorObj: SelectorObject) => void;
-    addScreenshotStep: (label: string, fullPage: boolean) => void;
+    addScreenshotStep: (fullPage: boolean) => void;
     deleteBrowserStep: (id: number) => void;
     updateBrowserTextStepLabel: (id: number, newLabel: string) => void;
 }
@@ -44,7 +44,7 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         ]);
     };
 
-    const addScreenshotStep = (label: string, fullPage: boolean) => {
+    const addScreenshotStep = (fullPage: boolean) => {
         setBrowserSteps(prevSteps => [
             ...prevSteps,
             { id: Date.now(), type: 'screenshot', fullPage }
