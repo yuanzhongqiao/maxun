@@ -103,45 +103,45 @@ export const RightSidePanel = () => {
         )}
       </Box>
 
-          <Box>
-            {browserSteps.map(step => (
-              <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }}>
-                {
-                  step.type === 'text' ? (
-                    <>
-                      <TextField
-                        label="Label"
-                        value={textLabels[step.id] || step.label || ''}
-                        onChange={(e) => handleTextLabelChange(step.id, e.target.value)}
-                        fullWidth
-                        margin="normal"
-                        error={!!errors[step.id]}
-                        helperText={errors[step.id]}
-                        InputProps={{ readOnly: confirmedTextSteps[step.id] }}
-                      />
-                      <TextField
-                        label="Data"
-                        value={step.data}
-                        fullWidth
-                        margin="normal"
-                        InputProps={{ readOnly: confirmedTextSteps[step.id] }}
-                      />
-                      {!confirmedTextSteps[step.id] && (
-                        <Box display="flex" justifyContent="space-between" gap={2}>
-                          <Button variant="contained" onClick={() => handleTextStepConfirm(step.id)} disabled={!textLabels[step.id]?.trim()}>Confirm</Button>
-                          <Button variant="contained" onClick={() => handleTextStepDiscard(step.id)}>Discard</Button>
-                        </Box>
-                      )}
-                    </>
-                  ) : (
-                    step.type === 'screenshot' && (
-                      <Typography>{`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}</Typography>
-                    )
-                  )
-                }
-              </Box>
-            ))}
+      <Box>
+        {browserSteps.map(step => (
+          <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }}>
+            {
+              step.type === 'text' ? (
+                <>
+                  <TextField
+                    label="Label"
+                    value={textLabels[step.id] || step.label || ''}
+                    onChange={(e) => handleTextLabelChange(step.id, e.target.value)}
+                    fullWidth
+                    margin="normal"
+                    error={!!errors[step.id]}
+                    helperText={errors[step.id]}
+                    InputProps={{ readOnly: confirmedTextSteps[step.id] }}
+                  />
+                  <TextField
+                    label="Data"
+                    value={step.data}
+                    fullWidth
+                    margin="normal"
+                    InputProps={{ readOnly: confirmedTextSteps[step.id] }}
+                  />
+                  {!confirmedTextSteps[step.id] && (
+                    <Box display="flex" justifyContent="space-between" gap={2}>
+                      <Button variant="contained" onClick={() => handleTextStepConfirm(step.id)} disabled={!textLabels[step.id]?.trim()}>Confirm</Button>
+                      <Button variant="contained" onClick={() => handleTextStepDiscard(step.id)}>Discard</Button>
+                    </Box>
+                  )}
+                </>
+              ) : (
+                step.type === 'screenshot' && (
+                  <Typography>{`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}</Typography>
+                )
+              )
+            }
           </Box>
+        ))}
+      </Box>
     </Paper>
   );
 };
