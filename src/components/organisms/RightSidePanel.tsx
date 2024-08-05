@@ -62,13 +62,19 @@ export const RightSidePanel = () => {
 
 
   const stopCaptureAndEmitGetTextSettings = useCallback(() => {
+    const hasUnconfirmedTextSteps = browserSteps.some(step => step.type === 'text' && !confirmedTextSteps[step.id]);
+    if (hasUnconfirmedTextSteps) {
+      alert('Please confirm all text labels before proceeding.');
+      return;
+    }
     stopGetText();
     const settings = getTextSettingsObject();
     const hasTextSteps = browserSteps.some(step => step.type === 'text');
     if (hasTextSteps) {
       socket?.emit('action', { action: 'scrapeSchema', settings });
     }
-  }, [stopGetText, getTextSettingsObject, socket, browserSteps]);
+  }, [stopGetText, getTextSettingsObject, socket, browserSteps, confirmedTextSteps]);
+
 
 
   const captureScreenshot = (fullPage: boolean) => {
