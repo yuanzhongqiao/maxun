@@ -135,13 +135,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   );
 };
 
-const ActionTypeWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 20px;
-`;
+
 
 export const ActionDescription = styled.p`
   margin-left: 15px;
