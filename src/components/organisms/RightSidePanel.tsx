@@ -16,7 +16,7 @@ interface RightSidePanelProps {
 }
 
 export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
-  const [labels, setLabels] = useState<{ [id: number]: string }>({});
+  const [textLabels, setTextLabels] = useState<{ [id: number]: string }>({});
   const [errors, setErrors] = useState<{ [id: number]: string }>({});
   const [confirmedSteps, setConfirmedSteps] = useState<{ [id: number]: boolean }>({});
 
@@ -26,7 +26,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   const { socket } = useSocketStore();
 
   const handleLabelChange = (id: number, label: string) => {
-    setLabels(prevLabels => ({ ...prevLabels, [id]: label }));
+    setTextLabels(prevLabels => ({ ...prevLabels, [id]: label }));
     if (!label.trim()) {
       setErrors(prevErrors => ({ ...prevErrors, [id]: 'Label cannot be empty' }));
     } else {
@@ -35,7 +35,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   };
 
   const handleConfirm = (id: number) => {
-    const label = labels[id]?.trim();
+    const label = textLabels[id]?.trim();
     if (label) {
       updateBrowserStepLabel(id, label);
       setConfirmedSteps(prev => ({ ...prev, [id]: true }));
@@ -46,7 +46,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
 
   const handleDiscard = (id: number) => {
     deleteBrowserStep(id);
-    setLabels(prevLabels => {
+    setTextLabels(prevLabels => {
       const { [id]: _, ...rest } = prevLabels;
       return rest;
     });
@@ -112,7 +112,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
               <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }}>
                 <TextField
                   label="Label"
-                  value={labels[step.id] || step.label || ''}
+                  value={textLabels[step.id] || step.label || ''}
                   onChange={(e) => handleLabelChange(step.id, e.target.value)}
                   fullWidth
                   margin="normal"
@@ -129,7 +129,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
                 />
                 {!confirmedSteps[step.id] && (
                   <Box display="flex" justifyContent="space-between" gap={2}>
-                    <Button variant="contained" onClick={() => handleConfirm(step.id)} disabled={!labels[step.id]?.trim()}>Confirm</Button>
+                    <Button variant="contained" onClick={() => handleConfirm(step.id)} disabled={!textLabels[step.id]?.trim()}>Confirm</Button>
                     <Button variant="contained" onClick={() => handleDiscard(step.id)}>Discard</Button>
                   </Box>
                 )}
