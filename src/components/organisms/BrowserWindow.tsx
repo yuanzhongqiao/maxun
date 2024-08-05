@@ -47,7 +47,7 @@ export const BrowserWindow = () => {
 
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
-    const { getText, getScreenshot } = useActionContext();
+    const { getText } = useActionContext();
     const { addBrowserStep } = useBrowserSteps();
 
     const onMouseMove = (e: MouseEvent) => {
