@@ -16,7 +16,7 @@ export const RightSidePanel = () => {
 
   const { lastAction } = useGlobalInfoStore();
   const { getText, getScreenshot, startGetText, stopGetText, startGetScreenshot, stopGetScreenshot } = useActionContext();
-  const { browserSteps, updateBrowserStepLabel, deleteBrowserStep } = useBrowserSteps();
+  const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep } = useBrowserSteps();
   const { socket } = useSocketStore();
 
   const handleTextLabelChange = (id: number, label: string) => {
@@ -31,7 +31,7 @@ export const RightSidePanel = () => {
   const handleTextStepConfirm = (id: number) => {
     const label = textLabels[id]?.trim();
     if (label) {
-      updateBrowserStepLabel(id, label);
+      updateBrowserTextStepLabel(id, label);
       setConfirmedTextSteps(prev => ({ ...prev, [id]: true }));
     } else {
       setErrors(prevErrors => ({ ...prevErrors, [id]: 'Label cannot be empty' }));
@@ -51,14 +51,15 @@ export const RightSidePanel = () => {
   };
 
   const getTextSettingsObject = useCallback(() => {
-    const settings: Record<string, { selector: string; tag?: string;[key: string]: any }> = {};
+    const settings: Record<string, { selector: string; tag?: string; [key: string]: any }> = {};
     browserSteps.forEach(step => {
-      if (step.label && step.selectorObj && step.selectorObj.selector) {
-        settings[step.label] = step.selectorObj;
-      }
+        if (step.type === 'text' && step.label && step.selectorObj?.selector) {
+            settings[step.label] = step.selectorObj;
+        }
     });
     return settings;
-  }, [browserSteps]);
+}, [browserSteps]);
+
 
   const stopCaptureAndEmitGetTextSettings = useCallback(() => {
     stopGetText();
@@ -104,7 +105,10 @@ export const RightSidePanel = () => {
           <Box>
             {browserSteps.map(step => (
               <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }}>
-                <TextField
+               {
+                step.type === 'text' ? (
+                  <>
+                   <TextField
                   label="Label"
                   value={textLabels[step.id] || step.label || ''}
                   onChange={(e) => handleTextLabelChange(step.id, e.target.value)}
@@ -121,6 +125,9 @@ export const RightSidePanel = () => {
                   margin="normal"
                   InputProps={{ readOnly: confirmedTextSteps[step.id] }}
                 />
+                  </>
+                ) : null
+               }
                 {!confirmedTextSteps[step.id] && (
                   <Box display="flex" justifyContent="space-between" gap={2}>
                     <Button variant="contained" onClick={() => handleTextStepConfirm(step.id)} disabled={!textLabels[step.id]?.trim()}>Confirm</Button>
