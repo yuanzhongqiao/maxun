@@ -1,5 +1,22 @@
 import React, { createContext, useContext, useState } from 'react';
 
+interface TextStep {
+    id: number;
+    type: 'text';
+    label: string;
+    data: string;
+    selectorObj: SelectorObject;
+}
+
+interface ScreenshotStep {
+    id: number;
+    type: 'screenshot';
+    fullPage: boolean; 
+}
+
+
+type BrowserStep = TextStep | ScreenshotStep;
+
 interface SelectorObject {
     selector: string;
     tag?: string;
@@ -7,18 +24,12 @@ interface SelectorObject {
     [key: string]: any;
 }
 
-interface BrowserStep {
-    id: number;
-    label: string;
-    data: string;
-    selectorObj: SelectorObject;
-}
-
 interface BrowserStepsContextType {
     browserSteps: BrowserStep[];
-    addBrowserStep: (label: string, data: string, selectorObj: SelectorObject) => void;
+    addTextStep: (label: string, data: string, selectorObj: SelectorObject) => void;
+    addScreenshotStep: (label: string, fullPage: boolean) => void;
     deleteBrowserStep: (id: number) => void;
-    updateBrowserStepLabel: (id: number, newLabel: string) => void;
+    updateBrowserTextStepLabel: (id: number, newLabel: string) => void;
 }
 
 const BrowserStepsContext = createContext<BrowserStepsContextType | undefined>(undefined);
@@ -26,10 +37,17 @@ const BrowserStepsContext = createContext<BrowserStepsContextType | undefined>(u
 export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [browserSteps, setBrowserSteps] = useState<BrowserStep[]>([]);
 
-    const addBrowserStep = (label: string, data: string, selectorObj: SelectorObject) => {
+    const addTextStep = (label: string, data: string, selectorObj: SelectorObject) => {
         setBrowserSteps(prevSteps => [
             ...prevSteps,
-            { id: Date.now(), label, data, selectorObj }
+            { id: Date.now(), type: 'text', label, data, selectorObj }
+        ]);
+    };
+
+    const addScreenshotStep = (label: string, fullPage: boolean) => {
+        setBrowserSteps(prevSteps => [
+            ...prevSteps,
+            { id: Date.now(), type: 'screenshot', label, fullPage }
         ]);
     };
 
@@ -37,7 +55,7 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         setBrowserSteps(prevSteps => prevSteps.filter(step => step.id !== id));
     };
 
-    const updateBrowserStepLabel = (id: number, newLabel: string) => {
+    const updateBrowserTextStepLabel = (id: number, newLabel: string) => {
         setBrowserSteps(prevSteps =>
             prevSteps.map(step =>
                 step.id === id ? { ...step, label: newLabel } : step
@@ -48,9 +66,10 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     return (
         <BrowserStepsContext.Provider value={{
             browserSteps,
-            addBrowserStep,
+            addTextStep,
+            addScreenshotStep,
             deleteBrowserStep,
-            updateBrowserStepLabel,
+            updateBrowserTextStepLabel,
         }}>
             {children}
         </BrowserStepsContext.Provider>
