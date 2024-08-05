@@ -145,3 +145,4 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
 
 export const ActionDescription = styled.p`
   margin-left: 15px;
+`;
