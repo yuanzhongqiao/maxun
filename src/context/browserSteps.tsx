@@ -11,7 +11,7 @@ interface TextStep {
 interface ScreenshotStep {
     id: number;
     type: 'screenshot';
-    fullPage: boolean; 
+    fullPage: boolean;
 }
 
 
