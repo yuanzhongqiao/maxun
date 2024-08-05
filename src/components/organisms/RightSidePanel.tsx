@@ -17,9 +17,6 @@ interface RightSidePanelProps {
 }
 
 export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
-  const [content, setContent] = useState<string>('action');
-  const [action, setAction] = useState<string>('');
-  const [isSettingsDisplayed, setIsSettingsDisplayed] = useState<boolean>(false);
   const [labels, setLabels] = useState<{ [id: number]: string }>({});
   const [errors, setErrors] = useState<{ [id: number]: string }>({});
   const [confirmedSteps, setConfirmedSteps] = useState<{ [id: number]: boolean }>({});
