@@ -123,7 +123,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
                 <BrowserContent />
               </Grid>
               <Grid item xs={2}>
-                <RightSidePanel pairForEdit={pairForEdit} />
+                <RightSidePanel />
               </Grid>
             </Grid>
             : <Loader />}
