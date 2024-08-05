@@ -9,7 +9,7 @@ import { PairForEdit } from "../../pages/RecordingPage";
 import { useActionContext } from '../../context/browserActions';
 import { useBrowserSteps } from '../../context/browserSteps';
 import { useSocketStore } from '../../context/socket';
-import { ScreenshotSettings } from "../../shared/types";
+import { ScreenshotSettings } from '../../shared/types';
 
 interface RightSidePanelProps {
   pairForEdit: PairForEdit;
@@ -74,10 +74,21 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
     }
   }, [stopGetText, createSettingsObject, socket]);
 
+  // Function to handle screenshot settings based on capture type
+  const captureScreenshot = (fullPage: boolean) => {
+    const screenshotSettings: ScreenshotSettings = {
+      fullPage,
+      // Add other settings as required
+    };
+    socket?.emit('action', { action: 'takeScreenshot', settings: screenshotSettings });
+  };
+
   const handleCaptureFullpage = () => {
+    captureScreenshot(true);
   };
 
   const handleCaptureVisiblePart = () => {
+    captureScreenshot(false);
   };
 
   return (
@@ -134,4 +145,3 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
 
 export const ActionDescription = styled.p`
   margin-left: 15px;
-`;
