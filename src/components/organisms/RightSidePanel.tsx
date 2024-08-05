@@ -128,15 +128,15 @@ const stopCaptureAndEmitGetTextSettings = useCallback(() => {
                   margin="normal"
                   InputProps={{ readOnly: confirmedTextSteps[step.id] }}
                 />
-                  </>
-                ) : null
-               }
                 {!confirmedTextSteps[step.id] && (
                   <Box display="flex" justifyContent="space-between" gap={2}>
                     <Button variant="contained" onClick={() => handleTextStepConfirm(step.id)} disabled={!textLabels[step.id]?.trim()}>Confirm</Button>
                     <Button variant="contained" onClick={() => handleTextStepDiscard(step.id)}>Discard</Button>
                   </Box>
                 )}
+                  </>
+                ) : null
+               }
               </Box>
             ))}
           </Box>
