@@ -48,7 +48,7 @@ export const BrowserWindow = () => {
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
     const { getText } = useActionContext();
-    const { addBrowserStep } = useBrowserSteps();
+    const { addTextStep } = useBrowserSteps();
 
     const onMouseMove = (e: MouseEvent) => {
         if (canvasRef && canvasRef.current && highlighterData) {
@@ -121,7 +121,7 @@ export const BrowserWindow = () => {
                         });
                         setShowAttributeModal(true);
                     } else {
-                        addBrowserStep('', highlighterData.elementInfo?.innerText || '', {
+                        addTextStep('', highlighterData.elementInfo?.innerText || '', {
                             selector: highlighterData.selector,
                             tag: highlighterData.elementInfo?.tagName,
                             attribute: 'innerText'
@@ -147,7 +147,7 @@ export const BrowserWindow = () => {
             }
             {
                 if (getText === true) {
-                    addBrowserStep('', data, {
+                    addTextStep('', data, {
                         selector: selectedElement.selector,
                         tag: selectedElement.info?.tagName,
                         attribute: attribute
