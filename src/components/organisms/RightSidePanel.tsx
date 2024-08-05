@@ -104,38 +104,38 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
           </Box>
         )}
       </Box>
-      
+
       {
         getText ? (
           <Box>
-        {browserSteps.map(step => (
-          <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }}>
-            <TextField
-              label="Label"
-              value={labels[step.id] || step.label || ''}
-              onChange={(e) => handleLabelChange(step.id, e.target.value)}
-              fullWidth
-              margin="normal"
-              error={!!errors[step.id]}
-              helperText={errors[step.id]}
-              InputProps={{ readOnly: confirmedSteps[step.id] }}
-            />
-            <TextField
-              label="Data"
-              value={step.data}
-              fullWidth
-              margin="normal"
-              InputProps={{ readOnly: confirmedSteps[step.id] }}
-            />
-            {!confirmedSteps[step.id] && (
-              <Box display="flex" justifyContent="space-between" gap={2}>
-                <Button variant="contained" onClick={() => handleConfirm(step.id)} disabled={!labels[step.id]?.trim()}>Confirm</Button>
-                <Button variant="contained" onClick={() => handleDiscard(step.id)}>Discard</Button>
+            {browserSteps.map(step => (
+              <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }}>
+                <TextField
+                  label="Label"
+                  value={labels[step.id] || step.label || ''}
+                  onChange={(e) => handleLabelChange(step.id, e.target.value)}
+                  fullWidth
+                  margin="normal"
+                  error={!!errors[step.id]}
+                  helperText={errors[step.id]}
+                  InputProps={{ readOnly: confirmedSteps[step.id] }}
+                />
+                <TextField
+                  label="Data"
+                  value={step.data}
+                  fullWidth
+                  margin="normal"
+                  InputProps={{ readOnly: confirmedSteps[step.id] }}
+                />
+                {!confirmedSteps[step.id] && (
+                  <Box display="flex" justifyContent="space-between" gap={2}>
+                    <Button variant="contained" onClick={() => handleConfirm(step.id)} disabled={!labels[step.id]?.trim()}>Confirm</Button>
+                    <Button variant="contained" onClick={() => handleDiscard(step.id)}>Discard</Button>
+                  </Box>
+                )}
               </Box>
-            )}
+            ))}
           </Box>
-        ))}
-      </Box>
         ) : null
       }
     </Paper>
