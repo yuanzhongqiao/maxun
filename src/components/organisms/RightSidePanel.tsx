@@ -135,7 +135,11 @@ export const RightSidePanel = () => {
                         </Box>
                       )}
                     </>
-                  ) : null
+                  ) : (
+                      step.type === 'screenshot' && (
+                        <Typography>{`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}</Typography>
+                      )
+                  )
                 }
               </Box>
             ))}
