@@ -74,21 +74,16 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
     }
   }, [stopGetText, createSettingsObject, socket]);
 
-  // Function to handle screenshot settings based on capture type
   const captureScreenshot = (fullPage: boolean) => {
     const screenshotSettings: ScreenshotSettings = {
       fullPage,
-      // Add other settings as required
+      type: 'png',
+      timeout: 30000,
+      animations: 'allow',
+      caret: 'hide',
+      scale: 'device',
     };
-    socket?.emit('action', { action: 'takeScreenshot', settings: screenshotSettings });
-  };
-
-  const handleCaptureFullpage = () => {
-    captureScreenshot(true);
-  };
-
-  const handleCaptureVisiblePart = () => {
-    captureScreenshot(false);
+    socket?.emit('action', { action: 'screenshot', settings: screenshotSettings });
   };
 
   return (
@@ -103,8 +98,8 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
         {!getText && !getScreenshot && <Button variant="contained" onClick={startGetScreenshot}>Capture Screenshot</Button>}
         {getScreenshot && (
           <Box display="flex" flexDirection="column" gap={2}>
-            <Button variant="contained" onClick={handleCaptureFullpage}>Capture Fullpage</Button>
-            <Button variant="contained" onClick={handleCaptureVisiblePart}>Capture Visible Part</Button>
+            <Button variant="contained" onClick={() => captureScreenshot(true)}>Capture Fullpage</Button>
+            <Button variant="contained" onClick={() => captureScreenshot(false)}>Capture Visible Part</Button>
             <Button variant="contained" onClick={stopGetScreenshot}>Stop Capture Screenshot</Button>
           </Box>
         )}
