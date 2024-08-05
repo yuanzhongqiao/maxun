@@ -107,7 +107,6 @@ export const RightSidePanel = () => {
         )}
       </Box>
 
-      {(getText || getScreenshot) && (
         <Box>
           <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
             <Button variant="outlined" onClick={handleBack}>Back</Button>
@@ -152,7 +151,6 @@ export const RightSidePanel = () => {
             ))}
           </Box>
         </Box>
-      )}
     </Paper>
   );
 };
