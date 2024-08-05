@@ -18,14 +18,14 @@ interface RightSidePanelProps {
 export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
   const [textLabels, setTextLabels] = useState<{ [id: number]: string }>({});
   const [errors, setErrors] = useState<{ [id: number]: string }>({});
-  const [confirmedSteps, setConfirmedSteps] = useState<{ [id: number]: boolean }>({});
+  const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: number]: boolean }>({});
 
   const { lastAction } = useGlobalInfoStore();
   const { getText, getScreenshot, startGetText, stopGetText, startGetScreenshot, stopGetScreenshot } = useActionContext();
   const { browserSteps, updateBrowserStepLabel, deleteBrowserStep } = useBrowserSteps();
   const { socket } = useSocketStore();
 
-  const handleLabelChange = (id: number, label: string) => {
+  const handleTextLabelChange = (id: number, label: string) => {
     setTextLabels(prevLabels => ({ ...prevLabels, [id]: label }));
     if (!label.trim()) {
       setErrors(prevErrors => ({ ...prevErrors, [id]: 'Label cannot be empty' }));
@@ -34,17 +34,17 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
     }
   };
 
-  const handleConfirm = (id: number) => {
+  const handleTextStepConfirm = (id: number) => {
     const label = textLabels[id]?.trim();
     if (label) {
       updateBrowserStepLabel(id, label);
-      setConfirmedSteps(prev => ({ ...prev, [id]: true }));
+      setConfirmedTextSteps(prev => ({ ...prev, [id]: true }));
     } else {
       setErrors(prevErrors => ({ ...prevErrors, [id]: 'Label cannot be empty' }));
     }
   };
 
-  const handleDiscard = (id: number) => {
+  const handleTextStepDiscard = (id: number) => {
     deleteBrowserStep(id);
     setTextLabels(prevLabels => {
       const { [id]: _, ...rest } = prevLabels;
@@ -56,7 +56,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
     });
   };
 
-  const createSettingsObject = useCallback(() => {
+  const getTextSettingsObject = useCallback(() => {
     const settings: Record<string, { selector: string; tag?: string;[key: string]: any }> = {};
     browserSteps.forEach(step => {
       if (step.label && step.selectorObj && step.selectorObj.selector) {
@@ -66,13 +66,13 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
     return settings;
   }, [browserSteps]);
 
-  const stopCaptureAndEmitSettings = useCallback(() => {
+  const stopCaptureAndEmitGetTextSettings = useCallback(() => {
     stopGetText();
-    const settings = createSettingsObject();
+    const settings = getTextSettingsObject();
     if (browserSteps.length > 0) {
       socket?.emit('action', { action: 'scrapeSchema', settings });
     }
-  }, [stopGetText, createSettingsObject, socket]);
+  }, [stopGetText, getTextSettingsObject, socket]);
 
   const captureScreenshot = (fullPage: boolean) => {
     const screenshotSettings: ScreenshotSettings = {
@@ -94,7 +94,7 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
 
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
         {!getText && !getScreenshot && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
-        {getText && <Button variant="outlined" color="error" onClick={stopCaptureAndEmitSettings}>Discard</Button>}
+        {getText && <Button variant="outlined" color="error" onClick={stopCaptureAndEmitGetTextSettings}>Discard</Button>}
         {!getText && !getScreenshot && <Button variant="contained" onClick={startGetScreenshot}>Capture Screenshot</Button>}
         {getScreenshot && (
           <Box display="flex" flexDirection="column" gap={2}>
@@ -113,24 +113,24 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
                 <TextField
                   label="Label"
                   value={textLabels[step.id] || step.label || ''}
-                  onChange={(e) => handleLabelChange(step.id, e.target.value)}
+                  onChange={(e) => handleTextLabelChange(step.id, e.target.value)}
                   fullWidth
                   margin="normal"
                   error={!!errors[step.id]}
                   helperText={errors[step.id]}
-                  InputProps={{ readOnly: confirmedSteps[step.id] }}
+                  InputProps={{ readOnly: confirmedTextSteps[step.id] }}
                 />
                 <TextField
                   label="Data"
                   value={step.data}
                   fullWidth
                   margin="normal"
-                  InputProps={{ readOnly: confirmedSteps[step.id] }}
+                  InputProps={{ readOnly: confirmedTextSteps[step.id] }}
                 />
-                {!confirmedSteps[step.id] && (
+                {!confirmedTextSteps[step.id] && (
                   <Box display="flex" justifyContent="space-between" gap={2}>
-                    <Button variant="contained" onClick={() => handleConfirm(step.id)} disabled={!textLabels[step.id]?.trim()}>Confirm</Button>
-                    <Button variant="contained" onClick={() => handleDiscard(step.id)}>Discard</Button>
+                    <Button variant="contained" onClick={() => handleTextStepConfirm(step.id)} disabled={!textLabels[step.id]?.trim()}>Confirm</Button>
+                    <Button variant="contained" onClick={() => handleTextStepDiscard(step.id)}>Discard</Button>
                   </Box>
                 )}
               </Box>
