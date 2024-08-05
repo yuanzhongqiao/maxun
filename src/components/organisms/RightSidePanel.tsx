@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Button, MenuItem, Paper, Box, TextField } from "@mui/material";
-import { Dropdown as MuiDropdown } from '../atoms/DropdownMui';
+import React, { useState, useCallback } from 'react';
+import { Button, Paper, Box, TextField } from "@mui/material";
 import styled from "styled-components";
 import { SimpleBox } from "../atoms/Box";
 import Typography from "@mui/material/Typography";
 import { useGlobalInfoStore } from "../../context/globalInfo";
-import { PairForEdit } from "../../pages/RecordingPage";
 import { useActionContext } from '../../context/browserActions';
 import { useBrowserSteps } from '../../context/browserSteps';
 import { useSocketStore } from '../../context/socket';
