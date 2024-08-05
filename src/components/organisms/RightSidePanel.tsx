@@ -104,8 +104,10 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
           </Box>
         )}
       </Box>
-
-      <Box>
+      
+      {
+        getText ? (
+          <Box>
         {browserSteps.map(step => (
           <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }}>
             <TextField
@@ -134,6 +136,8 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
           </Box>
         ))}
       </Box>
+        ) : null
+      }
     </Paper>
   );
 };
