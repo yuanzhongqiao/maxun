@@ -95,25 +95,6 @@ export const RightSidePanel = ({ pairForEdit }: RightSidePanelProps) => {
         <Typography sx={{ padding: '10px' }}>Last action: {` ${lastAction}`}</Typography>
       </SimpleBox>
 
-      {content === 'action' && (
-        <>
-          <ActionDescription>Type of action:</ActionDescription>
-          <ActionTypeWrapper>
-            <MuiDropdown id="action" label="Action" value={action} handleSelect={handleActionSelect}>
-              <MenuItem value="mouse.click">click on coordinates</MenuItem>
-              <MenuItem value="enqueueLinks">enqueueLinks</MenuItem>
-              <MenuItem value="scrape">scrape</MenuItem>
-              <MenuItem value="scrapeSchema">scrapeSchema</MenuItem>
-              <MenuItem value="screenshot">screenshot</MenuItem>
-              <MenuItem value="script">script</MenuItem>
-              <MenuItem value="scroll">scroll</MenuItem>
-            </MuiDropdown>
-          </ActionTypeWrapper>
-
-          {isSettingsDisplayed && <ActionSettings action={action} />}
-        </>
-      )}
-
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
         {!getText && !getScreenshot && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
         {getText && <Button variant="contained" onClick={stopCaptureAndEmitSettings}>Stop Capture Text</Button>}
