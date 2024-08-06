@@ -291,6 +291,12 @@ export default class Interpreter extends EventEmitter {
         await this.options.serializableCallback(scrapeResult);
       },
 
+      scrapeList: async (config: { listSelector: string, fields: any, limit?: number, flexible?: boolean }) => {
+        await this.ensureScriptsLoaded(page);
+        const scrapeResults: Record<string, any>[] = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+        await this.options.serializableCallback(scrapeResults);
+      },
+
       scroll: async (pages?: number) => {
         await page.evaluate(async (pagesInternal) => {
           for (let i = 1; i <= (pagesInternal ?? 1); i += 1) {
