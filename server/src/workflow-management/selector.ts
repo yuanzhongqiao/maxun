@@ -761,8 +761,6 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
         generalSelector,
         tagName: element.tagName.toLowerCase(),
         className: element.className,
-        text: element.textContent?.trim() || '',
-        href: (element as HTMLAnchorElement).href || undefined,
       };
     }, coordinates);
 
