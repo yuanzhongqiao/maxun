@@ -135,7 +135,7 @@ export const RightSidePanel = () => {
                     margin="normal"
                     error={!!errors[step.id]}
                     helperText={errors[step.id]}
-                    InputProps={{ 
+                    InputProps={{
                       readOnly: confirmedTextSteps[step.id],
                       startAdornment: (
                         <InputAdornment position="start">
@@ -149,7 +149,7 @@ export const RightSidePanel = () => {
                     value={step.data}
                     fullWidth
                     margin="normal"
-                    InputProps={{ 
+                    InputProps={{
                       readOnly: confirmedTextSteps[step.id],
                       startAdornment: (
                         <InputAdornment position="start">
@@ -168,11 +168,11 @@ export const RightSidePanel = () => {
               ) : (
                 step.type === 'screenshot' && (
                   <Box display="flex" alignItems="center">
-      <DocumentScannerIcon sx={{ mr: 1 }} />
-      <Typography>
-        {`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}
-      </Typography>
-    </Box>
+                    <DocumentScannerIcon sx={{ mr: 1 }} />
+                    <Typography>
+                      {`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}
+                    </Typography>
+                  </Box>
                 )
               )
             }
