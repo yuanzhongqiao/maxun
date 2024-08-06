@@ -29,6 +29,7 @@ interface InterpreterOptions {
   }>
 }
 
+
 /**
  * Class for running the Smart Workflows.
  */
@@ -410,7 +411,7 @@ export default class Interpreter extends EventEmitter {
   }
 
   private async ensureScriptsLoaded(page: Page) {
-    const isScriptLoaded = await page.evaluate(() => typeof window.scrape === 'function' && typeof window.scrapeSchema === 'function');
+    const isScriptLoaded = await page.evaluate(() => typeof window.scrape === 'function' && typeof window.scrapeSchema === 'function' && typeof window.scrapeList === 'function');
     if (!isScriptLoaded) {
       await page.addInitScript({ path: path.join(__dirname, 'browserSide', 'scraper.js') });
     }
