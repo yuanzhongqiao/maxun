@@ -1,5 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { Button, Paper, Box, TextField } from "@mui/material";
+import EditIcon from '@mui/icons-material/Edit';
+import TextFieldsIcon from '@mui/icons-material/TextFields';
 import styled from "styled-components";
 import { SimpleBox } from "../atoms/Box";
 import Typography from "@mui/material/Typography";
@@ -8,6 +10,8 @@ import { useActionContext } from '../../context/browserActions';
 import { useBrowserSteps } from '../../context/browserSteps';
 import { useSocketStore } from '../../context/socket';
 import { ScreenshotSettings } from '../../shared/types';
+import InputAdornment from '@mui/material/InputAdornment';
+
 
 export const RightSidePanel = () => {
   const [textLabels, setTextLabels] = useState<{ [id: number]: string }>({});
@@ -97,13 +101,13 @@ export const RightSidePanel = () => {
 
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
         {!getText && !getScreenshot && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
-        {getText && 
-        <>
-         <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
-         <Button variant="outlined" onClick={stopCaptureAndEmitGetTextSettings}>Confirm</Button>
-         <Button variant="outlined" color="error" onClick={stopGetText}>Discard</Button>
-       </Box>
-       </>
+        {getText &&
+          <>
+            <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
+              <Button variant="outlined" onClick={stopCaptureAndEmitGetTextSettings}>Confirm</Button>
+              <Button variant="outlined" color="error" onClick={stopGetText}>Discard</Button>
+            </Box>
+          </>
         }
 
         {!getText && !getScreenshot && <Button variant="contained" onClick={startGetScreenshot}>Capture Screenshot</Button>}
@@ -130,14 +134,28 @@ export const RightSidePanel = () => {
                     margin="normal"
                     error={!!errors[step.id]}
                     helperText={errors[step.id]}
-                    InputProps={{ readOnly: confirmedTextSteps[step.id] }}
+                    InputProps={{ 
+                      readOnly: confirmedTextSteps[step.id],
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <EditIcon />
+                        </InputAdornment>
+                      )
+                    }}
                   />
                   <TextField
                     label="Data"
                     value={step.data}
                     fullWidth
                     margin="normal"
-                    InputProps={{ readOnly: confirmedTextSteps[step.id] }}
+                    InputProps={{ 
+                      readOnly: confirmedTextSteps[step.id],
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <TextFieldsIcon />
+                        </InputAdornment>
+                      )
+                    }}
                   />
                   {!confirmedTextSteps[step.id] && (
                     <Box display="flex" justifyContent="space-between" gap={2}>
