@@ -721,6 +721,59 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
   return null;
 };
 
+
+/**
+ * Returns the best non-unique css {@link Selectors} for the element on the page.
+ * Internally uses a finder function from https://github.com/antonmedv/finder/blob/master/finder.ts
+ * available as a npm package: @medv/finder
+ *
+ * The finder needs to be executed and defined inside a browser context. Meaning,
+ * the code needs to be available inside a page evaluate function.
+ * @param page The page instance.
+ * @param coordinates Coordinates of an element.
+ * @category WorkflowManagement-Selectors
+ * @returns {Promise<Selectors|null|undefined>}
+ */
+export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates) => {
+  try {
+    const selectors: any = await page.evaluate(async ({ x, y }) => {
+      // version @medv/finder
+      // https://github.com/antonmedv/finder/blob/master/finder.ts
+
+      const genNonUniqueSelectors = (element: HTMLElement | null) => {
+        if (element == null) {
+          return null;
+        }
+
+        const tagName = element.tagName.toLowerCase();
+        const classNames = Array.from(element.classList).map(cls => `.${cls}`).join('');
+
+        const nonUniqueSelector = `${tagName}${classNames}`;
+
+        return {
+          nonUniqueSelector,
+          text: element.innerText,
+        };
+      };
+
+      const hoveredElement = document.elementFromPoint(x, y) as HTMLElement;
+      if (hoveredElement != null && !hoveredElement.closest('#overlay-controls')) {
+        const { parentElement } = hoveredElement;
+        const element = parentElement?.tagName === 'A' ? parentElement : hoveredElement;
+        const generatedSelectors = genNonUniqueSelectors(element);
+        return generatedSelectors;
+      }
+    }, { x: coordinates.x, y: coordinates.y });
+    return selectors;
+  } catch (e) {
+    const { message, stack } = e as Error;
+    console.error('Error while retrieving element:', message);
+    console.error('Stack:', stack);
+  }
+  return null;
+};
+
+
 /**
  * Returns the first pair from the given workflow that contains the given selector
  * inside the where condition, and it is the only selector there.
