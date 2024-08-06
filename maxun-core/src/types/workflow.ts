@@ -28,7 +28,7 @@ type MethodNames<T> = {
   [K in keyof T]: T[K] extends Function ? K : never;
 }[keyof T];
 
-export type CustomFunctions = 'scrape' | 'scrapeSchema' | 'scroll' | 'screenshot' | 'script' | 'enqueueLinks' | 'flag';
+export type CustomFunctions = 'scrape' | 'scrapeSchema' | 'scroll' | 'screenshot' | 'script' | 'enqueueLinks' | 'flag' | 'scrapeList';
 
 export type What = {
   action: MethodNames<Page> | CustomFunctions,
