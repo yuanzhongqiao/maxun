@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { Button, Paper, Box, TextField } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
+import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import styled from "styled-components";
 import { SimpleBox } from "../atoms/Box";
 import Typography from "@mui/material/Typography";
@@ -166,7 +167,12 @@ export const RightSidePanel = () => {
                 </>
               ) : (
                 step.type === 'screenshot' && (
-                  <Typography>{`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}</Typography>
+                  <Box display="flex" alignItems="center">
+      <DocumentScannerIcon sx={{ mr: 1 }} />
+      <Typography>
+        {`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}
+      </Typography>
+    </Box>
                 )
               )
             }
