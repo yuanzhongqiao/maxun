@@ -98,19 +98,19 @@ export const getElementInformation = async (
       { x: coordinates.x, y: coordinates.y },
     );
 
-    if (elementInfo) {
-      if (elementInfo.tagName === 'A') {
-        if (elementInfo.innerText) {
-          console.log(`Link text: ${elementInfo.innerText}, URL: ${elementInfo.url}`);
-        } else {
-          console.log(`URL: ${elementInfo.url}`);
-        }
-      } else if (elementInfo.tagName === 'IMG') {
-        console.log(`Image URL: ${elementInfo.imageUrl}`);
-      } else {
-        console.log(`Element innerText: ${elementInfo.innerText}`);
-      }
-    }
+    // if (elementInfo) {
+    //   if (elementInfo.tagName === 'A') {
+    //     if (elementInfo.innerText) {
+    //       console.log(`Link text: ${elementInfo.innerText}, URL: ${elementInfo.url}`);
+    //     } else {
+    //       console.log(`URL: ${elementInfo.url}`);
+    //     }
+    //   } else if (elementInfo.tagName === 'IMG') {
+    //     console.log(`Image URL: ${elementInfo.imageUrl}`);
+    //   } else {
+    //     console.log(`Element innerText: ${elementInfo.innerText}`);
+    //   }
+    // }
     
     return elementInfo;
   } catch (error) {
@@ -734,44 +734,50 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
  * @category WorkflowManagement-Selectors
  * @returns {Promise<Selectors|null|undefined>}
  */
+
 export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates) => {
   try {
-    const selectors: any = await page.evaluate(async ({ x, y }) => {
-      // version @medv/finder
-      // https://github.com/antonmedv/finder/blob/master/finder.ts
-
-      const genNonUniqueSelectors = (element: HTMLElement | null) => {
-        if (element == null) {
-          return null;
+    const selectors = await page.evaluate(({ x, y }) => {
+      function getSelector(element: Element): string {
+        let selector = element.tagName.toLowerCase();
+        if (element.className) {
+          const classes = element.className.split(/\s+/).filter(Boolean);
+          if (classes.length > 0) {
+            selector += '.' + classes.join('.');
+          }
         }
-
-        const tagName = element.tagName.toLowerCase();
-        const classNames = Array.from(element.classList).map(cls => `.${cls}`).join('');
-
-        const nonUniqueSelector = `${tagName}${classNames}`;
-
-        return {
-          nonUniqueSelector,
-          text: element.innerText,
-        };
-      };
-
-      const hoveredElement = document.elementFromPoint(x, y) as HTMLElement;
-      if (hoveredElement != null && !hoveredElement.closest('#overlay-controls')) {
-        const { parentElement } = hoveredElement;
-        const element = parentElement?.tagName === 'A' ? parentElement : hoveredElement;
-        const generatedSelectors = genNonUniqueSelectors(element);
-        return generatedSelectors;
+        return selector;
       }
-    }, { x: coordinates.x, y: coordinates.y });
-    return selectors;
-  } catch (e) {
-    const { message, stack } = e as Error;
-    console.error('Error while retrieving element:', message);
-    console.error('Stack:', stack);
+
+      function getSelectorPath(element: Element): string {
+        const path = [];
+        while (element && element !== document.body) {
+          path.unshift(getSelector(element));
+          element = element.parentElement!;
+        }
+        return path.join(' > ');
+      }
+
+      const element = document.elementFromPoint(x, y) as Element;
+      if (!element) return null;
+
+      const generalSelector = getSelectorPath(element);
+      return {
+        generalSelector,
+        tagName: element.tagName.toLowerCase(),
+        className: element.className,
+        text: element.textContent?.trim() || '',
+        href: (element as HTMLAnchorElement).href || undefined,
+      };
+    }, coordinates);
+
+    return selectors || {};
+  } catch (error) {
+    console.error('Error in getNonUniqueSelectors:', error);
+    return {};
   }
-  return null;
 };
+
 
 
 /**
