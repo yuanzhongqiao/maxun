@@ -86,6 +86,7 @@ export const RightSidePanel = () => {
     };
     socket?.emit('action', { action: 'screenshot', settings: screenshotSettings });
     addScreenshotStep(fullPage);
+    stopGetScreenshot();
   };
 
   return (
