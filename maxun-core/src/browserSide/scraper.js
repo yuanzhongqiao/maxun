@@ -250,4 +250,70 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
     ));
   }
 
+
+  /**
+ * Scrapes multiple lists of similar items based on a template item.
+ * @param {Object} config - Configuration object
+ * @param {string} config.listSelector - Selector for the list container(s)
+ * @param {Object.<string, {selector: string, attribute?: string}>} config.fields - Fields to scrape
+ * @param {number} [config.limit] - Maximum number of items to scrape per list (optional)
+ * @param {boolean} [config.flexible=false] - Whether to use flexible matching for field selectors
+ * @returns {Array.<Array.<Object>>} Array of arrays of scraped items, one sub-array per list
+ */
+window.scrapeList = function(config) {
+  const { listSelector, fields, limit, flexible = false } = config;
+  
+  // Get all lists
+  const lists = Array.from(document.querySelectorAll(listSelector));
+  
+  return lists.map(list => {
+    // Get all list items within this list
+    const listItems = Array.from(list.children);
+    
+    // Apply limit if specified
+    const itemsToScrape = limit ? listItems.slice(0, limit) : listItems;
+    
+    // Scrape each item
+    return itemsToScrape.map(item => {
+      const scrapedItem = {};
+      
+      for (const [fieldName, fieldConfig] of Object.entries(fields)) {
+        let element;
+        
+        if (flexible) {
+          // Try multiple strategies to find the element
+          element = item.querySelector(fieldConfig.selector) ||
+                    item.querySelector(`[class*="${fieldConfig.selector}"]`) ||
+                    Array.from(item.querySelectorAll('*'))
+                      .find(el => el.textContent.trim() === fieldConfig.selector);
+        } else {
+          element = item.querySelector(fieldConfig.selector);
+        }
+        
+        if (element) {
+          switch (fieldConfig.attribute) {
+            case 'href':
+              scrapedItem[fieldName] = element.getAttribute('href');
+              break;
+            case 'src':
+              scrapedItem[fieldName] = element.getAttribute('src');
+              break;
+            case 'textContent':
+              scrapedItem[fieldName] = element.textContent.trim();
+              break;
+            case 'innerText':
+            default:
+              scrapedItem[fieldName] = element.innerText.trim();
+              break;
+          }
+        } else {
+          scrapedItem[fieldName] = null;
+        }
+      }
+      
+      return scrapedItem;
+    });
+  });
+};
+
 })(window);
