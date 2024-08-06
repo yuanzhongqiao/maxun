@@ -724,11 +724,6 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
 
 /**
  * Returns the best non-unique css {@link Selectors} for the element on the page.
- * Internally uses a finder function from https://github.com/antonmedv/finder/blob/master/finder.ts
- * available as a npm package: @medv/finder
- *
- * The finder needs to be executed and defined inside a browser context. Meaning,
- * the code needs to be available inside a page evaluate function.
  * @param page The page instance.
  * @param coordinates Coordinates of an element.
  * @category WorkflowManagement-Selectors
