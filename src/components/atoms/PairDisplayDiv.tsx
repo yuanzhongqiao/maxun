@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import Typography from '@mui/material/Typography';
-import { WhereWhatPair } from "@wbr-project/wbr-interpret";
+import { WhereWhatPair } from "maxun-core";
 import styled from "styled-components";
 
 interface PairDisplayDivProps {

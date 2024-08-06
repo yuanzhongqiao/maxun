@@ -271,6 +271,7 @@ const handleChangeUrl = async (generator: WorkflowGenerator, page: Page, url: st
         try {
             await page.goto(url);
             logger.log('debug', `Went to ${url}`);
+            console.log(`Went to ${url}`)
         } catch (e) {
             const { message } = e as Error;
             logger.log('error', message);

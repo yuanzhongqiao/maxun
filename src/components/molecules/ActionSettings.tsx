@@ -20,16 +20,10 @@ export const ActionSettings = ({ action }: ActionSettingsProps) => {
         return <Settings.ScreenshotSettings ref={settingsRef} />;
       case 'scroll':
         return <Settings.ScrollSettings ref={settingsRef} />;
-      case 'scrape':
-        return <Settings.ScrapeSettings ref={settingsRef} />;
+        case 'scrape':
+          return <Settings.ScrapeSettings ref={settingsRef} />;
       case 'scrapeSchema':
         return <Settings.ScrapeSchemaSettings ref={settingsRef} />;
-      case 'script':
-        return <Settings.ScriptSettings ref={settingsRef} />;
-      case 'enqueueLinks':
-        return <Settings.EnqueueLinksSettings ref={settingsRef} />;
-      case 'mouse.click':
-        return <Settings.ClickOnCoordinatesSettings ref={settingsRef} />;
       default:
         return null;
     }

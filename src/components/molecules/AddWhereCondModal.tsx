@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import React, { useRef } from "react";
 import { GenericModal } from "../atoms/GenericModal";
-import { WhereWhatPair } from "@wbr-project/wbr-interpret";
+import { WhereWhatPair } from "maxun-core";
 import { SelectChangeEvent } from "@mui/material/Select/Select";
 import { DisplayConditionSettings } from "./DisplayWhereConditionSettings";
 import { useSocketStore } from "../../context/socket";

@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { Stack, Button, IconButton, Tooltip, Chip, Badge } from "@mui/material";
 import { AddPair, deletePair, UpdatePair } from "../../api/workflow";
-import { WorkflowFile } from "@wbr-project/wbr-interpret";
+import { WorkflowFile } from "maxun-core";
 import { ClearButton } from "../atoms/buttons/ClearButton";
 import { GenericModal } from "../atoms/GenericModal";
 import { PairEditForm } from "./PairEditForm";

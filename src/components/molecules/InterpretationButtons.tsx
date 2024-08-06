@@ -5,7 +5,7 @@ import { interpretCurrentRecording, stopCurrentInterpretation } from "../../api/
 import { useSocketStore } from "../../context/socket";
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { GenericModal } from "../atoms/GenericModal";
-import { WhereWhatPair } from "@wbr-project/wbr-interpret";
+import { WhereWhatPair } from "maxun-core";
 import HelpIcon from '@mui/icons-material/Help';
 
 interface InterpretationButtonsProps {

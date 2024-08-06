@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { useSocketStore } from '../../context/socket';
 import { getMappedCoordinates } from "../../helpers/inputHelpers";
 import { useGlobalInfoStore } from "../../context/globalInfo";
+import { useActionContext } from '../../context/browserActions';
 
 interface CreateRefCallback {
     (ref: React.RefObject<HTMLCanvasElement>): void;
@@ -26,6 +27,8 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const { socket } = useSocketStore();
     const { setLastAction, lastAction } = useGlobalInfoStore();
+    const { getText, getScreenshot } = useActionContext();
+    const getTextRef = useRef(getText);
 
     const notifyLastAction = (action: string) => {
         if (lastAction !== action) {
@@ -34,7 +37,10 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     };
 
     const lastMousePosition = useRef<Coordinates>({ x: 0, y: 0 });
-    //const lastWheelPosition = useRef<ScrollDeltas>({ deltaX: 0, deltaY: 0 });
+
+    useEffect(() => {
+        getTextRef.current = getText;
+    }, [getText]);
 
     const onMouseEvent = useCallback((event: MouseEvent) => {
         if (socket) {
@@ -45,7 +51,11 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
             switch (event.type) {
                 case 'mousedown':
                     const clickCoordinates = getMappedCoordinates(event, canvasRef.current, width, height);
-                    socket.emit('input:mousedown', clickCoordinates);
+                    if (getTextRef.current === true) {
+                        console.log('get text')
+                    } else {
+                        socket.emit('input:mousedown', clickCoordinates);
+                    }
                     notifyLastAction('click');
                     break;
                 case 'mousemove':

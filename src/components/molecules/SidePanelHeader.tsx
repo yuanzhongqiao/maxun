@@ -3,7 +3,7 @@ import { InterpretationButtons } from "./InterpretationButtons";
 import { AddButton } from "../atoms/buttons/AddButton";
 import { GenericModal } from "../atoms/GenericModal";
 import { PairEditForm } from "./PairEditForm";
-import { WhereWhatPair, WorkflowFile } from "@wbr-project/wbr-interpret";
+import { WhereWhatPair, WorkflowFile } from "maxun-core";
 import { AddPair } from "../../api/workflow";
 import { Button, Stack } from "@mui/material";
 import { FastForward } from "@mui/icons-material";

@@ -41,4 +41,5 @@ const defaultModalStyle = {
   display: 'block',
   overflow: 'scroll',
   padding: '5px 25px 10px 25px',
+  zIndex: 3147483647,
 };

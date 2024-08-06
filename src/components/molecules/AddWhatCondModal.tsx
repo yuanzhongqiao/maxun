@@ -1,4 +1,4 @@
-import { WhereWhatPair } from "@wbr-project/wbr-interpret";
+import { WhereWhatPair } from "maxun-core";
 import { GenericModal } from "../atoms/GenericModal";
 import { modalStyle } from "./AddWhereCondModal";
 import { Button, MenuItem, TextField, Typography } from "@mui/material";

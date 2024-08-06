@@ -1,5 +1,5 @@
 import { Action, ActionType, Coordinates, TagName } from "../../types";
-import { WhereWhatPair, WorkflowFile } from '@wbr-project/wbr-interpret';
+import { WhereWhatPair, WorkflowFile } from 'maxun-core';
 import logger from "../../logger";
 import { Socket } from "socket.io";
 import { Page } from "playwright";
@@ -484,9 +484,9 @@ export class WorkflowGenerator {
   public generateDataForHighlighter = async (page: Page, coordinates: Coordinates) => {
     const rect = await getRect(page, coordinates);
     const displaySelector = await this.generateSelector(page, coordinates, ActionType.Click);
-    //console.log('Backend Rectangle:', rect)
+    const elementInfo = await getElementInformation(page, coordinates);
     if (rect) {
-      this.socket.emit('highlighter', { rect, selector: displaySelector });
+      this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo });
     }
   }
 

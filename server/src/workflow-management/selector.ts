@@ -1,6 +1,6 @@
 import { Page } from "playwright";
 import { Action, ActionType, Coordinates, TagName } from "../types";
-import { WhereWhatPair, WorkflowFile } from "@wbr-project/wbr-interpret";
+import { WhereWhatPair, WorkflowFile } from "maxun-core";
 import logger from "../logger";
 import { getBestSelectorForAction } from "./utils";
 
@@ -111,7 +111,7 @@ export const getElementInformation = async (
         console.log(`Element innerText: ${elementInfo.innerText}`);
       }
     }
-
+    
     return elementInfo;
   } catch (error) {
     const { message, stack } = error as Error;

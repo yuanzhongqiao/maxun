@@ -7,9 +7,11 @@ import { RightSidePanel } from "../components/organisms/RightSidePanel";
 import { Loader } from "../components/atoms/Loader";
 import { useSocketStore } from "../context/socket";
 import { useBrowserDimensionsStore } from "../context/browserDimensions";
+import { ActionProvider } from "../context/browserActions"
+import { BrowserStepsProvider } from '../context/browserSteps';
 import { useGlobalInfoStore } from "../context/globalInfo";
 import { editRecordingFromStorage } from "../api/storage";
-import { WhereWhatPair } from "@wbr-project/wbr-interpret";
+import { WhereWhatPair } from "maxun-core";
 import styled from "styled-components";
 
 interface RecordingPageProps {
@@ -104,26 +106,30 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
   }, [socket, handleLoaded]);
 
   return (
-    <div>
-      {isLoaded ?
-        <Grid container direction="row" spacing={0}>
-          <Grid item xs={2} ref={workflowListRef} style={{ display: "flex", flexDirection: "row" }}>
-            <LeftSidePanel
-              sidePanelRef={workflowListRef.current}
-              alreadyHasScrollbar={hasScrollbar}
-              recordingName={recordingName ? recordingName : ''}
-              handleSelectPairForEdit={handleSelectPairForEdit}
-            />
-          </Grid> 
-          <Grid id="browser-content" ref={browserContentRef} item xs>
-            <BrowserContent />
-          </Grid>
-          <Grid item xs={2}>
-            <RightSidePanel pairForEdit={pairForEdit} />
-          </Grid> 
-        </Grid>
-        : <Loader />}
-    </div>
+    <ActionProvider>
+      <BrowserStepsProvider>
+        <div>
+          {isLoaded ?
+            <Grid container direction="row" spacing={0}>
+              <Grid item xs={2} ref={workflowListRef} style={{ display: "flex", flexDirection: "row" }}>
+                <LeftSidePanel
+                  sidePanelRef={workflowListRef.current}
+                  alreadyHasScrollbar={hasScrollbar}
+                  recordingName={recordingName ? recordingName : ''}
+                  handleSelectPairForEdit={handleSelectPairForEdit}
+                />
+              </Grid>
+              <Grid id="browser-content" ref={browserContentRef} item xs>
+                <BrowserContent />
+              </Grid>
+              <Grid item xs={2}>
+                <RightSidePanel />
+              </Grid>
+            </Grid>
+            : <Loader />}
+        </div>
+      </BrowserStepsProvider>
+    </ActionProvider>
   );
 };
 
