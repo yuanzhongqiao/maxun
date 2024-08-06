@@ -759,8 +759,6 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
       const generalSelector = getSelectorPath(element);
       return {
         generalSelector,
-        tagName: element.tagName.toLowerCase(),
-        className: element.className,
       };
     }, coordinates);
 
