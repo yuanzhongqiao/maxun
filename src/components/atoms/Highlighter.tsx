@@ -54,7 +54,7 @@ const HighlighterOutline = styled.div<HighlighterOutlineProps>`
   pointer-events: none !important;
   position: fixed !important;
   background: #ff5d5b26 !important;
-  outline: 4px solid pink !important;
+  outline: 4px solid red !important;
   //border: 4px solid #ff5d5b !important;
   z-index: 2147483647 !important;
   //border-radius: 5px;
