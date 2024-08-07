@@ -111,7 +111,7 @@ export const BrowserWindow = () => {
                 clickY >= highlightRect.top &&
                 clickY <= highlightRect.bottom
             ) {
-                if (getText === true) {
+                if (getText === true || getList === true) {
                     const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '');
                     if (options.length > 1) {
                         setAttributeOptions(options);
@@ -146,7 +146,7 @@ export const BrowserWindow = () => {
                     data = selectedElement.info?.innerText || '';
             }
             {
-                if (getText === true) {
+                if (getText === true || getList === true) {
                     addTextStep('', data, {
                         selector: selectedElement.selector,
                         tag: selectedElement.info?.tagName,
@@ -161,7 +161,7 @@ export const BrowserWindow = () => {
     return (
         <div onClick={handleClick}>
             {
-                getText === true ? (
+                getText === true || getList === true ? (
                     <GenericModal
                         isOpen={showAttributeModal}
                         onClose={() => { }}
@@ -179,7 +179,7 @@ export const BrowserWindow = () => {
                     </GenericModal>
                 ) : null
             }
-            {(getText === true && !showAttributeModal && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
+            {((getText === true || getList === true) && !showAttributeModal && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
                 <Highlighter
                     unmodifiedRect={highlighterData?.rect}
                     displayedSelector={highlighterData?.selector}
