@@ -47,6 +47,8 @@ export class WorkflowGenerator {
    */
   private socket: Socket;
 
+  private getList: boolean = false;
+
   /**
    * The public constructor of the WorkflowGenerator.
    * Takes socket for communication as a parameter and registers some important events on it.
@@ -56,6 +58,7 @@ export class WorkflowGenerator {
   public constructor(socket: Socket) {
     this.socket = socket;
     this.registerEventHandlers(socket);
+    this.initializeSocketListeners();
   }
 
   /**
@@ -88,6 +91,13 @@ export class WorkflowGenerator {
     lastIndex: null,
     lastAction: '',
   }
+
+  private initializeSocketListeners() {
+    this.socket.on('setGetList', (data: { getList: boolean }) => {
+      this.getList = data.getList;
+    });
+  }
+
 
   /**
    * Registers the event handlers for all generator-related events on the socket.
@@ -458,13 +468,12 @@ export class WorkflowGenerator {
    * @private
    * @returns {Promise<string|null>}
    */
-  private generateSelector = async (page: Page, coordinates: Coordinates, action: ActionType, getList: boolean) => {
+  private generateSelector = async (page: Page, coordinates: Coordinates, action: ActionType, getList?: boolean) => {
     const elementInfo = await getElementInformation(page, coordinates);
-    
+
     const selectorBasedOnCustomAction = (getList === true) 
     ? await getNonUniqueSelectors(page, coordinates) 
     : await getSelectors(page, coordinates);
-  
     const bestSelector = getBestSelectorForAction(
       {
         type: action,
@@ -487,9 +496,9 @@ export class WorkflowGenerator {
    * @param coordinates The coordinates of the element.
    * @returns {Promise<void>}
    */
-  public generateDataForHighlighter = async (page: Page, coordinates: Coordinates) => {
+  public generateDataForHighlighter = async (page: Page, coordinates: Coordinates, getList?: boolean) => {
     const rect = await getRect(page, coordinates);
-    const displaySelector = await this.generateSelector(page, coordinates, ActionType.Click);
+    const displaySelector = await this.generateSelector(page, coordinates, ActionType.Click, getList);
     const elementInfo = await getElementInformation(page, coordinates);
     if (rect) {
       this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo });
