@@ -460,13 +460,11 @@ export class WorkflowGenerator {
    */
   private generateSelector = async (page: Page, coordinates: Coordinates, action: ActionType, getList: boolean) => {
     const elementInfo = await getElementInformation(page, coordinates);
-    const selectorInfo = await getNonUniqueSelectors(page, coordinates);
-
+    
     const selectorBasedOnCustomAction = (getList === true) 
     ? await getNonUniqueSelectors(page, coordinates) 
     : await getSelectors(page, coordinates);
   
-    console.log('Selector Info:', selectorInfo);
     const bestSelector = getBestSelectorForAction(
       {
         type: action,
