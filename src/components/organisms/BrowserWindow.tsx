@@ -47,7 +47,7 @@ export const BrowserWindow = () => {
 
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
-    const { getText } = useActionContext();
+    const { getText, getList } = useActionContext();
     const { addTextStep } = useBrowserSteps();
 
     const onMouseMove = (e: MouseEvent) => {
