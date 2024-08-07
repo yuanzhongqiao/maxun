@@ -105,7 +105,7 @@ export const RightSidePanel = () => {
        {getList &&
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
-              <Button variant="outlined" onClick={() => }>Confirm</Button>
+              <Button variant="outlined" onClick={() => {}}>Confirm</Button>
               <Button variant="outlined" color="error" onClick={stopGetList}>Discard</Button>
             </Box>
           </>
