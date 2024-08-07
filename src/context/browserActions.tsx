@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface ActionContextProps {
     getText: boolean;
+    getList: boolean;
     getScreenshot: boolean;
     startGetText: () => void;
     stopGetText: () => void;
@@ -13,6 +14,7 @@ const ActionContext = createContext<ActionContextProps | undefined>(undefined);
 
 export const ActionProvider = ({ children }: { children: ReactNode }) => {
     const [getText, setGetText] = useState<boolean>(false);
+    const [getList, setGetList] = useState<boolean>(false);
     const [getScreenshot, setGetScreenshot] = useState<boolean>(false);
 
     const startGetText = () => setGetText(true);
@@ -22,7 +24,7 @@ export const ActionProvider = ({ children }: { children: ReactNode }) => {
     const stopGetScreenshot = () => setGetScreenshot(false);
 
     return (
-        <ActionContext.Provider value={{ getText, getScreenshot, startGetText, stopGetText, startGetScreenshot, stopGetScreenshot }}>
+        <ActionContext.Provider value={{ getText, getList, getScreenshot, startGetText, stopGetText, startGetScreenshot, stopGetScreenshot }}>
             {children}
         </ActionContext.Provider>
     );
