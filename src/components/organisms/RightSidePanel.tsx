@@ -104,6 +104,8 @@ export const RightSidePanel = () => {
         {!getText && !getScreenshot && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
         {getText &&
           <>
+          <Button variant="contained" onClick={() => {}}>Capture List</Button>
+          <Button variant="contained" onClick={() => {}}>Just Text</Button>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
               <Button variant="outlined" onClick={stopCaptureAndEmitGetTextSettings}>Confirm</Button>
               <Button variant="outlined" color="error" onClick={stopGetText}>Discard</Button>
