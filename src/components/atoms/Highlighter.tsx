@@ -24,10 +24,6 @@ export const Highlighter = ({ unmodifiedRect, displayedSelector = '', width, hei
     };
 
 
-    //console.log('unmodifiedRect:', unmodifiedRect)
-    //console.log('rectangle:', rect)
-    //console.log('canvas rectangle:', canvasRect)
-
     return (
       <div>
         <HighlighterOutline
