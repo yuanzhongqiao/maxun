@@ -102,6 +102,14 @@ export const RightSidePanel = () => {
 
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
        {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetList}>Capture List</Button>}
+       {getList &&
+          <>
+            <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
+              <Button variant="outlined" onClick={() => }>Confirm</Button>
+              <Button variant="outlined" color="error" onClick={stopGetList}>Discard</Button>
+            </Box>
+          </>
+        }
 
         {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
         {getText &&
