@@ -27,8 +27,9 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const { socket } = useSocketStore();
     const { setLastAction, lastAction } = useGlobalInfoStore();
-    const { getText } = useActionContext();
+    const { getText, getList } = useActionContext();
     const getTextRef = useRef(getText);
+    const getListRef = useRef(getList);
 
     const notifyLastAction = (action: string) => {
         if (lastAction !== action) {
@@ -40,7 +41,8 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
 
     useEffect(() => {
         getTextRef.current = getText;
-    }, [getText]);
+        getListRef.current = getList;
+    }, [getText, getList]);
 
     const onMouseEvent = useCallback((event: MouseEvent) => {
         if (socket) {
