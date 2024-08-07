@@ -263,17 +263,14 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
 window.scrapeList = function(config) {
   const { listSelector, fields, limit, flexible = false } = config;
   
-  // Get all lists
   const lists = Array.from(document.querySelectorAll(listSelector));
   
   return lists.map(list => {
-    // Get all list items within this list
     const listItems = Array.from(list.children);
     
-    // Apply limit if specified
     const itemsToScrape = limit ? listItems.slice(0, limit) : listItems;
     
-    // Scrape each item
+    // scrape each item
     return itemsToScrape.map(item => {
       const scrapedItem = {};
       
@@ -281,7 +278,7 @@ window.scrapeList = function(config) {
         let element;
         
         if (flexible) {
-          // Try multiple strategies to find the element
+          // try multiple strategies to find the element
           element = item.querySelector(fieldConfig.selector) ||
                     item.querySelector(`[class*="${fieldConfig.selector}"]`) ||
                     Array.from(item.querySelectorAll('*'))
