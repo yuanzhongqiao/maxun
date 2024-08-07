@@ -101,6 +101,8 @@ export const RightSidePanel = () => {
       </SimpleBox>
 
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
+       {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetList}>Capture List</Button>}
+
         {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
         {getText &&
           <>
