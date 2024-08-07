@@ -468,7 +468,7 @@ export class WorkflowGenerator {
    * @private
    * @returns {Promise<string|null>}
    */
-  private generateSelector = async (page: Page, coordinates: Coordinates, action: ActionType, getList?: boolean) => {
+  private generateSelector = async (page: Page, coordinates: Coordinates, action: ActionType) => {
     const elementInfo = await getElementInformation(page, coordinates);
 
     const selectorBasedOnCustomAction = (this.getList === true) 
@@ -496,9 +496,9 @@ export class WorkflowGenerator {
    * @param coordinates The coordinates of the element.
    * @returns {Promise<void>}
    */
-  public generateDataForHighlighter = async (page: Page, coordinates: Coordinates, getList?: boolean) => {
+  public generateDataForHighlighter = async (page: Page, coordinates: Coordinates) => {
     const rect = await getRect(page, coordinates);
-    const displaySelector = await this.generateSelector(page, coordinates, ActionType.Click, getList);
+    const displaySelector = await this.generateSelector(page, coordinates, ActionType.Click);
     const elementInfo = await getElementInformation(page, coordinates);
     if (rect) {
       this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo });
