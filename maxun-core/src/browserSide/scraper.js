@@ -260,57 +260,57 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
  * @param {boolean} [config.flexible=false] - Whether to use flexible matching for field selectors
  * @returns {Array.<Array.<Object>>} Array of arrays of scraped items, one sub-array per list
  */
-window.scrapeList = function(config) {
-  const { listSelector, fields, limit, flexible = false } = config;
-  
-  const lists = Array.from(document.querySelectorAll(listSelector));
-  
-  return lists.map(list => {
-    const listItems = Array.from(list.children);
-    
-    const itemsToScrape = limit ? listItems.slice(0, limit) : listItems;
-    
-    // scrape each item
-    return itemsToScrape.map(item => {
-      const scrapedItem = {};
-      
-      for (const [fieldName, fieldConfig] of Object.entries(fields)) {
-        let element;
-        
-        if (flexible) {
-          // try multiple strategies to find the element
-          element = item.querySelector(fieldConfig.selector) ||
-                    item.querySelector(`[class*="${fieldConfig.selector}"]`) ||
-                    Array.from(item.querySelectorAll('*'))
-                      .find(el => el.textContent.trim() === fieldConfig.selector);
-        } else {
-          element = item.querySelector(fieldConfig.selector);
-        }
-        
-        if (element) {
-          switch (fieldConfig.attribute) {
-            case 'href':
-              scrapedItem[fieldName] = element.getAttribute('href');
-              break;
-            case 'src':
-              scrapedItem[fieldName] = element.getAttribute('src');
-              break;
-            case 'textContent':
-              scrapedItem[fieldName] = element.textContent.trim();
-              break;
-            case 'innerText':
-            default:
-              scrapedItem[fieldName] = element.innerText.trim();
-              break;
+  window.scrapeList = function (config) {
+    const { listSelector, fields, limit, flexible = false } = config;
+
+    const lists = Array.from(document.querySelectorAll(listSelector));
+
+    return lists.map(list => {
+      const listItems = Array.from(list.children);
+
+      const itemsToScrape = limit ? listItems.slice(0, limit) : listItems;
+
+      // scrape each item
+      return itemsToScrape.map(item => {
+        const scrapedItem = {};
+
+        for (const [fieldName, fieldConfig] of Object.entries(fields)) {
+          let element;
+
+          if (flexible) {
+            // try multiple strategies to find the element
+            element = item.querySelector(fieldConfig.selector) ||
+              item.querySelector(`[class*="${fieldConfig.selector}"]`) ||
+              Array.from(item.querySelectorAll('*'))
+                .find(el => el.textContent.trim() === fieldConfig.selector);
+          } else {
+            element = item.querySelector(fieldConfig.selector);
           }
-        } else {
-          scrapedItem[fieldName] = null;
+
+          if (element) {
+            switch (fieldConfig.attribute) {
+              case 'href':
+                scrapedItem[fieldName] = element.getAttribute('href');
+                break;
+              case 'src':
+                scrapedItem[fieldName] = element.getAttribute('src');
+                break;
+              case 'textContent':
+                scrapedItem[fieldName] = element.textContent.trim();
+                break;
+              case 'innerText':
+              default:
+                scrapedItem[fieldName] = element.innerText.trim();
+                break;
+            }
+          } else {
+            scrapedItem[fieldName] = null;
+          }
         }
-      }
-      
-      return scrapedItem;
+
+        return scrapedItem;
+      });
     });
-  });
-};
+  };
 
 })(window);
