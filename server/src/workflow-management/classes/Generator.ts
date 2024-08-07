@@ -7,6 +7,7 @@ import {
   getElementInformation,
   getRect,
   getSelectors,
+  getNonUniqueSelectors,
   isRuleOvershadowing,
   selectorAlreadyInWorkflow
 } from "../selector";
@@ -457,15 +458,22 @@ export class WorkflowGenerator {
    * @private
    * @returns {Promise<string|null>}
    */
-  private generateSelector = async (page: Page, coordinates: Coordinates, action: ActionType) => {
+  private generateSelector = async (page: Page, coordinates: Coordinates, action: ActionType, getList: boolean) => {
     const elementInfo = await getElementInformation(page, coordinates);
+    const selectorInfo = await getNonUniqueSelectors(page, coordinates);
+
+    const selectorBasedOnCustomAction = (getList === true) 
+    ? await getNonUniqueSelectors(page, coordinates) 
+    : await getSelectors(page, coordinates);
+  
+    console.log('Selector Info:', selectorInfo);
     const bestSelector = getBestSelectorForAction(
       {
         type: action,
         tagName: elementInfo?.tagName as TagName || '',
         inputType: undefined,
         value: undefined,
-        selectors: await getSelectors(page, coordinates) || {},
+        selectors: selectorBasedOnCustomAction || {},
         timestamp: 0,
         isPassword: false,
         hasOnlyText: elementInfo?.hasOnlyText || false,
