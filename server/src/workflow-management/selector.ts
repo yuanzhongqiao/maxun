@@ -730,37 +730,41 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
  * @returns {Promise<Selectors|null|undefined>}
  */
 
-export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates) => {
+export const getNonUniqueSelectors =  async (page: Page, coordinates: Coordinates) => {
   try {
     const selectors = await page.evaluate(({ x, y }) => {
-      function getSelector(element: Element): string {
+      function getSelector(element: any) {
         let selector = element.tagName.toLowerCase();
+
+        // Capture a single, relevant class if present
         if (element.className) {
           const classes = element.className.split(/\s+/).filter(Boolean);
           if (classes.length > 0) {
-            selector += '.' + classes.join('.');
+            // Use only the first class to avoid over-specificity
+            selector += '.' + classes[0];
           }
         }
+
         return selector;
       }
 
-      function getSelectorPath(element: Element): string {
+      function getSelectorPath(element: any) {
         const path = [];
         while (element && element !== document.body) {
-          path.unshift(getSelector(element));
-          element = element.parentElement!;
+          const selector = getSelector(element);
+          path.unshift(selector);
+          element = element.parentElement;
         }
         return path.join(' > ');
       }
 
-      const element = document.elementFromPoint(x, y) as Element;
+      const element = document.elementFromPoint(x, y);
       if (!element) return null;
 
       const generalSelector = getSelectorPath(element);
       return {
         generalSelector,
       };
-
     }, coordinates);
 
     return selectors || {};
@@ -769,6 +773,7 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
     return {};
   }
 };
+
 
 /**
  * Returns the first pair from the given workflow that contains the given selector
