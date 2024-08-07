@@ -6,6 +6,8 @@ interface ActionContextProps {
     getScreenshot: boolean;
     startGetText: () => void;
     stopGetText: () => void;
+    startGetList: () => void;
+    stopGetList: () => void;
     startGetScreenshot: () => void;
     stopGetScreenshot: () => void;
 }
@@ -20,11 +22,14 @@ export const ActionProvider = ({ children }: { children: ReactNode }) => {
     const startGetText = () => setGetText(true);
     const stopGetText = () => setGetText(false);
 
+    const startGetList = () => setGetList(true);
+    const stopGetList = () => setGetList(false);
+
     const startGetScreenshot = () => setGetScreenshot(true);
     const stopGetScreenshot = () => setGetScreenshot(false);
 
     return (
-        <ActionContext.Provider value={{ getText, getList, getScreenshot, startGetText, stopGetText, startGetScreenshot, stopGetScreenshot }}>
+        <ActionContext.Provider value={{ getText, getList, getScreenshot, startGetText, stopGetText, startGetList, stopGetList, startGetScreenshot, stopGetScreenshot }}>
             {children}
         </ActionContext.Provider>
     );
