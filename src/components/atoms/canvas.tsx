@@ -27,7 +27,7 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const { socket } = useSocketStore();
     const { setLastAction, lastAction } = useGlobalInfoStore();
-    const { getText, getScreenshot } = useActionContext();
+    const { getText } = useActionContext();
     const getTextRef = useRef(getText);
 
     const notifyLastAction = (action: string) => {
