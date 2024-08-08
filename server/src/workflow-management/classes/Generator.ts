@@ -509,6 +509,7 @@ export class WorkflowGenerator {
     if (rect) {
       this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo });
     }
+    // reset getList after usage
     this.getList = false;
   }
 
