@@ -47,6 +47,10 @@ export class WorkflowGenerator {
    */
   private socket: Socket;
 
+  /**
+   * getList is one of the custom actions from maxun-core.
+   * Used to provide appropriate selectors for the getList action.
+   */
   private getList: boolean = false;
 
   /**
