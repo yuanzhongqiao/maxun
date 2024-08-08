@@ -33,6 +33,7 @@ interface SelectorObject {
 interface BrowserStepsContextType {
     browserSteps: BrowserStep[];
     addTextStep: (label: string, data: string, selectorObj: SelectorObject) => void;
+    addListStep: (listSelector: string, fields: { [key: string]: TextStep }) => void
     addScreenshotStep: (fullPage: boolean) => void;
     deleteBrowserStep: (id: number) => void;
     updateBrowserTextStepLabel: (id: number, newLabel: string) => void;
