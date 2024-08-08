@@ -14,8 +14,14 @@ interface ScreenshotStep {
     fullPage: boolean;
 }
 
+interface ListStep {
+    id: number;
+    type: 'list';
+    listSelector: string;
+    fields: { [key: string]: TextStep };
+}
 
-type BrowserStep = TextStep | ScreenshotStep;
+type BrowserStep = TextStep | ScreenshotStep | ListStep;
 
 interface SelectorObject {
     selector: string;
