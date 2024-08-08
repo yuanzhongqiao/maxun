@@ -503,6 +503,7 @@ export class WorkflowGenerator {
     if (rect) {
       this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo });
     }
+    this.getList = false;
   }
 
   /**
