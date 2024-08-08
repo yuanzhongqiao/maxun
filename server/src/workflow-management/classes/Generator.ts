@@ -105,7 +105,6 @@ export class WorkflowGenerator {
     });
   }
 
-
   /**
    * Registers the event handlers for all generator-related events on the socket.
    * @param socket The socket used to communicate with the client.
