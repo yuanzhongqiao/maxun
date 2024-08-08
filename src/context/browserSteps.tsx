@@ -50,6 +50,13 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         ]);
     };
 
+    const addListStep = (listSelector: string, fields: { [key: string]: TextStep }) => {
+        setBrowserSteps(prevSteps => [
+            ...prevSteps,
+            { id: Date.now(), type: 'list', listSelector, fields }
+        ]);
+    };
+
     const addScreenshotStep = (fullPage: boolean) => {
         setBrowserSteps(prevSteps => [
             ...prevSteps,
