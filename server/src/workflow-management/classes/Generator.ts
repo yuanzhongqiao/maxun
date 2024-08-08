@@ -96,6 +96,9 @@ export class WorkflowGenerator {
     lastAction: '',
   }
 
+  /**
+   * Initializes the socket listeners for the generator.
+   */
   private initializeSocketListeners() {
     this.socket.on('setGetList', (data: { getList: boolean }) => {
       this.getList = data.getList;
