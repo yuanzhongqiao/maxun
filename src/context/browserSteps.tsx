@@ -80,6 +80,7 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         <BrowserStepsContext.Provider value={{
             browserSteps,
             addTextStep,
+            addListStep,
             addScreenshotStep,
             deleteBrowserStep,
             updateBrowserTextStepLabel,
