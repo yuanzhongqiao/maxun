@@ -114,7 +114,7 @@ export const BrowserWindow = () => {
                 clickY >= highlightRect.top &&
                 clickY <= highlightRect.bottom
             ) {
-                if (getText === true || getList === true) {
+                if (getText === true) {
                     const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '');
                     if (options.length > 1) {
                         setAttributeOptions(options);
