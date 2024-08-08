@@ -84,8 +84,11 @@ export const BrowserWindow = () => {
     }, [screenShot, canvasRef, socket, screencastHandler]);
 
     const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: ElementInfo | null }) => {
+    if (getList === true) {
+        socket?.emit('setGetList', { getList: true });
+      }
         setHighlighterData(data);
-    }, [highlighterData])
+    }, [highlighterData, getList, socket]);
 
     useEffect(() => {
         document.addEventListener('mousemove', onMouseMove, false);
