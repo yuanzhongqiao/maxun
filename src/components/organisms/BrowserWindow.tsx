@@ -48,7 +48,6 @@ export const BrowserWindow = () => {
     const [listSelector, setListSelector] = useState<string | null>(null);
     const [fields, setFields] = useState<Record<string, TextStep>>({});
 
-
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
     const { getText, getList } = useActionContext();
@@ -159,15 +158,12 @@ export const BrowserWindow = () => {
                                 attribute: 'innerText'
                             }
                         };
-                        //console.log('added new field:', newField)
 
                         setFields(prevFields => {
                             const updatedFields = {
                                 ...prevFields,
                                 [newField.id]: newField
                             };
-
-
                             return updatedFields;
                         });
 
@@ -181,7 +177,6 @@ export const BrowserWindow = () => {
             }
         }
     };
-
 
     const handleAttributeSelection = (attribute: string) => {
         if (selectedElement) {
