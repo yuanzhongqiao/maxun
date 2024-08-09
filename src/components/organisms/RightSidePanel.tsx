@@ -114,20 +114,6 @@ export const RightSidePanel = () => {
 }, [browserSteps]);
 
 
-    // const firstFieldKey = Object.keys(listStep.fields)[0];
-    // const firstField = listStep.fields[firstFieldKey];
-
-    // return {
-    //   listSelector: listStep.listSelector,
-    //   fields: {
-    //     [firstField.label]: {
-    //       selector: firstField.selectorObj.selector,
-    //       attribute: firstField.selectorObj.attribute || 'innerText'
-    //     }
-    //   }
-    // };
-  // }, [browserSteps]);
-
   const stopCaptureAndEmitGetListSettings = useCallback(() => {
      stopGetList();
      const settings = getListSettingsObject();
