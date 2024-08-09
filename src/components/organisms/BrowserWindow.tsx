@@ -105,12 +105,12 @@ export const BrowserWindow = () => {
         };
     }, [socket, onMouseMove]);
 
-    const handleClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (highlighterData && canvasRef?.current) {
             const canvasRect = canvasRef.current.getBoundingClientRect();
             const clickX = e.clientX - canvasRect.left;
             const clickY = e.clientY - canvasRect.top;
-    
+
             const highlightRect = highlighterData.rect;
             if (
                 clickX >= highlightRect.left &&
@@ -134,10 +134,11 @@ export const BrowserWindow = () => {
                             attribute: 'innerText'
                         });
                     }
-                }
-    
+                } 
+
                 if (getList === true && !listSelector) {
                     setListSelector(highlighterData.selector);
+                    //console.log('added list selector', highlighterData.selector);
                 } else if (getList === true && listSelector) {
                     const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '');
                     if (options.length > 1) {
@@ -148,9 +149,10 @@ export const BrowserWindow = () => {
                         });
                         setShowAttributeModal(true);
                     } else {
+                        // When setting fields, ensure it matches the TextStep structure
                         const newField: TextStep = {
                             id: Date.now(),
-                            type: 'text',
+                            type: 'text', // or another appropriate type
                             label: `label ${Object.keys(fields).length + 1}`,
                             data: highlighterData.elementInfo?.innerText || '',
                             selectorObj: {
@@ -159,49 +161,40 @@ export const BrowserWindow = () => {
                                 attribute: 'innerText'
                             }
                         };
-    
-                        // Use a callback to update the state after rendering
-                        setTimeout(() => {
-                            processFieldsUpdate(newField);
-                        }, 0);
+                        //console.log('added new field:', newField)
+
+                            setFields(prevFields => {
+                        const updatedFields = {
+                            ...prevFields,
+                            [newField.id]: newField
+                        };
+                        
+                        if (Object.keys(updatedFields).length > 0 && listSelector) {
+                            // console.log('listSelector before addListStep:', listSelector);
+                            // console.log('fields before addListStep:', updatedFields);
+
+                            addListStep(listSelector, updatedFields);
+                            console.log('Called addListStep with:', { listSelector, updatedFields });
+                        }
+                        
+                        return updatedFields;
+                    });
                     }
+
                 }
             }
         }
-    }, [highlighterData, canvasRef, getText, getList, listSelector, fields, addTextStep, addListStep]);
-    
-    const processFieldsUpdate = (newField: TextStep) => {
-        setFields(prevFields => {
-            const updatedFields = {
-                ...prevFields,
-                [newField.id]: newField
-            };
-    
-            if (Object.keys(updatedFields).length > 0 && listSelector) {
-                addListStep(listSelector, updatedFields);
-                console.log('Called addListStep with:', { listSelector, updatedFields })
-                // Reset the state after adding the step
-                setListSelector(null);
-                setFields({});
-            }
-    
-            return updatedFields;
-        });
     };
 
 
     // useEffect(() => {
-    // //      Save the ListStep after the fields are set
-    //      if (Object.keys(fields).length > 0 && listSelector) {
-    //          console.log('listSelector before addListStep:', listSelector);
-    //          console.log('fields before addListStep:', fields)
-    //                         //     ;
-    //          addListStep(listSelector, fields);
-    //          console.log('Called addListStep with:', { listSelector, fields })
-    //          // Reset after adding the step
-    //           //setListSelector(null);
-    // //         setFields({});
-    //      }
+    //     // Save the ListStep after the fields are set
+    //     if (Object.keys(fields).length > 0 && listSelector) {
+    //         addListStep(listSelector, fields);
+    //         // Reset after adding the step
+    //         setListSelector(null);
+    //         setFields({});
+    //     }
     // }, [fields, listSelector, addListStep]);
 
     const handleAttributeSelection = (attribute: string) => {
