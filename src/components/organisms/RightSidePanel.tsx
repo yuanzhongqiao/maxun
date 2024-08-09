@@ -80,6 +80,39 @@ export const RightSidePanel = () => {
     }
   }, [stopGetText, getTextSettingsObject, socket, browserSteps, confirmedTextSteps]);
 
+
+  const getListSettingsObject = useCallback(() => {
+    const listStep = browserSteps.find(step => step.type === 'list');
+    if (!listStep || listStep.type !== 'list' || Object.keys(listStep.fields).length === 0) return null;
+
+    const firstFieldKey = Object.keys(listStep.fields)[0];
+    const firstField = listStep.fields[firstFieldKey];
+
+    return {
+      listSelector: listStep.listSelector,
+      fields: {
+        [firstField.label]: {
+          selector: firstField.selectorObj.selector,
+          attribute: firstField.selectorObj.attribute || 'innerText'
+        }
+      }
+    };
+  }, [browserSteps]);
+
+  const stopCaptureAndEmitGetListSettings = useCallback(() => {
+    stopGetList();
+    const settings = getListSettingsObject();
+    if (settings) {
+      socket?.emit('action', { action: 'scrapeList', settings });
+    } else {
+      notify('error', 'Unable to create list settings. Make sure you have defined a field for the list.');
+    }
+  }, [stopGetList, getListSettingsObject, socket, notify]);
+
+  // const handleListFieldChange = (stepId: number, key: 'label' | 'data', value: string) => {
+  //   updateListStepField(stepId, key, value);
+  // };  
+
   const captureScreenshot = (fullPage: boolean) => {
     const screenshotSettings: ScreenshotSettings = {
       fullPage,
@@ -105,7 +138,7 @@ export const RightSidePanel = () => {
        {getList &&
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
-              <Button variant="outlined" onClick={() => {}}>Confirm</Button>
+              <Button variant="outlined" onClick={stopCaptureAndEmitGetListSettings}>Confirm</Button>
               <Button variant="outlined" color="error" onClick={stopGetList}>Discard</Button>
             </Box>
           </>
@@ -176,13 +209,63 @@ export const RightSidePanel = () => {
                   )}
                 </>
               ) : (
-                step.type === 'screenshot' && (
+                step.type === 'screenshot' ? (
                   <Box display="flex" alignItems="center">
                     <DocumentScannerIcon sx={{ mr: 1 }} />
                     <Typography>
                       {`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}
                     </Typography>
                   </Box>
+                ) : (
+                  step.type === 'list' && Object.keys(step.fields).length > 0 && (
+                    <>
+                      <TextField
+                        label="List Selector"
+                        value={step.listSelector || ''}
+                        fullWidth
+                        margin="normal"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <EditIcon />
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                      {Object.entries(step.fields).map(([key, field]) => (
+                        <React.Fragment key={key}>
+                          <TextField
+                            label="Field Label"
+                            value={field.label || ''}
+                            onChange={() => {}}
+                            fullWidth
+                            margin="normal"
+                            InputProps={{
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <EditIcon />
+                                </InputAdornment>
+                              )
+                            }}
+                          />
+                          <TextField
+                            label="Field Selector"
+                            value={field.data || ''}
+                            fullWidth
+                            margin="normal"
+                            InputProps={{
+                              readOnly: true,
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <EditIcon />
+                                </InputAdornment>
+                              )
+                            }}
+                          />
+                        </React.Fragment>
+                      ))}
+                    </>
+                  )
                 )
               )
             }
