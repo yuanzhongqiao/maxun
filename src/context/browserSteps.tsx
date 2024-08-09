@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 
-interface TextStep {
+export interface TextStep {
     id: number;
     type: 'text';
     label: string;
