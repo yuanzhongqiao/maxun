@@ -193,16 +193,6 @@ export const BrowserWindow = () => {
     };
 
 
-    // useEffect(() => {
-    //     // Save the ListStep after the fields are set
-    //     if (Object.keys(fields).length > 0 && listSelector) {
-    //         addListStep(listSelector, fields);
-    //         // Reset after adding the step
-    //         setListSelector(null);
-    //         setFields({});
-    //     }
-    // }, [fields, listSelector, addListStep]);
-
     const handleAttributeSelection = (attribute: string) => {
         if (selectedElement) {
             let data = '';
