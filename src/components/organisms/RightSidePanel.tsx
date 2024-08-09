@@ -83,43 +83,43 @@ export const RightSidePanel = () => {
 
 
   const getListSettingsObject = useCallback(() => {
-    const settings: Record<string, { listSelector: string; fields: Record<string, { selector: string; tag?: string; [key: string]: any }> }> = {};
+    const settings: Record<string, { listSelector: string; fields: Record<string, { selector: string; tag?: string;[key: string]: any }> }> = {};
 
     browserSteps.forEach(step => {
-        if (step.type === 'list' && step.listSelector && Object.keys(step.fields).length > 0) {
-          const fields: Record<string, { selector: string; tag?: string; [key: string]: any }> = {};
-          Object.entries(step.fields).forEach(([label, field]) => {
-                if (field.selectorObj?.selector) {
-                    fields[label] = {
-                        selector: field.selectorObj.selector,
-                        tag: field.selectorObj.tag,
-                        attribute: field.selectorObj.attribute
-                    };
-                }
-            });
+      if (step.type === 'list' && step.listSelector && Object.keys(step.fields).length > 0) {
+        const fields: Record<string, { selector: string; tag?: string;[key: string]: any }> = {};
+        Object.entries(step.fields).forEach(([label, field]) => {
+          if (field.selectorObj?.selector) {
+            fields[label] = {
+              selector: field.selectorObj.selector,
+              tag: field.selectorObj.tag,
+              attribute: field.selectorObj.attribute
+            };
+          }
+        });
 
-            settings[step.listSelector] = {
-              listSelector: step.listSelector,
-              fields: fields
-          };
-        }
+        settings[step.listSelector] = {
+          listSelector: step.listSelector,
+          fields: fields
+        };
+      }
     });
 
     console.log(`Setting LIST:`, settings)
 
     return settings;
-}, [browserSteps]);
+  }, [browserSteps]);
 
 
   const stopCaptureAndEmitGetListSettings = useCallback(() => {
-     stopGetList();
-     const settings = getListSettingsObject();
-     if (settings) {
-       socket?.emit('action', { action: 'scrapeList', settings });
+    stopGetList();
+    const settings = getListSettingsObject();
+    if (settings) {
+      socket?.emit('action', { action: 'scrapeList', settings });
     } else {
-       notify('error', 'Unable to create list settings. Make sure you have defined a field for the list.');
-     }
-   }, [stopGetList, getListSettingsObject, socket, notify]);
+      notify('error', 'Unable to create list settings. Make sure you have defined a field for the list.');
+    }
+  }, [stopGetList, getListSettingsObject, socket, notify]);
 
   // const handleListFieldChange = (stepId: number, key: 'label' | 'data', value: string) => {
   //   updateListStepField(stepId, key, value);
