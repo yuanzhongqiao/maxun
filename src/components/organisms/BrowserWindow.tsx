@@ -5,7 +5,7 @@ import { useBrowserDimensionsStore } from "../../context/browserDimensions";
 import { Highlighter } from "../atoms/Highlighter";
 import { GenericModal } from '../atoms/GenericModal';
 import { useActionContext } from '../../context/browserActions';
-import { useBrowserSteps } from '../../context/browserSteps';
+import { useBrowserSteps, TextStep } from '../../context/browserSteps';
 
 interface ElementInfo {
     tagName: string;
@@ -45,10 +45,14 @@ export const BrowserWindow = () => {
     const [attributeOptions, setAttributeOptions] = useState<AttributeOption[]>([]);
     const [selectedElement, setSelectedElement] = useState<{ selector: string, info: ElementInfo | null } | null>(null);
 
+    const [listSelector, setListSelector] = useState<string | null>(null);
+    const [fields, setFields] = useState<Record<string, TextStep>>({});
+
+
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
     const { getText, getList } = useActionContext();
-    const { addTextStep } = useBrowserSteps();
+    const { addTextStep, addListStep } = useBrowserSteps();
 
     const onMouseMove = (e: MouseEvent) => {
         if (canvasRef && canvasRef.current && highlighterData) {
@@ -130,10 +134,68 @@ export const BrowserWindow = () => {
                             attribute: 'innerText'
                         });
                     }
+                } 
+
+                if (getList === true && !listSelector) {
+                    setListSelector(highlighterData.selector);
+                    //console.log('added list selector', highlighterData.selector);
+                } else if (getList === true && listSelector) {
+                    const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '');
+                    if (options.length > 1) {
+                        setAttributeOptions(options);
+                        setSelectedElement({
+                            selector: highlighterData.selector,
+                            info: highlighterData.elementInfo
+                        });
+                        setShowAttributeModal(true);
+                    } else {
+                        // When setting fields, ensure it matches the TextStep structure
+                        const newField: TextStep = {
+                            id: Date.now(),
+                            type: 'text', // or another appropriate type
+                            label: `label ${Object.keys(fields).length + 1}`,
+                            data: highlighterData.elementInfo?.innerText || '',
+                            selectorObj: {
+                                selector: highlighterData.selector,
+                                tag: highlighterData.elementInfo?.tagName,
+                                attribute: 'innerText'
+                            }
+                        };
+                        //console.log('added new field:', newField)
+
+                        setFields(prevFields => {
+                            const updatedFields = {
+                                ...prevFields,
+                                [newField.id]: newField
+                            };
+                            
+                            if (Object.keys(updatedFields).length > 0 && listSelector) {
+                                console.log('listSelector before addListStep:', listSelector);
+                                console.log('fields before addListStep:', updatedFields);
+    
+                                addListStep(listSelector, updatedFields);
+                                console.log('Called addListStep with:', { listSelector, updatedFields });
+                            }
+                            
+                            return updatedFields;
+                        });
+                    }
+
                 }
             }
         }
     };
+
+
+    // useEffect(() => {
+    //     // Save the ListStep after the fields are set
+    //     if (Object.keys(fields).length > 0 && listSelector) {
+    //         addListStep(listSelector, fields);
+    //         // Reset after adding the step
+    //         setListSelector(null);
+    //         setFields({});
+    //     }
+    // }, [fields, listSelector, addListStep]);
 
     const handleAttributeSelection = (attribute: string) => {
         if (selectedElement) {
@@ -149,7 +211,7 @@ export const BrowserWindow = () => {
                     data = selectedElement.info?.innerText || '';
             }
             {
-                if (getText === true || getList === true) {
+                if (getText === true) {
                     addTextStep('', data, {
                         selector: selectedElement.selector,
                         tag: selectedElement.info?.tagName,
