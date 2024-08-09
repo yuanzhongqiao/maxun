@@ -8,7 +8,7 @@ import { SimpleBox } from "../atoms/Box";
 import Typography from "@mui/material/Typography";
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { useActionContext } from '../../context/browserActions';
-import { useBrowserSteps } from '../../context/browserSteps';
+import { useBrowserSteps, ListStep, TextStep, SelectorObject } from '../../context/browserSteps';
 import { useSocketStore } from '../../context/socket';
 import { ScreenshotSettings } from '../../shared/types';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -62,6 +62,7 @@ export const RightSidePanel = () => {
         settings[step.label] = step.selectorObj;
       }
     });
+    console.log(`seetings text:`, settings)
     return settings;
   }, [browserSteps]);
 
@@ -82,32 +83,60 @@ export const RightSidePanel = () => {
 
 
   const getListSettingsObject = useCallback(() => {
-    const listStep = browserSteps.find(step => step.type === 'list');
-    if (!listStep || listStep.type !== 'list' || Object.keys(listStep.fields).length === 0) return null;
+    const settings: Record<string, { listSelector: string; fields: Record<string, { selector: string; tag?: string; [key: string]: any }> }> = {};
 
-    const firstFieldKey = Object.keys(listStep.fields)[0];
-    const firstField = listStep.fields[firstFieldKey];
+    browserSteps.forEach(step => {
+        if (step.type === 'list' && step.listSelector && Object.keys(step.fields).length > 0) {
+          const fields: Record<string, { selector: string; tag?: string; [key: string]: any }> = {};
+          Object.entries(step.fields).forEach(([label, field]) => {
+                if (field.selectorObj?.selector) {
+                    fields[label] = {
+                        selector: field.selectorObj.selector,
+                        tag: field.selectorObj.tag,
+                        attribute: field.selectorObj.attribute
+                    };
+                }
+            });
 
-    return {
-      listSelector: listStep.listSelector,
-      fields: {
-        [firstField.label]: {
-          selector: firstField.selectorObj.selector,
-          attribute: firstField.selectorObj.attribute || 'innerText'
+            // settings.listSelector = step.listSelector;
+            // settings.fields = fields;
+
+            settings[step.listSelector] = {
+              listSelector: step.listSelector,
+              fields: fields
+          };
         }
-      }
-    };
-  }, [browserSteps]);
+    });
 
-  const stopCaptureAndEmitGetListSettings = useCallback(() => {
-    stopGetList();
-    const settings = getListSettingsObject();
-    if (settings) {
-      socket?.emit('action', { action: 'scrapeList', settings });
-    } else {
-      notify('error', 'Unable to create list settings. Make sure you have defined a field for the list.');
-    }
-  }, [stopGetList, getListSettingsObject, socket, notify]);
+    console.log(`Setting LIST:`, settings)
+
+    return settings;
+}, [browserSteps]);
+
+
+    // const firstFieldKey = Object.keys(listStep.fields)[0];
+    // const firstField = listStep.fields[firstFieldKey];
+
+    // return {
+    //   listSelector: listStep.listSelector,
+    //   fields: {
+    //     [firstField.label]: {
+    //       selector: firstField.selectorObj.selector,
+    //       attribute: firstField.selectorObj.attribute || 'innerText'
+    //     }
+    //   }
+    // };
+  // }, [browserSteps]);
+
+  // const stopCaptureAndEmitGetListSettings = useCallback(() => {
+  //   stopGetList();
+  //   const settings = getListSettingsObject();
+  //   if (settings) {
+  //     socket?.emit('action', { action: 'scrapeList', settings });
+  //   } else {
+  //     notify('error', 'Unable to create list settings. Make sure you have defined a field for the list.');
+  //   }
+  // }, [stopGetList, getListSettingsObject, socket, notify]);
 
   // const handleListFieldChange = (stepId: number, key: 'label' | 'data', value: string) => {
   //   updateListStepField(stepId, key, value);
@@ -138,7 +167,7 @@ export const RightSidePanel = () => {
         {getList &&
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
-              <Button variant="outlined" onClick={stopCaptureAndEmitGetListSettings}>Confirm</Button>
+              <Button variant="outlined" onClick={getListSettingsObject}>Confirm</Button>
               <Button variant="outlined" color="error" onClick={stopGetList}>Discard</Button>
             </Box>
           </>
