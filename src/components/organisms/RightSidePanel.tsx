@@ -128,15 +128,15 @@ export const RightSidePanel = () => {
     // };
   // }, [browserSteps]);
 
-  // const stopCaptureAndEmitGetListSettings = useCallback(() => {
-  //   stopGetList();
-  //   const settings = getListSettingsObject();
-  //   if (settings) {
-  //     socket?.emit('action', { action: 'scrapeList', settings });
-  //   } else {
-  //     notify('error', 'Unable to create list settings. Make sure you have defined a field for the list.');
-  //   }
-  // }, [stopGetList, getListSettingsObject, socket, notify]);
+  const stopCaptureAndEmitGetListSettings = useCallback(() => {
+     stopGetList();
+     const settings = getListSettingsObject();
+     if (settings) {
+       socket?.emit('action', { action: 'scrapeList', settings });
+    } else {
+       notify('error', 'Unable to create list settings. Make sure you have defined a field for the list.');
+     }
+   }, [stopGetList, getListSettingsObject, socket, notify]);
 
   // const handleListFieldChange = (stepId: number, key: 'label' | 'data', value: string) => {
   //   updateListStepField(stepId, key, value);
@@ -167,7 +167,7 @@ export const RightSidePanel = () => {
         {getList &&
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
-              <Button variant="outlined" onClick={getListSettingsObject}>Confirm</Button>
+              <Button variant="outlined" onClick={stopCaptureAndEmitGetListSettings}>Confirm</Button>
               <Button variant="outlined" color="error" onClick={stopGetList}>Discard</Button>
             </Box>
           </>
