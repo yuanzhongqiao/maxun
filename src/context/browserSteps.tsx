@@ -23,7 +23,7 @@ interface ListStep {
 
 type BrowserStep = TextStep | ScreenshotStep | ListStep;
 
-interface SelectorObject {
+export interface SelectorObject {
     selector: string;
     tag?: string;
     attribute?: string;
@@ -76,6 +76,14 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
             )
         );
     };
+
+    const updateListStep = (id: number, updatedListStep: ListStep) => {
+        setBrowserSteps(prevSteps =>
+          prevSteps.map(step =>
+            step.id === id && step.type === 'list' ? updatedListStep : step
+          )
+        );
+      };
 
     return (
         <BrowserStepsContext.Provider value={{
