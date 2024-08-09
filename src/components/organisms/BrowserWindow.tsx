@@ -134,7 +134,7 @@ export const BrowserWindow = () => {
                             attribute: 'innerText'
                         });
                     }
-                } 
+                }
 
                 if (getList === true && !listSelector) {
                     setListSelector(highlighterData.selector);
@@ -147,10 +147,10 @@ export const BrowserWindow = () => {
                             info: highlighterData.elementInfo
                         });
                         setShowAttributeModal(true);
-                    } else 
+                    } else {
                         const newField: TextStep = {
                             id: Date.now(),
-                            type: 'text', 
+                            type: 'text',
                             label: `label ${Object.keys(fields).length + 1}`,
                             data: highlighterData.elementInfo?.innerText || '',
                             selectorObj: {
@@ -161,20 +161,20 @@ export const BrowserWindow = () => {
                         };
                         //console.log('added new field:', newField)
 
-                            setFields(prevFields => {
-                        const updatedFields = {
-                            ...prevFields,
-                            [newField.id]: newField
-                        };
-                        
-                        
-                        return updatedFields;
-                    });
+                        setFields(prevFields => {
+                            const updatedFields = {
+                                ...prevFields,
+                                [newField.id]: newField
+                            };
 
-                if (listSelector) {
-                    addListStep(listSelector, {...fields, [newField.id]: newField});
-                    console.log('Called addListStep with:', { listSelector, updatedFields: {...fields, [newField.id]: newField} });
-                }
+
+                            return updatedFields;
+                        });
+
+                        if (listSelector) {
+                            addListStep(listSelector, { ...fields, [newField.id]: newField });
+                            console.log('Called addListStep with:', { listSelector, updatedFields: { ...fields, [newField.id]: newField } });
+                        }
                     }
 
                 }
