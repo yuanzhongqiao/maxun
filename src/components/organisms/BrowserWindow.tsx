@@ -169,16 +169,22 @@ export const BrowserWindow = () => {
                             [newField.id]: newField
                         };
                         
-                        if (Object.keys(updatedFields).length > 0 && listSelector) {
-                            // console.log('listSelector before addListStep:', listSelector);
-                            // console.log('fields before addListStep:', updatedFields);
+                        // if (Object.keys(updatedFields).length > 0 && listSelector) {
+                        //     // console.log('listSelector before addListStep:', listSelector);
+                        //     // console.log('fields before addListStep:', updatedFields);
 
-                            addListStep(listSelector, updatedFields);
-                            console.log('Called addListStep with:', { listSelector, updatedFields });
-                        }
+                        //     addListStep(listSelector, updatedFields);
+                        //     console.log('Called addListStep with:', { listSelector, updatedFields });
+                        // }
                         
                         return updatedFields;
                     });
+
+                    // Call addListStep outside of setFields
+                if (listSelector) {
+                    addListStep(listSelector, {...fields, [newField.id]: newField});
+                    console.log('Called addListStep with:', { listSelector, updatedFields: {...fields, [newField.id]: newField} });
+                }
                     }
 
                 }
