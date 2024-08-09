@@ -98,9 +98,6 @@ export const RightSidePanel = () => {
                 }
             });
 
-            // settings.listSelector = step.listSelector;
-            // settings.fields = fields;
-
             settings[step.listSelector] = {
               listSelector: step.listSelector,
               fields: fields
