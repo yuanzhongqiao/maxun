@@ -62,7 +62,6 @@ export const RightSidePanel = () => {
         settings[step.label] = step.selectorObj;
       }
     });
-    console.log(`seetings text:`, settings)
     return settings;
   }, [browserSteps]);
 
@@ -104,8 +103,6 @@ export const RightSidePanel = () => {
         };
       }
     });
-
-    console.log(`Setting LIST:`, settings)
 
     return settings;
   }, [browserSteps]);
