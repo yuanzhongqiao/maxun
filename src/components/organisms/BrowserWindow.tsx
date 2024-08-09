@@ -138,7 +138,6 @@ export const BrowserWindow = () => {
 
                 if (getList === true && !listSelector) {
                     setListSelector(highlighterData.selector);
-                    //console.log('added list selector', highlighterData.selector);
                 } else if (getList === true && listSelector) {
                     const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '');
                     if (options.length > 1) {
@@ -148,8 +147,7 @@ export const BrowserWindow = () => {
                             info: highlighterData.elementInfo
                         });
                         setShowAttributeModal(true);
-                    } else {
-                        // When setting fields, ensure it matches the TextStep structure
+                    } else 
                         const newField: TextStep = {
                             id: Date.now(),
                             type: 'text', 
