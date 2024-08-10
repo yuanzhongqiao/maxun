@@ -198,6 +198,31 @@ export const BrowserWindow = () => {
                         attribute: attribute
                     });
                 }
+                if (getList === true) {
+                    const newField: TextStep = {
+                        id: Date.now(),
+                        type: 'text',
+                        label: `Label ${Object.keys(fields).length + 1}`,
+                        data: selectedElement.info?.innerText || '',
+                        selectorObj: {
+                            selector: selectedElement.selector,
+                            tag: selectedElement.info?.tagName,
+                            attribute: 'innerText'
+                        }
+                    };
+
+                    setFields(prevFields => {
+                        const updatedFields = {
+                            ...prevFields,
+                            [newField.label]: newField
+                        };
+                        return updatedFields;
+                    });
+
+                    if (listSelector) {
+                        addListStep(listSelector, { ...fields, [newField.label]: newField });
+                    }
+                }
             }
         }
         setShowAttributeModal(false);
