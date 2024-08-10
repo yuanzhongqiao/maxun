@@ -177,7 +177,7 @@ export const RightSidePanel = () => {
         {browserSteps.map(step => (
           <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }}>
             {
-              step.type === 'text' ? (
+              step.type === 'text' && (
                 <>
                   <TextField
                     label="Label"
@@ -217,64 +217,55 @@ export const RightSidePanel = () => {
                     </Box>
                   )}
                 </>
-              ) : (
-                step.type === 'screenshot' ? (
-                  <Box display="flex" alignItems="center">
-                    <DocumentScannerIcon sx={{ mr: 1 }} />
-                    <Typography>
-                      {`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}
-                    </Typography>
+              )}
+              {step.type === 'screenshot' && (
+              <Box display="flex" alignItems="center">
+                <DocumentScannerIcon sx={{ mr: 1 }} />
+                <Typography>
+                  {`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}
+                </Typography>
+              </Box>
+              )}
+                  {step.type === 'list' && (
+              <>
+                <Typography>List Selected Successfully</Typography>
+                {Object.entries(step.fields).map(([key, field]) => (
+                  <Box key={key}>
+                    <TextField
+                      label="Field Label"
+                      value={field.label || ''}
+                      onChange={() => {}}
+                      fullWidth
+                      margin="normal"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <EditIcon />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                    <TextField
+                      label="Field Data"
+                      value={field.data || ''}
+                      fullWidth
+                      margin="normal"
+                      InputProps={{
+                        readOnly: true,
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <TextFieldsIcon />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
                   </Box>
-                ) : (
-                  step.type === 'list' && step.listSelector && (
-                    <>
-                      <Typography>
-                      List Selected Successfully
-                    </Typography>
-                      {Object.keys(step.fields).length > 0 && Object.entries(step.fields).map(([key, field]) => (
-                        <React.Fragment key={key}>
-                          <TextField
-                            label="Field Label"
-                            value={field.label || ''}
-                            onChange={() => { }}
-                            fullWidth
-                            margin="normal"
-                            InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  <EditIcon />
-                                </InputAdornment>
-                              )
-                            }}
-                          />
-                          <TextField
-                            label="Field Data"
-                            value={field.data || ''}
-                            fullWidth
-                            margin="normal"
-                            InputProps={{
-                              readOnly: true,
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  <TextFieldsIcon />
-                                </InputAdornment>
-                              )
-                            }}
-                          />
-                        </React.Fragment>
-                      ))}
-                    </>
-                  )
-                )
-              )
-            }
+                ))}
+              </>
+            )}
           </Box>
         ))}
       </Box>
     </Paper>
   );
 };
-
-export const ActionDescription = styled.p`
-  margin-left: 15px;
-`;
