@@ -218,15 +218,15 @@ export const RightSidePanel = () => {
                   )}
                 </>
               )}
-              {step.type === 'screenshot' && (
+            {step.type === 'screenshot' && (
               <Box display="flex" alignItems="center">
                 <DocumentScannerIcon sx={{ mr: 1 }} />
                 <Typography>
                   {`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}
                 </Typography>
               </Box>
-              )}
-                  {step.type === 'list' && (
+            )}
+            {step.type === 'list' && (
               <>
                 <Typography>List Selected Successfully</Typography>
                 {Object.entries(step.fields).map(([key, field]) => (
@@ -234,7 +234,7 @@ export const RightSidePanel = () => {
                     <TextField
                       label="Field Label"
                       value={field.label || ''}
-                      onChange={() => {}}
+                      onChange={() => { }}
                       fullWidth
                       margin="normal"
                       InputProps={{
