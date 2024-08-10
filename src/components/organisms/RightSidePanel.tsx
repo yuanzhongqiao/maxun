@@ -258,7 +258,7 @@ export const RightSidePanel = () => {
                             }}
                           />
                           <TextField
-                            label="Field Selector"
+                            label="Field Data"
                             value={field.data || ''}
                             fullWidth
                             margin="normal"
