@@ -256,7 +256,7 @@ export const RightSidePanel = () => {
                               readOnly: true,
                               startAdornment: (
                                 <InputAdornment position="start">
-                                  <EditIcon />
+                                  <TextFieldsIcon />
                                 </InputAdornment>
                               )
                             }}
