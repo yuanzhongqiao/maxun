@@ -162,7 +162,7 @@ export const BrowserWindow = () => {
                         setFields(prevFields => {
                             const updatedFields = {
                                 ...prevFields,
-                                [newField.id]: newField
+                                [newField.label]: newField
                             };
                             return updatedFields;
                         });
