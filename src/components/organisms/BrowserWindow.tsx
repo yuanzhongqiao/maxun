@@ -169,7 +169,6 @@ export const BrowserWindow = () => {
 
                         if (listSelector) {
                             addListStep(listSelector, { ...fields, [newField.label]: newField });
-                            console.log('Called addListStep with:', { listSelector, updatedFields: { ...fields, [newField.id]: newField } });
                         }
                     }
 
