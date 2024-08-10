@@ -228,19 +228,9 @@ export const RightSidePanel = () => {
                 ) : (
                   step.type === 'list' && Object.keys(step.fields).length > 0 && (
                     <>
-                      <TextField
-                        label="List Selector"
-                        value={step.listSelector || ''}
-                        fullWidth
-                        margin="normal"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <EditIcon />
-                            </InputAdornment>
-                          )
-                        }}
-                      />
+                      <Typography>
+                      List Selected Successfully
+                    </Typography>
                       {Object.entries(step.fields).map(([key, field]) => (
                         <React.Fragment key={key}>
                           <TextField
