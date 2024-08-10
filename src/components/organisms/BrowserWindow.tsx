@@ -207,7 +207,7 @@ export const BrowserWindow = () => {
                         selectorObj: {
                             selector: selectedElement.selector,
                             tag: selectedElement.info?.tagName,
-                            attribute: 'innerText'
+                            attribute: attribute
                         }
                     };
 
