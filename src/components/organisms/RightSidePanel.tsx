@@ -231,7 +231,7 @@ export const RightSidePanel = () => {
                       <Typography>
                       List Selected Successfully
                     </Typography>
-                      {Object.entries(step.fields).map(([key, field]) => (
+                      {Object.keys(step.fields).length > 0 && Object.entries(step.fields).map(([key, field]) => (
                         <React.Fragment key={key}>
                           <TextField
                             label="Field Label"
