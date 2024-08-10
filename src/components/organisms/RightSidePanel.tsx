@@ -226,7 +226,7 @@ export const RightSidePanel = () => {
                     </Typography>
                   </Box>
                 ) : (
-                  step.type === 'list' && (
+                  step.type === 'list' && step.listSelector && (
                     <>
                       <Typography>
                       List Selected Successfully
