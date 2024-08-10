@@ -82,7 +82,7 @@ export const RightSidePanel = () => {
 
 
   const getListSettingsObject = useCallback(() => {
-    const settings: Record<string, { listSelector: string; fields: Record<string, { selector: string; tag?: string;[key: string]: any }> }> = {};
+    let settings: { listSelector?: string; fields?: Record<string, { selector: string; tag?: string; [key: string]: any }> } = {};
 
     browserSteps.forEach(step => {
       if (step.type === 'list' && step.listSelector && Object.keys(step.fields).length > 0) {
@@ -97,10 +97,11 @@ export const RightSidePanel = () => {
           }
         });
 
-        settings[step.listSelector] = {
+        settings = {
           listSelector: step.listSelector,
           fields: fields
-        };
+      };
+
       }
     });
 
