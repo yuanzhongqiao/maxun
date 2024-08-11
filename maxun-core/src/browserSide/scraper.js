@@ -126,6 +126,25 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
   return out;
 }
 
+async function scrollDownToLoadMore(selector, limit) {
+  let previousHeight = 0;
+  let itemsLoaded = 0;
+
+  while (itemsLoaded < limit) {
+    window.scrollBy(0, window.innerHeight);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const currentHeight = document.body.scrollHeight;
+
+    if (currentHeight === previousHeight) {
+      break; // No more items to load
+    }
+
+    previousHeight = currentHeight;
+    itemsLoaded += document.querySelectorAll(selector).length;
+  }
+}
+
 /**
  * Returns a "scrape" result from the current page.
  * @returns {Array<Object>} *Curated* array of scraped information (with sparse rows removed)
@@ -250,7 +269,6 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
     ));
   }
 
-
   /**
  * Scrapes multiple lists of similar items based on a template item.
  * @param {Object} config - Configuration object
@@ -260,10 +278,32 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
  * @param {boolean} [config.flexible=false] - Whether to use flexible matching for field selectors
  * @returns {Array.<Array.<Object>>} Array of arrays of scraped items, one sub-array per list
  */
-  window.scrapeList = function (config) {
-    const { listSelector, fields, limit, flexible = false } = config;
+  window.scrapeList = async function (config) {
+    const { listSelector, fields, limit, flexible = false, pagination  } = config;
 
     const lists = Array.from(document.querySelectorAll(listSelector));
+
+    if (pagination) {
+      const { type, selector } = pagination;
+  
+      switch (type) {
+        case 'scrollDown':
+          await scrollDownToLoadMore(pagination.selector, config.limit);
+          break;
+        // case 'scrollUp':
+        //   await scrollUpToLoadMore(limit);
+        //   break;
+        // case 'clickNext':
+        //   if (selector) await clickNextToNavigate(selector, limit);
+        //   break;
+        // case 'clickLoadMore':
+        //   if (selector) await clickLoadMore(selector, limit);
+        //   break;
+        default:
+          // No pagination or different handling
+          break;
+      }
+    }
 
     return lists.map(list => {
       const listItems = Array.from(list.children);
