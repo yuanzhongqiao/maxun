@@ -14,7 +14,7 @@ interface ScreenshotStep {
     fullPage: boolean;
 }
 
-interface ListStep {
+export interface ListStep {
     id: number;
     type: 'list';
     listSelector: string;
@@ -51,12 +51,31 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         ]);
     };
 
-    const addListStep = (listSelector: string, fields: { [key: string]: TextStep }) => {
-        setBrowserSteps(prevSteps => [
-            ...prevSteps,
-            { id: Date.now(), type: 'list', listSelector, fields }
-        ]);
+    const addListStep = (listSelector: string, newFields: { [key: string]: TextStep }) => {
+        setBrowserSteps(prevSteps => {
+            const existingListStepIndex = prevSteps.findIndex(
+                step => step.type === 'list' && step.listSelector === listSelector
+            );
+    
+            if (existingListStepIndex !== -1) {
+                // Update the existing ListStep with new fields
+                const updatedSteps = [...prevSteps];
+                const existingListStep = updatedSteps[existingListStepIndex] as ListStep;
+                updatedSteps[existingListStepIndex] = {
+                    ...existingListStep,
+                    fields: { ...existingListStep.fields, ...newFields }
+                };
+                return updatedSteps;
+            } else {
+                // Create a new ListStep
+                return [
+                    ...prevSteps,
+                    { id: Date.now(), type: 'list', listSelector, fields: newFields }
+                ];
+            }
+        });
     };
+    
 
     const addScreenshotStep = (fullPage: boolean) => {
         setBrowserSteps(prevSteps => [
@@ -76,14 +95,6 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
             )
         );
     };
-
-    const updateListStep = (id: number, updatedListStep: ListStep) => {
-        setBrowserSteps(prevSteps =>
-          prevSteps.map(step =>
-            step.id === id && step.type === 'list' ? updatedListStep : step
-          )
-        );
-      };
 
     return (
         <BrowserStepsContext.Provider value={{
