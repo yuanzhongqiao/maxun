@@ -13,6 +13,11 @@ import { useSocketStore } from '../../context/socket';
 import { ScreenshotSettings } from '../../shared/types';
 import InputAdornment from '@mui/material/InputAdornment';
 
+// TODO: 
+// 1. Handle field label update 
+// 2. Handle field deletion | confirmation
+// 3. Add description for each browser step
+// 4. Handle non custom action steps
 
 export const RightSidePanel = () => {
   const [textLabels, setTextLabels] = useState<{ [id: number]: string }>({});
