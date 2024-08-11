@@ -317,15 +317,18 @@ async function scrollDownToLoadMore(selector, limit) {
         for (const [fieldName, fieldConfig] of Object.entries(fields)) {
           let element;
 
-          if (flexible) {
-            // try multiple strategies to find the element
-            element = item.querySelector(fieldConfig.selector) ||
-              item.querySelector(`[class*="${fieldConfig.selector}"]`) ||
-              Array.from(item.querySelectorAll('*'))
-                .find(el => el.textContent.trim() === fieldConfig.selector);
-          } else {
-            element = item.querySelector(fieldConfig.selector);
-          }
+          // if (flexible) {
+          //   // try multiple strategies to find the element
+          //   element = item.querySelector(fieldConfig.selector) ||
+          //     item.querySelector(`[class*="${fieldConfig.selector}"]`) ||
+          //     Array.from(item.querySelectorAll('*'))
+          //       .find(el => el.textContent.trim() === fieldConfig.selector);
+          // } else {
+          element = item.querySelector(fieldConfig.selector);
+
+          console.debug('Element:', element);
+
+          // }
 
           if (element) {
             switch (fieldConfig.attribute) {
@@ -344,7 +347,8 @@ async function scrollDownToLoadMore(selector, limit) {
                 break;
             }
           } else {
-            scrapedItem[fieldName] = null;
+            // send a message that says it failed
+            scrapedItem[fieldName] = `Failed to scrape ${fieldName}`;
           }
         }
 
@@ -352,5 +356,52 @@ async function scrollDownToLoadMore(selector, limit) {
       });
     });
   };
+
+
+  /**
+ * Gets all children of the elements matching the listSelector,
+ * returning their CSS selectors and innerText.
+ * @param {string} listSelector - Selector for the list container(s)
+ * @returns {Array.<Object>} Array of objects, each containing the CSS selector and innerText of the children
+ */
+window.scrapeListAuto = function (listSelector) {
+  const lists = Array.from(document.querySelectorAll(listSelector));
+  
+  const results = [];
+
+  lists.forEach(list => {
+    const children = Array.from(list.children);
+    
+    children.forEach(child => {
+      const selectors = [];
+      let element = child;
+      
+      // Traverse up to gather the CSS selector for the element
+      while (element && element !== document) {
+        let selector = element.nodeName.toLowerCase();
+        if (element.id) {
+          selector += `#${element.id}`;
+          selectors.push(selector);
+          break;
+        } else {
+          const className = element.className.trim().split(/\s+/).join('.');
+          if (className) {
+            selector += `.${className}`;
+          }
+          selectors.push(selector);
+          element = element.parentElement;
+        }
+      }
+      
+      results.push({
+        selector: selectors.reverse().join(' > '),
+        innerText: child.innerText.trim()
+      });
+    });
+  });
+
+  return results;
+};
+
 
 })(window);
