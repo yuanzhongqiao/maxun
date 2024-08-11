@@ -56,7 +56,6 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
             const existingListStepIndex = prevSteps.findIndex(
                 step => step.type === 'list' && step.listSelector === listSelector
             );
-    
             if (existingListStepIndex !== -1) {
                 // Update the existing ListStep with new fields
                 const updatedSteps = [...prevSteps];
@@ -75,7 +74,7 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
             }
         });
     };
-    
+
 
     const addScreenshotStep = (fullPage: boolean) => {
         setBrowserSteps(prevSteps => [
