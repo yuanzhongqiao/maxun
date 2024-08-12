@@ -316,14 +316,6 @@ async function scrollDownToLoadMore(selector, limit) {
 
         for (const [fieldName, fieldConfig] of Object.entries(fields)) {
           let element;
-
-          // if (flexible) {
-          //   // try multiple strategies to find the element
-          //   element = item.querySelector(fieldConfig.selector) ||
-          //     item.querySelector(`[class*="${fieldConfig.selector}"]`) ||
-          //     Array.from(item.querySelectorAll('*'))
-          //       .find(el => el.textContent.trim() === fieldConfig.selector);
-          // } else {
           element = item.querySelector(fieldConfig.selector);
 
           console.debug('Element:', element);
