@@ -286,12 +286,12 @@ export default class Interpreter extends EventEmitter {
 
       scrapeSchema: async (schema: Record<string, { selector: string; tag: string, attribute: string; }>) => {
         await this.ensureScriptsLoaded(page);
-      
+
         const scrapeResult = await page.evaluate((schemaObj) => window.scrapeSchema(schemaObj), schema);
         await this.options.serializableCallback(scrapeResult);
       },
 
-      scrapeList: async (config: { listSelector: string, fields: any, limit?: number, flexible?: boolean, pagination:any }) => {
+      scrapeList: async (config: { listSelector: string, fields: any, limit?: number, flexible?: boolean, pagination: any }) => {
         await this.ensureScriptsLoaded(page);
         const scrapeResults: Record<string, any>[] = await page.evaluate((cfg) => window.scrapeList(cfg), config);
         await this.options.serializableCallback(scrapeResults);
@@ -299,11 +299,11 @@ export default class Interpreter extends EventEmitter {
 
       scrapeListAuto: async (config: { listSelector: string }) => {
         await this.ensureScriptsLoaded(page);
-  
+
         const scrapeResults: { selector: string, innerText: string }[] = await page.evaluate((listSelector) => {
           return window.scrapeListAuto(listSelector);
         }, config.listSelector);
-  
+
         await this.options.serializableCallback(scrapeResults);
       },
 
@@ -315,6 +315,7 @@ export default class Interpreter extends EventEmitter {
           }
         }, pages ?? 1);
       },
+
       script: async (code: string) => {
         const AsyncFunction: FunctionConstructor = Object.getPrototypeOf(
           async () => { },
@@ -322,6 +323,7 @@ export default class Interpreter extends EventEmitter {
         const x = new AsyncFunction('page', 'log', code);
         await x(page, this.log);
       },
+      
       flag: async () => new Promise((res) => {
         this.emit('flag', page, res);
       }),
