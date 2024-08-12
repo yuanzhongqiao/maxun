@@ -291,9 +291,19 @@ export default class Interpreter extends EventEmitter {
         await this.options.serializableCallback(scrapeResult);
       },
 
-      scrapeList: async (config: { listSelector: string, fields: any, limit?: number, flexible?: boolean }) => {
+      scrapeList: async (config: { listSelector: string, fields: any, limit?: number, flexible?: boolean, pagination:any }) => {
         await this.ensureScriptsLoaded(page);
         const scrapeResults: Record<string, any>[] = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+        await this.options.serializableCallback(scrapeResults);
+      },
+
+      scrapeListAuto: async (config: { listSelector: string }) => {
+        await this.ensureScriptsLoaded(page);
+  
+        const scrapeResults: { selector: string, innerText: string }[] = await page.evaluate((listSelector) => {
+          return window.scrapeListAuto(listSelector);
+        }, config.listSelector);
+  
         await this.options.serializableCallback(scrapeResults);
       },
 
@@ -417,7 +427,7 @@ export default class Interpreter extends EventEmitter {
   }
 
   private async ensureScriptsLoaded(page: Page) {
-    const isScriptLoaded = await page.evaluate(() => typeof window.scrape === 'function' && typeof window.scrapeSchema === 'function' && typeof window.scrapeList === 'function');
+    const isScriptLoaded = await page.evaluate(() => typeof window.scrape === 'function' && typeof window.scrapeSchema === 'function' && typeof window.scrapeList === 'function' && typeof window.scrapeListAuto === 'function');
     if (!isScriptLoaded) {
       await page.addInitScript({ path: path.join(__dirname, 'browserSide', 'scraper.js') });
     }
