@@ -730,35 +730,39 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
  * @returns {Promise<Selectors|null|undefined>}
  */
 
-export const getNonUniqueSelectors =  async (page: Page, coordinates: Coordinates) => {
+export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates) => {
   try {
-    const selectors = await page.evaluate(({ x, y }) => {
-      function getSelector(element: any) {
+    const selectors = await page.evaluate(({ x, y }: { x: number, y: number }) => {
+
+      function getNonUniqueSelector(element: HTMLElement): string {
         let selector = element.tagName.toLowerCase();
 
-        // Capture a single, relevant class if present
+        // Avoid using IDs to maintain non-uniqueness
         if (element.className) {
-          const classes = element.className.split(/\s+/).filter(Boolean);
+          const classes = element.className.split(/\s+/).filter((cls: string) => Boolean(cls));
           if (classes.length > 0) {
-            // Use only the first class to avoid over-specificity
-            selector += '.' + classes[0];
+            // Exclude utility classes and escape special characters
+            const validClasses = classes.filter((cls: string) => !cls.startsWith('!') && !cls.includes(':'));
+            if (validClasses.length > 0) {
+              selector += '.' + validClasses.map(cls => CSS.escape(cls)).join('.');
+            }
           }
         }
 
         return selector;
       }
 
-      function getSelectorPath(element: any) {
-        const path = [];
+      function getSelectorPath(element: HTMLElement | null): string {
+        const path: string[] = [];
         while (element && element !== document.body) {
-          const selector = getSelector(element);
+          const selector = getNonUniqueSelector(element);
           path.unshift(selector);
           element = element.parentElement;
         }
         return path.join(' > ');
       }
 
-      const element = document.elementFromPoint(x, y);
+      const element = document.elementFromPoint(x, y) as HTMLElement | null;
       if (!element) return null;
 
       const generalSelector = getSelectorPath(element);
@@ -773,6 +777,8 @@ export const getNonUniqueSelectors =  async (page: Page, coordinates: Coordinate
     return {};
   }
 };
+
+
 
 
 /**
