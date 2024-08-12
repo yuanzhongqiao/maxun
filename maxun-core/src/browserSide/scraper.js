@@ -279,13 +279,13 @@ async function scrollDownToLoadMore(selector, limit) {
  * @returns {Array.<Array.<Object>>} Array of arrays of scraped items, one sub-array per list
  */
   window.scrapeList = async function (config) {
-    const { listSelector, fields, limit, flexible = false, pagination  } = config;
+    const { listSelector, fields, limit, flexible = false, pagination } = config;
 
     const lists = Array.from(document.querySelectorAll(listSelector));
 
     if (pagination) {
       const { type, selector } = pagination;
-  
+
       switch (type) {
         case 'scrollDown':
           await scrollDownToLoadMore(pagination.selector, config.limit);
@@ -364,44 +364,44 @@ async function scrollDownToLoadMore(selector, limit) {
  * @param {string} listSelector - Selector for the list container(s)
  * @returns {Array.<Object>} Array of objects, each containing the CSS selector and innerText of the children
  */
-window.scrapeListAuto = function (listSelector) {
-  const lists = Array.from(document.querySelectorAll(listSelector));
-  
-  const results = [];
+  window.scrapeListAuto = function (listSelector) {
+    const lists = Array.from(document.querySelectorAll(listSelector));
 
-  lists.forEach(list => {
-    const children = Array.from(list.children);
-    
-    children.forEach(child => {
-      const selectors = [];
-      let element = child;
-      
-      // Traverse up to gather the CSS selector for the element
-      while (element && element !== document) {
-        let selector = element.nodeName.toLowerCase();
-        if (element.id) {
-          selector += `#${element.id}`;
-          selectors.push(selector);
-          break;
-        } else {
-          const className = element.className.trim().split(/\s+/).join('.');
-          if (className) {
-            selector += `.${className}`;
+    const results = [];
+
+    lists.forEach(list => {
+      const children = Array.from(list.children);
+
+      children.forEach(child => {
+        const selectors = [];
+        let element = child;
+
+        // Traverse up to gather the CSS selector for the element
+        while (element && element !== document) {
+          let selector = element.nodeName.toLowerCase();
+          if (element.id) {
+            selector += `#${element.id}`;
+            selectors.push(selector);
+            break;
+          } else {
+            const className = element.className.trim().split(/\s+/).join('.');
+            if (className) {
+              selector += `.${className}`;
+            }
+            selectors.push(selector);
+            element = element.parentElement;
           }
-          selectors.push(selector);
-          element = element.parentElement;
         }
-      }
-      
-      results.push({
-        selector: selectors.reverse().join(' > '),
-        innerText: child.innerText.trim()
+
+        results.push({
+          selector: selectors.reverse().join(' > '),
+          innerText: child.innerText.trim()
+        });
       });
     });
-  });
 
-  return results;
-};
+    return results;
+  };
 
 
 })(window);
