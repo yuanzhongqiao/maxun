@@ -310,11 +310,8 @@ async function scrollDownToLoadMore(selector, limit) {
         }
         scrapedData.push(record);
     });
-
     return scrapedData;
 };
-
-
 
   /**
  * Gets all children of the elements matching the listSelector,
