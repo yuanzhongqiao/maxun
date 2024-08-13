@@ -278,7 +278,7 @@ async function scrollDownToLoadMore(selector, limit) {
  * @param {boolean} [config.flexible=false] - Whether to use flexible matching for field selectors
  * @returns {Array.<Array.<Object>>} Array of arrays of scraped items, one sub-array per list
  */
-  window.scrapeList = function({ listSelector, fields }) {
+  window.scrapeList = function ({ listSelector, fields }) {
     // Get all parent elements matching the listSelector
     const parentElements = Array.from(document.querySelectorAll(listSelector));
 
@@ -286,32 +286,32 @@ async function scrollDownToLoadMore(selector, limit) {
 
     // Iterate through each parent element
     parentElements.forEach(parent => {
-        const record = {};
+      const record = {};
 
-        // For each field, select the corresponding element within the parent
-        for (const [label, { selector, attribute }] of Object.entries(fields)) {
-            const fieldElement = parent.querySelector(selector);
+      // For each field, select the corresponding element within the parent
+      for (const [label, { selector, attribute }] of Object.entries(fields)) {
+        const fieldElement = parent.querySelector(selector);
 
-            // Depending on the attribute specified, extract the data
-            if (fieldElement) {
-                if (attribute === 'innerText') {
-                    record[label] = fieldElement.innerText.trim();
-                } else if (attribute === 'innerHTML') {
-                    record[label] = fieldElement.innerHTML.trim();
-                } else if (attribute === 'src') {
-                    record[label] = fieldElement.src;
-                } else if (attribute === 'href') {
-                    record[label] = fieldElement.href;
-                } else {
-                    // Default to attribute retrieval
-                    record[label] = fieldElement.getAttribute(attribute);
-                }
-            }
+        // Depending on the attribute specified, extract the data
+        if (fieldElement) {
+          if (attribute === 'innerText') {
+            record[label] = fieldElement.innerText.trim();
+          } else if (attribute === 'innerHTML') {
+            record[label] = fieldElement.innerHTML.trim();
+          } else if (attribute === 'src') {
+            record[label] = fieldElement.src;
+          } else if (attribute === 'href') {
+            record[label] = fieldElement.href;
+          } else {
+            // Default to attribute retrieval
+            record[label] = fieldElement.getAttribute(attribute);
+          }
         }
-        scrapedData.push(record);
+      }
+      scrapedData.push(record);
     });
     return scrapedData;
-};
+  };
 
   /**
  * Gets all children of the elements matching the listSelector,
@@ -357,6 +357,5 @@ async function scrollDownToLoadMore(selector, limit) {
 
     return results;
   };
-
 
 })(window);
