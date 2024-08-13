@@ -278,7 +278,7 @@ async function scrollDownToLoadMore(selector, limit) {
  * @param {boolean} [config.flexible=false] - Whether to use flexible matching for field selectors
  * @returns {Array.<Array.<Object>>} Array of arrays of scraped items, one sub-array per list
  */
-  window.scrapeList = function ({ listSelector, fields, limit = 10 }) {
+  window.scrapeList = function ({ listSelector, fields, limit = 10, pagination }) {
     // Get all parent elements matching the listSelector
     const parentElements = Array.from(document.querySelectorAll(listSelector)).slice(0, limit);
 
