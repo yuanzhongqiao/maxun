@@ -278,76 +278,42 @@ async function scrollDownToLoadMore(selector, limit) {
  * @param {boolean} [config.flexible=false] - Whether to use flexible matching for field selectors
  * @returns {Array.<Array.<Object>>} Array of arrays of scraped items, one sub-array per list
  */
-  window.scrapeList = async function (config) {
-    const { listSelector, fields, limit, flexible = false, pagination } = config;
+  window.scrapeList = function({ listSelector, fields }) {
+    // Get all parent elements matching the listSelector
+    const parentElements = Array.from(document.querySelectorAll(listSelector));
 
-    const lists = Array.from(document.querySelectorAll(listSelector));
+    const scrapedData = [];
 
-    if (pagination) {
-      const { type, selector } = pagination;
+    // Iterate through each parent element
+    parentElements.forEach(parent => {
+        const record = {};
 
-      switch (type) {
-        case 'scrollDown':
-          await scrollDownToLoadMore(pagination.selector, config.limit);
-          break;
-        // case 'scrollUp':
-        //   await scrollUpToLoadMore(limit);
-        //   break;
-        // case 'clickNext':
-        //   if (selector) await clickNextToNavigate(selector, limit);
-        //   break;
-        // case 'clickLoadMore':
-        //   if (selector) await clickLoadMore(selector, limit);
-        //   break;
-        default:
-          // No pagination or different handling
-          break;
-      }
-    }
+        // For each field, select the corresponding element within the parent
+        for (const [label, { selector, attribute }] of Object.entries(fields)) {
+            const fieldElement = parent.querySelector(selector);
 
-    return lists.map(list => {
-      const listItems = Array.from(list.children);
-
-      const itemsToScrape = limit ? listItems.slice(0, limit) : listItems;
-
-      // scrape each item
-      return itemsToScrape.map(item => {
-        const scrapedItem = {};
-
-        for (const [fieldName, fieldConfig] of Object.entries(fields)) {
-          let element;
-          element = item.querySelector(fieldConfig.selector);
-
-          console.debug('Element:', element);
-
-          // }
-
-          if (element) {
-            switch (fieldConfig.attribute) {
-              case 'href':
-                scrapedItem[fieldName] = element.getAttribute('href');
-                break;
-              case 'src':
-                scrapedItem[fieldName] = element.getAttribute('src');
-                break;
-              case 'textContent':
-                scrapedItem[fieldName] = element.textContent.trim();
-                break;
-              case 'innerText':
-              default:
-                scrapedItem[fieldName] = element.innerText.trim();
-                break;
+            // Depending on the attribute specified, extract the data
+            if (fieldElement) {
+                if (attribute === 'innerText') {
+                    record[label] = fieldElement.innerText.trim();
+                } else if (attribute === 'innerHTML') {
+                    record[label] = fieldElement.innerHTML.trim();
+                } else if (attribute === 'src') {
+                    record[label] = fieldElement.src;
+                } else if (attribute === 'href') {
+                    record[label] = fieldElement.href;
+                } else {
+                    // Default to attribute retrieval
+                    record[label] = fieldElement.getAttribute(attribute);
+                }
             }
-          } else {
-            // send a message that says it failed
-            scrapedItem[fieldName] = `Failed to scrape ${fieldName}`;
-          }
         }
-
-        return scrapedItem;
-      });
+        scrapedData.push(record);
     });
-  };
+
+    return scrapedData;
+};
+
 
 
   /**
