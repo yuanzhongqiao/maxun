@@ -315,7 +315,6 @@ async function scrollDownToLoadMore(selector, limit) {
             scrapedData.push(record);
         }
 
-        // Check if we need to paginate
         if (pagination && scrapedData.length < limit) {
             switch (pagination.type) {
                 case 'scrollDown':
