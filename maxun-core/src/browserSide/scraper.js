@@ -340,7 +340,7 @@ async function scrollUpToLoadMore(selector, limit) {
                     await scrollDownToLoadMore(listSelector, limit);
                     break;
                 case 'scrollUp':
-                    //await scrollUpPagination();
+                    await scrollUpToLoadMore(listSelector, limit);
                     break;
                 case 'clickNext':
                     //await clickNextPagination(pagination.selector);
