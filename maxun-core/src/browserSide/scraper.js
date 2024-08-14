@@ -319,7 +319,7 @@ async function scrollDownToLoadMore(selector, limit) {
         if (pagination && scrapedData.length < limit) {
             switch (pagination.type) {
                 case 'scrollDown':
-                    //await scrollDownPagination();
+                    await scrollDownToLoadMore(listSelector, limit);
                     break;
                 case 'scrollUp':
                     //await scrollUpPagination();
