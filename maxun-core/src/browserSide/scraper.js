@@ -262,6 +262,7 @@ async function clickNextPagination(selector, scrapedData, limit) {
   };
 
   /**
+   * TODO: Simplify.
    * Given an object with named lists of elements,
    *  groups the elements by their distance in the DOM tree.
    * @param {Object.<string, {selector: string, tag: string}>} lists The named lists of HTML elements.
@@ -384,7 +385,7 @@ async function clickNextPagination(selector, scrapedData, limit) {
                     await scrollUpToLoadMore(listSelector, limit);
                     break;
                 case 'clickNext':
-                    await clickNextPagination(pagination.selector);
+                    await clickNextPagination(pagination.selector, scrapedData, limit);
                     break;
                 case 'clickLoadMore':
                     //await clickLoadMorePagination(pagination.selector);
