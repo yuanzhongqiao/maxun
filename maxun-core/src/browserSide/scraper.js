@@ -167,40 +167,40 @@ async function scrollUpToLoadMore(selector, limit) {
 async function clickNextPagination(selector, scrapedData, limit) {
   // Check if the limit is already met
   if (scrapedData.length >= limit) {
-      return false; // Return false to indicate no further action is needed
+    return false; // Return false to indicate no further action is needed
   }
 
   // Check if a single "Next" button exists
   let nextButton = document.querySelector(selector);
 
   if (nextButton) {
-      nextButton.click();
-      return true; // Indicate that pagination occurred
+    nextButton.click();
+    return true; // Indicate that pagination occurred
   } else {
-      // Handle pagination with numbers
-      const paginationButtons = document.querySelectorAll(selector);
-      let clicked = false;
+    // Handle pagination with numbers
+    const paginationButtons = document.querySelectorAll(selector);
+    let clicked = false;
 
-      // Loop through pagination buttons to find the current active page
-      for (let i = 0; i < paginationButtons.length - 1; i++) {
-          const button = paginationButtons[i];
-          if (button.classList.contains('active')) {
-              // Click the next button if available
-              const nextButtonInPagination = paginationButtons[i + 1];
-              if (nextButtonInPagination) {
-                  nextButtonInPagination.click();
-                  clicked = true;
-                  break;
-              }
-          }
+    // Loop through pagination buttons to find the current active page
+    for (let i = 0; i < paginationButtons.length - 1; i++) {
+      const button = paginationButtons[i];
+      if (button.classList.contains('active')) {
+        // Click the next button if available
+        const nextButtonInPagination = paginationButtons[i + 1];
+        if (nextButtonInPagination) {
+          nextButtonInPagination.click();
+          clicked = true;
+          break;
+        }
       }
+    }
 
-      // If no next button was clicked, we might be on the last page
-      if (!clicked) {
-          throw new Error("No more items to load or pagination has ended.");
-      }
+    // If no next button was clicked, we might be on the last page
+    if (!clicked) {
+      throw new Error("No more items to load or pagination has ended.");
+    }
 
-      //return clicked; // Indicate whether pagination occurred
+    return clicked; // Indicate whether pagination occurred
   }
 }
 
@@ -339,72 +339,81 @@ async function clickNextPagination(selector, scrapedData, limit) {
  * @param {boolean} [config.flexible=false] - Whether to use flexible matching for field selectors
  * @returns {Array.<Array.<Object>>} Array of arrays of scraped items, one sub-array per list
  */
-  window.scrapeList = async function({ listSelector, fields, limit = 10, pagination = null }) {
+  window.scrapeList = async function ({ listSelector, fields, limit = 10, pagination = null }) {
     const scrapedData = [];
 
     while (scrapedData.length < limit) {
-        // Get all parent elements matching the listSelector
-        const parentElements = Array.from(document.querySelectorAll(listSelector));
+      // Get all parent elements matching the listSelector
+      const parentElements = Array.from(document.querySelectorAll(listSelector));
 
-        // Iterate through each parent element
-        for (const parent of parentElements) {
-            if (scrapedData.length >= limit) break;
-            const record = {};
+      // Iterate through each parent element
+      for (const parent of parentElements) {
+        if (scrapedData.length >= limit) break;
+        const record = {};
 
-            // For each field, select the corresponding element within the parent
-            for (const [label, { selector, attribute }] of Object.entries(fields)) {
-                const fieldElement = parent.querySelector(selector);
+        // For each field, select the corresponding element within the parent
+        for (const [label, { selector, attribute }] of Object.entries(fields)) {
+          const fieldElement = parent.querySelector(selector);
 
-                // Depending on the attribute specified, extract the data
-                if (fieldElement) {
-                    if (attribute === 'innerText') {
-                        record[label] = fieldElement.innerText.trim();
-                    } else if (attribute === 'innerHTML') {
-                        record[label] = fieldElement.innerHTML.trim();
-                    } else if (attribute === 'src') {
-                        record[label] = fieldElement.src;
-                    } else if (attribute === 'href') {
-                        record[label] = fieldElement.href;
-                    } else {
-                        // Default to attribute retrieval
-                        record[label] = fieldElement.getAttribute(attribute);
-                    }
-                }
+          if (fieldElement) {
+            if (attribute === 'innerText') {
+              record[label] = fieldElement.innerText.trim();
+            } else if (attribute === 'innerHTML') {
+              record[label] = fieldElement.innerHTML.trim();
+            } else if (attribute === 'src') {
+              record[label] = fieldElement.src;
+            } else if (attribute === 'href') {
+              record[label] = fieldElement.href;
+            } else {
+              record[label] = fieldElement.getAttribute(attribute);
             }
-
-            // Add the record to the scrapedData array
-            scrapedData.push(record);
+          }
         }
 
-        if (pagination && scrapedData.length < limit) {
-            switch (pagination.type) {
-                case 'scrollDown':
-                    await scrollDownToLoadMore(listSelector, limit);
-                    break;
-                case 'scrollUp':
-                    await scrollUpToLoadMore(listSelector, limit);
-                    break;
-                case 'clickNext':
-                    await clickNextPagination(pagination.selector, scrapedData, limit);
-                    break;
-                case 'clickLoadMore':
-                    //await clickLoadMorePagination(pagination.selector);
-                    break;
-                case 'none':
-                    // No more items to load
-                    break;
-                default:
-                    console.warn("Unknown pagination type");
-                    break;
-            }
-            await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for content to load
+        // Add the record to the scrapedData array
+        scrapedData.push(record);
+      }
+
+      // Check if we need to paginate
+      if (pagination && scrapedData.length < limit) {
+        let paginated = false;
+
+        switch (pagination.type) {
+          case 'scrollDown':
+            await scrollDownToLoadMore(listSelector, limit);
+            paginated = true;
+            break;
+          case 'scrollUp':
+            await scrollUpToLoadMore(listSelector, limit);
+            paginated = true;
+            break;
+          case 'clickNext':
+            paginated = await clickNextPagination(pagination.selector, scrapedData, limit);
+            break;
+          case 'clickLoadMore':
+            //await clickLoadMorePagination(pagination.selector);
+            //paginated = true;
+            break;
+          case 'none':
+            // No more items to load
+            break;
+          default:
+            console.warn("Unknown pagination type");
+            break;
+        }
+
+        if (paginated) {
+          await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for content to load
         } else {
-            break; // No more items to load or no pagination
+          break; // No further pagination needed
         }
+      } else {
+        break; // No more items to load or no pagination
+      }
     }
 
     return scrapedData.slice(0, limit); // Return only the limited number of records
-};
+  };
 
 
   /**
