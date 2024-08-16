@@ -291,7 +291,7 @@ export default class Interpreter extends EventEmitter {
         await this.options.serializableCallback(scrapeResult);
       },
 
-      scrapeList: async (config: { listSelector: string, fields: any, limit?: number, flexible?: boolean, pagination: any }) => {
+      scrapeList: async (config: { listSelector: string, fields: any, limit?: number, pagination: any }) => {
         await this.ensureScriptsLoaded(page);
         const scrapeResults: Record<string, any>[] = await page.evaluate((cfg) => window.scrapeList(cfg), config);
         await this.options.serializableCallback(scrapeResults);
