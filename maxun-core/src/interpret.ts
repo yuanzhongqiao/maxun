@@ -291,9 +291,15 @@ export default class Interpreter extends EventEmitter {
         await this.options.serializableCallback(scrapeResult);
       },
 
+      // scrapeList: async (config: { listSelector: string, fields: any, limit?: number, pagination: any }) => {
+      //   await this.ensureScriptsLoaded(page);
+      //   const scrapeResults: Record<string, any>[] = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+      //   await this.options.serializableCallback(scrapeResults);
+      // },
+
       scrapeList: async (config: { listSelector: string, fields: any, limit?: number, pagination: any }) => {
         await this.ensureScriptsLoaded(page);
-        const scrapeResults: Record<string, any>[] = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+        const scrapeResults: Record<string, any>[] = await this.handlePagination(page, config);
         await this.options.serializableCallback(scrapeResults);
       },
 
@@ -355,6 +361,63 @@ export default class Interpreter extends EventEmitter {
 
       await new Promise((res) => { setTimeout(res, 500); });
     }
+  }
+
+
+  private async handlePagination(page: Page, config: { listSelector: string, fields: any, limit?: number, pagination: any }) {
+    let allResults: Record<string, any>[] = [];
+    let currentPage = 1;
+  
+    while (true) {
+      // Scrape current page
+      const pageResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+      allResults = allResults.concat(pageResults);
+  
+      if (config.limit && allResults.length >= config.limit) {
+        allResults = allResults.slice(0, config.limit);
+        break;
+      }
+  
+      switch (config.pagination.type) {
+        case 'scrollDown':
+          await page.evaluate(() => window.scrollDown(config.listSelector, config.limit));
+          break;
+        case 'scrollUp':
+          await page.evaluate(() => window.scrollUp(config.listSelector, config.limit));
+          break;
+        case 'clickNext':
+          const nextButton = await page.$(config.pagination.selector);
+          if (!nextButton) {
+            return allResults; // No more pages
+          }
+          await nextButton.click();
+          break;
+        case 'clickLoadMore':
+          const loadMoreButton = await page.$(config.pagination.selector);
+          if (!loadMoreButton) {
+            return allResults; // No more items to load
+          }
+          await loadMoreButton.click();
+          break;
+        default:
+          return allResults; // No pagination or unknown type
+      }
+  
+      // Check if new items were loaded
+      const newItemsLoaded = await page.evaluate((prevCount, listSelector) => {
+        const currentCount = document.querySelectorAll(listSelector).length;
+        return currentCount > prevCount;
+      }, allResults.length, config.listSelector);
+  
+      if (!newItemsLoaded) {
+        return allResults; // No new items, end pagination
+      }
+  
+      currentPage++;
+      await page.waitForTimeout(1000); // Wait for page to load
+    }
+  
+    return allResults;
   }
 
   private async runLoop(p: Page, workflow: Workflow) {
@@ -429,7 +492,7 @@ export default class Interpreter extends EventEmitter {
   }
 
   private async ensureScriptsLoaded(page: Page) {
-    const isScriptLoaded = await page.evaluate(() => typeof window.scrape === 'function' && typeof window.scrapeSchema === 'function' && typeof window.scrapeList === 'function' && typeof window.scrapeListAuto === 'function');
+    const isScriptLoaded = await page.evaluate(() => typeof window.scrape === 'function' && typeof window.scrapeSchema === 'function' && typeof window.scrapeList === 'function' && typeof window.scrapeListAuto === 'function' && typeof window.scrollDown === 'function' && typeof window.scrollUp === 'function');
     if (!isScriptLoaded) {
       await page.addInitScript({ path: path.join(__dirname, 'browserSide', 'scraper.js') });
     }
