@@ -375,7 +375,7 @@ async function clickNextPagination(selector, scrapedData, limit) {
       }
     }
 
-    return scrapedData.slice(0, limit); // Return only the limited number of records
+    return scrapedData
   };
 
 
