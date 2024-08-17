@@ -373,41 +373,7 @@ async function clickNextPagination(selector, scrapedData, limit) {
         // Add the record to the scrapedData array
         scrapedData.push(record);
       }
-
-      // Check if we need to paginate
-      if (pagination && scrapedData.length < limit) {
-        let paginated = false;
-
-        switch (pagination.type) {
-          case 'scrollDown':
-            await scrollDownToLoadMore(listSelector, limit);
-            paginated = true;
-            break;
-          case 'scrollUp':
-            await scrollUpToLoadMore(listSelector, limit);
-            paginated = true;
-            break;
-          case 'clickNext':
-            paginated = await clickNextPagination(pagination.selector, scrapedData, limit);
-            break;
-          case 'clickLoadMore':
-            //await clickLoadMorePagination(pagination.selector);
-            //paginated = true;
-            break;
-          case 'none':
-            // No more items to load
-            break;
-          default:
-            console.warn("Unknown pagination type");
-            break;
-        }
-
-        if (paginated) {
-          await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for content to load
-        } else {
-          break; // No further pagination needed
-        }
-      } else {
+       else {
         break; // No more items to load or no pagination
       }
     }
