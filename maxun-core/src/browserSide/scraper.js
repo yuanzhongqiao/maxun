@@ -373,9 +373,6 @@ async function clickNextPagination(selector, scrapedData, limit) {
         // Add the record to the scrapedData array
         scrapedData.push(record);
       }
-       else {
-        break; // No more items to load or no pagination
-      }
     }
 
     return scrapedData.slice(0, limit); // Return only the limited number of records
