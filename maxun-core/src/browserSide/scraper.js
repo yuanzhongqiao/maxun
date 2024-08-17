@@ -428,39 +428,39 @@ async function clickNextPagination(selector, scrapedData, limit) {
   };
 
 
-  window.scrollDown = async(selector, limit) {
+  window.scrollDown = async (selector, limit) {
     let previousHeight = 0;
     let itemsLoaded = 0;
-  
+
     while (itemsLoaded < limit) {
       window.scrollBy(0, window.innerHeight);
       await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
       const currentHeight = document.body.scrollHeight;
-  
+
       if (currentHeight === previousHeight) {
         break; // No more items to load
       }
-  
+
       previousHeight = currentHeight;
       itemsLoaded += document.querySelectorAll(selector).length;
     }
   }
-  
-  window.scrollUp = async(selector, limit) {
+
+  window.scrollUp = async (selector, limit) {
     let previousHeight = 0;
     let itemsLoaded = 0;
-  
+
     while (itemsLoaded < limit) {
       window.scrollBy(0, -window.innerHeight);
       await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
       const currentHeight = document.body.scrollHeight;
-  
+
       if (currentHeight === previousHeight) {
         break; // No more items to load
       }
-  
+
       previousHeight = currentHeight;
       itemsLoaded += document.querySelectorAll(selector).length;
     }
