@@ -369,8 +369,6 @@ async function clickNextPagination(selector, scrapedData, limit) {
             }
           }
         }
-
-        // Add the record to the scrapedData array
         scrapedData.push(record);
       }
        else {
