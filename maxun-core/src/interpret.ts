@@ -382,7 +382,6 @@ export default class Interpreter extends EventEmitter {
 
           const currentHeight = await page.evaluate(() => document.body.scrollHeight);
           if (currentHeight === previousHeight) {
-            // No new content loaded, scrape final results and exit loop
             const finalResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
             allResults = allResults.concat(finalResults);
             return allResults;
@@ -391,12 +390,11 @@ export default class Interpreter extends EventEmitter {
           previousHeight = currentHeight;
           break;
         case 'scrollUp':
-          
           break;
         case 'clickNext':
           const nextButton = await page.$(config.pagination.selector);
           if (!nextButton) {
-            return allResults; // No more pages
+            return allResults; 
           }
 
           // Capture the current URL to check if it changes after clicking next
