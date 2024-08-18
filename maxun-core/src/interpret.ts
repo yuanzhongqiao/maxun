@@ -367,6 +367,7 @@ export default class Interpreter extends EventEmitter {
   private async handlePagination(page: Page, config: { listSelector: string, fields: any, limit?: number, pagination: any }) {
     let allResults: Record<string, any>[] = [];
     let currentPage = 1;
+    let previousHeight = 0
   
     while (true) {
       // Scrape current page
@@ -380,7 +381,6 @@ export default class Interpreter extends EventEmitter {
   
       switch (config.pagination.type) {
         case 'scrollDown':
-          let previousHeight = 0
           await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
         // Wait for potential lazy-loaded content
         await page.waitForTimeout(2000);
