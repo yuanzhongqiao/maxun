@@ -388,7 +388,6 @@ export default class Interpreter extends EventEmitter {
             const finalResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
             allResults = allResults.concat(finalResults);
             return allResults;
-            return allResults;
           }
           previousHeight = currentHeight;
           break;
