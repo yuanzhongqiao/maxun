@@ -371,7 +371,8 @@ export default class Interpreter extends EventEmitter {
 
   private async handlePagination(page: Page, config: { listSelector: string, fields: any, limit?: number, pagination: any }) {
     let allResults: Record<string, any>[] = [];
-    let previousHeight = 0
+    let previousHeight = 0;
+    let scrapedItems: Set<string> = new Set(); // Track unique items to avoid re-scraping
 
     while (true) {
       switch (config.pagination.type) {
@@ -391,16 +392,35 @@ export default class Interpreter extends EventEmitter {
         case 'scrollUp':
           break;
         case 'clickNext':
-          const nextButton = await page.$(config.pagination.selector);
-          if (!nextButton) {
-          const finalResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
-          allResults = allResults.concat(finalResults);
-          return allResults;
+          const pageResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+
+        // Filter out items that have already been scraped
+        const newResults = pageResults.filter(item => {
+            const uniqueKey = JSON.stringify(item);
+            if (scrapedItems.has(uniqueKey)) return false;
+            scrapedItems.add(uniqueKey);
+            return true;
+        });
+
+        allResults = allResults.concat(newResults);
+
+        // If the limit is reached, return the required number of items
+        if (config.limit && allResults.length >= config.limit) {
+            return allResults.slice(0, config.limit);
         }
+
+        // Check if there's a next page button
+        const nextButton = await page.$(config.pagination.selector);
+        if (!nextButton) {
+            return allResults; // No more pages to navigate
+        }
+
+        // Click the next button and wait for the navigation to complete
         await Promise.all([
-          nextButton.click(),
-          page.waitForNavigation({ waitUntil: 'networkidle' })
+            nextButton.click(),
+            page.waitForNavigation({ waitUntil: 'networkidle' })
         ]);
+
         break;
         case 'clickLoadMore':
           const loadMoreButton = await page.$(config.pagination.selector);
