@@ -384,7 +384,10 @@ export default class Interpreter extends EventEmitter {
           // Check if new content was loaded
           const currentHeight = await page.evaluate(() => document.body.scrollHeight);
           if (currentHeight === previousHeight) {
-            // No new content loaded, exit loop
+           // No new content loaded, scrape final results and exit loop
+            const finalResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+            allResults = allResults.concat(finalResults);
+            return allResults;
             return allResults;
           }
           previousHeight = currentHeight;
