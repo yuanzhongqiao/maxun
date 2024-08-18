@@ -394,17 +394,15 @@ export default class Interpreter extends EventEmitter {
         case 'clickNext':
           const nextButton = await page.$(config.pagination.selector);
           if (!nextButton) {
-            return allResults; 
-          }
-
-          // Capture the current URL to check if it changes after clicking next
-          const currentURL = page.url();
-
-          await Promise.all([
-            nextButton.click(),
-            page.waitForNavigation({ waitUntil: 'load' }) // Wait for page navigation
-          ]);
-          break;
+          const finalResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+          allResults = allResults.concat(finalResults);
+          return allResults;
+        }
+        await Promise.all([
+          nextButton.click(),
+          page.waitForNavigation({ waitUntil: 'networkidle' })
+        ]);
+        break;
         case 'clickLoadMore':
           const loadMoreButton = await page.$(config.pagination.selector);
           if (!loadMoreButton) {
