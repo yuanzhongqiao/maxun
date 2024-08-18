@@ -384,7 +384,7 @@ export default class Interpreter extends EventEmitter {
           // Check if new content was loaded
           const currentHeight = await page.evaluate(() => document.body.scrollHeight);
           if (currentHeight === previousHeight) {
-           // No new content loaded, scrape final results and exit loop
+            // No new content loaded, scrape final results and exit loop
             const finalResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
             allResults = allResults.concat(finalResults);
             return allResults;
@@ -422,20 +422,16 @@ export default class Interpreter extends EventEmitter {
       }
 
       // Wait a bit before next iteration to ensure content is loaded
-    await page.waitForTimeout(1000);
+      await page.waitForTimeout(1000);
 
-      // Check if new items were loaded
-      const newItemsLoaded = await page.evaluate((prevCount, listSelector) => {
-        const currentCount = document.querySelectorAll(listSelector).length;
-        return currentCount > prevCount;
-      }, allResults.length, config.listSelector);
+      // Scrape the current page after scrolling/clicking
+      const pageResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+      allResults = allResults.concat(pageResults);
 
-      if (!newItemsLoaded) {
-        return allResults; // No new items, end pagination
+      if (config.limit && allResults.length >= config.limit) {
+        allResults = allResults.slice(0, config.limit);
+        break;
       }
-
-      currentPage++;
-      await page.waitForTimeout(1000); // Wait for page to load
     }
 
     return allResults;
