@@ -329,7 +329,7 @@ export default class Interpreter extends EventEmitter {
         const x = new AsyncFunction('page', 'log', code);
         await x(page, this.log);
       },
-      
+
       flag: async () => new Promise((res) => {
         this.emit('flag', page, res);
       }),
@@ -368,48 +368,48 @@ export default class Interpreter extends EventEmitter {
     let allResults: Record<string, any>[] = [];
     let currentPage = 1;
     let previousHeight = 0
-  
+
     while (true) {
       // Scrape current page
       const pageResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
       allResults = allResults.concat(pageResults);
-  
+
       if (config.limit && allResults.length >= config.limit) {
         allResults = allResults.slice(0, config.limit);
         break;
       }
-  
+
       switch (config.pagination.type) {
         case 'scrollDown':
           await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-        // Wait for potential lazy-loaded content
-        await page.waitForTimeout(2000);
+          // Wait for potential lazy-loaded content
+          await page.waitForTimeout(2000);
 
-        // Check if new content was loaded
-        const currentHeight = await page.evaluate(() => document.body.scrollHeight);
-        if (currentHeight === previousHeight) {
-          // No new content loaded, exit loop
-          return allResults;
-        }
-        previousHeight = currentHeight;
+          // Check if new content was loaded
+          const currentHeight = await page.evaluate(() => document.body.scrollHeight);
+          if (currentHeight === previousHeight) {
+            // No new content loaded, exit loop
+            return allResults;
+          }
+          previousHeight = currentHeight;
           break;
         case 'scrollUp':
           await page.evaluate(() => window.scrollUp(config.listSelector, config.limit));
           break;
-          case 'clickNext':
-            const nextButton = await page.$(config.pagination.selector);
-            if (!nextButton) {
-                return allResults; // No more pages
-            }
+        case 'clickNext':
+          const nextButton = await page.$(config.pagination.selector);
+          if (!nextButton) {
+            return allResults; // No more pages
+          }
 
-            // Capture the current URL to check if it changes after clicking next
-            const currentURL = page.url();
+          // Capture the current URL to check if it changes after clicking next
+          const currentURL = page.url();
 
-            await Promise.all([
-                nextButton.click(),
-                page.waitForNavigation({ waitUntil: 'load' }) // Wait for page navigation
-            ]);
-            break;
+          await Promise.all([
+            nextButton.click(),
+            page.waitForNavigation({ waitUntil: 'load' }) // Wait for page navigation
+          ]);
+          break;
         case 'clickLoadMore':
           const loadMoreButton = await page.$(config.pagination.selector);
           if (!loadMoreButton) {
@@ -420,21 +420,21 @@ export default class Interpreter extends EventEmitter {
         default:
           return allResults; // No pagination or unknown type
       }
-  
+
       // Check if new items were loaded
       const newItemsLoaded = await page.evaluate((prevCount, listSelector) => {
         const currentCount = document.querySelectorAll(listSelector).length;
         return currentCount > prevCount;
       }, allResults.length, config.listSelector);
-  
+
       if (!newItemsLoaded) {
         return allResults; // No new items, end pagination
       }
-  
+
       currentPage++;
       await page.waitForTimeout(1000); // Wait for page to load
     }
-  
+
     return allResults;
   }
 
