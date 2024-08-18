@@ -380,18 +380,36 @@ export default class Interpreter extends EventEmitter {
   
       switch (config.pagination.type) {
         case 'scrollDown':
-          await page.evaluate(() => window.scrollDown(config.listSelector, config.limit));
+          let previousHeight = 0
+          await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+        // Wait for potential lazy-loaded content
+        await page.waitForTimeout(2000);
+
+        // Check if new content was loaded
+        const currentHeight = await page.evaluate(() => document.body.scrollHeight);
+        if (currentHeight === previousHeight) {
+          // No new content loaded, exit loop
+          return allResults;
+        }
+        previousHeight = currentHeight;
           break;
         case 'scrollUp':
           await page.evaluate(() => window.scrollUp(config.listSelector, config.limit));
           break;
-        case 'clickNext':
-          const nextButton = await page.$(config.pagination.selector);
-          if (!nextButton) {
-            return allResults; // No more pages
-          }
-          await nextButton.click();
-          break;
+          case 'clickNext':
+            const nextButton = await page.$(config.pagination.selector);
+            if (!nextButton) {
+                return allResults; // No more pages
+            }
+
+            // Capture the current URL to check if it changes after clicking next
+            const currentURL = page.url();
+
+            await Promise.all([
+                nextButton.click(),
+                page.waitForNavigation({ waitUntil: 'load' }) // Wait for page navigation
+            ]);
+            break;
         case 'clickLoadMore':
           const loadMoreButton = await page.$(config.pagination.selector);
           if (!loadMoreButton) {
