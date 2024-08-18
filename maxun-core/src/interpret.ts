@@ -421,6 +421,9 @@ export default class Interpreter extends EventEmitter {
           return allResults;
       }
 
+      // Wait a bit before next iteration to ensure content is loaded
+    await page.waitForTimeout(1000);
+
       // Check if new items were loaded
       const newItemsLoaded = await page.evaluate((prevCount, listSelector) => {
         const currentCount = document.querySelectorAll(listSelector).length;
