@@ -378,10 +378,8 @@ export default class Interpreter extends EventEmitter {
       switch (config.pagination.type) {
         case 'scrollDown':
           await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-          // Wait for potential lazy-loaded content
           await page.waitForTimeout(2000);
 
-          // Check if new content was loaded
           const currentHeight = await page.evaluate(() => document.body.scrollHeight);
           if (currentHeight === previousHeight) {
             // No new content loaded, scrape final results and exit loop
@@ -389,6 +387,7 @@ export default class Interpreter extends EventEmitter {
             allResults = allResults.concat(finalResults);
             return allResults;
           }
+          
           previousHeight = currentHeight;
           break;
         case 'scrollUp':
