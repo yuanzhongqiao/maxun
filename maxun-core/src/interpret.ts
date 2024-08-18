@@ -375,15 +375,6 @@ export default class Interpreter extends EventEmitter {
     let previousHeight = 0
 
     while (true) {
-      // Scrape current page
-      const pageResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
-      allResults = allResults.concat(pageResults);
-
-      if (config.limit && allResults.length >= config.limit) {
-        allResults = allResults.slice(0, config.limit);
-        break;
-      }
-
       switch (config.pagination.type) {
         case 'scrollDown':
           await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
