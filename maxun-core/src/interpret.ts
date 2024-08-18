@@ -387,11 +387,11 @@ export default class Interpreter extends EventEmitter {
             allResults = allResults.concat(finalResults);
             return allResults;
           }
-          
+
           previousHeight = currentHeight;
           break;
         case 'scrollUp':
-          await page.evaluate(() => window.scrollUp(config.listSelector, config.limit));
+          
           break;
         case 'clickNext':
           const nextButton = await page.$(config.pagination.selector);
