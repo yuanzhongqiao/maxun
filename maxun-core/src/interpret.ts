@@ -371,7 +371,6 @@ export default class Interpreter extends EventEmitter {
 
   private async handlePagination(page: Page, config: { listSelector: string, fields: any, limit?: number, pagination: any }) {
     let allResults: Record<string, any>[] = [];
-    let currentPage = 1;
     let previousHeight = 0
 
     while (true) {
