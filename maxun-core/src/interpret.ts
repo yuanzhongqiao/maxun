@@ -374,6 +374,7 @@ export default class Interpreter extends EventEmitter {
     let previousHeight = 0;
     // track unique items to avoid re-scraping
     let scrapedItems: Set<string> = new Set();
+    let currentPage = 1
 
     while (true) {
       switch (config.pagination.type) {
@@ -414,6 +415,8 @@ export default class Interpreter extends EventEmitter {
             nextButton.click(),
             page.waitForNavigation({ waitUntil: 'networkidle' })
           ]);
+
+          currentPage += 1;
           break;
         case 'clickLoadMore':
           const loadMoreButton = await page.$(config.pagination.selector);
