@@ -427,7 +427,7 @@ async function clickNextPagination(selector, scrapedData, limit) {
     let itemsLoaded = 0;
 
     while (itemsLoaded < limit) {
-      window.scrollBy(0, window.innerHeight);
+      window.scrollTo(0, document.body.scrollHeight);
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       const currentHeight = document.body.scrollHeight;
