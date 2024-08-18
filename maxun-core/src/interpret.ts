@@ -416,7 +416,9 @@ export default class Interpreter extends EventEmitter {
           await loadMoreButton.click();
           break;
         default:
-          return allResults; // No pagination or unknown type
+          const results = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+          allResults = allResults.concat(results);
+          return allResults;
       }
 
       // Check if new items were loaded
