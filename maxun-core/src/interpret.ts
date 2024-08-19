@@ -374,7 +374,7 @@ export default class Interpreter extends EventEmitter {
     let previousHeight = 0;
     let currentPage = 1;
     // track unique items per page to avoid re-scraping
-    let scrapedItemsPerPage: Set<string>[] = []; 
+    let scrapedItems: Set<string> = new Set<string>(); // Track unique items across all pages
 
     while (true) {
       switch (config.pagination.type) {
@@ -393,39 +393,41 @@ export default class Interpreter extends EventEmitter {
           break;
         case 'scrollUp':
           break;
-        case 'clickNext':
-          const pageResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
-        
-        // Initialize a new Set for the current page if it doesn't exist
-        if (!scrapedItemsPerPage[currentPage - 1]) {
-          scrapedItemsPerPage[currentPage - 1] = new Set<string>();
-        }
-
-        const newResults = pageResults.filter(item => {
-          const uniqueKey = JSON.stringify(item);
-          if (scrapedItemsPerPage[currentPage - 1].has(uniqueKey)) return false;
-          scrapedItemsPerPage[currentPage - 1].add(uniqueKey);
-          return true;
-        });
-
-        allResults = allResults.concat(newResults);
-
-        if (config.limit && allResults.length >= config.limit) {
-          return allResults.slice(0, config.limit);
-        }
-
-        const nextButton = await page.$(config.pagination.selector);
-        if (!nextButton) {
-          return allResults;
-        }
-
-        await Promise.all([
-          nextButton.click(),
-          page.waitForNavigation({ waitUntil: 'networkidle' })
-        ]);
-
-        currentPage++;
-        break;
+          case 'clickNext':
+            while (true) {
+              // Scrape the current page
+              const pageResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+      
+              // Filter out already scraped items
+              const newResults = pageResults.filter(item => {
+                  const uniqueKey = JSON.stringify(item);
+                  if (scrapedItems.has(uniqueKey)) return false; // Ignore if already scraped
+                  scrapedItems.add(uniqueKey); // Mark as scraped
+                  return true;
+              });
+      
+              allResults = allResults.concat(newResults);
+      
+              // Stop if limit is reached
+              if (config.limit && allResults.length >= config.limit) {
+                  return allResults.slice(0, config.limit);
+              }
+      
+              // Move to the next page
+              const nextButton = await page.$(config.pagination.selector);
+              if (!nextButton) {
+                  return allResults; // No more pages to scrape
+              }
+      
+              // Click the "Next" button and wait for the next page to load
+              await Promise.all([
+                  nextButton.click(),
+                  page.waitForNavigation({ waitUntil: 'networkidle' })
+              ]);
+      
+              currentPage++; // Increment page count and proceed
+              break;
+          }
         case 'clickLoadMore':
           const loadMoreButton = await page.$(config.pagination.selector);
           if (!loadMoreButton) {
