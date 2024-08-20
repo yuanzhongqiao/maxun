@@ -1,5 +1,7 @@
 /* eslint-disable no-await-in-loop, no-restricted-syntax */
 import { Page, PageScreenshotOptions } from 'playwright';
+import { fullLists, PlaywrightBlocker, Request } from '@cliqz/adblocker-playwright';
+import fetch from 'cross-fetch';
 import path from 'path';
 
 import { EventEmitter } from 'events';
@@ -45,6 +47,8 @@ export default class Interpreter extends EventEmitter {
   private stopper: Function | null = null;
 
   private log: typeof log;
+
+  private blocker: PlaywrightBlocker | null = null;
 
   constructor(workflow: WorkflowFile, options?: Partial<InterpreterOptions>) {
     super();
