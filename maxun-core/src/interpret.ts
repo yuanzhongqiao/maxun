@@ -460,6 +460,8 @@ export default class Interpreter extends EventEmitter {
   }
 
   private async runLoop(p: Page, workflow: Workflow) {
+    // apply ad-blocker to the current page
+    await this.applyAdBlocker(p);
     const usedActions: string[] = [];
     let lastAction = null;
     let repeatCount = 0;
