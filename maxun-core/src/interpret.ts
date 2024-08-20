@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop, no-restricted-syntax */
 import { Page, PageScreenshotOptions } from 'playwright';
-import { fullLists, PlaywrightBlocker, Request } from '@cliqz/adblocker-playwright';
+import { PlaywrightBlocker } from '@cliqz/adblocker-playwright';
 import fetch from 'cross-fetch';
 import path from 'path';
 
