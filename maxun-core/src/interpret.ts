@@ -441,13 +441,6 @@ export default class Interpreter extends EventEmitter {
           return allResults;
       }
 
-      // Wait a bit before next iteration to ensure content is loaded
-      await page.waitForTimeout(1000);
-
-      // Scrape the current page after scrolling/clicking
-      const pageResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
-      allResults = allResults.concat(pageResults);
-
       if (config.limit && allResults.length >= config.limit) {
         allResults = allResults.slice(0, config.limit);
         break;
