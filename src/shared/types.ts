@@ -23,4 +23,4 @@ export interface ScreenshotSettings {
   type?: "jpeg" | "png";
 };
 
-export declare type CustomActions = 'scrape' | 'scrapeSchema' | 'scroll' | 'screenshot' | 'script' | 'enqueueLinks' | 'flag' | 'scrapeList';
+export declare type CustomActions = 'scrape' | 'scrapeSchema' | 'scroll' | 'screenshot' | 'script' | 'enqueueLinks' | 'flag' | 'scrapeList' | 'scrapeListAuto'; 
