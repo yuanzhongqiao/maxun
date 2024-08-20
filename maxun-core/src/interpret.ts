@@ -385,11 +385,9 @@ export default class Interpreter extends EventEmitter {
     }
   }
 
-
   private async handlePagination(page: Page, config: { listSelector: string, fields: any, limit?: number, pagination: any }) {
     let allResults: Record<string, any>[] = [];
     let previousHeight = 0;
-    let currentPage = 1;
     // track unique items per page to avoid re-scraping
     let scrapedItems: Set<string> = new Set<string>();
 
