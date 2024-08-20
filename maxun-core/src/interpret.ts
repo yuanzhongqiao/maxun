@@ -394,7 +394,6 @@ export default class Interpreter extends EventEmitter {
         case 'scrollUp':
           break;
           case 'clickNext':
-              // Scrape the current page
               const pageResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
       
               // Filter out already scraped items
@@ -407,31 +406,31 @@ export default class Interpreter extends EventEmitter {
       
               allResults = allResults.concat(newResults);
       
-              // Stop if limit is reached
+              
               if (config.limit && allResults.length >= config.limit) {
                   return allResults.slice(0, config.limit);
               }
       
-              // Move to the next page
+              
               const nextButton = await page.$(config.pagination.selector);
               if (!nextButton) {
                   return allResults; // No more pages to scrape
               }
       
-              // Click the "Next" button and wait for the next page to load
+              
               await Promise.all([
                   nextButton.click(),
                   page.waitForNavigation({ waitUntil: 'networkidle' })
               ]);
       
-              // Wait a bit for the content to load
+             
               await page.waitForTimeout(1000);
 
               break;
         case 'clickLoadMore':
           const loadMoreButton = await page.$(config.pagination.selector);
           if (!loadMoreButton) {
-            return allResults; // No more items to load
+            return allResults;
           }
           await loadMoreButton.click();
           break;
