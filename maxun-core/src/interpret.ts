@@ -374,7 +374,7 @@ export default class Interpreter extends EventEmitter {
     let previousHeight = 0;
     let currentPage = 1;
     // track unique items per page to avoid re-scraping
-    let scrapedItems: Set<string> = new Set<string>(); // Track unique items across all pages
+    let scrapedItems: Set<string> = new Set<string>(); 
 
     while (true) {
       switch (config.pagination.type) {
@@ -394,7 +394,6 @@ export default class Interpreter extends EventEmitter {
         case 'scrollUp':
           break;
           case 'clickNext':
-            while (true) {
               // Scrape the current page
               const pageResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
       
@@ -425,9 +424,10 @@ export default class Interpreter extends EventEmitter {
                   page.waitForNavigation({ waitUntil: 'networkidle' })
               ]);
       
-              currentPage++; // Increment page count and proceed
+              // Wait a bit for the content to load
+              await page.waitForTimeout(1000);
+
               break;
-          }
         case 'clickLoadMore':
           const loadMoreButton = await page.$(config.pagination.selector);
           if (!loadMoreButton) {
