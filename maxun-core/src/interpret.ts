@@ -82,9 +82,9 @@ export default class Interpreter extends EventEmitter {
       };
     }
 
-    PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch).then((blocker) => {
+    PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch).then(blocker => {
       this.blocker = blocker;
-    }).catch((err) => {
+    }).catch(err => {
       this.log(`Failed to initialize ad-blocker:`, Level.ERROR);
     })
   }
