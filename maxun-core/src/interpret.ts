@@ -406,26 +406,20 @@ export default class Interpreter extends EventEmitter {
 
           allResults = allResults.concat(newResults);
 
-
           if (config.limit && allResults.length >= config.limit) {
             return allResults.slice(0, config.limit);
           }
-
 
           const nextButton = await page.$(config.pagination.selector);
           if (!nextButton) {
             return allResults; // No more pages to scrape
           }
-
-
           await Promise.all([
             nextButton.click(),
             page.waitForNavigation({ waitUntil: 'networkidle' })
           ]);
 
-
           await page.waitForTimeout(1000);
-
           break;
         case 'clickLoadMore':
           const loadMoreButton = await page.$(config.pagination.selector);
