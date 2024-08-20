@@ -97,9 +97,9 @@ export default class Interpreter extends EventEmitter {
 
   private async disableAdBlocker(page: Page): Promise<void> {
     if (this.blocker) {
-        await this.blocker.disableBlockingInPage(page);
+      await this.blocker.disableBlockingInPage(page);
     }
-}
+  }
 
 
   /**
