@@ -120,7 +120,7 @@ export const BrowserWindow = () => {
             const canvasRect = canvasRef.current.getBoundingClientRect();
             const clickX = e.clientX - canvasRect.left;
             const clickY = e.clientY - canvasRect.top;
-
+    
             const highlightRect = highlighterData.rect;
             if (
                 clickX >= highlightRect.left &&
@@ -128,36 +128,38 @@ export const BrowserWindow = () => {
                 clickY >= highlightRect.top &&
                 clickY <= highlightRect.bottom
             ) {
+                const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '', highlighterData.elementInfo);
+                
                 if (getText === true) {
-                    const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '', highlighterData.elementInfo);
-                    if (options.length > 1) {
+                    if (options.length === 1) {
+                        // Directly use the available attribute if only one option is present
+                        const attribute = options[0].value;
+                        const data = attribute === 'href' ? highlighterData.elementInfo?.url || '' :
+                                      attribute === 'src' ? highlighterData.elementInfo?.imageUrl || '' :
+                                      highlighterData.elementInfo?.innerText || '';
+                        
+                        addTextStep('', data, {
+                            selector: highlighterData.selector,
+                            tag: highlighterData.elementInfo?.tagName,
+                            attribute
+                        });
+                    } else {
+                        // Show the modal if there are multiple options
                         setAttributeOptions(options);
                         setSelectedElement({
                             selector: highlighterData.selector,
                             info: highlighterData.elementInfo
                         });
                         setShowAttributeModal(true);
-                    } else {
-                        addTextStep('', highlighterData.elementInfo?.innerText || '', {
-                            selector: highlighterData.selector,
-                            tag: highlighterData.elementInfo?.tagName,
-                            attribute: 'innerText'
-                        });
                     }
                 }
-
+    
                 if (getList === true && !listSelector) {
                     setListSelector(highlighterData.selector);
                 } else if (getList === true && listSelector) {
-                    const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '', highlighterData.elementInfo);
-                    if (options.length > 1) {
-                        setAttributeOptions(options);
-                        setSelectedElement({
-                            selector: highlighterData.selector,
-                            info: highlighterData.elementInfo
-                        });
-                        setShowAttributeModal(true);
-                    } else {
+                    if (options.length === 1) {
+                        // Handle directly without showing the modal
+                        const attribute = options[0].value;
                         const newField: TextStep = {
                             id: Date.now(),
                             type: 'text',
@@ -166,10 +168,10 @@ export const BrowserWindow = () => {
                             selectorObj: {
                                 selector: highlighterData.selector,
                                 tag: highlighterData.elementInfo?.tagName,
-                                attribute: 'innerText'
+                                attribute
                             }
                         };
-
+    
                         setFields(prevFields => {
                             const updatedFields = {
                                 ...prevFields,
@@ -177,16 +179,24 @@ export const BrowserWindow = () => {
                             };
                             return updatedFields;
                         });
-
+    
                         if (listSelector) {
                             addListStep(listSelector, { ...fields, [newField.label]: newField });
                         }
+                    } else {
+                        // Show the modal if there are multiple options
+                        setAttributeOptions(options);
+                        setSelectedElement({
+                            selector: highlighterData.selector,
+                            info: highlighterData.elementInfo
+                        });
+                        setShowAttributeModal(true);
                     }
-
                 }
             }
         }
     };
+    
 
     const handleAttributeSelection = (attribute: string) => {
         if (selectedElement) {
