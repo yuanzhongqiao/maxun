@@ -26,16 +26,16 @@ const getAttributeOptions = (tagName: string, elementInfo: ElementInfo | null): 
     switch (tagName.toLowerCase()) {
         case 'a':
             return [
-                { label: `Text: ${elementInfo.innerText || 'N/A'}`, value: 'innerText' },
-                { label: `URL: ${elementInfo.url || 'N/A'}`, value: 'href' }
+                { label: `Text: ${elementInfo.innerText}`, value: 'innerText' },
+                { label: `URL: ${elementInfo.url}`, value: 'href' }
             ];
         case 'img':
             return [
-                { label: `Alt Text: ${elementInfo.innerText || 'N/A'}`, value: 'alt' },
-                { label: `Source URL: ${elementInfo.imageUrl || 'N/A'}`, value: 'src' }
+                { label: `Alt Text: ${elementInfo.innerText}`, value: 'alt' },
+                { label: `Source URL: ${elementInfo.imageUrl}`, value: 'src' }
             ];
         default:
-            return [{ label: `Text: ${elementInfo.innerText || 'N/A'}`, value: 'innerText' }];
+            return [{ label: `Text: ${elementInfo.innerText}`, value: 'innerText' }];
     }
 };
 
