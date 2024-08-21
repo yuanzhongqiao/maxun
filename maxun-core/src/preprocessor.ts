@@ -9,9 +9,6 @@ import { operators } from './types/logic';
 */
 export default class Preprocessor {
   static validateWorkflow(workflow: WorkflowFile): any {
-
-    console.log(`Workflow from preprocessor: ${workflow}`)
-
     const regex = Joi.object({
       $regex: Joi.string().required(),
     });
