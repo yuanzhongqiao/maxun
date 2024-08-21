@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSocketStore } from '../../context/socket';
+import { Button } from '@mui/material';
 import Canvas from "../atoms/canvas";
 import { useBrowserDimensionsStore } from "../../context/browserDimensions";
 import { Highlighter } from "../atoms/Highlighter";
@@ -240,9 +241,9 @@ export const BrowserWindow = () => {
                         <div>
                             <h2>Select Attribute</h2>
                             {attributeOptions.map((option) => (
-                                <button key={option.value} onClick={() => handleAttributeSelection(option.value)}>
+                                <Button key={option.value} onClick={() => handleAttributeSelection(option.value)}>
                                     {option.label}
-                                </button>
+                                </Button>
                             ))}
                         </div>
 
