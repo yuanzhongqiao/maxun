@@ -234,35 +234,45 @@ export const BrowserWindow = () => {
     return (
         <div onClick={handleClick}>
             {
-                getText === true || getList === true ? (
-                    <GenericModal
-                        isOpen={showAttributeModal}
-                        onClose={() => { }}
-                        canBeClosed={false}
-                    >
-                        <div>
-                            <h2>Select Attribute</h2>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                {attributeOptions.map((option) => (
-                                    <Button
-                                        variant="outlined"
-                                        size="medium"
-                                        key={option.value}
-                                        onClick={() => handleAttributeSelection(option.value)}
-                                        style={{
-                                            justifyContent: 'flex-start', whiteSpace: 'nowrap',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis'
-                                        }}
-                                    >
-                                        {option.label}
-                                    </Button>
-                                ))}
-                            </div>
-                        </div>
-                    </GenericModal>
-                ) : null
-            }
+    getText === true || getList === true ? (
+        <GenericModal
+            isOpen={showAttributeModal}
+            onClose={() => { }}
+            canBeClosed={false}
+        >
+            <div>
+                <h2>Select Attribute</h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {attributeOptions.map((option) => (
+                        <Button
+                            variant="outlined"
+                            size="medium"
+                            key={option.value}
+                            onClick={() => handleAttributeSelection(option.value)}
+                            style={{
+                                justifyContent: 'flex-start',
+                                maxWidth: '200px',  
+                                overflow: 'hidden',
+                                padding: '5px 10px',
+                            }}
+                        >
+                            <span style={{
+                                display: 'block',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                maxWidth: '100%'  
+                            }}>
+                                {option.label}
+                            </span>
+                        </Button>
+                    ))}
+                </div>
+            </div>
+        </GenericModal>
+    ) : null
+}
+
 
             {((getText === true || getList === true) && !showAttributeModal && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
                 <Highlighter
