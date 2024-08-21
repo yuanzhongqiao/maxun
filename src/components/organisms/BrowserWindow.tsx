@@ -21,22 +21,25 @@ interface AttributeOption {
     value: string;
 }
 
-const getAttributeOptions = (tagName: string): AttributeOption[] => {
+const getAttributeOptions = (tagName: string, elementInfo: ElementInfo | null): AttributeOption[] => {
+    if (!elementInfo) return [];
+
     switch (tagName.toLowerCase()) {
         case 'a':
             return [
-                { label: 'Text', value: 'innerText' },
-                { label: 'URL', value: 'href' }
+                { label: `Text: ${elementInfo.innerText || 'N/A'}`, value: 'innerText' },
+                { label: `URL: ${elementInfo.url || 'N/A'}`, value: 'href' }
             ];
         case 'img':
             return [
-                { label: 'Alt Text', value: 'alt' },
-                { label: 'Source URL', value: 'src' }
+                { label: `Alt Text: ${elementInfo.innerText || 'N/A'}`, value: 'alt' },
+                { label: `Source URL: ${elementInfo.imageUrl || 'N/A'}`, value: 'src' }
             ];
         default:
-            return [{ label: 'Text', value: 'innerText' }];
+            return [{ label: `Text: ${elementInfo.innerText || 'N/A'}`, value: 'innerText' }];
     }
 };
+
 
 export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
