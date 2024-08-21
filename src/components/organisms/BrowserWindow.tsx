@@ -249,9 +249,11 @@ export const BrowserWindow = () => {
                                         size="medium"
                                         key={option.value}
                                         onClick={() => handleAttributeSelection(option.value)}
-                                        style={{ justifyContent: 'flex-start', whiteSpace: 'nowrap',
+                                        style={{
+                                            justifyContent: 'flex-start', whiteSpace: 'nowrap',
                                             overflow: 'hidden',
-                                            textOverflow: 'ellipsis' }}
+                                            textOverflow: 'ellipsis'
+                                        }}
                                     >
                                         {option.label}
                                     </Button>
