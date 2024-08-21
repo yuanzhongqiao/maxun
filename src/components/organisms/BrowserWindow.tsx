@@ -121,7 +121,7 @@ export const BrowserWindow = () => {
                 clickY <= highlightRect.bottom
             ) {
                 if (getText === true) {
-                    const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '');
+                    const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '', highlighterData.elementInfo);
                     if (options.length > 1) {
                         setAttributeOptions(options);
                         setSelectedElement({
@@ -141,7 +141,7 @@ export const BrowserWindow = () => {
                 if (getList === true && !listSelector) {
                     setListSelector(highlighterData.selector);
                 } else if (getList === true && listSelector) {
-                    const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '');
+                    const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '', highlighterData.elementInfo);
                     if (options.length > 1) {
                         setAttributeOptions(options);
                         setSelectedElement({
