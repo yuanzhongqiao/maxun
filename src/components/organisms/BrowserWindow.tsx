@@ -120,7 +120,7 @@ export const BrowserWindow = () => {
             const canvasRect = canvasRef.current.getBoundingClientRect();
             const clickX = e.clientX - canvasRect.left;
             const clickY = e.clientY - canvasRect.top;
-    
+
             const highlightRect = highlighterData.rect;
             if (
                 clickX >= highlightRect.left &&
@@ -129,15 +129,15 @@ export const BrowserWindow = () => {
                 clickY <= highlightRect.bottom
             ) {
                 const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '', highlighterData.elementInfo);
-                
+
                 if (getText === true) {
                     if (options.length === 1) {
                         // Directly use the available attribute if only one option is present
                         const attribute = options[0].value;
                         const data = attribute === 'href' ? highlighterData.elementInfo?.url || '' :
-                                      attribute === 'src' ? highlighterData.elementInfo?.imageUrl || '' :
-                                      highlighterData.elementInfo?.innerText || '';
-                        
+                            attribute === 'src' ? highlighterData.elementInfo?.imageUrl || '' :
+                                highlighterData.elementInfo?.innerText || '';
+
                         addTextStep('', data, {
                             selector: highlighterData.selector,
                             tag: highlighterData.elementInfo?.tagName,
@@ -153,7 +153,7 @@ export const BrowserWindow = () => {
                         setShowAttributeModal(true);
                     }
                 }
-    
+
                 if (getList === true && !listSelector) {
                     setListSelector(highlighterData.selector);
                 } else if (getList === true && listSelector) {
@@ -171,7 +171,7 @@ export const BrowserWindow = () => {
                                 attribute
                             }
                         };
-    
+
                         setFields(prevFields => {
                             const updatedFields = {
                                 ...prevFields,
@@ -179,7 +179,7 @@ export const BrowserWindow = () => {
                             };
                             return updatedFields;
                         });
-    
+
                         if (listSelector) {
                             addListStep(listSelector, { ...fields, [newField.label]: newField });
                         }
@@ -196,7 +196,7 @@ export const BrowserWindow = () => {
             }
         }
     };
-    
+
 
     const handleAttributeSelection = (attribute: string) => {
         if (selectedElement) {
