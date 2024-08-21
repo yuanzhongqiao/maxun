@@ -249,6 +249,7 @@ export const BrowserWindow = () => {
                                         size="medium"
                                         key={option.value}
                                         onClick={() => handleAttributeSelection(option.value)}
+                                        style={{ justifyContent: 'flex-start' }}
                                     >
                                         {option.label}
                                     </Button>
