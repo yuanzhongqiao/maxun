@@ -243,7 +243,7 @@ export const BrowserWindow = () => {
                         <div>
                             <h2>Select Attribute</h2>
                             {attributeOptions.map((option) => (
-                                <Button variant="contained" size="medium" key={option.value} onClick={() => handleAttributeSelection(option.value)}>
+                                <Button variant="outlined" size="medium" key={option.value} onClick={() => handleAttributeSelection(option.value)}>
                                     {option.label}
                                 </Button>
                             ))}
