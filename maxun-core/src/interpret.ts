@@ -525,7 +525,7 @@ export default class Interpreter extends EventEmitter {
           this.log(<Error>e, Level.ERROR);
         }
       } else {
-        await this.disableAdBlocker(p);
+        //await this.disableAdBlocker(p);
         return;
       }
     }
