@@ -246,7 +246,6 @@ export const BrowserWindow = () => {
                                 </Button>
                             ))}
                         </div>
-
                     </GenericModal>
                 ) : null
             }
