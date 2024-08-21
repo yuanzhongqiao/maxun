@@ -39,7 +39,7 @@ const defaultModalStyle = {
   p: 4,
   height: '30%',
   display: 'block',
-  overflow: 'scroll',
+  overflow: 'hidden',
   padding: '5px 25px 10px 25px',
   zIndex: 3147483647,
 };
