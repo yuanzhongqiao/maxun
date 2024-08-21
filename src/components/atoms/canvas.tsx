@@ -27,8 +27,9 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const { socket } = useSocketStore();
     const { setLastAction, lastAction } = useGlobalInfoStore();
-    const { getText, getScreenshot } = useActionContext();
+    const { getText, getList } = useActionContext();
     const getTextRef = useRef(getText);
+    const getListRef = useRef(getList);
 
     const notifyLastAction = (action: string) => {
         if (lastAction !== action) {
@@ -40,7 +41,8 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
 
     useEffect(() => {
         getTextRef.current = getText;
-    }, [getText]);
+        getListRef.current = getList;
+    }, [getText, getList]);
 
     const onMouseEvent = useCallback((event: MouseEvent) => {
         if (socket) {
@@ -51,8 +53,9 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
             switch (event.type) {
                 case 'mousedown':
                     const clickCoordinates = getMappedCoordinates(event, canvasRef.current, width, height);
-                    if (getTextRef.current === true) {
-                        console.log('get text')
+                    if (getTextRef.current === true || getListRef.current === true) {
+                        // todo: remove console.log and return
+                        console.log('get text or get list is true');
                     } else {
                         socket.emit('input:mousedown', clickCoordinates);
                     }

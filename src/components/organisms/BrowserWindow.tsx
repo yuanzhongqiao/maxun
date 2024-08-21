@@ -5,7 +5,7 @@ import { useBrowserDimensionsStore } from "../../context/browserDimensions";
 import { Highlighter } from "../atoms/Highlighter";
 import { GenericModal } from '../atoms/GenericModal';
 import { useActionContext } from '../../context/browserActions';
-import { useBrowserSteps } from '../../context/browserSteps';
+import { useBrowserSteps, TextStep } from '../../context/browserSteps';
 
 interface ElementInfo {
     tagName: string;
@@ -45,10 +45,13 @@ export const BrowserWindow = () => {
     const [attributeOptions, setAttributeOptions] = useState<AttributeOption[]>([]);
     const [selectedElement, setSelectedElement] = useState<{ selector: string, info: ElementInfo | null } | null>(null);
 
+    const [listSelector, setListSelector] = useState<string | null>(null);
+    const [fields, setFields] = useState<Record<string, TextStep>>({});
+
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
-    const { getText } = useActionContext();
-    const { addTextStep } = useBrowserSteps();
+    const { getText, getList } = useActionContext();
+    const { addTextStep, addListStep } = useBrowserSteps();
 
     const onMouseMove = (e: MouseEvent) => {
         if (canvasRef && canvasRef.current && highlighterData) {
@@ -84,8 +87,11 @@ export const BrowserWindow = () => {
     }, [screenShot, canvasRef, socket, screencastHandler]);
 
     const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: ElementInfo | null }) => {
+        if (getList === true) {
+            socket?.emit('setGetList', { getList: true });
+        }
         setHighlighterData(data);
-    }, [highlighterData])
+    }, [highlighterData, getList, socket]);
 
     useEffect(() => {
         document.addEventListener('mousemove', onMouseMove, false);
@@ -128,6 +134,45 @@ export const BrowserWindow = () => {
                         });
                     }
                 }
+
+                if (getList === true && !listSelector) {
+                    setListSelector(highlighterData.selector);
+                } else if (getList === true && listSelector) {
+                    const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '');
+                    if (options.length > 1) {
+                        setAttributeOptions(options);
+                        setSelectedElement({
+                            selector: highlighterData.selector,
+                            info: highlighterData.elementInfo
+                        });
+                        setShowAttributeModal(true);
+                    } else {
+                        const newField: TextStep = {
+                            id: Date.now(),
+                            type: 'text',
+                            label: `Label ${Object.keys(fields).length + 1}`,
+                            data: highlighterData.elementInfo?.innerText || '',
+                            selectorObj: {
+                                selector: highlighterData.selector,
+                                tag: highlighterData.elementInfo?.tagName,
+                                attribute: 'innerText'
+                            }
+                        };
+
+                        setFields(prevFields => {
+                            const updatedFields = {
+                                ...prevFields,
+                                [newField.label]: newField
+                            };
+                            return updatedFields;
+                        });
+
+                        if (listSelector) {
+                            addListStep(listSelector, { ...fields, [newField.label]: newField });
+                        }
+                    }
+
+                }
             }
         }
     };
@@ -153,6 +198,31 @@ export const BrowserWindow = () => {
                         attribute: attribute
                     });
                 }
+                if (getList === true) {
+                    const newField: TextStep = {
+                        id: Date.now(),
+                        type: 'text',
+                        label: `Label ${Object.keys(fields).length + 1}`,
+                        data: selectedElement.info?.innerText || '',
+                        selectorObj: {
+                            selector: selectedElement.selector,
+                            tag: selectedElement.info?.tagName,
+                            attribute: attribute
+                        }
+                    };
+
+                    setFields(prevFields => {
+                        const updatedFields = {
+                            ...prevFields,
+                            [newField.label]: newField
+                        };
+                        return updatedFields;
+                    });
+
+                    if (listSelector) {
+                        addListStep(listSelector, { ...fields, [newField.label]: newField });
+                    }
+                }
             }
         }
         setShowAttributeModal(false);
@@ -161,7 +231,7 @@ export const BrowserWindow = () => {
     return (
         <div onClick={handleClick}>
             {
-                getText === true ? (
+                getText === true || getList === true ? (
                     <GenericModal
                         isOpen={showAttributeModal}
                         onClose={() => { }}
@@ -179,7 +249,7 @@ export const BrowserWindow = () => {
                     </GenericModal>
                 ) : null
             }
-            {(getText === true && !showAttributeModal && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
+            {((getText === true || getList === true) && !showAttributeModal && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
                 <Highlighter
                     unmodifiedRect={highlighterData?.rect}
                     displayedSelector={highlighterData?.selector}

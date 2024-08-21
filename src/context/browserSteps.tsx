@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 
-interface TextStep {
+export interface TextStep {
     id: number;
     type: 'text';
     label: string;
@@ -14,10 +14,16 @@ interface ScreenshotStep {
     fullPage: boolean;
 }
 
+export interface ListStep {
+    id: number;
+    type: 'list';
+    listSelector: string;
+    fields: { [key: string]: TextStep };
+}
 
-type BrowserStep = TextStep | ScreenshotStep;
+type BrowserStep = TextStep | ScreenshotStep | ListStep;
 
-interface SelectorObject {
+export interface SelectorObject {
     selector: string;
     tag?: string;
     attribute?: string;
@@ -27,6 +33,7 @@ interface SelectorObject {
 interface BrowserStepsContextType {
     browserSteps: BrowserStep[];
     addTextStep: (label: string, data: string, selectorObj: SelectorObject) => void;
+    addListStep: (listSelector: string, fields: { [key: string]: TextStep }) => void
     addScreenshotStep: (fullPage: boolean) => void;
     deleteBrowserStep: (id: number) => void;
     updateBrowserTextStepLabel: (id: number, newLabel: string) => void;
@@ -43,6 +50,31 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
             { id: Date.now(), type: 'text', label, data, selectorObj }
         ]);
     };
+
+    const addListStep = (listSelector: string, newFields: { [key: string]: TextStep }) => {
+        setBrowserSteps(prevSteps => {
+            const existingListStepIndex = prevSteps.findIndex(
+                step => step.type === 'list' && step.listSelector === listSelector
+            );
+            if (existingListStepIndex !== -1) {
+                // Update the existing ListStep with new fields
+                const updatedSteps = [...prevSteps];
+                const existingListStep = updatedSteps[existingListStepIndex] as ListStep;
+                updatedSteps[existingListStepIndex] = {
+                    ...existingListStep,
+                    fields: { ...existingListStep.fields, ...newFields }
+                };
+                return updatedSteps;
+            } else {
+                // Create a new ListStep
+                return [
+                    ...prevSteps,
+                    { id: Date.now(), type: 'list', listSelector, fields: newFields }
+                ];
+            }
+        });
+    };
+
 
     const addScreenshotStep = (fullPage: boolean) => {
         setBrowserSteps(prevSteps => [
@@ -67,6 +99,7 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         <BrowserStepsContext.Provider value={{
             browserSteps,
             addTextStep,
+            addListStep,
             addScreenshotStep,
             deleteBrowserStep,
             updateBrowserTextStepLabel,

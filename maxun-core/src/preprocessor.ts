@@ -46,11 +46,11 @@ export default class Preprocessor {
     return error;
   }
 
-/**
-* Extracts parameter names from the workflow.
-* @param {WorkflowFile} workflow The given workflow
-* @returns {String[]} List of parameters' names.
-*/
+  /**
+  * Extracts parameter names from the workflow.
+  * @param {WorkflowFile} workflow The given workflow
+  * @returns {String[]} List of parameters' names.
+  */
   static getParams(workflow: WorkflowFile): string[] {
     const getParamsRecurse = (object: any): string[] => {
       if (typeof object === 'object') {
@@ -69,10 +69,10 @@ export default class Preprocessor {
     return getParamsRecurse(workflow.workflow);
   }
 
-/**
-* List all the selectors used in the given workflow (only literal "selector"
-* field in WHERE clauses so far)
-*/
+  /**
+  * List all the selectors used in the given workflow (only literal "selector"
+  * field in WHERE clauses so far)
+  */
   // TODO : add recursive selector search (also in click/fill etc. events?)
   static extractSelectors(workflow: Workflow): SelectorArray {
     /**
@@ -107,11 +107,11 @@ export default class Preprocessor {
     ], []);
   }
 
-/**
-* Recursively crawl `object` and initializes params - replaces the `{$param : paramName}` objects
-* with the defined value.
-* @returns {Workflow} Copy of the given workflow, modified (the initial workflow is left untouched).
-*/
+  /**
+  * Recursively crawl `object` and initializes params - replaces the `{$param : paramName}` objects
+  * with the defined value.
+  * @returns {Workflow} Copy of the given workflow, modified (the initial workflow is left untouched).
+  */
   static initWorkflow(workflow: Workflow, params?: ParamType): Workflow {
     const paramNames = this.getParams({ workflow });
 

@@ -8,11 +8,16 @@ import { SimpleBox } from "../atoms/Box";
 import Typography from "@mui/material/Typography";
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { useActionContext } from '../../context/browserActions';
-import { useBrowserSteps } from '../../context/browserSteps';
+import { useBrowserSteps, ListStep, TextStep, SelectorObject } from '../../context/browserSteps';
 import { useSocketStore } from '../../context/socket';
 import { ScreenshotSettings } from '../../shared/types';
 import InputAdornment from '@mui/material/InputAdornment';
 
+// TODO: 
+// 1. Handle field label update 
+// 2. Handle field deletion | confirmation
+// 3. Add description for each browser step
+// 4. Handle non custom action steps
 
 export const RightSidePanel = () => {
   const [textLabels, setTextLabels] = useState<{ [id: number]: string }>({});
@@ -20,7 +25,7 @@ export const RightSidePanel = () => {
   const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: number]: boolean }>({});
 
   const { lastAction, notify } = useGlobalInfoStore();
-  const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot } = useActionContext();
+  const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, getList, startGetList, stopGetList } = useActionContext();
   const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep } = useBrowserSteps();
   const { socket } = useSocketStore();
 
@@ -80,6 +85,49 @@ export const RightSidePanel = () => {
     }
   }, [stopGetText, getTextSettingsObject, socket, browserSteps, confirmedTextSteps]);
 
+
+  const getListSettingsObject = useCallback(() => {
+    let settings: { listSelector?: string; fields?: Record<string, { selector: string; tag?: string;[key: string]: any }> } = {};
+
+    browserSteps.forEach(step => {
+      if (step.type === 'list' && step.listSelector && Object.keys(step.fields).length > 0) {
+        const fields: Record<string, { selector: string; tag?: string;[key: string]: any }> = {};
+        Object.entries(step.fields).forEach(([label, field]) => {
+          if (field.selectorObj?.selector) {
+            fields[label] = {
+              selector: field.selectorObj.selector,
+              tag: field.selectorObj.tag,
+              attribute: field.selectorObj.attribute
+            };
+          }
+        });
+
+        settings = {
+          listSelector: step.listSelector,
+          fields: fields
+        };
+
+      }
+    });
+
+    return settings;
+  }, [browserSteps]);
+
+
+  const stopCaptureAndEmitGetListSettings = useCallback(() => {
+    stopGetList();
+    const settings = getListSettingsObject();
+    if (settings) {
+      socket?.emit('action', { action: 'scrapeList', settings });
+    } else {
+      notify('error', 'Unable to create list settings. Make sure you have defined a field for the list.');
+    }
+  }, [stopGetList, getListSettingsObject, socket, notify]);
+
+  // const handleListFieldChange = (stepId: number, key: 'label' | 'data', value: string) => {
+  //   updateListStepField(stepId, key, value);
+  // };  
+
   const captureScreenshot = (fullPage: boolean) => {
     const screenshotSettings: ScreenshotSettings = {
       fullPage,
@@ -101,7 +149,17 @@ export const RightSidePanel = () => {
       </SimpleBox>
 
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
-        {!getText && !getScreenshot && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
+        {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetList}>Capture List</Button>}
+        {getList &&
+          <>
+            <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
+              <Button variant="outlined" onClick={stopCaptureAndEmitGetListSettings}>Confirm</Button>
+              <Button variant="outlined" color="error" onClick={stopGetList}>Discard</Button>
+            </Box>
+          </>
+        }
+
+        {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
         {getText &&
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
@@ -111,7 +169,7 @@ export const RightSidePanel = () => {
           </>
         }
 
-        {!getText && !getScreenshot && <Button variant="contained" onClick={startGetScreenshot}>Capture Screenshot</Button>}
+        {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetScreenshot}>Capture Screenshot</Button>}
         {getScreenshot && (
           <Box display="flex" flexDirection="column" gap={2}>
             <Button variant="contained" onClick={() => captureScreenshot(true)}>Capture Fullpage</Button>
@@ -125,7 +183,7 @@ export const RightSidePanel = () => {
         {browserSteps.map(step => (
           <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }}>
             {
-              step.type === 'text' ? (
+              step.type === 'text' && (
                 <>
                   <TextField
                     label="Label"
@@ -165,24 +223,55 @@ export const RightSidePanel = () => {
                     </Box>
                   )}
                 </>
-              ) : (
-                step.type === 'screenshot' && (
-                  <Box display="flex" alignItems="center">
-                    <DocumentScannerIcon sx={{ mr: 1 }} />
-                    <Typography>
-                      {`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}
-                    </Typography>
+              )}
+            {step.type === 'screenshot' && (
+              <Box display="flex" alignItems="center">
+                <DocumentScannerIcon sx={{ mr: 1 }} />
+                <Typography>
+                  {`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}
+                </Typography>
+              </Box>
+            )}
+            {step.type === 'list' && (
+              <>
+                <Typography>List Selected Successfully</Typography>
+                {Object.entries(step.fields).map(([key, field]) => (
+                  <Box key={key}>
+                    <TextField
+                      label="Field Label"
+                      value={field.label || ''}
+                      onChange={() => { }}
+                      fullWidth
+                      margin="normal"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <EditIcon />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                    <TextField
+                      label="Field Data"
+                      value={field.data || ''}
+                      fullWidth
+                      margin="normal"
+                      InputProps={{
+                        readOnly: true,
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <TextFieldsIcon />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
                   </Box>
-                )
-              )
-            }
+                ))}
+              </>
+            )}
           </Box>
         ))}
       </Box>
     </Paper>
   );
 };
-
-export const ActionDescription = styled.p`
-  margin-left: 15px;
-`;

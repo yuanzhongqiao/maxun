@@ -27,7 +27,7 @@ export const InterpretationLog = () => {
   }
 
   const handleLog = useCallback((msg: string, date: boolean = true) => {
-    if (!date){
+    if (!date) {
       setLog((prevState) => prevState + '\n' + msg);
     } else {
       setLog((prevState) => prevState + '\n' + `[${new Date().toLocaleString()}] ` + msg);
@@ -42,9 +42,9 @@ export const InterpretationLog = () => {
     scrollLogToBottom();
   }, [log, scrollLogToBottom])
 
-  const handleBinaryCallback = useCallback(({data, mimetype}: any) => {
+  const handleBinaryCallback = useCallback(({ data, mimetype }: any) => {
     setLog((prevState) =>
-    prevState + '\n' + '---------- Binary output data received ----------' + '\n'
+      prevState + '\n' + '---------- Binary output data received ----------' + '\n'
       + `mimetype: ${mimetype}` + '\n' + `data: ${JSON.stringify(data)}` + '\n'
       + '------------------------------------------------');
     scrollLogToBottom();
@@ -66,10 +66,10 @@ export const InterpretationLog = () => {
       <Accordion
         expanded={expanded}
         onChange={handleChange(!expanded)}
-        style={{background: '#3f4853', color: 'white', borderRadius: '0px'}}
+        style={{ background: '#3f4853', color: 'white', borderRadius: '0px' }}
       >
         <AccordionSummary
-          expandIcon={<ExpandMoreIcon sx={{color: 'white'}}/>}
+          expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}
           aria-controls="panel1bh-content"
           id="panel1bh-header"
         >
@@ -88,8 +88,8 @@ export const InterpretationLog = () => {
             <Highlight className="javascript">
               {log}
             </Highlight>
-            <div style={{ float:"left", clear: "both" }}
-                 ref={logEndRef}/>
+            <div style={{ float: "left", clear: "both" }}
+              ref={logEndRef} />
           </div>
         </AccordionDetails>
       </Accordion>

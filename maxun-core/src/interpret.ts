@@ -1,5 +1,7 @@
 /* eslint-disable no-await-in-loop, no-restricted-syntax */
 import { Page, PageScreenshotOptions } from 'playwright';
+import { PlaywrightBlocker } from '@cliqz/adblocker-playwright';
+import fetch from 'cross-fetch';
 import path from 'path';
 
 import { EventEmitter } from 'events';
@@ -29,6 +31,7 @@ interface InterpreterOptions {
   }>
 }
 
+
 /**
  * Class for running the Smart Workflows.
  */
@@ -44,6 +47,8 @@ export default class Interpreter extends EventEmitter {
   private stopper: Function | null = null;
 
   private log: typeof log;
+
+  private blocker: PlaywrightBlocker | null = null;
 
   constructor(workflow: WorkflowFile, options?: Partial<InterpreterOptions>) {
     super();
@@ -75,6 +80,24 @@ export default class Interpreter extends EventEmitter {
         }
         oldLog(...args);
       };
+    }
+
+    PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch).then(blocker => {
+      this.blocker = blocker;
+    }).catch(err => {
+      this.log(`Failed to initialize ad-blocker:`, Level.ERROR);
+    })
+  }
+
+  private async applyAdBlocker(page: Page): Promise<void> {
+    if (this.blocker) {
+      await this.blocker.enableBlockingInPage(page);
+    }
+  }
+
+  private async disableAdBlocker(page: Page): Promise<void> {
+    if (this.blocker) {
+      await this.blocker.disableBlockingInPage(page);
     }
   }
 
@@ -285,9 +308,30 @@ export default class Interpreter extends EventEmitter {
 
       scrapeSchema: async (schema: Record<string, { selector: string; tag: string, attribute: string; }>) => {
         await this.ensureScriptsLoaded(page);
-      
+
         const scrapeResult = await page.evaluate((schemaObj) => window.scrapeSchema(schemaObj), schema);
         await this.options.serializableCallback(scrapeResult);
+      },
+
+      scrapeList: async (config: { listSelector: string, fields: any, limit?: number, pagination: any }) => {
+        await this.ensureScriptsLoaded(page);
+        if (!config.pagination) {
+          const scrapeResults: Record<string, any>[] = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+          await this.options.serializableCallback(scrapeResults);
+        } else {
+          const scrapeResults: Record<string, any>[] = await this.handlePagination(page, config);
+          await this.options.serializableCallback(scrapeResults);
+        }
+      },
+
+      scrapeListAuto: async (config: { listSelector: string }) => {
+        await this.ensureScriptsLoaded(page);
+
+        const scrapeResults: { selector: string, innerText: string }[] = await page.evaluate((listSelector) => {
+          return window.scrapeListAuto(listSelector);
+        }, config.listSelector);
+
+        await this.options.serializableCallback(scrapeResults);
       },
 
       scroll: async (pages?: number) => {
@@ -298,6 +342,7 @@ export default class Interpreter extends EventEmitter {
           }
         }, pages ?? 1);
       },
+
       script: async (code: string) => {
         const AsyncFunction: FunctionConstructor = Object.getPrototypeOf(
           async () => { },
@@ -305,6 +350,7 @@ export default class Interpreter extends EventEmitter {
         const x = new AsyncFunction('page', 'log', code);
         await x(page, this.log);
       },
+
       flag: async () => new Promise((res) => {
         this.emit('flag', page, res);
       }),
@@ -338,7 +384,82 @@ export default class Interpreter extends EventEmitter {
     }
   }
 
+  private async handlePagination(page: Page, config: { listSelector: string, fields: any, limit?: number, pagination: any }) {
+    let allResults: Record<string, any>[] = [];
+    let previousHeight = 0;
+    // track unique items per page to avoid re-scraping
+    let scrapedItems: Set<string> = new Set<string>();
+
+    while (true) {
+      switch (config.pagination.type) {
+        case 'scrollDown':
+          await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+          await page.waitForTimeout(2000);
+
+          const currentHeight = await page.evaluate(() => document.body.scrollHeight);
+          if (currentHeight === previousHeight) {
+            const finalResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+            allResults = allResults.concat(finalResults);
+            return allResults;
+          }
+
+          previousHeight = currentHeight;
+          break;
+        case 'scrollUp':
+          break;
+        case 'clickNext':
+          const pageResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+
+          // Filter out already scraped items
+          const newResults = pageResults.filter(item => {
+            const uniqueKey = JSON.stringify(item);
+            if (scrapedItems.has(uniqueKey)) return false; // Ignore if already scraped
+            scrapedItems.add(uniqueKey); // Mark as scraped
+            return true;
+          });
+
+          allResults = allResults.concat(newResults);
+
+          if (config.limit && allResults.length >= config.limit) {
+            return allResults.slice(0, config.limit);
+          }
+
+          const nextButton = await page.$(config.pagination.selector);
+          if (!nextButton) {
+            return allResults; // No more pages to scrape
+          }
+          await Promise.all([
+            nextButton.click(),
+            page.waitForNavigation({ waitUntil: 'networkidle' })
+          ]);
+
+          await page.waitForTimeout(1000);
+          break;
+        case 'clickLoadMore':
+          const loadMoreButton = await page.$(config.pagination.selector);
+          if (!loadMoreButton) {
+            return allResults;
+          }
+          await loadMoreButton.click();
+          break;
+        default:
+          const results = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+          allResults = allResults.concat(results);
+          return allResults;
+      }
+
+      if (config.limit && allResults.length >= config.limit) {
+        allResults = allResults.slice(0, config.limit);
+        break;
+      }
+    }
+
+    return allResults;
+  }
+
   private async runLoop(p: Page, workflow: Workflow) {
+    // apply ad-blocker to the current page
+    await this.applyAdBlocker(p);
     const usedActions: string[] = [];
     let lastAction = null;
     let repeatCount = 0;
@@ -404,13 +525,14 @@ export default class Interpreter extends EventEmitter {
           this.log(<Error>e, Level.ERROR);
         }
       } else {
+        //await this.disableAdBlocker(p);
         return;
       }
     }
   }
 
   private async ensureScriptsLoaded(page: Page) {
-    const isScriptLoaded = await page.evaluate(() => typeof window.scrape === 'function' && typeof window.scrapeSchema === 'function');
+    const isScriptLoaded = await page.evaluate(() => typeof window.scrape === 'function' && typeof window.scrapeSchema === 'function' && typeof window.scrapeList === 'function' && typeof window.scrapeListAuto === 'function' && typeof window.scrollDown === 'function' && typeof window.scrollUp === 'function');
     if (!isScriptLoaded) {
       await page.addInitScript({ path: path.join(__dirname, 'browserSide', 'scraper.js') });
     }

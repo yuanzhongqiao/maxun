@@ -126,6 +126,85 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
   return out;
 }
 
+async function scrollDownToLoadMore(selector, limit) {
+  let previousHeight = 0;
+  let itemsLoaded = 0;
+
+  while (itemsLoaded < limit) {
+    window.scrollBy(0, window.innerHeight);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const currentHeight = document.body.scrollHeight;
+
+    if (currentHeight === previousHeight) {
+      break; // No more items to load
+    }
+
+    previousHeight = currentHeight;
+    itemsLoaded += document.querySelectorAll(selector).length;
+  }
+}
+
+async function scrollUpToLoadMore(selector, limit) {
+  let previousHeight = 0;
+  let itemsLoaded = 0;
+
+  while (itemsLoaded < limit) {
+    window.scrollBy(0, -window.innerHeight);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const currentHeight = document.body.scrollHeight;
+
+    if (currentHeight === previousHeight) {
+      break; // No more items to load
+    }
+
+    previousHeight = currentHeight;
+    itemsLoaded += document.querySelectorAll(selector).length;
+  }
+}
+
+async function clickNextPagination(selector, scrapedData, limit) {
+  // Check if the limit is already met
+  if (scrapedData.length >= limit) {
+    return false; // Return false to indicate no further action is needed
+  }
+
+  // Check if a single "Next" button exists
+  let nextButton = document.querySelector(selector);
+
+  if (nextButton) {
+    nextButton.click();
+    return true; // Indicate that pagination occurred
+  } else {
+    // Handle pagination with numbers
+    const paginationButtons = document.querySelectorAll(selector);
+    let clicked = false;
+
+    // Loop through pagination buttons to find the current active page
+    for (let i = 0; i < paginationButtons.length - 1; i++) {
+      const button = paginationButtons[i];
+      if (button.classList.contains('active')) {
+        // Click the next button if available
+        const nextButtonInPagination = paginationButtons[i + 1];
+        if (nextButtonInPagination) {
+          nextButtonInPagination.click();
+          clicked = true;
+          break;
+        }
+      }
+    }
+
+    // If no next button was clicked, we might be on the last page
+    if (!clicked) {
+      throw new Error("No more items to load or pagination has ended.");
+    }
+
+    return clicked; // Indicate whether pagination occurred
+  }
+}
+
+
 /**
  * Returns a "scrape" result from the current page.
  * @returns {Array<Object>} *Curated* array of scraped information (with sparse rows removed)
@@ -183,6 +262,7 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
   };
 
   /**
+   * TODO: Simplify.
    * Given an object with named lists of elements,
    *  groups the elements by their distance in the DOM tree.
    * @param {Object.<string, {selector: string, tag: string}>} lists The named lists of HTML elements.
@@ -248,6 +328,136 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
       },
       (key) => key // Use the original key in the output
     ));
+  }
+
+  /**
+ * Scrapes multiple lists of similar items based on a template item.
+ * @param {Object} config - Configuration object
+ * @param {string} config.listSelector - Selector for the list container(s)
+ * @param {Object.<string, {selector: string, attribute?: string}>} config.fields - Fields to scrape
+ * @param {number} [config.limit] - Maximum number of items to scrape per list (optional)
+ * @param {boolean} [config.flexible=false] - Whether to use flexible matching for field selectors
+ * @returns {Array.<Array.<Object>>} Array of arrays of scraped items, one sub-array per list
+ */
+  window.scrapeList = async function ({ listSelector, fields, limit = 10 }) {
+    const scrapedData = [];
+
+    while (scrapedData.length < limit) {
+      // Get all parent elements matching the listSelector
+      const parentElements = Array.from(document.querySelectorAll(listSelector));
+
+      // Iterate through each parent element
+      for (const parent of parentElements) {
+        if (scrapedData.length >= limit) break;
+        const record = {};
+
+        // For each field, select the corresponding element within the parent
+        for (const [label, { selector, attribute }] of Object.entries(fields)) {
+          const fieldElement = parent.querySelector(selector);
+
+          if (fieldElement) {
+            if (attribute === 'innerText') {
+              record[label] = fieldElement.innerText.trim();
+            } else if (attribute === 'innerHTML') {
+              record[label] = fieldElement.innerHTML.trim();
+            } else if (attribute === 'src') {
+              record[label] = fieldElement.src;
+            } else if (attribute === 'href') {
+              record[label] = fieldElement.href;
+            } else {
+              record[label] = fieldElement.getAttribute(attribute);
+            }
+          }
+        }
+        scrapedData.push(record);
+      }
+    }
+    return scrapedData
+  };
+
+
+  /**
+ * Gets all children of the elements matching the listSelector,
+ * returning their CSS selectors and innerText.
+ * @param {string} listSelector - Selector for the list container(s)
+ * @returns {Array.<Object>} Array of objects, each containing the CSS selector and innerText of the children
+ */
+  window.scrapeListAuto = function (listSelector) {
+    const lists = Array.from(document.querySelectorAll(listSelector));
+
+    const results = [];
+
+    lists.forEach(list => {
+      const children = Array.from(list.children);
+
+      children.forEach(child => {
+        const selectors = [];
+        let element = child;
+
+        // Traverse up to gather the CSS selector for the element
+        while (element && element !== document) {
+          let selector = element.nodeName.toLowerCase();
+          if (element.id) {
+            selector += `#${element.id}`;
+            selectors.push(selector);
+            break;
+          } else {
+            const className = element.className.trim().split(/\s+/).join('.');
+            if (className) {
+              selector += `.${className}`;
+            }
+            selectors.push(selector);
+            element = element.parentElement;
+          }
+        }
+
+        results.push({
+          selector: selectors.reverse().join(' > '),
+          innerText: child.innerText.trim()
+        });
+      });
+    });
+
+    return results;
+  };
+
+
+  window.scrollDown = async function (selector, limit) {
+    let previousHeight = 0;
+    let itemsLoaded = 0;
+
+    while (itemsLoaded < limit) {
+      window.scrollTo(0, document.body.scrollHeight);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const currentHeight = document.body.scrollHeight;
+
+      if (currentHeight === previousHeight) {
+        break; // No more items to load
+      }
+
+      previousHeight = currentHeight;
+      itemsLoaded += document.querySelectorAll(selector).length;
+    }
+  }
+
+  window.scrollUp = async function (selector, limit) {
+    let previousHeight = 0;
+    let itemsLoaded = 0;
+
+    while (itemsLoaded < limit) {
+      window.scrollBy(0, -window.innerHeight);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const currentHeight = document.body.scrollHeight;
+
+      if (currentHeight === previousHeight) {
+        break; // No more items to load
+      }
+
+      previousHeight = currentHeight;
+      itemsLoaded += document.querySelectorAll(selector).length;
+    }
   }
 
 })(window);

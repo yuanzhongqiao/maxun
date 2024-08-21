@@ -98,20 +98,20 @@ export const getElementInformation = async (
       { x: coordinates.x, y: coordinates.y },
     );
 
-    if (elementInfo) {
-      if (elementInfo.tagName === 'A') {
-        if (elementInfo.innerText) {
-          console.log(`Link text: ${elementInfo.innerText}, URL: ${elementInfo.url}`);
-        } else {
-          console.log(`URL: ${elementInfo.url}`);
-        }
-      } else if (elementInfo.tagName === 'IMG') {
-        console.log(`Image URL: ${elementInfo.imageUrl}`);
-      } else {
-        console.log(`Element innerText: ${elementInfo.innerText}`);
-      }
-    }
-    
+    // if (elementInfo) {
+    //   if (elementInfo.tagName === 'A') {
+    //     if (elementInfo.innerText) {
+    //       console.log(`Link text: ${elementInfo.innerText}, URL: ${elementInfo.url}`);
+    //     } else {
+    //       console.log(`URL: ${elementInfo.url}`);
+    //     }
+    //   } else if (elementInfo.tagName === 'IMG') {
+    //     console.log(`Image URL: ${elementInfo.imageUrl}`);
+    //   } else {
+    //     console.log(`Element innerText: ${elementInfo.innerText}`);
+    //   }
+    // }
+
     return elementInfo;
   } catch (error) {
     const { message, stack } = error as Error;
@@ -720,6 +720,66 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
   }
   return null;
 };
+
+
+/**
+ * Returns the best non-unique css {@link Selectors} for the element on the page.
+ * @param page The page instance.
+ * @param coordinates Coordinates of an element.
+ * @category WorkflowManagement-Selectors
+ * @returns {Promise<Selectors|null|undefined>}
+ */
+
+export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates) => {
+  try {
+    const selectors = await page.evaluate(({ x, y }: { x: number, y: number }) => {
+
+      function getNonUniqueSelector(element: HTMLElement): string {
+        let selector = element.tagName.toLowerCase();
+
+        // Avoid using IDs to maintain non-uniqueness
+        if (element.className) {
+          const classes = element.className.split(/\s+/).filter((cls: string) => Boolean(cls));
+          if (classes.length > 0) {
+            // Exclude utility classes and escape special characters
+            const validClasses = classes.filter((cls: string) => !cls.startsWith('!') && !cls.includes(':'));
+            if (validClasses.length > 0) {
+              selector += '.' + validClasses.map(cls => CSS.escape(cls)).join('.');
+            }
+          }
+        }
+
+        return selector;
+      }
+
+      function getSelectorPath(element: HTMLElement | null): string {
+        const path: string[] = [];
+        while (element && element !== document.body) {
+          const selector = getNonUniqueSelector(element);
+          path.unshift(selector);
+          element = element.parentElement;
+        }
+        return path.join(' > ');
+      }
+
+      const element = document.elementFromPoint(x, y) as HTMLElement | null;
+      if (!element) return null;
+
+      const generalSelector = getSelectorPath(element);
+      return {
+        generalSelector,
+      };
+    }, coordinates);
+
+    return selectors || {};
+  } catch (error) {
+    console.error('Error in getNonUniqueSelectors:', error);
+    return {};
+  }
+};
+
+
+
 
 /**
  * Returns the first pair from the given workflow that contains the given selector

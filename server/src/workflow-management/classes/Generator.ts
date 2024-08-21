@@ -7,6 +7,7 @@ import {
   getElementInformation,
   getRect,
   getSelectors,
+  getNonUniqueSelectors,
   isRuleOvershadowing,
   selectorAlreadyInWorkflow
 } from "../selector";
@@ -47,6 +48,12 @@ export class WorkflowGenerator {
   private socket: Socket;
 
   /**
+   * getList is one of the custom actions from maxun-core.
+   * Used to provide appropriate selectors for the getList action.
+   */
+  private getList: boolean = false;
+
+  /**
    * The public constructor of the WorkflowGenerator.
    * Takes socket for communication as a parameter and registers some important events on it.
    * @param socket The socket used to communicate with the client.
@@ -55,6 +62,7 @@ export class WorkflowGenerator {
   public constructor(socket: Socket) {
     this.socket = socket;
     this.registerEventHandlers(socket);
+    this.initializeSocketListeners();
   }
 
   /**
@@ -86,6 +94,15 @@ export class WorkflowGenerator {
     lastUsedSelector: '',
     lastIndex: null,
     lastAction: '',
+  }
+
+  /**
+   * Initializes the socket listeners for the generator.
+   */
+  private initializeSocketListeners() {
+    this.socket.on('setGetList', (data: { getList: boolean }) => {
+      this.getList = data.getList;
+    });
   }
 
   /**
@@ -459,13 +476,17 @@ export class WorkflowGenerator {
    */
   private generateSelector = async (page: Page, coordinates: Coordinates, action: ActionType) => {
     const elementInfo = await getElementInformation(page, coordinates);
+
+    const selectorBasedOnCustomAction = (this.getList === true)
+      ? await getNonUniqueSelectors(page, coordinates)
+      : await getSelectors(page, coordinates);
     const bestSelector = getBestSelectorForAction(
       {
         type: action,
         tagName: elementInfo?.tagName as TagName || '',
         inputType: undefined,
         value: undefined,
-        selectors: await getSelectors(page, coordinates) || {},
+        selectors: selectorBasedOnCustomAction || {},
         timestamp: 0,
         isPassword: false,
         hasOnlyText: elementInfo?.hasOnlyText || false,
@@ -488,6 +509,8 @@ export class WorkflowGenerator {
     if (rect) {
       this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo });
     }
+    // reset getList after usage
+    this.getList = false;
   }
 
   /**
