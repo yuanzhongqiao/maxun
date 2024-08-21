@@ -47,7 +47,6 @@ const getAttributeOptions = (tagName: string, elementInfo: ElementInfo | null): 
     }
 };
 
-
 export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
     const [screenShot, setScreenShot] = useState<string>("");
@@ -196,7 +195,6 @@ export const BrowserWindow = () => {
             }
         }
     };
-
 
     const handleAttributeSelection = (attribute: string) => {
         if (selectedElement) {
