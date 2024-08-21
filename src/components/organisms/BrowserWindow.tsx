@@ -25,19 +25,23 @@ const getAttributeOptions = (tagName: string, elementInfo: ElementInfo | null): 
     if (!elementInfo) return [];
     switch (tagName.toLowerCase()) {
         case 'a':
-            return [
-                { label: `Text: ${elementInfo.innerText}`, value: 'innerText' },
-                { label: `URL: ${elementInfo.url}`, value: 'href' }
-            ];
-        case 'img':
-            const options: AttributeOption[] = [];
+            const anchorOptions: AttributeOption[] = [];
             if (elementInfo.innerText) {
-                options.push({ label: `Alt Text: ${elementInfo.innerText}`, value: 'alt' });
+                anchorOptions.push({ label: `Text: ${elementInfo.innerText}`, value: 'innerText' });
+            }
+            if (elementInfo.url) {
+                anchorOptions.push({ label: `URL: ${elementInfo.url}`, value: 'href' });
+            }
+            return anchorOptions;
+        case 'img':
+            const imgOptions: AttributeOption[] = [];
+            if (elementInfo.innerText) {
+                imgOptions.push({ label: `Alt Text: ${elementInfo.innerText}`, value: 'alt' });
             }
             if (elementInfo.imageUrl) {
-                options.push({ label: `Image URL: ${elementInfo.imageUrl}`, value: 'src' });
+                imgOptions.push({ label: `Image URL: ${elementInfo.imageUrl}`, value: 'src' });
             }
-            return options;
+            return imgOptions;
         default:
             return [{ label: `Text: ${elementInfo.innerText}`, value: 'innerText' }];
     }
