@@ -251,7 +251,7 @@ export const BrowserWindow = () => {
                                         onClick={() => handleAttributeSelection(option.value)}
                                         style={{
                                             justifyContent: 'flex-start',
-                                            maxWidth: '200px',
+                                            maxWidth: '80%',
                                             overflow: 'hidden',
                                             padding: '5px 10px',
                                         }}
@@ -272,8 +272,6 @@ export const BrowserWindow = () => {
                     </GenericModal>
                 ) : null
             }
-
-
             {((getText === true || getList === true) && !showAttributeModal && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
                 <Highlighter
                     unmodifiedRect={highlighterData?.rect}
