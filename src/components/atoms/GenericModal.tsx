@@ -37,7 +37,7 @@ const defaultModalStyle = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
-  height: '60%',
+  height: '30%',
   display: 'block',
   overflow: 'scroll',
   padding: '5px 25px 10px 25px',
