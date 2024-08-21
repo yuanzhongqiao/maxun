@@ -35,7 +35,7 @@ const getAttributeOptions = (tagName: string, elementInfo: ElementInfo | null): 
                 options.push({ label: `Alt Text: ${elementInfo.innerText}`, value: 'alt' });
             }
             if (elementInfo.imageUrl) {
-                options.push({ label: `Source URL: ${elementInfo.imageUrl}`, value: 'src' });
+                options.push({ label: `Image URL: ${elementInfo.imageUrl}`, value: 'src' });
             }
             return options;
         default:
