@@ -30,10 +30,14 @@ const getAttributeOptions = (tagName: string, elementInfo: ElementInfo | null): 
                 { label: `URL: ${elementInfo.url}`, value: 'href' }
             ];
         case 'img':
-            return [
-                { label: `Alt Text: ${elementInfo.innerText}`, value: 'alt' },
-                { label: `Source URL: ${elementInfo.imageUrl}`, value: 'src' }
-            ];
+            const options: AttributeOption[] = [];
+            if (elementInfo.innerText) {
+                options.push({ label: `Alt Text: ${elementInfo.innerText}`, value: 'alt' });
+            }
+            if (elementInfo.imageUrl) {
+                options.push({ label: `Source URL: ${elementInfo.imageUrl}`, value: 'src' });
+            }
+            return options;
         default:
             return [{ label: `Text: ${elementInfo.innerText}`, value: 'innerText' }];
     }
