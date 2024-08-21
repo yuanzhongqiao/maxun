@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSocketStore } from '../../context/socket';
+import { Button } from '@mui/material';
 import Canvas from "../atoms/canvas";
 import { useBrowserDimensionsStore } from "../../context/browserDimensions";
 import { Highlighter } from "../atoms/Highlighter";
@@ -20,20 +21,29 @@ interface AttributeOption {
     value: string;
 }
 
-const getAttributeOptions = (tagName: string): AttributeOption[] => {
+const getAttributeOptions = (tagName: string, elementInfo: ElementInfo | null): AttributeOption[] => {
+    if (!elementInfo) return [];
     switch (tagName.toLowerCase()) {
         case 'a':
-            return [
-                { label: 'Text', value: 'innerText' },
-                { label: 'URL', value: 'href' }
-            ];
+            const anchorOptions: AttributeOption[] = [];
+            if (elementInfo.innerText) {
+                anchorOptions.push({ label: `Text: ${elementInfo.innerText}`, value: 'innerText' });
+            }
+            if (elementInfo.url) {
+                anchorOptions.push({ label: `URL: ${elementInfo.url}`, value: 'href' });
+            }
+            return anchorOptions;
         case 'img':
-            return [
-                { label: 'Alt Text', value: 'alt' },
-                { label: 'Source URL', value: 'src' }
-            ];
+            const imgOptions: AttributeOption[] = [];
+            if (elementInfo.innerText) {
+                imgOptions.push({ label: `Alt Text: ${elementInfo.innerText}`, value: 'alt' });
+            }
+            if (elementInfo.imageUrl) {
+                imgOptions.push({ label: `Image URL: ${elementInfo.imageUrl}`, value: 'src' });
+            }
+            return imgOptions;
         default:
-            return [{ label: 'Text', value: 'innerText' }];
+            return [{ label: `Text: ${elementInfo.innerText}`, value: 'innerText' }];
     }
 };
 
@@ -117,36 +127,38 @@ export const BrowserWindow = () => {
                 clickY >= highlightRect.top &&
                 clickY <= highlightRect.bottom
             ) {
+                const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '', highlighterData.elementInfo);
+
                 if (getText === true) {
-                    const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '');
-                    if (options.length > 1) {
+                    if (options.length === 1) {
+                        // Directly use the available attribute if only one option is present
+                        const attribute = options[0].value;
+                        const data = attribute === 'href' ? highlighterData.elementInfo?.url || '' :
+                            attribute === 'src' ? highlighterData.elementInfo?.imageUrl || '' :
+                                highlighterData.elementInfo?.innerText || '';
+
+                        addTextStep('', data, {
+                            selector: highlighterData.selector,
+                            tag: highlighterData.elementInfo?.tagName,
+                            attribute
+                        });
+                    } else {
+                        // Show the modal if there are multiple options
                         setAttributeOptions(options);
                         setSelectedElement({
                             selector: highlighterData.selector,
                             info: highlighterData.elementInfo
                         });
                         setShowAttributeModal(true);
-                    } else {
-                        addTextStep('', highlighterData.elementInfo?.innerText || '', {
-                            selector: highlighterData.selector,
-                            tag: highlighterData.elementInfo?.tagName,
-                            attribute: 'innerText'
-                        });
                     }
                 }
 
                 if (getList === true && !listSelector) {
                     setListSelector(highlighterData.selector);
                 } else if (getList === true && listSelector) {
-                    const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '');
-                    if (options.length > 1) {
-                        setAttributeOptions(options);
-                        setSelectedElement({
-                            selector: highlighterData.selector,
-                            info: highlighterData.elementInfo
-                        });
-                        setShowAttributeModal(true);
-                    } else {
+                    if (options.length === 1) {
+                        // Handle directly without showing the modal
+                        const attribute = options[0].value;
                         const newField: TextStep = {
                             id: Date.now(),
                             type: 'text',
@@ -155,7 +167,7 @@ export const BrowserWindow = () => {
                             selectorObj: {
                                 selector: highlighterData.selector,
                                 tag: highlighterData.elementInfo?.tagName,
-                                attribute: 'innerText'
+                                attribute
                             }
                         };
 
@@ -170,8 +182,15 @@ export const BrowserWindow = () => {
                         if (listSelector) {
                             addListStep(listSelector, { ...fields, [newField.label]: newField });
                         }
+                    } else {
+                        // Show the modal if there are multiple options
+                        setAttributeOptions(options);
+                        setSelectedElement({
+                            selector: highlighterData.selector,
+                            info: highlighterData.elementInfo
+                        });
+                        setShowAttributeModal(true);
                     }
-
                 }
             }
         }
@@ -239,13 +258,33 @@ export const BrowserWindow = () => {
                     >
                         <div>
                             <h2>Select Attribute</h2>
-                            {attributeOptions.map((option) => (
-                                <button key={option.value} onClick={() => handleAttributeSelection(option.value)}>
-                                    {option.label}
-                                </button>
-                            ))}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '30px' }}>
+                                {attributeOptions.map((option) => (
+                                    <Button
+                                        variant="outlined"
+                                        size="medium"
+                                        key={option.value}
+                                        onClick={() => handleAttributeSelection(option.value)}
+                                        style={{
+                                            justifyContent: 'flex-start',
+                                            maxWidth: '80%',
+                                            overflow: 'hidden',
+                                            padding: '5px 10px',
+                                        }}
+                                    >
+                                        <span style={{
+                                            display: 'block',
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            maxWidth: '100%'
+                                        }}>
+                                            {option.label}
+                                        </span>
+                                    </Button>
+                                ))}
+                            </div>
                         </div>
-
                     </GenericModal>
                 ) : null
             }
