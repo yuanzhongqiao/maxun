@@ -242,7 +242,7 @@ export const BrowserWindow = () => {
                     >
                         <div>
                             <h2>Select Attribute</h2>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '30px' }}>
                                 {attributeOptions.map((option) => (
                                     <Button
                                         variant="outlined"
