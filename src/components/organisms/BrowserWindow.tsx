@@ -23,7 +23,6 @@ interface AttributeOption {
 
 const getAttributeOptions = (tagName: string, elementInfo: ElementInfo | null): AttributeOption[] => {
     if (!elementInfo) return [];
-
     switch (tagName.toLowerCase()) {
         case 'a':
             return [
