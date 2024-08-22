@@ -4,12 +4,15 @@ import Typography from '@mui/material/Typography';
 import Highlight from 'react-highlight';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSocketStore } from "../../context/socket";
+import { useBrowserDimensionsStore } from "../../context/browserDimensions";
 
 export const InterpretationLog = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [log, setLog] = useState<string>('');
 
   const logEndRef = useRef<HTMLDivElement | null>(null);
+
+  const { width } = useBrowserDimensionsStore();
 
   const toggleDrawer = (newOpen: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
     if (
@@ -76,7 +79,7 @@ export const InterpretationLog = () => {
         onClose={toggleDrawer(false)}
         onOpen={toggleDrawer(true)}
         PaperProps={{
-          sx: { background: '#19171c', color: 'white', padding: '10px' }
+          sx: { background: '#19171c', color: 'white', padding: '10px', height: 720, width: width - 10 }
         }}
       >
         <Typography variant="h6" gutterBottom>
