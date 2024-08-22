@@ -1,5 +1,5 @@
 import type {
-    FC,
+  FC,
 } from 'react';
 import styled from 'styled-components';
 
@@ -8,9 +8,9 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 import { NavBarButton } from '../atoms/buttons/buttons';
-import { UrlForm }  from './UrlForm';
+import { UrlForm } from './UrlForm';
 import { useCallback, useEffect, useState } from "react";
-import {useSocketStore} from "../../context/socket";
+import { useSocketStore } from "../../context/socket";
 import { getCurrentUrl } from "../../api/recording";
 
 const StyledNavBar = styled.div<{ browserWidth: number }>`
@@ -21,8 +21,8 @@ const StyledNavBar = styled.div<{ browserWidth: number }>`
 `;
 
 interface NavBarProps {
-    browserWidth: number;
-    handleUrlChanged: (url: string) => void;
+  browserWidth: number;
+  handleUrlChanged: (url: string) => void;
 };
 
 const BrowserNavBar: FC<NavBarProps> = ({
@@ -34,11 +34,11 @@ const BrowserNavBar: FC<NavBarProps> = ({
 
   const [currentUrl, setCurrentUrl] = useState<string>('https://');
 
-  const handleRefresh = useCallback(() : void => {
+  const handleRefresh = useCallback((): void => {
     socket?.emit('input:refresh');
   }, [socket]);
 
-  const handleGoTo = useCallback((address: string) : void => {
+  const handleGoTo = useCallback((address: string): void => {
     socket?.emit('input:url', address);
   }, [socket]);
 
@@ -69,54 +69,54 @@ const BrowserNavBar: FC<NavBarProps> = ({
     }
   }, [socket, handleCurrentUrlChange])
 
-    const addAddress = (address: string) => {
-        if (socket) {
-          handleUrlChanged(address);
-          handleGoTo(address);
-        }
-    };
+  const addAddress = (address: string) => {
+    if (socket) {
+      handleUrlChanged(address);
+      handleGoTo(address);
+    }
+  };
 
-    return (
-        <StyledNavBar browserWidth={browserWidth}>
-            <NavBarButton
-                type="button"
-                onClick={() => {
-                    socket?.emit('input:back');
-                }}
-                disabled={false}
-            >
-                <ArrowBackIcon/>
-            </NavBarButton>
+  return (
+    <StyledNavBar browserWidth={browserWidth}>
+      <NavBarButton
+        type="button"
+        onClick={() => {
+          socket?.emit('input:back');
+        }}
+        disabled={false}
+      >
+        <ArrowBackIcon />
+      </NavBarButton>
 
-            <NavBarButton
-                type="button"
-                onClick={()=>{
-                  socket?.emit('input:forward');
-                }}
-                disabled={false}
-            >
-                <ArrowForwardIcon/>
-            </NavBarButton>
+      <NavBarButton
+        type="button"
+        onClick={() => {
+          socket?.emit('input:forward');
+        }}
+        disabled={false}
+      >
+        <ArrowForwardIcon />
+      </NavBarButton>
 
-            <NavBarButton
-                type="button"
-                onClick={() => {
-                  if (socket) {
-                    handleRefresh()
-                  }
-                }}
-                disabled={false}
-            >
-              <ReplayIcon/>
-            </NavBarButton>
+      <NavBarButton
+        type="button"
+        onClick={() => {
+          if (socket) {
+            handleRefresh()
+          }
+        }}
+        disabled={false}
+      >
+        <ReplayIcon />
+      </NavBarButton>
 
-            <UrlForm
-                currentAddress={currentUrl}
-                handleRefresh={handleRefresh}
-                setCurrentAddress={addAddress}
-            />
-        </StyledNavBar>
-    );
+      <UrlForm
+        currentAddress={currentUrl}
+        handleRefresh={handleRefresh}
+        setCurrentAddress={addAddress}
+      />
+    </StyledNavBar>
+  );
 }
 
 export default BrowserNavBar;
