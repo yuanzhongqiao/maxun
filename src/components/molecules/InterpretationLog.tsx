@@ -37,14 +37,14 @@ export const InterpretationLog = () => {
       setLog((prevState) => prevState + '\n' + `[${new Date().toLocaleString()}] ` + msg);
     }
     scrollLogToBottom();
-  }, [scrollLogToBottom]);
+  }, [log, scrollLogToBottom]);
 
   const handleSerializableCallback = useCallback((data: string) => {
     setLog((prevState) =>
       prevState + '\n' + '---------- Serializable output data received ----------' + '\n'
       + JSON.stringify(data, null, 2) + '\n' + '--------------------------------------------------');
     scrollLogToBottom();
-  }, [scrollLogToBottom]);
+  }, [log, scrollLogToBottom]);
 
   const handleBinaryCallback = useCallback(({ data, mimetype }: any) => {
     setLog((prevState) =>
@@ -52,7 +52,7 @@ export const InterpretationLog = () => {
       + `mimetype: ${mimetype}` + '\n' + `data: ${JSON.stringify(data)}` + '\n'
       + '------------------------------------------------');
     scrollLogToBottom();
-  }, [scrollLogToBottom]);
+  }, [log, scrollLogToBottom]);
 
   useEffect(() => {
     socket?.on('log', handleLog);
