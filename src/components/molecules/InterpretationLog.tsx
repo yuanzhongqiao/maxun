@@ -67,7 +67,7 @@ export const InterpretationLog = () => {
 
   return (
     <div>
-      <button onClick={toggleDrawer(true)} style={{ color: 'white', background: '#3f4853', border: 'none', padding: '10px 20px', width: '100%', textAlign: 'left'}}>
+      <button onClick={toggleDrawer(true)} style={{ color: 'white', background: '#3f4853', border: 'none', padding: '10px 20px', width: '100%', textAlign: 'left' }}>
         Interpretation Log
       </button>
       <SwipeableDrawer
