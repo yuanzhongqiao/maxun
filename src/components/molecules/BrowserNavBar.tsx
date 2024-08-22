@@ -30,7 +30,6 @@ const BrowserNavBar: FC<NavBarProps> = ({
   handleUrlChanged,
 }) => {
 
-  // context:
   const { socket } = useSocketStore();
 
   const [currentUrl, setCurrentUrl] = useState<string>('https://');
