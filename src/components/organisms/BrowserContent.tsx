@@ -123,7 +123,8 @@ export const BrowserContent = () => {
         tabIndex={tabIndex}
       />
       <BrowserNavBar
-        browserWidth={width - 10}
+        // todo: use width from browser dimension once fixed
+        browserWidth={1270}
         handleUrlChanged={handleUrlChanged}
       />
       <BrowserWindow/>
