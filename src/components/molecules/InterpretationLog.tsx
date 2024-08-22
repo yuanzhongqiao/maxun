@@ -70,7 +70,7 @@ export const InterpretationLog = () => {
 
   return (
     <div>
-      <button onClick={toggleDrawer(true)} style={{ color: 'white', background: '#3f4853', border: 'none', padding: '10px 20px', width: '100%', textAlign: 'left' }}>
+      <button onClick={toggleDrawer(true)} style={{ color: 'white', background: '#3f4853', border: 'none', padding: '10px 20px', width: 1280, textAlign: 'left' }}>
         Interpretation Log
       </button>
       <SwipeableDrawer
@@ -79,7 +79,7 @@ export const InterpretationLog = () => {
         onClose={toggleDrawer(false)}
         onOpen={toggleDrawer(true)}
         PaperProps={{
-          sx: { background: '#19171c', color: 'white', padding: '10px', height: 720, width: width - 10 }
+          sx: { background: '#19171c', color: 'white', padding: '10px', height: 720, width: width - 10, display: 'flex' }
         }}
       >
         <Typography variant="h6" gutterBottom>
