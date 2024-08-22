@@ -7,8 +7,6 @@ import { MainPage } from "./MainPage";
 import { useGlobalInfoStore } from "../context/globalInfo";
 import { getActiveBrowserId } from "../api/recording";
 import { AlertSnackbar } from "../components/atoms/AlertSnackbar";
-import { InterpretationLog } from "../components/molecules/InterpretationLog";
-
 
 export const PageWrapper = () => {
 
