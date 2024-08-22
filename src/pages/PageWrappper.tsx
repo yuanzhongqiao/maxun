@@ -9,7 +9,6 @@ import { getActiveBrowserId } from "../api/recording";
 import { AlertSnackbar } from "../components/atoms/AlertSnackbar";
 
 export const PageWrapper = () => {
-
   const [recordingName, setRecordingName] = useState('');
   const [open, setOpen] = useState(false);
 
