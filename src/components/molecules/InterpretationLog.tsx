@@ -105,6 +105,11 @@ export const InterpretationLog = () => {
           <Highlight className="javascript">
             {log}
           </Highlight>
+          {
+            getList ? (
+              <p>How many rows of data do you want?</p>
+            ) : null
+          }
           <div style={{ float: "left", clear: "both" }}
             ref={logEndRef} />
         </div>
