@@ -5,6 +5,7 @@ import Highlight from 'react-highlight';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSocketStore } from "../../context/socket";
 import { useBrowserDimensionsStore } from "../../context/browserDimensions";
+import { useActionContext } from '../../context/browserActions';
 
 export const InterpretationLog = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -13,6 +14,7 @@ export const InterpretationLog = () => {
   const logEndRef = useRef<HTMLDivElement | null>(null);
 
   const { width } = useBrowserDimensionsStore();
+  const { getList } = useActionContext();
 
   const toggleDrawer = (newOpen: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
     if (
