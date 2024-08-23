@@ -107,7 +107,7 @@ export const InterpretationLog = () => {
           </Highlight>
           {
             getList ? (
-              <p>How many rows of data do you want?</p>
+              <p>What is the maximum number of rows you want to extract?</p>
             ) : null
           }
           <div style={{ float: "left", clear: "both" }}
