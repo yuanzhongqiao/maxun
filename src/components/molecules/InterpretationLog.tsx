@@ -119,9 +119,9 @@ export const InterpretationLog = () => {
                   <RadioGroup
                     row
                   >
-                    <FormControlLabel value="female" control={<Radio />} label="Female" />
-                    <FormControlLabel value="male" control={<Radio />} label="Male" />
-                    <FormControlLabel value="other" control={<Radio />} label="Other" />
+                    <FormControlLabel value="10" control={<Radio />} label="10" />
+                    <FormControlLabel value="100" control={<Radio />} label="100" />
+                    <FormControlLabel value="custom" control={<Radio />} label="Custom" />
                     <FormControlLabel
                       value="disabled"
                       disabled
