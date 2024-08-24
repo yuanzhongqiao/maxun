@@ -115,7 +115,7 @@ export const InterpretationLog = () => {
               <>
                 <p>What is the maximum number of rows you want to extract?</p>
                 <FormControl>
-                  <FormLabel id="demo-row-radio-buttons-group-label">Gender</FormLabel>
+                  <FormLabel>Gender</FormLabel>
                   <RadioGroup
                     row
                     aria-labelledby="demo-row-radio-buttons-group-label"
