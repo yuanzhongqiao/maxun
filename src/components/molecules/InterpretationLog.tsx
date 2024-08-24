@@ -103,7 +103,7 @@ export const InterpretationLog = () => {
         </Typography>
         <div style={{
           height: '50vh',
-          overflowY: 'scroll',
+          overflowY: 'none',
           padding: '10px',
           background: '#19171c',
         }}>
