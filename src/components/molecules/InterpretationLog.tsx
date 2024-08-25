@@ -11,6 +11,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSocketStore } from "../../context/socket";
 import { useBrowserDimensionsStore } from "../../context/browserDimensions";
 import { useActionContext } from '../../context/browserActions';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
 export const InterpretationLog = () => {
   const [open, setOpen] = useState<boolean>(false);
