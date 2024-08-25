@@ -18,6 +18,18 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
+
+function createData(
+  name: string,
+  calories: number,
+  fat: number,
+  carbs: number,
+  protein: number,
+) {
+  return { name, calories, fat, carbs, protein };
+}
+
+
 export const InterpretationLog = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [log, setLog] = useState<string>('');
