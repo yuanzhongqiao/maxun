@@ -172,24 +172,24 @@ export const InterpretationLog = () => {
                 </TableContainer>
 
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '200px' }}>
-                <FormControl>
-                  <FormLabel>
-                    <h4>What is the maximum number of rows you want to extract?</h4>
-                  </FormLabel>
-                  <RadioGroup row>
-                    <FormControlLabel value="10" control={<Radio />} label="10" />
-                    <FormControlLabel value="100" control={<Radio />} label="100" />
-                    <FormControlLabel value="custom" control={<Radio />} label="Custom" />
-                  </RadioGroup>
-                </FormControl>
+                  <FormControl>
+                    <FormLabel>
+                      <h4>What is the maximum number of rows you want to extract?</h4>
+                    </FormLabel>
+                    <RadioGroup row>
+                      <FormControlLabel value="10" control={<Radio />} label="10" />
+                      <FormControlLabel value="100" control={<Radio />} label="100" />
+                      <FormControlLabel value="custom" control={<Radio />} label="Custom" />
+                    </RadioGroup>
+                  </FormControl>
 
-                <div>
-                  <h4>Additional Options</h4>
-                  <Button variant="contained" color="primary">
-                    Some Action
-                  </Button>
+                  <div>
+                    <h4>Additional Options</h4>
+                    <Button variant="contained" color="primary">
+                      Some Action
+                    </Button>
+                  </div>
                 </div>
-              </div>
               </>
             ) : null
           }
