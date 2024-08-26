@@ -187,7 +187,7 @@ export const InterpretationLog = () => {
                     <h4>How can we find the next item?</h4>
                     <p>Select and review the pagination setting this webpage is using</p>
                     <Button variant="contained" color="primary">
-                      Some Action
+                      Select Pagination Setting
                     </Button>
                   </div>
                 </div>
