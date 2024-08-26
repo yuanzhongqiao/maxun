@@ -125,7 +125,7 @@ export const InterpretationLog = () => {
         }}
       >
         <Typography variant="h6" gutterBottom>
-          Interpretation Log
+          Output Data Preview
         </Typography>
         <div style={{
           height: '50vh',
