@@ -3,6 +3,7 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Typography from '@mui/material/Typography';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import { Button } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
@@ -170,16 +171,22 @@ export const InterpretationLog = () => {
                   </Table>
                 </TableContainer>
 
-                <FormControl>
-                  <FormLabel>
-                    <h4>What is the maximum number of rows you want to extract?</h4>
-                  </FormLabel>
-                  <RadioGroup row>
-                    <FormControlLabel value="10" control={<Radio />} label="10" />
-                    <FormControlLabel value="100" control={<Radio />} label="100" />
-                    <FormControlLabel value="custom" control={<Radio />} label="Custom" />
-                  </RadioGroup>
-                </FormControl>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
+                  <FormControl>
+                    <FormLabel>
+                      <h4>What is the maximum number of rows you want to extract?</h4>
+                    </FormLabel>
+                    <RadioGroup row>
+                      <FormControlLabel value="10" control={<Radio />} label="10" />
+                      <FormControlLabel value="100" control={<Radio />} label="100" />
+                      <FormControlLabel value="custom" control={<Radio />} label="Custom" />
+                    </RadioGroup>
+                  </FormControl>
+                  <div>
+                    <h4>Additional Options</h4>
+                    <Button variant="contained" color="primary">Action</Button>
+                  </div>
+                </div>
               </>
             ) : null
           }
