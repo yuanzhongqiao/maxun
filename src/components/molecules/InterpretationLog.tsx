@@ -184,7 +184,8 @@ export const InterpretationLog = () => {
                   </FormControl>
 
                   <div>
-                    <h4>Additional Options</h4>
+                    <h4>How can we find the next item?</h4>
+                    <p>Select and review the pagination setting this webpage is using</p>
                     <Button variant="contained" color="primary">
                       Some Action
                     </Button>
