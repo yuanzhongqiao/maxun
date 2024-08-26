@@ -171,7 +171,7 @@ export const InterpretationLog = () => {
                 </TableContainer>
 
                 <FormControl>
-                  <FormLabel>What is the maximum number of rows you want to extract?</FormLabel>
+                  <FormLabel><h4>What is the maximum number of rows you want to extract?</h4></FormLabel>
                   <RadioGroup row>
                     <FormControlLabel value="10" control={<Radio />} label="10" />
                     <FormControlLabel value="100" control={<Radio />} label="100" />
