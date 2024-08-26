@@ -18,6 +18,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import StorageIcon from '@mui/icons-material/Storage';
 
 function createData(
   name: string,
@@ -125,7 +126,7 @@ export const InterpretationLog = () => {
         }}
       >
         <Typography variant="h6" gutterBottom>
-          Output Data Preview
+          <StorageIcon /> Output Data Preview
         </Typography>
         <div style={{
           height: '50vh',
