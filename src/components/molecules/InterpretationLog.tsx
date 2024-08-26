@@ -140,7 +140,7 @@ export const InterpretationLog = () => {
           {
             getList ? (
               <>
-              <TableContainer component={Paper}>
+                <TableContainer component={Paper}>
                   <Table sx={{ minWidth: 650 }} stickyHeader aria-label="simple table">
                     <TableHead>
                       <TableRow>
@@ -169,7 +169,7 @@ export const InterpretationLog = () => {
                     </TableBody>
                   </Table>
                 </TableContainer>
-                
+
                 <FormControl>
                   <FormLabel>What is the maximum number of rows you want to extract?</FormLabel>
                   <RadioGroup row>
