@@ -3,7 +3,6 @@ import { Button, Paper, Box, TextField } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
-import styled from "styled-components";
 import { SimpleBox } from "../atoms/Box";
 import Typography from "@mui/material/Typography";
 import { useGlobalInfoStore } from "../../context/globalInfo";
