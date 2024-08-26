@@ -140,16 +140,7 @@ export const InterpretationLog = () => {
           {
             getList ? (
               <>
-                <FormControl>
-                  <FormLabel>What is the maximum number of rows you want to extract?</FormLabel>
-                  <RadioGroup row>
-                    <FormControlLabel value="10" control={<Radio />} label="10" />
-                    <FormControlLabel value="100" control={<Radio />} label="100" />
-                    <FormControlLabel value="custom" control={<Radio />} label="Custom" />
-                  </RadioGroup>
-                </FormControl>
-
-                <TableContainer component={Paper}>
+              <TableContainer component={Paper}>
                   <Table sx={{ minWidth: 650 }} stickyHeader aria-label="simple table">
                     <TableHead>
                       <TableRow>
@@ -178,6 +169,15 @@ export const InterpretationLog = () => {
                     </TableBody>
                   </Table>
                 </TableContainer>
+                
+                <FormControl>
+                  <FormLabel>What is the maximum number of rows you want to extract?</FormLabel>
+                  <RadioGroup row>
+                    <FormControlLabel value="10" control={<Radio />} label="10" />
+                    <FormControlLabel value="100" control={<Radio />} label="100" />
+                    <FormControlLabel value="custom" control={<Radio />} label="Custom" />
+                  </RadioGroup>
+                </FormControl>
               </>
             ) : null
           }
