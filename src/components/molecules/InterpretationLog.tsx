@@ -171,7 +171,7 @@ export const InterpretationLog = () => {
                   </Table>
                 </TableContainer>
 
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '200px' }}>
                 <FormControl>
                   <FormLabel>
                     <h4>What is the maximum number of rows you want to extract?</h4>
