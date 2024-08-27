@@ -47,7 +47,6 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
     });
   };
 
-  // resize browser content when loaded event is fired
   useEffect(() => changeBrowserDimensions(), [isLoaded])
 
   useEffect(() => {
