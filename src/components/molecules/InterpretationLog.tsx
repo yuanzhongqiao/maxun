@@ -39,7 +39,6 @@ const rows = [
   createData('Gingerbread', 356, 16.0, 49, 3.9),
 ];
 
-
 export const InterpretationLog = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [log, setLog] = useState<string>('');
