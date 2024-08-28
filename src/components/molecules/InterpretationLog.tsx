@@ -92,6 +92,13 @@ export const InterpretationLog = () => {
     scrollLogToBottom();
   }, [log, scrollLogToBottom]);
 
+  const handleRadioChange = (event) => {
+    if (event.target.value === 'custom') {
+      setCustomValue(''); // Clear previous custom value on selection
+    }
+  };
+
+
   useEffect(() => {
     socket?.on('log', handleLog);
     socket?.on('serializableCallback', handleSerializableCallback);
