@@ -98,7 +98,7 @@ export const InterpretationLog = () => {
     }
   };
 
-  const handleCustomInputChange = (event) => {
+  const handleCustomInputChange = (event: any) => {
     setCustomValue(event.target.value);
   };
 
