@@ -102,8 +102,6 @@ export const InterpretationLog = () => {
     setCustomValue(event.target.value);
   };
 
-
-
   useEffect(() => {
     socket?.on('log', handleLog);
     socket?.on('serializableCallback', handleSerializableCallback);
