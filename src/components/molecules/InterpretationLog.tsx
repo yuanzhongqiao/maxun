@@ -98,6 +98,11 @@ export const InterpretationLog = () => {
     }
   };
 
+  const handleCustomInputChange = (event) => {
+    setCustomValue(event.target.value);
+  };
+
+
 
   useEffect(() => {
     socket?.on('log', handleLog);
