@@ -196,7 +196,14 @@ export const InterpretationLog = () => {
                           value={customValue}
                           onChange={handleCustomValueChange}
                           placeholder="Enter number"
-                          sx={{ marginLeft: '10px', marginTop: '10px', color: 'white' }}
+                          sx={{
+                            marginLeft: '10px',  
+                            marginTop: '-8px',  
+                            width: '80px',      
+                            '& input': {
+                              padding: '10px',  
+                            },
+                          }}
                         />
                       )}
                     </RadioGroup>
