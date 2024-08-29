@@ -98,9 +98,9 @@ export const InterpretationLog = () => {
       };
     
 
-  const handleCustomInputChange = (event: any) => {
-    setCustomValue(event.target.value);
-  };
+    const handleCustomValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+          setCustomValue(event.target.value);
+        };
 
   useEffect(() => {
     socket?.on('log', handleLog);
