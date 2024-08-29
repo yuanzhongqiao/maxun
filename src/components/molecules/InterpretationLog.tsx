@@ -194,7 +194,7 @@ export const InterpretationLog = () => {
                         <input
                           type="number"
                           value={customValue}
-                          onChange={handleCustomInputChange}
+                          onChange={{}}
                           placeholder="Enter custom value"
                           style={{ marginLeft: 10 }}
                         />
