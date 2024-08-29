@@ -191,14 +191,14 @@ export const InterpretationLog = () => {
                       <FormControlLabel value="100" control={<Radio />} label="100" />
                       <FormControlLabel value="custom" control={<Radio />} label="Custom" />
                       {selectedOption === 'custom' && (
-                        <TextField
-                          type="number"
-                          value={customValue}
-                          onChange={handleCustomValueChange}
-                          placeholder="Enter number"
-                          sx={{ marginLeft: '10px', marginTop: '10px', color: 'white' }}
-                        />
-                      )}
+                        <TextField
+                          type="number"
+                          value={customValue}
+                          onChange={handleCustomValueChange}
+                          placeholder="Enter number"
+                          sx={{ marginLeft: '10px', marginTop: '10px', color: 'white' }}
+                        />
+                      )}
                     </RadioGroup>
                   </FormControl>
 
