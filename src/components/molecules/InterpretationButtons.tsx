@@ -29,59 +29,60 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
     actionType: string,
     selector: string,
     action: string,
-    open:boolean
-  }>({ pair: null, actionType: '', selector: '', action: '', open: false} );
+    open: boolean
+  }>({ pair: null, actionType: '', selector: '', action: '', open: false });
 
   const { socket } = useSocketStore();
   const { notify } = useGlobalInfoStore();
 
   const finishedHandler = useCallback(() => {
-    setInfo({...info, isPaused: false});
+    setInfo({ ...info, isPaused: false });
     enableStepping(false);
   }, [info, enableStepping]);
 
   const breakpointHitHandler = useCallback(() => {
-    setInfo({running: false, isPaused: true});
+    setInfo({ running: false, isPaused: true });
     notify('warning', 'Please restart the interpretation, after updating the recording');
     enableStepping(true);
   }, [info, enableStepping]);
 
   const decisionHandler = useCallback(
-    ({pair, actionType, lastData}
-       : {pair: WhereWhatPair | null, actionType: string, lastData: { selector: string, action: string }}) => {
-      const {selector, action} = lastData;
-    setDecisionModal((prevState) => {
-      return {
-        pair,
-        actionType,
-        selector,
-        action,
-        open: true,
-      }
-    })
-  }, [decisionModal]);
+    ({ pair, actionType, lastData }
+      : { pair: WhereWhatPair | null, actionType: string, lastData: { selector: string, action: string } }) => {
+      const { selector, action } = lastData;
+      setDecisionModal((prevState) => {
+        return {
+          pair,
+          actionType,
+          selector,
+          action,
+          open: true,
+        }
+      })
+    }, [decisionModal]);
 
   const handleDecision = (decision: boolean) => {
-    const {pair, actionType} = decisionModal;
-    socket?.emit('decision', {pair, actionType, decision});
-    setDecisionModal({pair: null, actionType: '', selector: '', action: '', open: false});
+    const { pair, actionType } = decisionModal;
+    socket?.emit('decision', { pair, actionType, decision });
+    setDecisionModal({ pair: null, actionType: '', selector: '', action: '', open: false });
   }
 
   const handleDescription = () => {
-    switch (decisionModal.actionType){
+    switch (decisionModal.actionType) {
       case 'customAction':
         return (
           <React.Fragment>
-          <Typography>
-          Do you want to use the previously recorded selector
-          as a where condition for matching the action?
-        </Typography>
-        <Box style={{marginTop: '4px'}}>
-          [previous action: <b>{decisionModal.action}</b>]
-          <pre>{decisionModal.selector}</pre>
-        </Box>
+            <Typography>
+              Do you want to use the previously recorded selector
+              as a where condition for matching the action?
+            </Typography>
+            <Box style={{ marginTop: '4px' }}>
+              [previous action: <b>{decisionModal.action}</b>]
+              <pre>{decisionModal.selector}</pre>
+            </Box>
           </React.Fragment>);
-      default: return null;}
+      default: return null;
+    }
   }
 
   useEffect(() => {
@@ -100,12 +101,12 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
   const handlePlay = async () => {
     if (info.isPaused) {
       socket?.emit("resume");
-      setInfo({running: true, isPaused: false});
+      setInfo({ running: true, isPaused: false });
       enableStepping(false);
     } else {
-      setInfo({...info, running: true});
+      setInfo({ ...info, running: true });
       const finished = await interpretCurrentRecording();
-      setInfo({...info, running: false});
+      setInfo({ ...info, running: false });
       if (finished) {
         notify('info', 'Interpretation finished');
       } else {
@@ -131,45 +132,45 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
 
   return (
     <Stack direction="row" spacing={3}
-    sx={{ marginTop: '10px', marginBottom: '5px', justifyContent: 'space-evenly',}} >
-      <IconButton disabled={!info.running} sx={{display:'grid', '&:hover': { color: '#1976d2', backgroundColor: 'transparent' }}}
-                  aria-label="pause" size="small" title="Pause" onClick={handlePause}>
-        <PauseCircle sx={{ fontSize: 30, justifySelf:'center' }}/>
+      sx={{ marginTop: '10px', marginBottom: '5px', justifyContent: 'space-evenly', }} >
+      <IconButton disabled={!info.running} sx={{ display: 'grid', '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}
+        aria-label="pause" size="small" title="Pause" onClick={handlePause}>
+        <PauseCircle sx={{ fontSize: 30, justifySelf: 'center' }} />
         Pause
       </IconButton>
-      <IconButton disabled={info.running} sx={{display:'grid', '&:hover': { color: '#1976d2', backgroundColor: 'transparent' }}}
-                  aria-label="play" size="small" title="Play" onClick={handlePlay}>
-        <PlayCircle sx={{ fontSize: 30, justifySelf:'center' }}/>
+      <IconButton disabled={info.running} sx={{ display: 'grid', '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}
+        aria-label="play" size="small" title="Play" onClick={handlePlay}>
+        <PlayCircle sx={{ fontSize: 30, justifySelf: 'center' }} />
         {info.isPaused ? 'Resume' : 'Start'}
       </IconButton>
-      <IconButton disabled={!info.running && !info.isPaused} sx={{display:'grid', '&:hover': { color: '#1976d2', backgroundColor: 'transparent' }}}
+      <IconButton disabled={!info.running && !info.isPaused} sx={{ display: 'grid', '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}
         aria-label="stop" size="small" title="Stop" onClick={handleStop}>
-        <StopCircle sx={{ fontSize: 30, justifySelf:'center' }}/>
+        <StopCircle sx={{ fontSize: 30, justifySelf: 'center' }} />
         Stop
       </IconButton>
-      <GenericModal onClose={() => {}} isOpen={decisionModal.open} canBeClosed={false}
-      modalStyle={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 500,
-        background: 'white',
-        border: '2px solid #000',
-        boxShadow: '24',
-        height:'fit-content',
-        display:'block',
-        overflow:'scroll',
-        padding: '5px 25px 10px 25px',
-      }}>
-        <div style={{padding: '15px'}}>
-          <HelpIcon/>
+      <GenericModal onClose={() => { }} isOpen={decisionModal.open} canBeClosed={false}
+        modalStyle={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 500,
+          background: 'white',
+          border: '2px solid #000',
+          boxShadow: '24',
+          height: 'fit-content',
+          display: 'block',
+          overflow: 'scroll',
+          padding: '5px 25px 10px 25px',
+        }}>
+        <div style={{ padding: '15px' }}>
+          <HelpIcon />
           {
             handleDescription()
           }
-          <div style={{float: 'right'}}>
-          <Button onClick={() => handleDecision(true)} color='success'>yes</Button>
-          <Button onClick={() => handleDecision(false)} color='error'>no</Button>
+          <div style={{ float: 'right' }}>
+            <Button onClick={() => handleDecision(true)} color='success'>yes</Button>
+            <Button onClick={() => handleDecision(false)} color='error'>no</Button>
           </div>
         </div>
       </GenericModal>
