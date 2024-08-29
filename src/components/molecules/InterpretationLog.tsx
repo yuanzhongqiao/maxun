@@ -97,7 +97,6 @@ export const InterpretationLog = () => {
     setSelectedOption(event.target.value);
   };
 
-
   const handleCustomValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCustomValue(event.target.value);
   };
