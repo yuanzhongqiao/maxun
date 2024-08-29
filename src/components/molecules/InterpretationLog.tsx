@@ -143,7 +143,7 @@ export const InterpretationLog = () => {
           height: '50vh',
           overflow: 'none',
           padding: '10px',
-          background: '#19171c',
+          
         }}>
           <Highlight className="javascript">
             {log}
