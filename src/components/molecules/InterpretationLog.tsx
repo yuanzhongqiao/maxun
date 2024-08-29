@@ -197,10 +197,10 @@ export const InterpretationLog = () => {
                           onChange={handleCustomValueChange}
                           placeholder="Enter number"
                           sx={{
-                            marginLeft: '10px',  
-                            marginTop: '-3px',  
+                            marginLeft: '10px',
+                            marginTop: '-3px',
                             '& input': {
-                              padding: '10px',  
+                              padding: '10px',
                             },
                           }}
                         />
