@@ -93,11 +93,10 @@ export const InterpretationLog = () => {
     scrollLogToBottom();
   }, [log, scrollLogToBottom]);
 
-  const handleRadioChange = (event: any) => {
-    if (event.target.value === 'custom') {
-      setCustomValue(''); // Clear previous custom value on selection
-    }
-  };
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSelectedOption(event.target.value);
+      };
+    
 
   const handleCustomInputChange = (event: any) => {
     setCustomValue(event.target.value);
