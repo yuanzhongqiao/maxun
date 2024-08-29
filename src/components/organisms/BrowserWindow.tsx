@@ -222,7 +222,7 @@ export const BrowserWindow = () => {
                         id: Date.now(),
                         type: 'text',
                         label: `Label ${Object.keys(fields).length + 1}`,
-                        data: selectedElement.info?.innerText,
+                        data: data,
                         selectorObj: {
                             selector: selectedElement.selector,
                             tag: selectedElement.info?.tagName,
