@@ -42,7 +42,7 @@ const rows = [
 export const InterpretationLog = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [log, setLog] = useState<string>('');
-    const [selectedOption, setSelectedOption] = useState<string>('10');
+  const [selectedOption, setSelectedOption] = useState<string>('10');
   const [customValue, setCustomValue] = useState('');
 
   const logEndRef = useRef<HTMLDivElement | null>(null);
@@ -94,13 +94,13 @@ export const InterpretationLog = () => {
   }, [log, scrollLogToBottom]);
 
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSelectedOption(event.target.value);
-      };
-    
+    setSelectedOption(event.target.value);
+  };
 
-    const handleCustomValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-          setCustomValue(event.target.value);
-        };
+
+  const handleCustomValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomValue(event.target.value);
+  };
 
   useEffect(() => {
     socket?.on('log', handleLog);
