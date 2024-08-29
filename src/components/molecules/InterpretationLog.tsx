@@ -198,7 +198,7 @@ export const InterpretationLog = () => {
                           placeholder="Enter number"
                           sx={{
                             marginLeft: '10px',  
-                            marginTop: '-8px',  
+                            marginTop: '-3px',  
                             '& input': {
                               padding: '10px',  
                             },
