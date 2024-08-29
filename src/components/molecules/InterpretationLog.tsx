@@ -133,7 +133,7 @@ export const InterpretationLog = () => {
         onClose={toggleDrawer(false)}
         onOpen={toggleDrawer(true)}
         PaperProps={{
-          sx: { background: '#19171c', color: 'white', padding: '10px', height: 720, width: width - 10, display: 'flex' }
+          sx: { background: 'white', color: 'white', padding: '10px', height: 720, width: width - 10, display: 'flex' }
         }}
       >
         <Typography variant="h6" gutterBottom>
