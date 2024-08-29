@@ -42,6 +42,7 @@ const rows = [
 export const InterpretationLog = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [log, setLog] = useState<string>('');
+    const [selectedOption, setSelectedOption] = useState<string>('');
   const [customValue, setCustomValue] = useState('');
 
   const logEndRef = useRef<HTMLDivElement | null>(null);
