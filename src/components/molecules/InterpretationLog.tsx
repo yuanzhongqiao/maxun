@@ -199,7 +199,6 @@ export const InterpretationLog = () => {
                           sx={{
                             marginLeft: '10px',  
                             marginTop: '-8px',  
-                            width: '80px',      
                             '& input': {
                               padding: '10px',  
                             },
