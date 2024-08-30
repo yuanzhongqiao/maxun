@@ -25,8 +25,6 @@ export const RightSidePanel = () => {
   const [showPaginationOptions, setShowPaginationOptions] = useState(false);
   const [selectedPaginationSetting, setSelectedPaginationSetting] = useState<string | null>(null);
 
-
-
   const { lastAction, notify } = useGlobalInfoStore();
   const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, getList, startGetList, stopGetList } = useActionContext();
   const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep } = useBrowserSteps();
