@@ -179,7 +179,7 @@ export const RightSidePanel = () => {
           <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
             <Typography>How can we find the next list item on the page?</Typography>
             <Button variant={selectedPaginationSetting === 'clickNext' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('clickNext')}>Click on next to navigate to the next page</Button>
-            <Button variant={selectedPaginationSetting === 'Option 2' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('Option 2')}>Click on load more to load more items</Button>
+            <Button variant={selectedPaginationSetting === 'clickLoadMore' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('clickLoadMore')}>Click on load more to load more items</Button>
             <Button variant={selectedPaginationSetting === 'Option 3' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('Option 3')}>Scroll down to load more items</Button>
             <Button variant={selectedPaginationSetting === 'Option 4' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('Option 4')}>Scroll up to load more items</Button>
             <Button variant={selectedPaginationSetting === 'Option 5' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('Option 5')}>No more items to load</Button>
