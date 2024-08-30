@@ -153,9 +153,6 @@ export const InterpretationLog = () => {
           <Highlight className="javascript">
             {log}
           </Highlight>
-          {
-            getList ? (
-              <>
                 <TableContainer component={Paper}>
                   <Table sx={{ minWidth: 650 }} stickyHeader aria-label="simple table">
                     <TableHead>
@@ -221,9 +218,6 @@ export const InterpretationLog = () => {
                     </Button>
                   </div>
                 </div>
-              </>
-            ) : null
-          }
           <div style={{ float: "left", clear: "both" }}
             ref={logEndRef} />
         </div>
