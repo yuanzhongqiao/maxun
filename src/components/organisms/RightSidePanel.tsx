@@ -175,7 +175,7 @@ export const RightSidePanel = () => {
           </>
         }
 
-{showPaginationOptions && (
+        {showPaginationOptions && (
           <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
             <Typography>Select an option for the list:</Typography>
             <Button variant={selectedPaginationSetting === 'Option 1' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('Option 1')}>Option 1</Button>
