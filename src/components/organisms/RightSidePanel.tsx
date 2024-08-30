@@ -88,10 +88,10 @@ export const RightSidePanel = () => {
 
 
   const getListSettingsObject = useCallback(() => {
-    let settings: { 
-      listSelector?: string; 
-      fields?: Record<string, { selector: string; tag?: string;[key: string]: any }>;
-      pagination?: { type: string; selector?: string } 
+    let settings: {
+      listSelector?: string;
+      fields?: Record<string, { selector: string; tag?: string; [key: string]: any }>;
+      pagination?: { type: string; selector?: string }
     } = {};
 
     browserSteps.forEach(step => {
