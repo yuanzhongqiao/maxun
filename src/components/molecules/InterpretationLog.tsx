@@ -182,7 +182,6 @@ export const InterpretationLog = () => {
               </TableBody>
             </Table>
           </TableContainer>
-
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '200px' }}>
             <FormControl>
               <FormLabel>
@@ -209,7 +208,6 @@ export const InterpretationLog = () => {
                 )}
               </RadioGroup>
             </FormControl>
-
             <div>
               <h4>How can we find the next item?</h4>
               <p>Select and review the pagination setting this webpage is using</p>
