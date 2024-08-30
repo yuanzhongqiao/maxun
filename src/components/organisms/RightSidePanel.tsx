@@ -131,12 +131,12 @@ export const RightSidePanel = () => {
 
   const handleConfirmListCapture = useCallback(() => {
     if (!selectedPaginationSetting) {
-      setShowListOptions(true);
+      setShowPaginationOptions(true);
       return;
     }
     // Proceed to stop capture and emit settings only after option is selected
     stopCaptureAndEmitGetListSettings();
-    setShowListOptions(false); // Reset options display
+    setShowPaginationOptions(false); // Reset options display
     setSelectedPaginationSetting(null);   // Reset selected option
   }, [selectedPaginationSetting, stopCaptureAndEmitGetListSettings]);
 
