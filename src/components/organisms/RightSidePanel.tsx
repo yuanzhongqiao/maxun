@@ -130,7 +130,7 @@ export const RightSidePanel = () => {
   // };  
 
   const handleConfirmListCapture = useCallback(() => {
-    if (!selectedOption) {
+    if (!selectedPaginationSetting) {
       setShowListOptions(true);
       return;
     }
@@ -138,7 +138,7 @@ export const RightSidePanel = () => {
     stopCaptureAndEmitGetListSettings();
     setShowListOptions(false); // Reset options display
     setSelectedOption(null);   // Reset selected option
-  }, [selectedOption, stopCaptureAndEmitGetListSettings]);
+  }, [selectedPaginationSetting, stopCaptureAndEmitGetListSettings]);
 
 
   const captureScreenshot = (fullPage: boolean) => {
