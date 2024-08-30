@@ -175,6 +175,17 @@ export const RightSidePanel = () => {
           </>
         }
 
+{showPaginationOptions && (
+          <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
+            <Typography>Select an option for the list:</Typography>
+            <Button variant={selectedPaginationSetting === 'Option 1' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('Option 1')}>Option 1</Button>
+            <Button variant={selectedPaginationSetting === 'Option 2' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('Option 2')}>Option 2</Button>
+            <Button variant={selectedPaginationSetting === 'Option 3' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('Option 3')}>Option 3</Button>
+            <Button variant={selectedPaginationSetting === 'Option 4' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('Option 4')}>Option 4</Button>
+            <Button variant="contained" onClick={handleConfirmListCapture}>Confirm Selection</Button>
+          </Box>
+        )}
+
         {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
         {getText &&
           <>
