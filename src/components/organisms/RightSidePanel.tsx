@@ -129,6 +129,18 @@ export const RightSidePanel = () => {
   //   updateListStepField(stepId, key, value);
   // };  
 
+  const handleConfirmListCapture = useCallback(() => {
+    if (!selectedOption) {
+      setShowListOptions(true);
+      return;
+    }
+    // Proceed to stop capture and emit settings only after option is selected
+    stopCaptureAndEmitGetListSettings();
+    setShowListOptions(false); // Reset options display
+    setSelectedOption(null);   // Reset selected option
+  }, [selectedOption, stopCaptureAndEmitGetListSettings]);
+
+
   const captureScreenshot = (fullPage: boolean) => {
     const screenshotSettings: ScreenshotSettings = {
       fullPage,
