@@ -182,7 +182,7 @@ export const RightSidePanel = () => {
             <Button variant={selectedPaginationSetting === 'clickLoadMore' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('clickLoadMore')}>Click on load more to load more items</Button>
             <Button variant={selectedPaginationSetting === 'scrollDown' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('scrollDown')}>Scroll down to load more items</Button>
             <Button variant={selectedPaginationSetting === 'scrollUp' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('scrollUp')}>Scroll up to load more items</Button>
-            <Button variant={selectedPaginationSetting === 'Option 5' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('Option 5')}>No more items to load</Button>
+            <Button variant={selectedPaginationSetting === 'none' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('none')}>No more items to load</Button>
           </Box>
         )}
 
