@@ -177,7 +177,7 @@ export const RightSidePanel = () => {
 
         {showPaginationOptions && (
           <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
-            <Typography>Select an option for the list:</Typography>
+            <Typography>How can we find the next list item on the page?</Typography>
             <Button variant={selectedPaginationSetting === 'Option 1' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('Option 1')}>Click on next to navigate to the next page</Button>
             <Button variant={selectedPaginationSetting === 'Option 2' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('Option 2')}>Click on load more to load more items</Button>
             <Button variant={selectedPaginationSetting === 'Option 3' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('Option 3')}>Scroll down to load more items</Button>
