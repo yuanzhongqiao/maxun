@@ -182,7 +182,6 @@ export const RightSidePanel = () => {
             <Button variant={selectedPaginationSetting === 'Option 2' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('Option 2')}>Option 2</Button>
             <Button variant={selectedPaginationSetting === 'Option 3' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('Option 3')}>Option 3</Button>
             <Button variant={selectedPaginationSetting === 'Option 4' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('Option 4')}>Option 4</Button>
-            <Button variant="contained" onClick={handleConfirmListCapture}>Confirm Selection</Button>
           </Box>
         )}
 
