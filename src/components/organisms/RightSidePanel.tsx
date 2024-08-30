@@ -23,6 +23,8 @@ export const RightSidePanel = () => {
   const [errors, setErrors] = useState<{ [id: number]: string }>({});
   const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: number]: boolean }>({});
   const [showPaginationOptions, setShowPaginationOptions] = useState(false);
+  const [selectedPaginationSetting, setSelectedPaginationSetting] = useState<string | null>(null);
+
 
 
   const { lastAction, notify } = useGlobalInfoStore();
