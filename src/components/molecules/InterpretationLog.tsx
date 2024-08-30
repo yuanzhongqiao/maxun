@@ -208,7 +208,7 @@ export const InterpretationLog = () => {
                 )}
               </RadioGroup>
             </FormControl>
-            <div style={{ paddingBottom: '10px' }}>
+            <div style={{ paddingBottom: '40px' }}>
               <h4>How can we find the next item?</h4>
               <p>Select and review the pagination setting this webpage is using</p>
               <Button variant="outlined">
