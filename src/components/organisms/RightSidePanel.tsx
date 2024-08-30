@@ -140,7 +140,6 @@ export const RightSidePanel = () => {
     setSelectedPaginationSetting(null);   // Reset selected option
   }, [selectedPaginationSetting, stopCaptureAndEmitGetListSettings]);
 
-
   const captureScreenshot = (fullPage: boolean) => {
     const screenshotSettings: ScreenshotSettings = {
       fullPage,
