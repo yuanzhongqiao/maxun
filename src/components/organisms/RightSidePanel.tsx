@@ -137,7 +137,7 @@ export const RightSidePanel = () => {
     // Proceed to stop capture and emit settings only after option is selected
     stopCaptureAndEmitGetListSettings();
     setShowListOptions(false); // Reset options display
-    setSelectedOption(null);   // Reset selected option
+    setSelectedPaginationSetting(null);   // Reset selected option
   }, [selectedPaginationSetting, stopCaptureAndEmitGetListSettings]);
 
 
