@@ -148,6 +148,12 @@ export const RightSidePanel = () => {
 
   const handlePaginationSettingSelect = (option: string) => {
     setSelectedPaginationSetting(option);
+    if (['clickNext', 'clickLoadMore'].includes(option)) {
+      setShowPaginationSelector(true);
+    } else {
+      setShowPaginationSelector(false);
+      setPaginationSelector(null);
+    }
   };
 
   const captureScreenshot = (fullPage: boolean) => {
