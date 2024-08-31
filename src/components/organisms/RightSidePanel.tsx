@@ -209,6 +209,16 @@ export const RightSidePanel = () => {
           </Box>
         )}
 
+{showPaginationSelector && (
+        <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
+          <Typography>Please select the pagination element on the page</Typography>
+          <Button variant="contained" onClick={handleStartPaginationSelection}>Start Selection</Button>
+          {paginationSelector && (
+            <Typography>Selected pagination element: {paginationSelector}</Typography>
+          )}
+        </Box>
+      )}
+
         {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
         {getText &&
           <>
