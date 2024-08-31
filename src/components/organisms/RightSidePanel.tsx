@@ -122,7 +122,7 @@ export const RightSidePanel = () => {
     });
 
     return settings;
-  }, [browserSteps]);
+  }, [browserSteps, selectedPaginationSetting, paginationSelector]);
 
 
   const stopCaptureAndEmitGetListSettings = useCallback(() => {
