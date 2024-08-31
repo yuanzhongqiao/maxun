@@ -24,6 +24,8 @@ export const RightSidePanel = () => {
   const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: number]: boolean }>({});
   const [showPaginationOptions, setShowPaginationOptions] = useState(false);
   const [selectedPaginationSetting, setSelectedPaginationSetting] = useState<string | null>(null);
+  const [paginationSelector, setPaginationSelector] = useState<string | null>(null);
+
 
   const { lastAction, notify } = useGlobalInfoStore();
   const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, getList, startGetList, stopGetList } = useActionContext();
