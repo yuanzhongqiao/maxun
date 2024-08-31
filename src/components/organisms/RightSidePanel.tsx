@@ -90,7 +90,7 @@ export const RightSidePanel = () => {
   const getListSettingsObject = useCallback(() => {
     let settings: {
       listSelector?: string;
-      fields?: Record<string, { selector: string; tag?: string; [key: string]: any }>;
+      fields?: Record<string, { selector: string; tag?: string;[key: string]: any }>;
       pagination?: { type: string; selector?: string }
     } = {};
 
@@ -132,7 +132,7 @@ export const RightSidePanel = () => {
     }
   }, [stopGetList, getListSettingsObject, socket, notify]);
 
- 
+
 
   const handleConfirmListCapture = useCallback(() => {
     if (!selectedPaginationSetting) {
@@ -142,7 +142,7 @@ export const RightSidePanel = () => {
     // Proceed to stop capture and emit settings only after pagination type is selected
     stopCaptureAndEmitGetListSettings();
     setShowPaginationOptions(false);
-    setSelectedPaginationSetting(null); 
+    setSelectedPaginationSetting(null);
   }, [selectedPaginationSetting, stopCaptureAndEmitGetListSettings]);
 
   const handlePaginationSettingSelect = (option: string) => {
