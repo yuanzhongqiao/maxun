@@ -132,9 +132,7 @@ export const RightSidePanel = () => {
     }
   }, [stopGetList, getListSettingsObject, socket, notify]);
 
-  // const handleListFieldChange = (stepId: number, key: 'label' | 'data', value: string) => {
-  //   updateListStepField(stepId, key, value);
-  // };  
+ 
 
   const handleConfirmListCapture = useCallback(() => {
     if (!selectedPaginationSetting) {
