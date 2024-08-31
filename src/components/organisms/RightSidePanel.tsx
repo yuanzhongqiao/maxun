@@ -141,7 +141,7 @@ export const RightSidePanel = () => {
       setShowPaginationOptions(true);
       return;
     }
-    // Proceed to stop capture and emit settings only after option is selected
+    // Proceed to stop capture and emit settings only after pagination type is selected
     stopCaptureAndEmitGetListSettings();
     setShowPaginationOptions(false);
     setSelectedPaginationSetting(null); 
