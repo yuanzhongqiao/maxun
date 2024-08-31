@@ -132,8 +132,6 @@ export const RightSidePanel = () => {
     }
   }, [stopGetList, getListSettingsObject, socket, notify]);
 
-
-
   const handleConfirmListCapture = useCallback(() => {
     if (!selectedPaginationSetting) {
       setShowPaginationOptions(true);
