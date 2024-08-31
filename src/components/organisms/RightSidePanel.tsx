@@ -140,11 +140,16 @@ export const RightSidePanel = () => {
       setShowPaginationOptions(true);
       return;
     }
-    // Proceed to stop capture and emit settings only after pagination type is selected
+    if (['clickNext', 'clickLoadMore'].includes(selectedPaginationSetting) && !paginationSelector) {
+      notify('error', 'Please select the pagination element first.');
+      return;
+    }
     stopCaptureAndEmitGetListSettings();
     setShowPaginationOptions(false);
+    setShowPaginationSelector(false);
     setSelectedPaginationSetting(null);
-  }, [selectedPaginationSetting, stopCaptureAndEmitGetListSettings]);
+    setPaginationSelector(null);
+  }, [selectedPaginationSetting, paginationSelector, stopCaptureAndEmitGetListSettings, notify]);
 
   const handlePaginationSettingSelect = (option: string) => {
     setSelectedPaginationSetting(option);
