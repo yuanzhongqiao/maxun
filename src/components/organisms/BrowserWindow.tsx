@@ -248,6 +248,18 @@ export const BrowserWindow = () => {
         setShowAttributeModal(false);
     };
 
+    useEffect(() => {
+        const handleStartPaginationSelection = () => {
+            setIsSelectingPagination(true);
+        };
+
+        socket?.on('startPaginationSelection', handleStartPaginationSelection);
+
+        return () => {
+            socket?.off('startPaginationSelection', handleStartPaginationSelection);
+        };
+    }, [socket]);
+
     return (
         <div onClick={handleClick}>
             {
