@@ -130,6 +130,11 @@ export const BrowserWindow = () => {
             ) {
                 const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '', highlighterData.elementInfo);
 
+                if (isSelectingPagination) {
+                    socket?.emit('paginationSelected', { selector: highlighterData.selector });
+                    setIsSelectingPagination(false);
+                }
+
                 if (getText === true) {
                     if (options.length === 1) {
                         // Directly use the available attribute if only one option is present
