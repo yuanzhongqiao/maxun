@@ -190,7 +190,12 @@ export const RightSidePanel = () => {
       setIsSelectingPagination(false);
     };
 
-  });
+    socket?.on('paginationSelected', handlePaginationSelection);
+
+    return () => {
+      socket?.off('paginationSelected', handlePaginationSelection);
+    };
+  }, [socket]);
 
   return (
     <Paper variant="outlined" sx={{ height: '100%', width: '100%', backgroundColor: 'white', alignItems: "center" }}>
