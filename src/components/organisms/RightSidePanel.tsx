@@ -164,6 +164,7 @@ export const RightSidePanel = () => {
 
   const handleStartPaginationSelection = () => {
     // Start the process of selecting the pagination element
+    setIsSelectingPagination(true);
     socket?.emit('action', { action: 'startPaginationSelection' });
   };
 
