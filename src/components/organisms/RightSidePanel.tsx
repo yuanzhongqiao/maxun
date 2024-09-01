@@ -184,6 +184,14 @@ export const RightSidePanel = () => {
     stopGetScreenshot();
   };
 
+  useEffect(() => {
+    const handlePaginationSelection = (data: { selector: string }) => {
+      setPaginationSelector(data.selector);
+      setIsSelectingPagination(false);
+    };
+
+  });
+
   return (
     <Paper variant="outlined" sx={{ height: '100%', width: '100%', backgroundColor: 'white', alignItems: "center" }}>
       <SimpleBox height={60} width='100%' background='lightGray' radius='0%'>
