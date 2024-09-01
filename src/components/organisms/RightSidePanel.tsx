@@ -242,7 +242,7 @@ export const RightSidePanel = () => {
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
               <Button variant="outlined" onClick={stopCaptureAndEmitGetTextSettings} disabled={isSelectingPagination}>Confirm</Button>
-              <Button variant="outlined" color="error" onClick={stopGetText}>Discard</Button>
+              <Button variant="outlined" color="error" onClick={stopGetText} disabled={isSelectingPagination}>Discard</Button>
             </Box>
           </>
         }
