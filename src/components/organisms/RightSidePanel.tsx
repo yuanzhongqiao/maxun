@@ -153,10 +153,6 @@ export const RightSidePanel = () => {
   }, [selectedPaginationSetting, paginationSelector, stopCaptureAndEmitGetListSettings, notify]);
 
   const handlePaginationSettingSelect = (option: string) => {
-    if (!selectedPaginationSetting) {
-      setShowPaginationOptions(true);
-      return;
-    }
     setSelectedPaginationSetting(option);
     if (['clickNext', 'clickLoadMore'].includes(option)) {
       setShowPaginationSelector(true);
