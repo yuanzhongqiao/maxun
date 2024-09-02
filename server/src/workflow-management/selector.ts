@@ -781,10 +781,11 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
       };
     }, coordinates);
 
-    return selectors || {};
+    return selectors || {generalSelector: ''};
   } catch (error) {
     console.error('Error in getNonUniqueSelectors:', error);
-    return {};
+    return { generalSelector: '' };
+
   }
 };
 
