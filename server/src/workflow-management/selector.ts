@@ -754,11 +754,23 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
 
       function getSelectorPath(element: HTMLElement | null): string {
         const path: string[] = [];
-        while (element && element !== document.body) {
+        let depth = 0;
+        const maxDepth = 2; // Limiting the depth of the selector path
+
+        while (element && element !== document.body && depth < maxDepth) {
           const selector = getNonUniqueSelector(element);
+
+          // Stop adding selectors when we reach certain container elements
+          if (selector.includes('quotes') || selector.includes('container')) {
+            path.unshift(selector);
+            break;
+          }
+
           path.unshift(selector);
           element = element.parentElement;
+          depth++;
         }
+
         return path.join(' > ');
       }
 
@@ -777,6 +789,7 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
     return {};
   }
 };
+
 
 
 
