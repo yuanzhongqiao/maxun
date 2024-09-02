@@ -795,7 +795,7 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
     return selectors || { generalSelector: '', childSelectors: [] };
   } catch (error) {
     console.error('Error in getNonUniqueSelectors:', error);
-    return {};
+    return { generalSelector: '', childSelectors: [] };
   }
 };
 
