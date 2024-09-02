@@ -513,7 +513,14 @@ export class WorkflowGenerator {
     const displaySelector = await this.generateSelector(page, coordinates, ActionType.Click);
     const elementInfo = await getElementInformation(page, coordinates);
     if (rect) {
-      this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo });
+      if (this.getList === true) {
+        const childSelectors = await getChildSelectors(page, displaySelector || '');
+        this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo, childSelectors })
+      } else {
+        this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo });
+
+      }
+
     }
     // reset getList after usage
     this.getList = false;
