@@ -721,6 +721,10 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
   return null;
 };
 
+interface NonUniqueSelectorsResult {
+  generalSelector: string;
+  childSelectors: string[];
+}
 
 /**
  * Returns the best non-unique css {@link Selectors} for the element on the page.
