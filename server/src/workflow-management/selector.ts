@@ -721,10 +721,6 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
   return null;
 };
 
-interface NonUniqueSelectorsResult {
-  generalSelector: string;
-  childSelectors: string[];
-}
 
 /**
  * Returns the best non-unique css {@link Selectors} for the element on the page.
@@ -734,7 +730,7 @@ interface NonUniqueSelectorsResult {
  * @returns {Promise<Selectors|null|undefined>}
  */
 
-export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates): Promise<NonUniqueSelectorsResult> => {
+export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates) => {
   try {
     const selectors = await page.evaluate(({ x, y }: { x: number, y: number }) => {
 
@@ -752,6 +748,7 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
             }
           }
         }
+
         return selector;
       }
 
@@ -762,43 +759,30 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
 
         while (element && element !== document.body && depth < maxDepth) {
           const selector = getNonUniqueSelector(element);
+
           path.unshift(selector);
           element = element.parentElement;
           depth++;
         }
+
         return path.join(' > ');
-      }
-
-      function getChildSelectors(parent: HTMLElement): string[] {
-        const childSelectors: string[] = [];
-        const children = parent.querySelectorAll('*');
-
-        children.forEach(child => {
-          const childSelector = getSelectorPath(child as HTMLElement);
-          childSelectors.push(childSelector);
-        });
-        return childSelectors;
       }
 
       const element = document.elementFromPoint(x, y) as HTMLElement | null;
       if (!element) return null;
 
       const generalSelector = getSelectorPath(element);
-      const childSelectors = getChildSelectors(element);
-
       return {
         generalSelector,
-        childSelectors,
       };
     }, coordinates);
 
-    return selectors || { generalSelector: '', childSelectors: [] };
+    return selectors || {};
   } catch (error) {
     console.error('Error in getNonUniqueSelectors:', error);
-    return { generalSelector: '', childSelectors: [] };
+    return {};
   }
 };
-
 
 
 /**
