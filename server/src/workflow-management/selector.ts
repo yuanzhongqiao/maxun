@@ -721,23 +721,6 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
   return null;
 };
 
-function generateNonUniqueSelector(element: HTMLElement): string {
-  let selector = element.tagName.toLowerCase();
-
-  if (element.className) {
-    const classes = element.className.split(/\s+/).filter((cls: string) => Boolean(cls));
-    if (classes.length > 0) {
-      const validClasses = classes.filter((cls: string) => !cls.startsWith('!') && !cls.includes(':'));
-      if (validClasses.length > 0) {
-        selector += '.' + validClasses.map(cls => CSS.escape(cls)).join('.');
-      }
-    }
-  }
-
-  return selector;
-}
-
-
 
 interface SelectorResult {
   generalSelector: string;
@@ -755,23 +738,23 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
   try {
     const selectors = await page.evaluate(({ x, y }: { x: number, y: number }) => {
 
-      // function getNonUniqueSelector(element: HTMLElement): string {
-      //   let selector = element.tagName.toLowerCase();
+      function getNonUniqueSelector(element: HTMLElement): string {
+        let selector = element.tagName.toLowerCase();
 
-      //   // Avoid using IDs to maintain non-uniqueness
-      //   if (element.className) {
-      //     const classes = element.className.split(/\s+/).filter((cls: string) => Boolean(cls));
-      //     if (classes.length > 0) {
-      //       // Exclude utility classes and escape special characters
-      //       const validClasses = classes.filter((cls: string) => !cls.startsWith('!') && !cls.includes(':'));
-      //       if (validClasses.length > 0) {
-      //         selector += '.' + validClasses.map(cls => CSS.escape(cls)).join('.');
-      //       }
-      //     }
-      //   }
+        // Avoid using IDs to maintain non-uniqueness
+        if (element.className) {
+          const classes = element.className.split(/\s+/).filter((cls: string) => Boolean(cls));
+          if (classes.length > 0) {
+            // Exclude utility classes and escape special characters
+            const validClasses = classes.filter((cls: string) => !cls.startsWith('!') && !cls.includes(':'));
+            if (validClasses.length > 0) {
+              selector += '.' + validClasses.map(cls => CSS.escape(cls)).join('.');
+            }
+          }
+        }
 
-      //   return selector;
-      // }
+        return selector;
+      }
 
       function getSelectorPath(element: HTMLElement | null): string {
         const path: string[] = [];
@@ -779,7 +762,7 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
         const maxDepth = 2; // Limiting the depth of the selector path
 
         while (element && element !== document.body && depth < maxDepth) {
-          const selector = generateNonUniqueSelector(element);
+          const selector = getNonUniqueSelector(element);
 
           path.unshift(selector);
           element = element.parentElement;
@@ -806,40 +789,27 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
   }
 };
 
-export const getChildSelectors = async (page: Page, parentSelector: string, maxDepth: number = 2): Promise<string[]> => {
+export const getChildSelectors = async (page: Page, parentSelector: string): Promise<string[]> => {
   try {
-    const childSelectors = await page.evaluate(({ parentSelector, maxDepth }: { parentSelector: string, maxDepth: number }) => {
-      function getSelectors(element: HTMLElement, currentDepth: number): string[] {
-        if (currentDepth > maxDepth) return [];
-
-        const selectors: string[] = [];
-        const childElements = Array.from(element.children);
-
-        for (const child of childElements) {
-          let selector = child.tagName.toLowerCase();
-          if (child.className) {
-            const classes = child.className.split(/\s+/).filter((cls: string) => Boolean(cls));
-            if (classes.length > 0) {
-              const validClasses = classes.filter((cls: string) => !cls.startsWith('!') && !cls.includes(':'));
-              if (validClasses.length > 0) {
-                selector += '.' + validClasses.map(cls => CSS.escape(cls)).join('.');
-              }
-            }
-          }
-          selectors.push(selector);
-
-          // Recursively get selectors for deeper levels
-          selectors.push(...getSelectors(child as HTMLElement, currentDepth + 1));
-        }
-
-        return selectors;
-      }
-
-      const parentElement = document.querySelector(parentSelector) as HTMLElement;
+    const childSelectors = await page.evaluate((parentSelector: string) => {
+      const parentElement = document.querySelector(parentSelector);
       if (!parentElement) return [];
 
-      return getSelectors(parentElement, 0);
-    }, { parentSelector, maxDepth });
+      const childElements = Array.from(parentElement.children);
+      return childElements.map(child => {
+        let selector = child.tagName.toLowerCase();
+        if (child.className) {
+          const classes = child.className.split(/\s+/).filter((cls: string) => Boolean(cls));
+          if (classes.length > 0) {
+            const validClasses = classes.filter((cls: string) => !cls.startsWith('!') && !cls.includes(':'));
+            if (validClasses.length > 0) {
+              selector += '.' + validClasses.map(cls => CSS.escape(cls)).join('.');
+            }
+          }
+        }
+        return selector;
+      });
+    }, parentSelector);
 
     return childSelectors || [];
   } catch (error) {
@@ -847,7 +817,6 @@ export const getChildSelectors = async (page: Page, parentSelector: string, maxD
     return [];
   }
 };
-
 
 /**
  * Returns the first pair from the given workflow that contains the given selector
