@@ -781,7 +781,7 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
       };
     }, coordinates);
 
-    return selectors || {generalSelector: ''};
+    return selectors || { generalSelector: '' };
   } catch (error) {
     console.error('Error in getNonUniqueSelectors:', error);
     return { generalSelector: '' };
@@ -817,8 +817,6 @@ export const getChildSelectors = async (page: Page, parentSelector: string): Pro
     return [];
   }
 };
-
-
 
 /**
  * Returns the first pair from the given workflow that contains the given selector
