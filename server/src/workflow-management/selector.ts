@@ -759,7 +759,6 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
 
         while (element && element !== document.body && depth < maxDepth) {
           const selector = getNonUniqueSelector(element);
-
           path.unshift(selector);
           element = element.parentElement;
           depth++;
@@ -768,12 +767,27 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
         return path.join(' > ');
       }
 
+      function getChildSelectors(parent: HTMLElement): string[] {
+        const childSelectors: string[] = [];
+        const children = parent.querySelectorAll('*');
+
+        children.forEach(child => {
+          const childSelector = getSelectorPath(child as HTMLElement);
+          childSelectors.push(childSelector);
+        });
+
+        return childSelectors;
+      }
+
       const element = document.elementFromPoint(x, y) as HTMLElement | null;
       if (!element) return null;
 
       const generalSelector = getSelectorPath(element);
+      const childSelectors = getChildSelectors(element);
+
       return {
         generalSelector,
+        childSelectors,
       };
     }, coordinates);
 
@@ -783,6 +797,7 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
     return {};
   }
 };
+
 
 
 /**
