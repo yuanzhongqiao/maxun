@@ -784,7 +784,6 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
   }
 };
 
-
 export const getChildSelectors = async (page: Page, parentSelector: string): Promise<string[]> => {
   try {
     const childSelectors = await page.evaluate((parentSelector: string) => {
