@@ -785,6 +785,37 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
 };
 
 
+export const getChildSelectors = async (page: Page, parentSelector: string): Promise<string[]> => {
+  try {
+    const childSelectors = await page.evaluate((parentSelector: string) => {
+      const parentElement = document.querySelector(parentSelector);
+      if (!parentElement) return [];
+
+      const childElements = Array.from(parentElement.children);
+      return childElements.map(child => {
+        let selector = child.tagName.toLowerCase();
+        if (child.className) {
+          const classes = child.className.split(/\s+/).filter((cls: string) => Boolean(cls));
+          if (classes.length > 0) {
+            const validClasses = classes.filter((cls: string) => !cls.startsWith('!') && !cls.includes(':'));
+            if (validClasses.length > 0) {
+              selector += '.' + validClasses.map(cls => CSS.escape(cls)).join('.');
+            }
+          }
+        }
+        return selector;
+      });
+    }, parentSelector);
+
+    return childSelectors || [];
+  } catch (error) {
+    console.error('Error in getChildSelectors:', error);
+    return [];
+  }
+};
+
+
+
 /**
  * Returns the first pair from the given workflow that contains the given selector
  * inside the where condition, and it is the only selector there.
