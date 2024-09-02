@@ -734,7 +734,7 @@ interface NonUniqueSelectorsResult {
  * @returns {Promise<Selectors|null|undefined>}
  */
 
-export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates) => {
+export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates): Promise<NonUniqueSelectorsResult> => {
   try {
     const selectors = await page.evaluate(({ x, y }: { x: number, y: number }) => {
 
