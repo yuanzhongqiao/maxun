@@ -7,6 +7,7 @@ import {
   getElementInformation,
   getRect,
   getSelectors,
+  getChildSelectors,
   getNonUniqueSelectors,
   isRuleOvershadowing,
   selectorAlreadyInWorkflow
