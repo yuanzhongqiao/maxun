@@ -755,23 +755,23 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
   try {
     const selectors = await page.evaluate(({ x, y }: { x: number, y: number }) => {
 
-      function getNonUniqueSelector(element: HTMLElement): string {
-        let selector = element.tagName.toLowerCase();
+      // function getNonUniqueSelector(element: HTMLElement): string {
+      //   let selector = element.tagName.toLowerCase();
 
-        // Avoid using IDs to maintain non-uniqueness
-        if (element.className) {
-          const classes = element.className.split(/\s+/).filter((cls: string) => Boolean(cls));
-          if (classes.length > 0) {
-            // Exclude utility classes and escape special characters
-            const validClasses = classes.filter((cls: string) => !cls.startsWith('!') && !cls.includes(':'));
-            if (validClasses.length > 0) {
-              selector += '.' + validClasses.map(cls => CSS.escape(cls)).join('.');
-            }
-          }
-        }
+      //   // Avoid using IDs to maintain non-uniqueness
+      //   if (element.className) {
+      //     const classes = element.className.split(/\s+/).filter((cls: string) => Boolean(cls));
+      //     if (classes.length > 0) {
+      //       // Exclude utility classes and escape special characters
+      //       const validClasses = classes.filter((cls: string) => !cls.startsWith('!') && !cls.includes(':'));
+      //       if (validClasses.length > 0) {
+      //         selector += '.' + validClasses.map(cls => CSS.escape(cls)).join('.');
+      //       }
+      //     }
+      //   }
 
-        return selector;
-      }
+      //   return selector;
+      // }
 
       function getSelectorPath(element: HTMLElement | null): string {
         const path: string[] = [];
@@ -779,7 +779,7 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
         const maxDepth = 2; // Limiting the depth of the selector path
 
         while (element && element !== document.body && depth < maxDepth) {
-          const selector = getNonUniqueSelector(element);
+          const selector = generateNonUniqueSelector(element);
 
           path.unshift(selector);
           element = element.parentElement;
