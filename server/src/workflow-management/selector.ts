@@ -760,12 +760,6 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
         while (element && element !== document.body && depth < maxDepth) {
           const selector = getNonUniqueSelector(element);
 
-          // Stop adding selectors when we reach certain container elements
-          if (selector.includes('quotes') || selector.includes('container')) {
-            path.unshift(selector);
-            break;
-          }
-
           path.unshift(selector);
           element = element.parentElement;
           depth++;
@@ -789,6 +783,7 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
     return {};
   }
 };
+
 
 /**
  * Returns the first pair from the given workflow that contains the given selector
