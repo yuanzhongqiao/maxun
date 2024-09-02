@@ -476,6 +476,11 @@ export class WorkflowGenerator {
    */
   private generateSelector = async (page: Page, coordinates: Coordinates, action: ActionType) => {
     const elementInfo = await getElementInformation(page, coordinates);
+    const nonUniqueDebug = await getNonUniqueSelectors(page, coordinates)
+
+    const { generalSelector, childSelectors } = await getNonUniqueSelectors(page, coordinates);
+
+    console.log('Non Unique Selectors [DEBUG]:',nonUniqueDebug);
 
     const selectorBasedOnCustomAction = (this.getList === true)
       ? await getNonUniqueSelectors(page, coordinates)
