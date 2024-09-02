@@ -789,27 +789,40 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
   }
 };
 
-export const getChildSelectors = async (page: Page, parentSelector: string): Promise<string[]> => {
+export const getChildSelectors = async (page: Page, parentSelector: string, maxDepth: number = 2): Promise<string[]> => {
   try {
-    const childSelectors = await page.evaluate((parentSelector: string) => {
-      const parentElement = document.querySelector(parentSelector);
-      if (!parentElement) return [];
+    const childSelectors = await page.evaluate(({ parentSelector, maxDepth }: { parentSelector: string, maxDepth: number }) => {
+      function getSelectors(element: HTMLElement, currentDepth: number): string[] {
+        if (currentDepth > maxDepth) return [];
 
-      const childElements = Array.from(parentElement.children);
-      return childElements.map(child => {
-        let selector = child.tagName.toLowerCase();
-        if (child.className) {
-          const classes = child.className.split(/\s+/).filter((cls: string) => Boolean(cls));
-          if (classes.length > 0) {
-            const validClasses = classes.filter((cls: string) => !cls.startsWith('!') && !cls.includes(':'));
-            if (validClasses.length > 0) {
-              selector += '.' + validClasses.map(cls => CSS.escape(cls)).join('.');
+        const selectors: string[] = [];
+        const childElements = Array.from(element.children);
+
+        for (const child of childElements) {
+          let selector = child.tagName.toLowerCase();
+          if (child.className) {
+            const classes = child.className.split(/\s+/).filter((cls: string) => Boolean(cls));
+            if (classes.length > 0) {
+              const validClasses = classes.filter((cls: string) => !cls.startsWith('!') && !cls.includes(':'));
+              if (validClasses.length > 0) {
+                selector += '.' + validClasses.map(cls => CSS.escape(cls)).join('.');
+              }
             }
           }
+          selectors.push(selector);
+
+          // Recursively get selectors for deeper levels
+          selectors.push(...getSelectors(child as HTMLElement, currentDepth + 1));
         }
-        return selector;
-      });
-    }, parentSelector);
+
+        return selectors;
+      }
+
+      const parentElement = document.querySelector(parentSelector) as HTMLElement;
+      if (!parentElement) return [];
+
+      return getSelectors(parentElement, 0);
+    }, { parentSelector, maxDepth });
 
     return childSelectors || [];
   } catch (error) {
@@ -817,6 +830,7 @@ export const getChildSelectors = async (page: Page, parentSelector: string): Pro
     return [];
   }
 };
+
 
 /**
  * Returns the first pair from the given workflow that contains the given selector
