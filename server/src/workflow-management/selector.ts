@@ -748,7 +748,6 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
             }
           }
         }
-
         return selector;
       }
 
@@ -763,7 +762,6 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
           element = element.parentElement;
           depth++;
         }
-
         return path.join(' > ');
       }
 
@@ -775,7 +773,6 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
           const childSelector = getSelectorPath(child as HTMLElement);
           childSelectors.push(childSelector);
         });
-
         return childSelectors;
       }
 
