@@ -483,7 +483,7 @@ export class WorkflowGenerator {
     console.log('Non Unique Selectors [DEBUG]:',nonUniqueDebug);
 
     const selectorBasedOnCustomAction = (this.getList === true)
-      ? await getNonUniqueSelectors(page, coordinates)
+      ? generalSelector
       : await getSelectors(page, coordinates);
     const bestSelector = getBestSelectorForAction(
       {
