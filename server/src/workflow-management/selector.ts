@@ -721,6 +721,23 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
   return null;
 };
 
+function generateNonUniqueSelector(element: HTMLElement): string {
+  let selector = element.tagName.toLowerCase();
+
+  if (element.className) {
+    const classes = element.className.split(/\s+/).filter((cls: string) => Boolean(cls));
+    if (classes.length > 0) {
+      const validClasses = classes.filter((cls: string) => !cls.startsWith('!') && !cls.includes(':'));
+      if (validClasses.length > 0) {
+        selector += '.' + validClasses.map(cls => CSS.escape(cls)).join('.');
+      }
+    }
+  }
+
+  return selector;
+}
+
+
 
 interface SelectorResult {
   generalSelector: string;
