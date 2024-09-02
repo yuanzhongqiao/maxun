@@ -730,7 +730,7 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
  * @returns {Promise<Selectors|null|undefined>}
  */
 
-export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates): Promise<string> => {
+export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates) => {
   try {
     const selectors = await page.evaluate(({ x, y }: { x: number, y: number }) => {
 
