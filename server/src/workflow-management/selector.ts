@@ -722,6 +722,10 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
 };
 
 
+interface SelectorResult {
+  generalSelector: string;
+}
+
 /**
  * Returns the best non-unique css {@link Selectors} for the element on the page.
  * @param page The page instance.
