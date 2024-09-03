@@ -54,8 +54,6 @@ export const BrowserWindow = () => {
     const [showAttributeModal, setShowAttributeModal] = useState(false);
     const [attributeOptions, setAttributeOptions] = useState<AttributeOption[]>([]);
     const [selectedElement, setSelectedElement] = useState<{ selector: string, info: ElementInfo | null } | null>(null);
-    const [isSelectingPagination, setIsSelectingPagination] = useState(false);
-
     const [listSelector, setListSelector] = useState<string | null>(null);
     const [fields, setFields] = useState<Record<string, TextStep>>({});
 
@@ -149,11 +147,6 @@ export const BrowserWindow = () => {
                 }
 
                 const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '', highlighterData.elementInfo);
-
-                if (isSelectingPagination) {
-                    socket?.emit('paginationSelected', { selector: highlighterData.selector });
-                    setIsSelectingPagination(false);
-                }
 
                 if (getText === true) {
                     if (options.length === 1) {
@@ -272,18 +265,6 @@ export const BrowserWindow = () => {
         }
         setShowAttributeModal(false);
     };
-
-    useEffect(() => {
-        const handleStartPaginationSelection = () => {
-            setIsSelectingPagination(true);
-        };
-
-        socket?.on('startPaginationSelection', handleStartPaginationSelection);
-
-        return () => {
-            socket?.off('startPaginationSelection', handleStartPaginationSelection);
-        };
-    }, [socket]);
 
     return (
         <div onClick={handleClick}>
