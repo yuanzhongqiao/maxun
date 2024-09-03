@@ -786,14 +786,16 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
 };
 
 
-export const getChildSelectors = async (page: Page, parentSelector: string, maxDepth: number = 2): Promise<string[]> => {
+export const getChildSelectors = async (page: Page, parentSelector: string, maxDepth: number = 5): Promise<string[]> => {
   try {
     const childSelectors = await page.evaluate(({ parentSelector, maxDepth }: { parentSelector: string, maxDepth: number }) => {
       function getNonUniqueSelector(element: HTMLElement): string {
         let selector = element.tagName.toLowerCase();
 
-        if (element.className) {
-          const classes = element.className.split(/\s+/).filter((cls: string) => Boolean(cls));
+        // Ensure that className is a string before splitting
+        const className = typeof element.className === 'string' ? element.className : '';
+        if (className) {
+          const classes = className.split(/\s+/).filter((cls: string) => Boolean(cls));
           if (classes.length > 0) {
             const validClasses = classes.filter((cls: string) => !cls.startsWith('!') && !cls.includes(':'));
             if (validClasses.length > 0) {
