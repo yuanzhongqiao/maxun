@@ -581,8 +581,6 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
         return output;
       }
 
-
-
       const genSelectors = (element: HTMLElement | null) => {
         if (element == null) {
           return null;
