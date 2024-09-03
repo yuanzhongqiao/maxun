@@ -741,11 +741,9 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
       function getNonUniqueSelector(element: HTMLElement): string {
         let selector = element.tagName.toLowerCase();
 
-        // Avoid using IDs to maintain non-uniqueness
         if (element.className) {
           const classes = element.className.split(/\s+/).filter((cls: string) => Boolean(cls));
           if (classes.length > 0) {
-            // Exclude utility classes and escape special characters
             const validClasses = classes.filter((cls: string) => !cls.startsWith('!') && !cls.includes(':'));
             if (validClasses.length > 0) {
               selector += '.' + validClasses.map(cls => CSS.escape(cls)).join('.');
@@ -759,11 +757,10 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
       function getSelectorPath(element: HTMLElement | null): string {
         const path: string[] = [];
         let depth = 0;
-        const maxDepth = 2; // Limiting the depth of the selector path
+        const maxDepth = 2;
 
         while (element && element !== document.body && depth < maxDepth) {
           const selector = getNonUniqueSelector(element);
-
           path.unshift(selector);
           element = element.parentElement;
           depth++;
@@ -785,21 +782,19 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
   } catch (error) {
     console.error('Error in getNonUniqueSelectors:', error);
     return { generalSelector: '' };
-
   }
 };
+
 
 export const getChildSelectors = async (page: Page, parentSelector: string): Promise<string[]> => {
   try {
     const childSelectors = await page.evaluate((parentSelector: string) => {
-      const parentElement = document.querySelector(parentSelector);
-      if (!parentElement) return [];
 
-      const childElements = Array.from(parentElement.children);
-      return childElements.map(child => {
-        let selector = child.tagName.toLowerCase();
-        if (child.className) {
-          const classes = child.className.split(/\s+/).filter((cls: string) => Boolean(cls));
+      function getNonUniqueSelector(element: HTMLElement): string {
+        let selector = element.tagName.toLowerCase();
+
+        if (element.className) {
+          const classes = element.className.split(/\s+/).filter((cls: string) => Boolean(cls));
           if (classes.length > 0) {
             const validClasses = classes.filter((cls: string) => !cls.startsWith('!') && !cls.includes(':'));
             if (validClasses.length > 0) {
@@ -807,8 +802,30 @@ export const getChildSelectors = async (page: Page, parentSelector: string): Pro
             }
           }
         }
+
         return selector;
-      });
+      }
+
+      function getSelectorPath(element: HTMLElement | null): string {
+        const path: string[] = [];
+        let depth = 0;
+        const maxDepth = 2;
+
+        while (element && element !== document.body && depth < maxDepth) {
+          const selector = getNonUniqueSelector(element);
+          path.unshift(selector);
+          element = element.parentElement;
+          depth++;
+        }
+
+        return path.join(' > ');
+      }
+
+      const parentElement = document.querySelector(parentSelector);
+      if (!parentElement) return [];
+
+      const childElements = Array.from(parentElement.children) as HTMLElement[]; // Type assertion to HTMLElement[]
+      return childElements.map(child => getSelectorPath(child));
     }, parentSelector);
 
     return childSelectors || [];
@@ -817,6 +834,8 @@ export const getChildSelectors = async (page: Page, parentSelector: string): Pro
     return [];
   }
 };
+
+
 
 /**
  * Returns the first pair from the given workflow that contains the given selector
