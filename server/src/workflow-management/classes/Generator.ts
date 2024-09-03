@@ -54,6 +54,8 @@ export class WorkflowGenerator {
    */
   private getList: boolean = false;
 
+  private listSelector: string = '';
+
   /**
    * The public constructor of the WorkflowGenerator.
    * Takes socket for communication as a parameter and registers some important events on it.
