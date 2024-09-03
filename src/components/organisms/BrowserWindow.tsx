@@ -50,7 +50,7 @@ const getAttributeOptions = (tagName: string, elementInfo: ElementInfo | null): 
 export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
     const [screenShot, setScreenShot] = useState<string>("");
-    const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string, elementInfo: ElementInfo | null; } | null>(null);
+    const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string, elementInfo: ElementInfo | null, childSelectors?: string } | null>(null);
     const [showAttributeModal, setShowAttributeModal] = useState(false);
     const [attributeOptions, setAttributeOptions] = useState<AttributeOption[]>([]);
     const [selectedElement, setSelectedElement] = useState<{ selector: string, info: ElementInfo | null } | null>(null);
@@ -97,9 +97,10 @@ export const BrowserWindow = () => {
         }
     }, [screenShot, canvasRef, socket, screencastHandler]);
 
-    const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: ElementInfo | null }) => {
+    const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: ElementInfo | null, childSelectors?: string }) => {
         if (getList === true) {
             socket?.emit('setGetList', { getList: true });
+            console.log('Child Selectors are:', data.childSelectors)
         }
         setHighlighterData(data);
     }, [highlighterData, getList, socket]);
