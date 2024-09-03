@@ -108,7 +108,7 @@ export class WorkflowGenerator {
     });
     this.socket.on('listSelector', (data: { selector: string }) => {
       this.listSelector = data.selector;
-  })
+    })
   }
 
   /**
