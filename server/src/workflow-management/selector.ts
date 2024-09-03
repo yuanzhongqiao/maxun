@@ -784,12 +784,9 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
     return { generalSelector: '' };
   }
 };
-interface SelectorNode {
-  selector: string;
-  children: SelectorNode[];
-}
 
-export const getChildSelectors = async (page: Page, parentSelector: string, maxDepth: number = 2): Promise<SelectorNode[]> => {
+
+export const getChildSelectors = async (page: Page, parentSelector: string, maxDepth: number = 2): Promise<string[]> => {
   try {
     const childSelectors = await page.evaluate(({ parentSelector, maxDepth }: { parentSelector: string, maxDepth: number }) => {
       function getNonUniqueSelector(element: HTMLElement): string {
@@ -822,22 +819,24 @@ export const getChildSelectors = async (page: Page, parentSelector: string, maxD
         return path.join(' > ');
       }
 
-      function getDescendantSelectors(element: HTMLElement, currentDepth: number = 0): SelectorNode[] {
+      function getAllDescendantSelectors(element: HTMLElement, currentDepth: number = 0): string[] {
         if (currentDepth >= maxDepth) return [];
 
+        let selectors: string[] = [];
         const children = Array.from(element.children) as HTMLElement[];
-        return children.map(child => {
-          return {
-            selector: getSelectorPath(child),
-            children: getDescendantSelectors(child, currentDepth + 1)
-          };
-        });
+
+        for (const child of children) {
+          selectors.push(getSelectorPath(child));
+          selectors = selectors.concat(getAllDescendantSelectors(child, currentDepth + 1));
+        }
+
+        return selectors;
       }
 
       const parentElement = document.querySelector(parentSelector) as HTMLElement;
       if (!parentElement) return [];
 
-      return getDescendantSelectors(parentElement);
+      return getAllDescendantSelectors(parentElement);
     }, { parentSelector, maxDepth });
 
     return childSelectors || [];
