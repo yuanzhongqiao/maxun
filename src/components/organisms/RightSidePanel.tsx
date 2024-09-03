@@ -24,9 +24,6 @@ export const RightSidePanel = () => {
   const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: number]: boolean }>({});
   const [showPaginationOptions, setShowPaginationOptions] = useState(false);
   const [selectedPaginationSetting, setSelectedPaginationSetting] = useState<string | null>(null);
-  const [paginationSelector, setPaginationSelector] = useState<string | null>(null);
-  const [showPaginationSelector, setShowPaginationSelector] = useState(false);
-  const [isSelectingPagination, setIsSelectingPagination] = useState(false);
 
   const { lastAction, notify } = useGlobalInfoStore();
   const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, getList, startGetList, stopGetList } = useActionContext();
@@ -115,7 +112,6 @@ export const RightSidePanel = () => {
           fields: fields,
           pagination: {
             type: selectedPaginationSetting || '',
-            selector: paginationSelector || undefined
           }
         };
 
@@ -123,7 +119,7 @@ export const RightSidePanel = () => {
     });
 
     return settings;
-  }, [browserSteps, selectedPaginationSetting, paginationSelector]);
+  }, [browserSteps, selectedPaginationSetting]);
 
 
   const stopCaptureAndEmitGetListSettings = useCallback(() => {
@@ -141,31 +137,24 @@ export const RightSidePanel = () => {
       setShowPaginationOptions(true);
       return;
     }
-    if (['clickNext', 'clickLoadMore'].includes(selectedPaginationSetting) && !paginationSelector) {
+    if (['clickNext', 'clickLoadMore'].includes(selectedPaginationSetting)) {
       notify('error', 'Please select the pagination element first.');
       return;
     }
     stopCaptureAndEmitGetListSettings();
     setShowPaginationOptions(false);
-    setShowPaginationSelector(false);
     setSelectedPaginationSetting(null);
-    setPaginationSelector(null);
-    setIsSelectingPagination(false);
-  }, [selectedPaginationSetting, paginationSelector, stopCaptureAndEmitGetListSettings, notify]);
+    (null);
+  }, [selectedPaginationSetting, stopCaptureAndEmitGetListSettings, notify]);
 
   const handlePaginationSettingSelect = (option: string) => {
     setSelectedPaginationSetting(option);
     if (['clickNext', 'clickLoadMore'].includes(option)) {
-      setShowPaginationSelector(true);
-    } else {
-      setShowPaginationSelector(false);
-      setPaginationSelector(null);
-    }
+    } 
   };
 
   const handleStartPaginationSelection = () => {
     // Start the process of selecting the pagination element
-    setIsSelectingPagination(true);
     socket?.emit('action', { action: 'startPaginationSelection' });
   };
 
@@ -185,11 +174,6 @@ export const RightSidePanel = () => {
   };
 
   useEffect(() => {
-    const handlePaginationSelection = (data: { selector: string }) => {
-      setPaginationSelector(data.selector);
-      setIsSelectingPagination(false);
-    };
-
     socket?.on('paginationSelected', handlePaginationSelection);
 
     return () => {
@@ -224,25 +208,14 @@ export const RightSidePanel = () => {
             <Button variant={selectedPaginationSetting === 'none' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('none')}>No more items to load</Button>
           </Box>
         )}
-
-        {showPaginationSelector && (
-          <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
-            <Typography>Please select the pagination element on the page</Typography>
-            <Button variant="contained" onClick={handleStartPaginationSelection} disabled={isSelectingPagination}>
-              {isSelectingPagination ? 'Selecting...' : 'Start Selection'}
-            </Button>
-            {paginationSelector && (
-              <Typography>Selected pagination element: {paginationSelector}</Typography>
-            )}
-          </Box>
-        )}
+        
 
         {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
         {getText &&
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
-              <Button variant="outlined" onClick={stopCaptureAndEmitGetTextSettings} disabled={isSelectingPagination}>Confirm</Button>
-              <Button variant="outlined" color="error" onClick={stopGetText} disabled={isSelectingPagination}>Discard</Button>
+              <Button variant="outlined" onClick={stopCaptureAndEmitGetTextSettings} >Confirm</Button>
+              <Button variant="outlined" color="error" onClick={stopGetText} >Discard</Button>
             </Box>
           </>
         }
