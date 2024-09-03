@@ -806,24 +806,22 @@ export const getChildSelectors = async (page: Page, parentSelector: string): Pro
         return selector;
       }
 
-      function getSelectorPath(element: HTMLElement | null, stopAtParent: HTMLElement | null): string {
-        const path: string[] = [];
-
-        while (element && element !== stopAtParent && element !== document.body) {
-          const selector = getNonUniqueSelector(element);
-          path.unshift(selector);
-          element = element.parentElement;
-        }
-
-        return path.join(' > ');
+      function getSelectorPath(element: HTMLElement | null): string {
+        if (!element || !element.parentElement) return '';
+      
+        const parentSelector = getNonUniqueSelector(element.parentElement);
+        const elementSelector = getNonUniqueSelector(element);
+      
+        return `${parentSelector} > ${elementSelector}`;
       }
+      
 
       function getAllDescendantSelectors(element: HTMLElement, stopAtParent: HTMLElement | null): string[] {
         let selectors: string[] = [];
         const children = Array.from(element.children) as HTMLElement[];
 
         for (const child of children) {
-          selectors.push(getSelectorPath(child, stopAtParent));
+          selectors.push(getSelectorPath(child));
           selectors = selectors.concat(getAllDescendantSelectors(child, stopAtParent));
         }
 
