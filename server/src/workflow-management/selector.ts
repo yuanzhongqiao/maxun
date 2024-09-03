@@ -786,13 +786,12 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
 };
 
 
-export const getChildSelectors = async (page: Page, parentSelector: string, maxDepth: number = 5): Promise<string[]> => {
+export const getChildSelectors = async (page: Page, parentSelector: string): Promise<string[]> => {
   try {
-    const childSelectors = await page.evaluate(({ parentSelector, maxDepth }: { parentSelector: string, maxDepth: number }) => {
+    const childSelectors = await page.evaluate((parentSelector: string) => {
       function getNonUniqueSelector(element: HTMLElement): string {
         let selector = element.tagName.toLowerCase();
 
-        // Ensure that className is a string before splitting
         const className = typeof element.className === 'string' ? element.className : '';
         if (className) {
           const classes = className.split(/\s+/).filter((cls: string) => Boolean(cls));
@@ -809,27 +808,23 @@ export const getChildSelectors = async (page: Page, parentSelector: string, maxD
 
       function getSelectorPath(element: HTMLElement | null): string {
         const path: string[] = [];
-        let depth = 0;
 
-        while (element && element !== document.body && depth < maxDepth) {
+        while (element && element !== document.body) {
           const selector = getNonUniqueSelector(element);
           path.unshift(selector);
           element = element.parentElement;
-          depth++;
         }
 
         return path.join(' > ');
       }
 
-      function getAllDescendantSelectors(element: HTMLElement, currentDepth: number = 0): string[] {
-        if (currentDepth >= maxDepth) return [];
-
+      function getAllDescendantSelectors(element: HTMLElement): string[] {
         let selectors: string[] = [];
         const children = Array.from(element.children) as HTMLElement[];
 
         for (const child of children) {
           selectors.push(getSelectorPath(child));
-          selectors = selectors.concat(getAllDescendantSelectors(child, currentDepth + 1));
+          selectors = selectors.concat(getAllDescendantSelectors(child));
         }
 
         return selectors;
@@ -839,7 +834,7 @@ export const getChildSelectors = async (page: Page, parentSelector: string, maxD
       if (!parentElement) return [];
 
       return getAllDescendantSelectors(parentElement);
-    }, { parentSelector, maxDepth });
+    }, parentSelector);
 
     return childSelectors || [];
   } catch (error) {
@@ -847,6 +842,7 @@ export const getChildSelectors = async (page: Page, parentSelector: string, maxD
     return [];
   }
 };
+
 
 
 
