@@ -806,10 +806,10 @@ export const getChildSelectors = async (page: Page, parentSelector: string): Pro
         return selector;
       }
 
-      function getSelectorPath(element: HTMLElement | null): string {
+      function getSelectorPath(element: HTMLElement | null, stopAtParent: HTMLElement | null): string {
         const path: string[] = [];
 
-        while (element && element !== document.body) {
+        while (element && element !== stopAtParent && element !== document.body) {
           const selector = getNonUniqueSelector(element);
           path.unshift(selector);
           element = element.parentElement;
@@ -818,13 +818,13 @@ export const getChildSelectors = async (page: Page, parentSelector: string): Pro
         return path.join(' > ');
       }
 
-      function getAllDescendantSelectors(element: HTMLElement): string[] {
+      function getAllDescendantSelectors(element: HTMLElement, stopAtParent: HTMLElement | null): string[] {
         let selectors: string[] = [];
         const children = Array.from(element.children) as HTMLElement[];
 
         for (const child of children) {
-          selectors.push(getSelectorPath(child));
-          selectors = selectors.concat(getAllDescendantSelectors(child));
+          selectors.push(getSelectorPath(child, stopAtParent));
+          selectors = selectors.concat(getAllDescendantSelectors(child, stopAtParent));
         }
 
         return selectors;
@@ -833,7 +833,7 @@ export const getChildSelectors = async (page: Page, parentSelector: string): Pro
       const parentElement = document.querySelector(parentSelector) as HTMLElement;
       if (!parentElement) return [];
 
-      return getAllDescendantSelectors(parentElement);
+      return getAllDescendantSelectors(parentElement, parentElement);
     }, parentSelector);
 
     return childSelectors || [];
