@@ -173,14 +173,6 @@ export const RightSidePanel = () => {
     stopGetScreenshot();
   };
 
-  useEffect(() => {
-    socket?.on('paginationSelected', handlePaginationSelection);
-
-    return () => {
-      socket?.off('paginationSelected', handlePaginationSelection);
-    };
-  }, [socket]);
-
   return (
     <Paper variant="outlined" sx={{ height: '100%', width: '100%', backgroundColor: 'white', alignItems: "center" }}>
       <SimpleBox height={60} width='100%' background='lightGray' radius='0%'>
