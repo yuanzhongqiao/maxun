@@ -808,13 +808,12 @@ export const getChildSelectors = async (page: Page, parentSelector: string): Pro
 
       function getSelectorPath(element: HTMLElement | null): string {
         if (!element || !element.parentElement) return '';
-      
+
         const parentSelector = getNonUniqueSelector(element.parentElement);
         const elementSelector = getNonUniqueSelector(element);
-      
+
         return `${parentSelector} > ${elementSelector}`;
       }
-      
 
       function getAllDescendantSelectors(element: HTMLElement, stopAtParent: HTMLElement | null): string[] {
         let selectors: string[] = [];
