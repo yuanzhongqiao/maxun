@@ -519,8 +519,10 @@ export class WorkflowGenerator {
     const elementInfo = await getElementInformation(page, coordinates);
     if (rect) {
       if (this.getList === true) {
-        const childSelectors = await getChildSelectors(page, displaySelector || '');
-        this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo, childSelectors })
+        if (this.listSelector !== '') {
+          const childSelectors = await getChildSelectors(page, this.listSelector || '');
+          this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo, childSelectors })
+        }
       } else {
         this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo });
 
