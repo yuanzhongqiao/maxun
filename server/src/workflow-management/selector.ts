@@ -840,9 +840,6 @@ export const getChildSelectors = async (page: Page, parentSelector: string): Pro
   }
 };
 
-
-
-
 /**
  * Returns the first pair from the given workflow that contains the given selector
  * inside the where condition, and it is the only selector there.
