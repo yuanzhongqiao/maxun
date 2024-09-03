@@ -100,10 +100,10 @@ export const BrowserWindow = () => {
     const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: ElementInfo | null, childSelectors?: string[] }) => {
         if (getList === true) {
             socket?.emit('setGetList', { getList: true });
-    
+
             if (listSelector) {
                 socket?.emit('listSelector', { selector: listSelector });
-    
+
                 if (data.childSelectors && data.childSelectors.includes(data.selector)) {
                     setHighlighterData(data);
                 } else {
@@ -141,12 +141,12 @@ export const BrowserWindow = () => {
                 clickY >= highlightRect.top &&
                 clickY <= highlightRect.bottom
             ) {
-                 // Check if the selected element is one of the childSelectors (if applicable)
-            if (highlighterData.childSelectors && highlighterData.childSelectors.length > 0) {
-                if (!highlighterData.childSelectors.includes(highlighterData.selector)) {
-                    return; 
+                // Check if the selected element is one of the childSelectors (if applicable)
+                if (highlighterData.childSelectors && highlighterData.childSelectors.length > 0) {
+                    if (!highlighterData.childSelectors.includes(highlighterData.selector)) {
+                        return;
+                    }
                 }
-            }
 
                 const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '', highlighterData.elementInfo);
 
