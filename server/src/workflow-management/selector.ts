@@ -784,12 +784,14 @@ export const getNonUniqueSelectors = async (page: Page, coordinates: Coordinates
     return { generalSelector: '' };
   }
 };
+interface SelectorNode {
+  selector: string;
+  children: SelectorNode[];
+}
 
-
-export const getChildSelectors = async (page: Page, parentSelector: string): Promise<string[]> => {
+export const getChildSelectors = async (page: Page, parentSelector: string, maxDepth: number = 2): Promise<SelectorNode[]> => {
   try {
-    const childSelectors = await page.evaluate((parentSelector: string) => {
-
+    const childSelectors = await page.evaluate(({ parentSelector, maxDepth }: { parentSelector: string, maxDepth: number }) => {
       function getNonUniqueSelector(element: HTMLElement): string {
         let selector = element.tagName.toLowerCase();
 
@@ -809,7 +811,6 @@ export const getChildSelectors = async (page: Page, parentSelector: string): Pro
       function getSelectorPath(element: HTMLElement | null): string {
         const path: string[] = [];
         let depth = 0;
-        const maxDepth = 2;
 
         while (element && element !== document.body && depth < maxDepth) {
           const selector = getNonUniqueSelector(element);
@@ -821,12 +822,23 @@ export const getChildSelectors = async (page: Page, parentSelector: string): Pro
         return path.join(' > ');
       }
 
-      const parentElement = document.querySelector(parentSelector);
+      function getDescendantSelectors(element: HTMLElement, currentDepth: number = 0): SelectorNode[] {
+        if (currentDepth >= maxDepth) return [];
+
+        const children = Array.from(element.children) as HTMLElement[];
+        return children.map(child => {
+          return {
+            selector: getSelectorPath(child),
+            children: getDescendantSelectors(child, currentDepth + 1)
+          };
+        });
+      }
+
+      const parentElement = document.querySelector(parentSelector) as HTMLElement;
       if (!parentElement) return [];
 
-      const childElements = Array.from(parentElement.children) as HTMLElement[]; // Type assertion to HTMLElement[]
-      return childElements.map(child => getSelectorPath(child));
-    }, parentSelector);
+      return getDescendantSelectors(parentElement);
+    }, { parentSelector, maxDepth });
 
     return childSelectors || [];
   } catch (error) {
