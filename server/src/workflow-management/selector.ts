@@ -102,21 +102,6 @@ export const getElementInformation = async (
       },
       { x: coordinates.x, y: coordinates.y },
     );
-
-    // if (elementInfo) {
-    //   if (elementInfo.tagName === 'A') {
-    //     if (elementInfo.innerText) {
-    //       console.log(`Link text: ${elementInfo.innerText}, URL: ${elementInfo.url}`);
-    //     } else {
-    //       console.log(`URL: ${elementInfo.url}`);
-    //     }
-    //   } else if (elementInfo.tagName === 'IMG') {
-    //     console.log(`Image URL: ${elementInfo.imageUrl}`);
-    //   } else {
-    //     console.log(`Element innerText: ${elementInfo.innerText}`);
-    //   }
-    // }
-
     return elementInfo;
   } catch (error) {
     const { message, stack } = error as Error;
