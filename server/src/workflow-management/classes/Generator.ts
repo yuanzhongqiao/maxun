@@ -106,6 +106,9 @@ export class WorkflowGenerator {
     this.socket.on('setGetList', (data: { getList: boolean }) => {
       this.getList = data.getList;
     });
+    this.socket.on('listSelector', (data: { selector: string }) => {
+      this.listSelector = data.selector;
+  })
   }
 
   /**
