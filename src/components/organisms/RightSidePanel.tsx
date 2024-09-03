@@ -144,7 +144,6 @@ export const RightSidePanel = () => {
     stopCaptureAndEmitGetListSettings();
     setShowPaginationOptions(false);
     setSelectedPaginationSetting(null);
-    (null);
   }, [selectedPaginationSetting, stopCaptureAndEmitGetListSettings, notify]);
 
   const handlePaginationSettingSelect = (option: string) => {
