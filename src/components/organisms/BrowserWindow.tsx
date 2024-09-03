@@ -50,7 +50,7 @@ const getAttributeOptions = (tagName: string, elementInfo: ElementInfo | null): 
 export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
     const [screenShot, setScreenShot] = useState<string>("");
-    const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string, elementInfo: ElementInfo | null, childSelectors?: string } | null>(null);
+    const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string, elementInfo: ElementInfo | null, childSelectors?: string[] } | null>(null);
     const [showAttributeModal, setShowAttributeModal] = useState(false);
     const [attributeOptions, setAttributeOptions] = useState<AttributeOption[]>([]);
     const [selectedElement, setSelectedElement] = useState<{ selector: string, info: ElementInfo | null } | null>(null);
@@ -97,17 +97,25 @@ export const BrowserWindow = () => {
         }
     }, [screenShot, canvasRef, socket, screencastHandler]);
 
-    const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: ElementInfo | null, childSelectors?: string }) => {
+    const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: ElementInfo | null, childSelectors?: string[] }) => {
         if (getList === true) {
             socket?.emit('setGetList', { getList: true });
-
+    
             if (listSelector) {
                 socket?.emit('listSelector', { selector: listSelector });
+    
+                if (data.childSelectors && data.childSelectors.includes(data.selector)) {
+                    setHighlighterData(data);
+                } else {
+                    setHighlighterData(null); // Clear highlighter if not a valid child selector
+                }
+            } else {
+                setHighlighterData(data);
             }
-
+        } else {
+            setHighlighterData(data);
         }
-        setHighlighterData(data);
-    }, [highlighterData, getList, socket]);
+    }, [highlighterData, getList, socket, listSelector]);
 
     useEffect(() => {
         document.addEventListener('mousemove', onMouseMove, false);
@@ -133,6 +141,13 @@ export const BrowserWindow = () => {
                 clickY >= highlightRect.top &&
                 clickY <= highlightRect.bottom
             ) {
+                 // Check if the selected element is one of the childSelectors (if applicable)
+            if (highlighterData.childSelectors && highlighterData.childSelectors.length > 0) {
+                if (!highlighterData.childSelectors.includes(highlighterData.selector)) {
+                    return; 
+                }
+            }
+
                 const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '', highlighterData.elementInfo);
 
                 if (isSelectingPagination) {
