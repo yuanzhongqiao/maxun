@@ -163,10 +163,6 @@ export const RightSidePanel = () => {
     }
   };
 
-  const handleStartPaginationSelection = () => {
-    // Start the process of selecting the pagination element
-    socket?.emit('action', { action: 'startPaginationSelection' });
-  };
 
 
   const captureScreenshot = (fullPage: boolean) => {
