@@ -7,7 +7,7 @@ import { SimpleBox } from "../atoms/Box";
 import Typography from "@mui/material/Typography";
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { useActionContext } from '../../context/browserActions';
-import { useBrowserSteps, ListStep, TextStep, SelectorObject } from '../../context/browserSteps';
+import { useBrowserSteps } from '../../context/browserSteps';
 import { useSocketStore } from '../../context/socket';
 import { ScreenshotSettings } from '../../shared/types';
 import InputAdornment from '@mui/material/InputAdornment';
