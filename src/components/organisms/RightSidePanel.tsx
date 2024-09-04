@@ -189,7 +189,7 @@ export const RightSidePanel = () => {
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
               <Button variant="outlined" onClick={handleConfirmListCapture}>Confirm</Button>
-              <Button variant="outlined" color="error" onClick={stopGetList}>Discard</Button>
+              <Button variant="outlined" color="error" onClick={handleStopGetList}>Discard</Button>
             </Box>
           </>
         }
