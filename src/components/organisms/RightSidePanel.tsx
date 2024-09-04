@@ -124,12 +124,12 @@ export const RightSidePanel = () => {
   const resetListState = useCallback(() => {
     setShowPaginationOptions(false);
     setSelectedPaginationSetting(null);
-}, []);
+  }, []);
 
-const handleStopGetList = useCallback(() => {
+  const handleStopGetList = useCallback(() => {
     stopGetList();
     resetListState();
-}, [stopGetList, resetListState]);
+  }, [stopGetList, resetListState]);
 
 
   const stopCaptureAndEmitGetListSettings = useCallback(() => {
