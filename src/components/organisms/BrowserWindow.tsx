@@ -115,7 +115,7 @@ export const BrowserWindow = () => {
         if (getList === true) {
             socket?.emit('setGetList', { getList: true });
 
-            if (listSelector) {
+            if (listSelector && !paginationMode) {
                 socket?.emit('listSelector', { selector: listSelector });
 
                 if (data.childSelectors && data.childSelectors.includes(data.selector)) {
