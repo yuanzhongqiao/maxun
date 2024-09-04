@@ -131,7 +131,6 @@ export const RightSidePanel = () => {
     resetListState();
   }, [stopGetList, resetListState]);
 
-
   const stopCaptureAndEmitGetListSettings = useCallback(() => {
     stopGetList();
     const settings = getListSettingsObject();
@@ -204,7 +203,6 @@ export const RightSidePanel = () => {
             <Button variant={selectedPaginationSetting === 'none' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('none')}>No more items to load</Button>
           </Box>
         )}
-
 
         {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
         {getText &&
