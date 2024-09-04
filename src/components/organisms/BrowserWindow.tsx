@@ -182,7 +182,7 @@ export const BrowserWindow = () => {
 
                 if (getList === true && !listSelector) {
                     setListSelector(highlighterData.selector);
-                    console.log('After set',listSelector)
+                    console.log('After set', listSelector)
                     setCurrentListId(Date.now());
                     setFields({});
                 } else if (getList === true && listSelector && currentListId) {
@@ -213,7 +213,7 @@ export const BrowserWindow = () => {
                             addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId || 0);
                         }
 
-                        console.log('end',listSelector)
+                        console.log('end', listSelector)
                     } else {
                         // Show the modal if there are multiple options
                         setAttributeOptions(options);
