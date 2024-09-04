@@ -54,6 +54,8 @@ export const BrowserWindow = () => {
     const [showAttributeModal, setShowAttributeModal] = useState(false);
     const [attributeOptions, setAttributeOptions] = useState<AttributeOption[]>([]);
     const [selectedElement, setSelectedElement] = useState<{ selector: string, info: ElementInfo | null } | null>(null);
+    const [currentListId, setCurrentListId] = useState<number | null>(null);
+
     const [listSelector, setListSelector] = useState<string | null>(null);
     const [fields, setFields] = useState<Record<string, TextStep>>({});
 
@@ -76,6 +78,18 @@ export const BrowserWindow = () => {
             }
         }
     };
+
+    const resetListState = useCallback(() => {
+        setListSelector(null);
+        setFields({});
+        setCurrentListId(null);
+    }, []);
+
+    useEffect(() => {
+        if (!getList) {
+            resetListState();
+        }
+    }, [getList, resetListState]);
 
     const screencastHandler = useCallback((data: string) => {
         setScreenShot(data);
@@ -139,12 +153,6 @@ export const BrowserWindow = () => {
                 clickY >= highlightRect.top &&
                 clickY <= highlightRect.bottom
             ) {
-                // Check if the selected element is one of the childSelectors (if applicable)
-                if (highlighterData.childSelectors && highlighterData.childSelectors.length > 0) {
-                    if (!highlighterData.childSelectors.includes(highlighterData.selector)) {
-                        return;
-                    }
-                }
 
                 const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '', highlighterData.elementInfo);
 
@@ -174,7 +182,10 @@ export const BrowserWindow = () => {
 
                 if (getList === true && !listSelector) {
                     setListSelector(highlighterData.selector);
-                } else if (getList === true && listSelector) {
+                    console.log('After set',listSelector)
+                    setCurrentListId(Date.now());
+                    setFields({});
+                } else if (getList === true && listSelector && currentListId) {
                     if (options.length === 1) {
                         // Handle directly without showing the modal
                         const attribute = options[0].value;
@@ -199,8 +210,10 @@ export const BrowserWindow = () => {
                         });
 
                         if (listSelector) {
-                            addListStep(listSelector, { ...fields, [newField.label]: newField });
+                            addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId || 0);
                         }
+
+                        console.log('end',listSelector)
                     } else {
                         // Show the modal if there are multiple options
                         setAttributeOptions(options);
@@ -258,7 +271,7 @@ export const BrowserWindow = () => {
                     });
 
                     if (listSelector) {
-                        addListStep(listSelector, { ...fields, [newField.label]: newField });
+                        addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId || 0);
                     }
                 }
             }

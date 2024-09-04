@@ -121,6 +121,16 @@ export const RightSidePanel = () => {
     return settings;
   }, [browserSteps, selectedPaginationSetting]);
 
+  const resetListState = useCallback(() => {
+        setShowPaginationOptions(false);
+        setSelectedPaginationSetting(null);
+    }, []);
+
+    const handleStopGetList = useCallback(() => {
+        stopGetList();
+        resetListState();
+    }, [stopGetList, resetListState]);
+
 
   const stopCaptureAndEmitGetListSettings = useCallback(() => {
     stopGetList();
