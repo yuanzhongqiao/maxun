@@ -33,7 +33,7 @@ export interface SelectorObject {
 interface BrowserStepsContextType {
     browserSteps: BrowserStep[];
     addTextStep: (label: string, data: string, selectorObj: SelectorObject) => void;
-    addListStep: (listSelector: string, fields: { [key: string]: TextStep }) => void
+    addListStep: (listSelector: string, fields: { [key: string]: TextStep }, listId: number) => void
     addScreenshotStep: (fullPage: boolean) => void;
     deleteBrowserStep: (id: number) => void;
     updateBrowserTextStepLabel: (id: number, newLabel: string) => void;
@@ -51,10 +51,10 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         ]);
     };
 
-    const addListStep = (listSelector: string, newFields: { [key: string]: TextStep }) => {
+    const addListStep = (listSelector: string, newFields: { [key: string]: TextStep }, listId: number) => {
         setBrowserSteps(prevSteps => {
             const existingListStepIndex = prevSteps.findIndex(
-                step => step.type === 'list' && step.listSelector === listSelector
+                step => step.type === 'list' && step.id === listId
             );
             if (existingListStepIndex !== -1) {
                 // Update the existing ListStep with new fields
@@ -69,7 +69,7 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
                 // Create a new ListStep
                 return [
                     ...prevSteps,
-                    { id: Date.now(), type: 'list', listSelector, fields: newFields }
+                    { id: listId, type: 'list', listSelector, fields: newFields }
                 ];
             }
         });
