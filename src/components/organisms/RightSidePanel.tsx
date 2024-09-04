@@ -122,14 +122,14 @@ export const RightSidePanel = () => {
   }, [browserSteps, selectedPaginationSetting]);
 
   const resetListState = useCallback(() => {
-        setShowPaginationOptions(false);
-        setSelectedPaginationSetting(null);
-    }, []);
+    setShowPaginationOptions(false);
+    setSelectedPaginationSetting(null);
+}, []);
 
-    const handleStopGetList = useCallback(() => {
-        stopGetList();
-        resetListState();
-    }, [stopGetList, resetListState]);
+const handleStopGetList = useCallback(() => {
+    stopGetList();
+    resetListState();
+}, [stopGetList, resetListState]);
 
 
   const stopCaptureAndEmitGetListSettings = useCallback(() => {
@@ -140,7 +140,8 @@ export const RightSidePanel = () => {
     } else {
       notify('error', 'Unable to create list settings. Make sure you have defined a field for the list.');
     }
-  }, [stopGetList, getListSettingsObject, socket, notify]);
+    handleStopGetList();
+  }, [stopGetList, getListSettingsObject, socket, notify, handleStopGetList]);
 
   const handleConfirmListCapture = useCallback(() => {
     if (!selectedPaginationSetting) {
