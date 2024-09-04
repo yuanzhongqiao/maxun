@@ -163,8 +163,6 @@ export const RightSidePanel = () => {
     }
   };
 
-
-
   const captureScreenshot = (fullPage: boolean) => {
     const screenshotSettings: ScreenshotSettings = {
       fullPage,
