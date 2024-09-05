@@ -61,7 +61,7 @@ export const BrowserWindow = () => {
 
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
-    const { getText, getList } = useActionContext();
+    const { getText, getList, paginationMode } = useActionContext();
     const { addTextStep, addListStep } = useBrowserSteps();
 
     const onMouseMove = (e: MouseEvent) => {
