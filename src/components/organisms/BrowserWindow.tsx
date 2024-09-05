@@ -116,7 +116,7 @@ export const BrowserWindow = () => {
             if (listSelector) {
                 socket?.emit('listSelector', { selector: listSelector });
 
-                if (data.childSelectors && data.childSelectors.includes(data.selector)) {
+                if (data.childSelectors && data.childSelectors.includes(data.selector) && !paginationMode) {
                     setHighlighterData(data);
                 } else {
                     setHighlighterData(null); // Clear highlighter if not a valid child selector
