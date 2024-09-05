@@ -35,8 +35,6 @@ export const ActionProvider = ({ children }: { children: ReactNode }) => {
     const startGetScreenshot = () => setGetScreenshot(true);
     const stopGetScreenshot = () => setGetScreenshot(false);
 
-
-
     return (
         <ActionContext.Provider value={{ getText, getList, getScreenshot, paginationMode, startGetText, stopGetText, startGetList, stopGetList, startGetScreenshot, stopGetScreenshot, startPaginationMode, stopPaginationMode }}>
             {children}
