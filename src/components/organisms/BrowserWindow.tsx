@@ -55,8 +55,6 @@ export const BrowserWindow = () => {
     const [attributeOptions, setAttributeOptions] = useState<AttributeOption[]>([]);
     const [selectedElement, setSelectedElement] = useState<{ selector: string, info: ElementInfo | null } | null>(null);
     const [currentListId, setCurrentListId] = useState<number | null>(null);
-    const [paginationMode, setPaginationMode] = useState<boolean>(false); 
-    const [paginationSelector, setPaginationSelector] = useState<string | null>(null);  
 
     const [listSelector, setListSelector] = useState<string | null>(null);
     const [fields, setFields] = useState<Record<string, TextStep>>({});
@@ -115,7 +113,7 @@ export const BrowserWindow = () => {
         if (getList === true) {
             socket?.emit('setGetList', { getList: true });
 
-            if (listSelector && !paginationMode) {
+            if (listSelector) {
                 socket?.emit('listSelector', { selector: listSelector });
 
                 if (data.childSelectors && data.childSelectors.includes(data.selector)) {
