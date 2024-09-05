@@ -26,7 +26,7 @@ export const RightSidePanel = () => {
   const [selectedPaginationSetting, setSelectedPaginationSetting] = useState<string | null>(null);
 
   const { lastAction, notify } = useGlobalInfoStore();
-  const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, getList, startGetList, stopGetList } = useActionContext();
+  const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, paginationMode, getList, startGetList, stopGetList, startPaginationMode } = useActionContext();
   const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep } = useBrowserSteps();
   const { socket } = useSocketStore();
 
@@ -143,6 +143,9 @@ export const RightSidePanel = () => {
   }, [stopGetList, getListSettingsObject, socket, notify, handleStopGetList]);
 
   const handleConfirmListCapture = useCallback(() => {
+    if (!paginationMode) {
+      startPaginationMode();
+    }
     if (!selectedPaginationSetting) {
       setShowPaginationOptions(true);
       return;
