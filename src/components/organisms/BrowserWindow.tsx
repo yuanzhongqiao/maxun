@@ -182,7 +182,6 @@ export const BrowserWindow = () => {
 
                 if (getList === true && !listSelector) {
                     setListSelector(highlighterData.selector);
-                    console.log('After set', listSelector)
                     setCurrentListId(Date.now());
                     setFields({});
                 } else if (getList === true && listSelector && currentListId) {
