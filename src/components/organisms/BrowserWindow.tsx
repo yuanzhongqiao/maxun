@@ -211,8 +211,6 @@ export const BrowserWindow = () => {
                         if (listSelector) {
                             addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId || 0);
                         }
-
-                        console.log('end', listSelector)
                     } else {
                         // Show the modal if there are multiple options
                         setAttributeOptions(options);
