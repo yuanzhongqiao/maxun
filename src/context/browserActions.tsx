@@ -4,6 +4,7 @@ interface ActionContextProps {
     getText: boolean;
     getList: boolean;
     getScreenshot: boolean;
+    paginationMode: boolean;
     startGetText: () => void;
     stopGetText: () => void;
     startGetList: () => void;
@@ -18,6 +19,7 @@ export const ActionProvider = ({ children }: { children: ReactNode }) => {
     const [getText, setGetText] = useState<boolean>(false);
     const [getList, setGetList] = useState<boolean>(false);
     const [getScreenshot, setGetScreenshot] = useState<boolean>(false);
+    const [paginationMode, setPaginationMode] = useState<boolean>(false);
 
     const startGetText = () => setGetText(true);
     const stopGetText = () => setGetText(false);
@@ -29,7 +31,7 @@ export const ActionProvider = ({ children }: { children: ReactNode }) => {
     const stopGetScreenshot = () => setGetScreenshot(false);
 
     return (
-        <ActionContext.Provider value={{ getText, getList, getScreenshot, startGetText, stopGetText, startGetList, stopGetList, startGetScreenshot, stopGetScreenshot }}>
+        <ActionContext.Provider value={{ getText, getList, getScreenshot, paginationMode, startGetText, stopGetText, startGetList, stopGetList, startGetScreenshot, stopGetScreenshot }}>
             {children}
         </ActionContext.Provider>
     );
