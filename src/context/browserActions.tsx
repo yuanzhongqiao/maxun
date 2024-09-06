@@ -26,6 +26,7 @@ export const ActionProvider = ({ children }: { children: ReactNode }) => {
     const [getList, setGetList] = useState<boolean>(false);
     const [getScreenshot, setGetScreenshot] = useState<boolean>(false);
     const [paginationMode, setPaginationMode] = useState<boolean>(false);
+    const [paginationType, setPaginationType] = useState<PaginationType>('');
 
     const startPaginationMode = () => setPaginationMode(true);
     const stopPaginationMode = () => setPaginationMode(false);
