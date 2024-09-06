@@ -23,10 +23,9 @@ export const RightSidePanel = () => {
   const [errors, setErrors] = useState<{ [id: number]: string }>({});
   const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: number]: boolean }>({});
   const [showPaginationOptions, setShowPaginationOptions] = useState(false);
-  const [selectedPaginationSetting, setSelectedPaginationSetting] = useState<string>('');
 
   const { lastAction, notify } = useGlobalInfoStore();
-  const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, paginationMode, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode } = useActionContext();
+  const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, paginationMode, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType } = useActionContext();
   const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep } = useBrowserSteps();
   const { socket } = useSocketStore();
 
@@ -110,18 +109,18 @@ export const RightSidePanel = () => {
         settings = {
           listSelector: step.listSelector,
           fields: fields,
-          pagination: { type: selectedPaginationSetting, selector: step.pagination?.selector },
+          pagination: { type: paginationType, selector: step.pagination?.selector },
         };
 
       }
     });
 
     return settings;
-  }, [browserSteps, selectedPaginationSetting]);
+  }, [browserSteps, paginationType]);
 
   const resetListState = useCallback(() => {
     setShowPaginationOptions(false);
-    setSelectedPaginationSetting('');
+    updatePaginationType('');
   }, []);
 
   const handleStopGetList = useCallback(() => {
@@ -145,13 +144,13 @@ export const RightSidePanel = () => {
     if (!paginationMode) {
       startPaginationMode();
     }
-    if (!selectedPaginationSetting) {
+    if (!paginationType) {
       setShowPaginationOptions(true);
       return;
     }
     const settings = getListSettingsObject();
     const paginationSelector = settings.pagination?.selector 
-    if (['clickNext', 'clickLoadMore'].includes(selectedPaginationSetting)) {
+    if (['clickNext', 'clickLoadMore'].includes(paginationType)) {
       if (paginationSelector === '') {
         notify('error', 'Please select the pagination element first.');
         return;
@@ -159,11 +158,11 @@ export const RightSidePanel = () => {
     }
     stopCaptureAndEmitGetListSettings();
     setShowPaginationOptions(false);
-    setSelectedPaginationSetting('');
-  }, [selectedPaginationSetting, stopCaptureAndEmitGetListSettings, notify]);
+    updatePaginationType('');
+  }, [paginationType, stopCaptureAndEmitGetListSettings, notify]);
 
   const handlePaginationSettingSelect = (option: string) => {
-    setSelectedPaginationSetting(option);
+    updatePaginationType(option);
     if (['clickNext', 'clickLoadMore'].includes(option)) {
     }
   };
@@ -202,11 +201,11 @@ export const RightSidePanel = () => {
         {showPaginationOptions && (
           <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
             <Typography>How can we find the next list item on the page?</Typography>
-            <Button variant={selectedPaginationSetting === 'clickNext' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('clickNext')}>Click on next to navigate to the next page</Button>
-            <Button variant={selectedPaginationSetting === 'clickLoadMore' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('clickLoadMore')}>Click on load more to load more items</Button>
-            <Button variant={selectedPaginationSetting === 'scrollDown' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('scrollDown')}>Scroll down to load more items</Button>
-            <Button variant={selectedPaginationSetting === 'scrollUp' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('scrollUp')}>Scroll up to load more items</Button>
-            <Button variant={selectedPaginationSetting === 'none' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('none')}>No more items to load</Button>
+            <Button variant={paginationType === 'clickNext' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('clickNext')}>Click on next to navigate to the next page</Button>
+            <Button variant={paginationType === 'clickLoadMore' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('clickLoadMore')}>Click on load more to load more items</Button>
+            <Button variant={paginationType === 'scrollDown' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('scrollDown')}>Scroll down to load more items</Button>
+            <Button variant={paginationType === 'scrollUp' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('scrollUp')}>Scroll up to load more items</Button>
+            <Button variant={paginationType === 'none' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('none')}>No more items to load</Button>
           </Box>
         )}
 
