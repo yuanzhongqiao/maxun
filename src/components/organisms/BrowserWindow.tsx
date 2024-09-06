@@ -60,7 +60,6 @@ export const BrowserWindow = () => {
     const [fields, setFields] = useState<Record<string, TextStep>>({});
     const [paginationSelector, setPaginationSelector] = useState<string>('');
 
-
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
     const { getText, getList, paginationMode, paginationType } = useActionContext();
