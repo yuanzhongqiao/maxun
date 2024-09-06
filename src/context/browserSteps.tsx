@@ -66,14 +66,15 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
                 const existingListStep = updatedSteps[existingListStepIndex] as ListStep;
                 updatedSteps[existingListStepIndex] = {
                     ...existingListStep,
-                    fields: { ...existingListStep.fields, ...newFields }
+                    fields: { ...existingListStep.fields, ...newFields },
+                    pagination: pagination
                 };
                 return updatedSteps;
             } else {
                 // Create a new ListStep
                 return [
                     ...prevSteps,
-                    { id: listId, type: 'list', listSelector, fields: newFields }
+                    { id: listId, type: 'list', listSelector, fields: newFields, pagination }
                 ];
             }
         });
