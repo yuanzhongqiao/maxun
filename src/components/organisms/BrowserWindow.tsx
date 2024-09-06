@@ -117,17 +117,20 @@ export const BrowserWindow = () => {
             socket?.emit('listSelector', { selector: listSelector });
 
             if (paginationMode) {
+                // In pagination mode, we want to set the highlighterData regardless of childSelectors
                 setHighlighterData(data);
             } else if (data.childSelectors && data.childSelectors.includes(data.selector)) {
+                // !Pagination mode: highlight only valid child elements within the listSelector
                 setHighlighterData(data);
             } else {
+                // If not a valid child in normal mode, clear the highlighter
                 setHighlighterData(null);
             }
         } else {
-            setHighlighterData(data); 
+            setHighlighterData(data); // Set highlighterData for the initial listSelector selection
         }
     } else {
-        setHighlighterData(data); 
+        setHighlighterData(data); // For non-list steps
     }
 }, [highlighterData, getList, socket, listSelector, paginationMode]);
 
