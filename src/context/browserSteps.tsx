@@ -19,6 +19,10 @@ export interface ListStep {
     type: 'list';
     listSelector: string;
     fields: { [key: string]: TextStep };
+    pagination?: {
+        type: string;
+        selector: string;
+    }
 }
 
 type BrowserStep = TextStep | ScreenshotStep | ListStep;
