@@ -190,9 +190,11 @@ export const BrowserWindow = () => {
                 //     return;
                 // }
 
-                if (paginationMode && getList && !paginationSelector) {
-                    setPaginationSelector(highlighterData.selector);
-                    return;
+                if (paginationMode && getList) {
+                    setPaginationSelector(highlighterData.selector)
+                    // In pagination mode, treat any selection as the pagination selector
+                    addListStep(listSelector!, fields, currentListId || 0, { type: '', selector: paginationSelector });
+                    return; 
                 }
 
                 if (getList === true && !listSelector) {
