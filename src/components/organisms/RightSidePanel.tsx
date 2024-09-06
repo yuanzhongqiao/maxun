@@ -196,7 +196,7 @@ export const RightSidePanel = () => {
                 paginationMode ?
                   paginationType !== "" ?
                     <Button variant="outlined" onClick={handleConfirmListCapture}>Confirm</Button>
-                    : ""
+                    : null
                   : <Button variant="outlined" onClick={handleConfirmListCapture}>Confirm</Button>
               }
               <Button variant="outlined" color="error" onClick={handleStopGetList}>Discard</Button>
