@@ -185,8 +185,6 @@ export const BrowserWindow = () => {
                 }
 
                 if (paginationMode && getList) {
-                    // Set the pagination selector
-                    const paginationType = 'clickNext'; // You can get this from user selection or UI
                     addListStep(listSelector!, fields, currentListId || 0, { type: '', selector: highlighterData.selector });
                     console.log(
                         `Pagination mode: ${paginationType} with selector: ${highlighterData.selector}`
