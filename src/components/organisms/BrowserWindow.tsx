@@ -180,13 +180,24 @@ export const BrowserWindow = () => {
                     }
                 }
 
+                if (paginationMode && getList) {
+                    // Set the pagination selector
+                    const paginationType = 'clickNext'; // You can get this from user selection or UI
+                    addListStep(listSelector!, fields, currentListId || 0, { type: paginationType, selector: highlighterData.selector });
+                    console.log(
+                    `Pagination mode: ${paginationType} with selector: ${highlighterData.selector}`
+                    );
+                    return;
+                }
+    
                 if (getList === true && !listSelector) {
+                    // Set listSelector
                     setListSelector(highlighterData.selector);
                     setCurrentListId(Date.now());
                     setFields({});
                 } else if (getList === true && listSelector && currentListId) {
+                    // Add fields to the list
                     if (options.length === 1) {
-                        // Handle directly without showing the modal
                         const attribute = options[0].value;
                         const newField: TextStep = {
                             id: Date.now(),
@@ -199,20 +210,17 @@ export const BrowserWindow = () => {
                                 attribute
                             }
                         };
-
-                        setFields(prevFields => {
-                            const updatedFields = {
-                                ...prevFields,
-                                [newField.label]: newField
-                            };
-                            return updatedFields;
-                        });
-
+    
+                        setFields(prevFields => ({
+                            ...prevFields,
+                            [newField.label]: newField
+                        }));
+    
                         if (listSelector) {
-                            addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId || 0);
+                            addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId, { type: 'clickNext', selector: highlighterData.selector });
                         }
+
                     } else {
-                        // Show the modal if there are multiple options
                         setAttributeOptions(options);
                         setSelectedElement({
                             selector: highlighterData.selector,
