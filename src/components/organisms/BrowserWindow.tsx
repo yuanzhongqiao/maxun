@@ -110,29 +110,27 @@ export const BrowserWindow = () => {
     }, [screenShot, canvasRef, socket, screencastHandler]);
 
     const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: ElementInfo | null, childSelectors?: string[] }) => {
-    if (getList === true) {
-        socket?.emit('setGetList', { getList: true });
-
-        if (listSelector) {
-            socket?.emit('listSelector', { selector: listSelector });
-
-            if (paginationMode) {
-                // In pagination mode, we want to set the highlighterData regardless of childSelectors
-                setHighlighterData(data);
-            } else if (data.childSelectors && data.childSelectors.includes(data.selector)) {
-                // !Pagination mode: highlight only valid child elements within the listSelector
-                setHighlighterData(data);
+        if (getList === true) {
+            socket?.emit('setGetList', { getList: true });
+            if (listSelector) {
+                socket?.emit('listSelector', { selector: listSelector });
+                if (paginationMode) {
+                    // In pagination mode, we want to set the highlighterData regardless of childSelectors
+                    setHighlighterData(data);
+                } else if (data.childSelectors && data.childSelectors.includes(data.selector)) {
+                    // !Pagination mode: highlight only valid child elements within the listSelector
+                    setHighlighterData(data);
+                } else {
+                    // If not a valid child in normal mode, clear the highlighter
+                    setHighlighterData(null);
+                }
             } else {
-                // If not a valid child in normal mode, clear the highlighter
-                setHighlighterData(null);
+                setHighlighterData(data); // Set highlighterData for the initial listSelector selection
             }
         } else {
-            setHighlighterData(data); // Set highlighterData for the initial listSelector selection
+            setHighlighterData(data); // For non-list steps
         }
-    } else {
-        setHighlighterData(data); // For non-list steps
-    }
-}, [highlighterData, getList, socket, listSelector, paginationMode]);
+    }, [highlighterData, getList, socket, listSelector, paginationMode]);
 
 
     useEffect(() => {
@@ -191,11 +189,11 @@ export const BrowserWindow = () => {
                     const paginationType = 'clickNext'; // You can get this from user selection or UI
                     addListStep(listSelector!, fields, currentListId || 0, { type: paginationType, selector: highlighterData.selector });
                     console.log(
-                    `Pagination mode: ${paginationType} with selector: ${highlighterData.selector}`
+                        `Pagination mode: ${paginationType} with selector: ${highlighterData.selector}`
                     );
                     return;
                 }
-    
+
                 if (getList === true && !listSelector) {
                     // Set listSelector
                     setListSelector(highlighterData.selector);
@@ -216,12 +214,12 @@ export const BrowserWindow = () => {
                                 attribute
                             }
                         };
-    
+
                         setFields(prevFields => ({
                             ...prevFields,
                             [newField.label]: newField
                         }));
-    
+
                         if (listSelector) {
                             addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId, { type: 'clickNext', selector: highlighterData.selector });
                         }
