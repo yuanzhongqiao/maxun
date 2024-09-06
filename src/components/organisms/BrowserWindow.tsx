@@ -185,8 +185,13 @@ export const BrowserWindow = () => {
                     }
                 }
 
-                if (paginationMode && getList) {
-                    addListStep(listSelector!, fields, currentListId || 0, { type: '', selector: highlighterData.selector });
+                // if (paginationMode && getList) {
+                //     addListStep(listSelector!, fields, currentListId || 0, { type: '', selector: highlighterData.selector });
+                //     return;
+                // }
+
+                if (paginationMode && getList && !paginationSelector) {
+                    setPaginationSelector(highlighterData.selector);
                     return;
                 }
 
