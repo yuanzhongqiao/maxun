@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+type PaginationType = 'scrollDown' | 'scrollUp' | 'clickNext' | 'clickLoadMore' | '';
+
 interface ActionContextProps {
     getText: boolean;
     getList: boolean;
