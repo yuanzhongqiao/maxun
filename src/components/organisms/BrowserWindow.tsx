@@ -115,7 +115,7 @@ export const BrowserWindow = () => {
             if (listSelector) {
                 socket?.emit('listSelector', { selector: listSelector });
                 if (paginationMode) {
-                    // In pagination mode, we want to set the highlighterData regardless of childSelectors
+                    // Pagination mode: set the highlighterData regardless of childSelectors
                     setHighlighterData(data);
                 } else if (data.childSelectors && data.childSelectors.includes(data.selector)) {
                     // !Pagination mode: highlight only valid child elements within the listSelector
