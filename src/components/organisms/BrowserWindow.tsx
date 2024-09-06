@@ -117,7 +117,7 @@ export const BrowserWindow = () => {
                 socket?.emit('listSelector', { selector: listSelector });
                 if (paginationMode) {
                     // Pagination mode: only set highlighterData if type is not empty, 'scrollDown', or 'scrollUp'
-                    if (paginationType !== '' && paginationType !== 'scrollDown' && paginationType !== 'scrollUp') {
+                    if (paginationType !== '' && paginationType !== 'scrollDown' && paginationType !== 'scrollUp' && paginationType !== 'none') {
                         setHighlighterData(data);
                     } else {
                         setHighlighterData(null);
@@ -191,7 +191,7 @@ export const BrowserWindow = () => {
 
                 if (paginationMode && getList) {
                     // Only allow selection in pagination mode if type is not empty, 'scrollDown', or 'scrollUp'
-                    if (paginationType !== '' && paginationType !== 'scrollDown' && paginationType !== 'scrollUp') {
+                    if (paginationType !== '' && paginationType !== 'scrollDown' && paginationType !== 'scrollUp' paginationType !== 'none') {
                         setPaginationSelector(highlighterData.selector);
                         addListStep(listSelector!, fields, currentListId || 0, { type: paginationType, selector: highlighterData.selector });
                     }
