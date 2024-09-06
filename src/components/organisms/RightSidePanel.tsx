@@ -149,7 +149,7 @@ export const RightSidePanel = () => {
       return;
     }
     const settings = getListSettingsObject();
-    const paginationSelector = settings.pagination?.selector 
+    const paginationSelector = settings.pagination?.selector
     if (['clickNext', 'clickLoadMore'].includes(paginationType)) {
       if (paginationSelector === '') {
         notify('error', 'Please select the pagination element first.');
