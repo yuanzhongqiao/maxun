@@ -23,7 +23,7 @@ export const RightSidePanel = () => {
   const [errors, setErrors] = useState<{ [id: number]: string }>({});
   const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: number]: boolean }>({});
   const [showPaginationOptions, setShowPaginationOptions] = useState(false);
-  const [selectedPaginationSetting, setSelectedPaginationSetting] = useState<string | null>(null);
+  const [selectedPaginationSetting, setSelectedPaginationSetting] = useState<string>('');
 
   const { lastAction, notify } = useGlobalInfoStore();
   const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, paginationMode, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode } = useActionContext();
@@ -121,7 +121,7 @@ export const RightSidePanel = () => {
 
   const resetListState = useCallback(() => {
     setShowPaginationOptions(false);
-    setSelectedPaginationSetting(null);
+    setSelectedPaginationSetting('');
   }, []);
 
   const handleStopGetList = useCallback(() => {
@@ -154,7 +154,7 @@ export const RightSidePanel = () => {
     }
     stopCaptureAndEmitGetListSettings();
     setShowPaginationOptions(false);
-    setSelectedPaginationSetting(null);
+    setSelectedPaginationSetting('');
   }, [selectedPaginationSetting, stopCaptureAndEmitGetListSettings, notify]);
 
   const handlePaginationSettingSelect = (option: string) => {
