@@ -186,9 +186,6 @@ export const BrowserWindow = () => {
 
                 if (paginationMode && getList) {
                     addListStep(listSelector!, fields, currentListId || 0, { type: '', selector: highlighterData.selector });
-                    console.log(
-                        `Pagination mode: ${paginationType} with selector: ${highlighterData.selector}`
-                    );
                     return;
                 }
 
