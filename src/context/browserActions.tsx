@@ -28,8 +28,14 @@ export const ActionProvider = ({ children }: { children: ReactNode }) => {
     const [paginationMode, setPaginationMode] = useState<boolean>(false);
     const [paginationType, setPaginationType] = useState<PaginationType>('');
 
-    const startPaginationMode = () => setPaginationMode(true);
-    const stopPaginationMode = () => setPaginationMode(false);
+    const startPaginationMode = (type: PaginationType) => {
+        setPaginationMode(true);
+        setPaginationType(type);
+    };
+    const stopPaginationMode = () => {
+        setPaginationMode(false);
+        setPaginationType('');
+    };
 
     const startGetText = () => setGetText(true);
     const stopGetText = () => setGetText(false);
