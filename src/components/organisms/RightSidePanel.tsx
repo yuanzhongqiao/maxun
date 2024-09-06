@@ -193,13 +193,12 @@ export const RightSidePanel = () => {
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
               {
-                paginationMode ? 
-                paginationType !== "" ? 
-                <Button variant="outlined" onClick={handleConfirmListCapture}>Confirm</Button> 
-                : "" 
-                :              <Button variant="outlined" onClick={handleConfirmListCapture}>Confirm</Button>
-
-                 }
+                paginationMode ?
+                  paginationType !== "" ?
+                    <Button variant="outlined" onClick={handleConfirmListCapture}>Confirm</Button>
+                    : ""
+                  : <Button variant="outlined" onClick={handleConfirmListCapture}>Confirm</Button>
+              }
               <Button variant="outlined" color="error" onClick={handleStopGetList}>Discard</Button>
             </Box>
           </>
