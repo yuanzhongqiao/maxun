@@ -288,6 +288,17 @@ export const BrowserWindow = () => {
         setShowAttributeModal(false);
     };
 
+    const resetPaginationSelector = useCallback(() => {
+        setPaginationSelector('');
+    }, []);
+    
+    useEffect(() => {
+        if (!paginationMode) {
+            resetPaginationSelector();
+        }
+    }, [paginationMode, resetPaginationSelector]);
+
+    
     return (
         <div onClick={handleClick}>
             {
