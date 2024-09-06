@@ -6,7 +6,7 @@ import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import { SimpleBox } from "../atoms/Box";
 import Typography from "@mui/material/Typography";
 import { useGlobalInfoStore } from "../../context/globalInfo";
-import { useActionContext } from '../../context/browserActions';
+import { PaginationType, useActionContext } from '../../context/browserActions';
 import { useBrowserSteps } from '../../context/browserSteps';
 import { useSocketStore } from '../../context/socket';
 import { ScreenshotSettings } from '../../shared/types';
@@ -25,7 +25,7 @@ export const RightSidePanel = () => {
   const [showPaginationOptions, setShowPaginationOptions] = useState(false);
 
   const { lastAction, notify } = useGlobalInfoStore();
-  const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, paginationMode, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType } = useActionContext();
+  const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, paginationMode, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, PaginationType } = useActionContext();
   const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep } = useBrowserSteps();
   const { socket } = useSocketStore();
 
@@ -161,7 +161,7 @@ export const RightSidePanel = () => {
     updatePaginationType('');
   }, [paginationType, stopCaptureAndEmitGetListSettings, notify]);
 
-  const handlePaginationSettingSelect = (option: string) => {
+  const handlePaginationSettingSelect = (option: PaginationType) => {
     updatePaginationType(option);
     if (['clickNext', 'clickLoadMore'].includes(option)) {
     }
