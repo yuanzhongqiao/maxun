@@ -292,7 +292,6 @@ export const BrowserWindow = () => {
 
     const resetPaginationSelector = useCallback(() => {
         setPaginationSelector('');
-        setPaginationType('');
     }, []);
 
     useEffect(() => {
