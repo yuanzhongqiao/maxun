@@ -110,24 +110,27 @@ export const BrowserWindow = () => {
     }, [screenShot, canvasRef, socket, screencastHandler]);
 
     const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: ElementInfo | null, childSelectors?: string[] }) => {
-        if (getList === true) {
-            socket?.emit('setGetList', { getList: true });
+    if (getList === true) {
+        socket?.emit('setGetList', { getList: true });
 
-            if (listSelector) {
-                socket?.emit('listSelector', { selector: listSelector });
+        if (listSelector) {
+            socket?.emit('listSelector', { selector: listSelector });
 
-                if (data.childSelectors && data.childSelectors.includes(data.selector) && !paginationMode) {
-                    setHighlighterData(data);
-                } else {
-                    setHighlighterData(null); // Clear highlighter if not a valid child selector
-                }
-            } else {
+            if (paginationMode) {
                 setHighlighterData(data);
+            } else if (data.childSelectors && data.childSelectors.includes(data.selector)) {
+                setHighlighterData(data);
+            } else {
+                setHighlighterData(null);
             }
         } else {
-            setHighlighterData(data);
+            setHighlighterData(data); 
         }
-    }, [highlighterData, getList, socket, listSelector]);
+    } else {
+        setHighlighterData(data); 
+    }
+}, [highlighterData, getList, socket, listSelector, paginationMode]);
+
 
     useEffect(() => {
         document.addEventListener('mousemove', onMouseMove, false);
