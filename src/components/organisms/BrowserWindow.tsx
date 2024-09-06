@@ -189,7 +189,7 @@ export const BrowserWindow = () => {
                     setPaginationSelector(highlighterData.selector)
                     // In pagination mode, treat any selection as the pagination selector
                     addListStep(listSelector!, fields, currentListId || 0, { type: '', selector: paginationSelector });
-                    return; 
+                    return;
                 }
 
                 if (getList === true && !listSelector) {
@@ -288,14 +288,14 @@ export const BrowserWindow = () => {
     const resetPaginationSelector = useCallback(() => {
         setPaginationSelector('');
     }, []);
-    
+
     useEffect(() => {
         if (!paginationMode) {
             resetPaginationSelector();
         }
     }, [paginationMode, resetPaginationSelector]);
 
-    
+
     return (
         <div onClick={handleClick}>
             {
