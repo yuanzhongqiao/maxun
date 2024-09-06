@@ -58,7 +58,7 @@ export const BrowserWindow = () => {
 
     const [listSelector, setListSelector] = useState<string | null>(null);
     const [fields, setFields] = useState<Record<string, TextStep>>({});
-    const [paginationSelector, setPaginationSelector] = useState<string | null>(null);
+    const [paginationSelector, setPaginationSelector] = useState<string>('');
 
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
@@ -221,7 +221,7 @@ export const BrowserWindow = () => {
                         }));
 
                         if (listSelector) {
-                            addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId, { type: '', selector: highlighterData.selector });
+                            addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId, { type: '', selector: paginationSelector });
                         }
 
                     } else {
