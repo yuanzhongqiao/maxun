@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-type PaginationType = 'scrollDown' | 'scrollUp' | 'clickNext' | 'clickLoadMore' | '';
+type PaginationType = 'scrollDown' | 'scrollUp' | 'clickNext' | 'clickLoadMore' | 'none' | '';
 
 interface ActionContextProps {
     getText: boolean;
