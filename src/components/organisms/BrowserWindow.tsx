@@ -190,7 +190,6 @@ export const BrowserWindow = () => {
                 }
 
                 if (getList === true && !listSelector) {
-                    // Set listSelector
                     setListSelector(highlighterData.selector);
                     setCurrentListId(Date.now());
                     setFields({});
