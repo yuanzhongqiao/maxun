@@ -118,8 +118,12 @@ export const BrowserWindow = () => {
             if (listSelector) {
                 socket?.emit('listSelector', { selector: listSelector });
                 if (paginationMode) {
-                    // Pagination mode: set the highlighterData regardless of childSelectors
-                    setHighlighterData(data);
+                    // Pagination mode: only set highlighterData if type is not empty, 'scrollDown', or 'scrollUp'
+                    if (paginationType !== '' && paginationType !== 'scrollDown' && paginationType !== 'scrollUp') {
+                        setHighlighterData(data);
+                    } else {
+                        setHighlighterData(null);
+                    }
                 } else if (data.childSelectors && data.childSelectors.includes(data.selector)) {
                     // !Pagination mode: highlight only valid child elements within the listSelector
                     setHighlighterData(data);
@@ -133,7 +137,7 @@ export const BrowserWindow = () => {
         } else {
             setHighlighterData(data); // For non-list steps
         }
-    }, [highlighterData, getList, socket, listSelector, paginationMode]);
+    }, [highlighterData, getList, socket, listSelector, paginationMode, paginationType]);
 
 
     useEffect(() => {
@@ -190,7 +194,7 @@ export const BrowserWindow = () => {
                 if (paginationMode && getList) {
                     setPaginationSelector(highlighterData.selector)
                     // In pagination mode, treat any selection as the pagination selector
-                    addListStep(listSelector!, fields, currentListId || 0, { type: '', selector: paginationSelector });
+                    addListStep(listSelector!, fields, currentListId || 0, { type: paginationType, selector: paginationSelector });
                     return;
                 }
 
@@ -289,6 +293,7 @@ export const BrowserWindow = () => {
 
     const resetPaginationSelector = useCallback(() => {
         setPaginationSelector('');
+        setPaginationType('');
     }, []);
 
     useEffect(() => {
