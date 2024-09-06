@@ -110,9 +110,7 @@ export const RightSidePanel = () => {
         settings = {
           listSelector: step.listSelector,
           fields: fields,
-          pagination: {
-            type: selectedPaginationSetting || '',
-          }
+          pagination: step.pagination
         };
 
       }
