@@ -191,9 +191,11 @@ export const BrowserWindow = () => {
                 }
 
                 if (paginationMode && getList) {
-                    setPaginationSelector(highlighterData.selector)
-                    // In pagination mode, treat any selection as the pagination selector
-                    addListStep(listSelector!, fields, currentListId || 0, { type: paginationType, selector: paginationSelector });
+                    // Only allow selection in pagination mode if type is not empty, 'scrollDown', or 'scrollUp'
+                    if (paginationType !== '' && paginationType !== 'scrollDown' && paginationType !== 'scrollUp') {
+                        setPaginationSelector(highlighterData.selector);
+                        addListStep(listSelector!, fields, currentListId || 0, { type: paginationType, selector: highlighterData.selector });
+                    }
                     return;
                 }
 
