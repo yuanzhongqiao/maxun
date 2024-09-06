@@ -59,12 +59,11 @@ export const BrowserWindow = () => {
     const [listSelector, setListSelector] = useState<string | null>(null);
     const [fields, setFields] = useState<Record<string, TextStep>>({});
     const [paginationSelector, setPaginationSelector] = useState<string>('');
-    const [paginationType, setPaginationType] = useState<string>('');
 
 
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
-    const { getText, getList, paginationMode } = useActionContext();
+    const { getText, getList, paginationMode, paginationType } = useActionContext();
     const { addTextStep, addListStep } = useBrowserSteps();
 
     const onMouseMove = (e: MouseEvent) => {
