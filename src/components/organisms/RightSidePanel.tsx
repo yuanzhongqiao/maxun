@@ -154,6 +154,7 @@ export const RightSidePanel = () => {
     if (['clickNext', 'clickLoadMore'].includes(selectedPaginationSetting)) {
       if (paginationSelector === '') {
         notify('error', 'Please select the pagination element first.');
+        return;
       }
     }
     stopCaptureAndEmitGetListSettings();
