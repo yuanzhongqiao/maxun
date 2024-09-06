@@ -40,7 +40,7 @@ export const ActionProvider = ({ children }: { children: ReactNode }) => {
     const stopGetScreenshot = () => setGetScreenshot(false);
 
     return (
-        <ActionContext.Provider value={{ getText, getList, getScreenshot, paginationMode, startGetText, stopGetText, startGetList, stopGetList, startGetScreenshot, stopGetScreenshot, startPaginationMode, stopPaginationMode }}>
+        <ActionContext.Provider value={{ getText, getList, getScreenshot, paginationMode, startGetText, stopGetText, startGetList, stopGetList, startGetScreenshot, stopGetScreenshot, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType }}>
             {children}
         </ActionContext.Provider>
     );
