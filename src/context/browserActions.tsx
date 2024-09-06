@@ -7,6 +7,7 @@ interface ActionContextProps {
     getList: boolean;
     getScreenshot: boolean;
     paginationMode: boolean;
+    paginationType: PaginationType;
     startPaginationMode: () => void;
     startGetText: () => void;
     stopGetText: () => void;
@@ -15,6 +16,7 @@ interface ActionContextProps {
     startGetScreenshot: () => void;
     stopGetScreenshot: () => void;
     stopPaginationMode: () => void;
+    updatePaginationType: (type: PaginationType) => void;
 }
 
 const ActionContext = createContext<ActionContextProps | undefined>(undefined);
