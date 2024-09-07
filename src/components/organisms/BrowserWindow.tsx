@@ -206,7 +206,9 @@ export const BrowserWindow = () => {
                     // Add fields to the list
                     if (options.length === 1) {
                         const attribute = options[0].value;
-                        const newField: TextStep = {
+                        const data = attribute === 'href' ? highlighterData.elementInfo?.url || '' :
+                            attribute === 'src' ? highlighterData.elementInfo?.imageUrl || '' :
+                                highlighterData.elementInfo?.innerText || '';                        const newField: TextStep = {
                             id: Date.now(),
                             type: 'text',
                             label: `Label ${Object.keys(fields).length + 1}`,
