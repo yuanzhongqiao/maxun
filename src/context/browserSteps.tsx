@@ -22,7 +22,8 @@ export interface ListStep {
     pagination?: {
         type: string;
         selector: string;
-    }
+    };
+    limit?: number;
 }
 
 type BrowserStep = TextStep | ScreenshotStep | ListStep;
@@ -37,7 +38,7 @@ export interface SelectorObject {
 interface BrowserStepsContextType {
     browserSteps: BrowserStep[];
     addTextStep: (label: string, data: string, selectorObj: SelectorObject) => void;
-    addListStep: (listSelector: string, fields: { [key: string]: TextStep }, listId: number, pagination?: { type: string; selector: string }) => void
+    addListStep: (listSelector: string, fields: { [key: string]: TextStep }, listId: number, pagination?: { type: string; selector: string }, limit?: number) => void
     addScreenshotStep: (fullPage: boolean) => void;
     deleteBrowserStep: (id: number) => void;
     updateBrowserTextStepLabel: (id: number, newLabel: string) => void;
@@ -55,7 +56,7 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         ]);
     };
 
-    const addListStep = (listSelector: string, newFields: { [key: string]: TextStep }, listId: number, pagination?: { type: string; selector: string }) => {
+    const addListStep = (listSelector: string, newFields: { [key: string]: TextStep }, listId: number, pagination?: { type: string; selector: string }, limit?: number) => {
         setBrowserSteps(prevSteps => {
             const existingListStepIndex = prevSteps.findIndex(
                 step => step.type === 'list' && step.id === listId
