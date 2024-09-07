@@ -11,6 +11,7 @@ import { useBrowserSteps } from '../../context/browserSteps';
 import { useSocketStore } from '../../context/socket';
 import { ScreenshotSettings } from '../../shared/types';
 import InputAdornment from '@mui/material/InputAdornment';
+import { SidePanelHeader } from '../molecules/SidePanelHeader';
 
 // TODO: 
 // 1. Handle field label update 
@@ -186,6 +187,8 @@ export const RightSidePanel = () => {
       <SimpleBox height={60} width='100%' background='lightGray' radius='0%'>
         <Typography sx={{ padding: '10px' }}>Last action: {` ${lastAction}`}</Typography>
       </SimpleBox>
+
+      <SidePanelHeader />
 
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
         {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetList}>Capture List</Button>}
