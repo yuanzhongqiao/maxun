@@ -268,7 +268,7 @@ export const BrowserWindow = () => {
                         attribute: attribute
                     });
                 }
-                if (getList === true) {
+                if (getList === true && listSelector && currentListId) {
                     const newField: TextStep = {
                         id: Date.now(),
                         type: 'text',
@@ -290,8 +290,9 @@ export const BrowserWindow = () => {
                     });
 
                     if (listSelector) {
-                        addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId || 0);
+                        addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId, { type: '', selector: paginationSelector });
                     }
+
                 }
             }
         }
