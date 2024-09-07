@@ -212,7 +212,7 @@ export const BrowserWindow = () => {
                             id: Date.now(),
                             type: 'text',
                             label: `Label ${Object.keys(fields).length + 1}`,
-                            data: highlighterData.elementInfo?.innerText || '',
+                            data: data,
                             selectorObj: {
                                 selector: highlighterData.selector,
                                 tag: highlighterData.elementInfo?.tagName,
