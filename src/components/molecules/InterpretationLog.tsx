@@ -139,9 +139,9 @@ export const InterpretationLog = () => {
           overflow: 'none',
           padding: '10px',
         }}>
-          <Highlight className="javascript">
+          {/* <Highlight className="javascript">
             {log}
-          </Highlight>
+          </Highlight> */}
           {tableData.length > 0 && (
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
