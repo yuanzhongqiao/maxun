@@ -144,7 +144,7 @@ export const InterpretationLog = () => {
           </Highlight>
           {tableData.length > 0 && (
             <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} stickyHeader aria-label="simple table">
+              <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
                 <TableHead>
                   <TableRow>
                     {columns.map((column) => (
