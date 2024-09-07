@@ -11,7 +11,6 @@ import Highlight from 'react-highlight';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSocketStore } from "../../context/socket";
 import { useBrowserDimensionsStore } from "../../context/browserDimensions";
-import { useActionContext } from '../../context/browserActions';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
