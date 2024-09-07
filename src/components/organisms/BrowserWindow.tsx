@@ -208,17 +208,17 @@ export const BrowserWindow = () => {
                         const attribute = options[0].value;
                         const data = attribute === 'href' ? highlighterData.elementInfo?.url || '' :
                             attribute === 'src' ? highlighterData.elementInfo?.imageUrl || '' :
-                                highlighterData.elementInfo?.innerText || '';                        const newField: TextStep = {
-                            id: Date.now(),
-                            type: 'text',
-                            label: `Label ${Object.keys(fields).length + 1}`,
-                            data: data,
-                            selectorObj: {
-                                selector: highlighterData.selector,
-                                tag: highlighterData.elementInfo?.tagName,
-                                attribute
-                            }
-                        };
+                                highlighterData.elementInfo?.innerText || ''; const newField: TextStep = {
+                                    id: Date.now(),
+                                    type: 'text',
+                                    label: `Label ${Object.keys(fields).length + 1}`,
+                                    data: data,
+                                    selectorObj: {
+                                        selector: highlighterData.selector,
+                                        tag: highlighterData.elementInfo?.tagName,
+                                        attribute
+                                    }
+                                };
 
                         setFields(prevFields => ({
                             ...prevFields,
