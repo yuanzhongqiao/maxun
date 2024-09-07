@@ -48,7 +48,6 @@ export const InterpretationLog = () => {
   const logEndRef = useRef<HTMLDivElement | null>(null);
 
   const { width } = useBrowserDimensionsStore();
-  const { getList } = useActionContext();
 
   const toggleDrawer = (newOpen: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
     if (
