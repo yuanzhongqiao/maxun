@@ -117,7 +117,7 @@ export const BrowserWindow = () => {
                 socket?.emit('listSelector', { selector: listSelector });
                 if (paginationMode) {
                     // Pagination mode: only set highlighterData if type is not empty, 'none', 'scrollDown', or 'scrollUp'
-                    if (paginationType !== '' && paginationType !== 'scrollDown' && paginationType !== 'scrollUp' && paginationType !== 'none') {
+                    if (paginationType !== '' && !['none', 'scrollDown', 'scrollUp'].includes(paginationType)) {
                         setHighlighterData(data);
                     } else {
                         setHighlighterData(null);
