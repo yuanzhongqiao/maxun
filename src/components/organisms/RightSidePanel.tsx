@@ -12,6 +12,11 @@ import { useSocketStore } from '../../context/socket';
 import { ScreenshotSettings } from '../../shared/types';
 import InputAdornment from '@mui/material/InputAdornment';
 import { SidePanelHeader } from '../molecules/SidePanelHeader';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 
 // TODO: 
 // 1. Handle field label update 
@@ -28,6 +33,9 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const [errors, setErrors] = useState<{ [id: number]: string }>({});
   const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: number]: boolean }>({});
   const [showPaginationOptions, setShowPaginationOptions] = useState(false);
+  const [showLimitOptions, setShowLimitOptions] = useState(false);
+  const [selectedLimit, setSelectedLimit] = useState<string>('10');
+  const [customLimit, setCustomLimit] = useState<string>('');
 
   const { lastAction, notify } = useGlobalInfoStore();
   const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, paginationMode, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType } = useActionContext();
@@ -41,6 +49,14 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     } else {
       setErrors(prevErrors => ({ ...prevErrors, [id]: '' }));
     }
+  };
+
+  const handleLimitChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedLimit(event.target.value);
+  };
+
+  const handleCustomLimitChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomLimit(event.target.value);
   };
 
   const handleTextStepConfirm = (id: number) => {
@@ -96,7 +112,8 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     let settings: {
       listSelector?: string;
       fields?: Record<string, { selector: string; tag?: string;[key: string]: any }>;
-      pagination?: { type: string; selector?: string }
+      pagination?: { type: string; selector?: string };
+      limit?: number;
     } = {};
 
     browserSteps.forEach(step => {
@@ -107,7 +124,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
             fields[label] = {
               selector: field.selectorObj.selector,
               tag: field.selectorObj.tag,
-              attribute: field.selectorObj.attribute
+              attribute: field.selectorObj.attribute,
             };
           }
         });
@@ -116,13 +133,14 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           listSelector: step.listSelector,
           fields: fields,
           pagination: { type: paginationType, selector: step.pagination?.selector },
+          limit: parseInt(selectedLimit === 'custom' ? customLimit : selectedLimit),
         };
 
       }
     });
 
     return settings;
-  }, [browserSteps, paginationType]);
+  }, [browserSteps, paginationType, selectedLimit, customLimit]);
 
   const resetListState = useCallback(() => {
     setShowPaginationOptions(false);
@@ -154,18 +172,24 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       setShowPaginationOptions(true);
       return;
     }
+    if (!selectedLimit || (selectedLimit === 'custom' && !customLimit)) {
+      setShowLimitOptions(true);
+      return;
+    }
     const settings = getListSettingsObject();
-    const paginationSelector = settings.pagination?.selector
+    const paginationSelector = settings.pagination?.selector;
     if (['clickNext', 'clickLoadMore'].includes(paginationType)) {
       if (paginationSelector === '') {
         notify('error', 'Please select the pagination element first.');
         return;
       }
     }
+    //updateListStepLimit(parseInt(selectedLimit === 'custom' ? customLimit : selectedLimit));
     stopCaptureAndEmitGetListSettings();
     setShowPaginationOptions(false);
+    setShowLimitOptions(false);
     updatePaginationType('');
-  }, [paginationType, stopCaptureAndEmitGetListSettings, notify]);
+  }, [paginationType, selectedLimit, customLimit, stopCaptureAndEmitGetListSettings, notify]);
 
   const handlePaginationSettingSelect = (option: PaginationType) => {
     updatePaginationType(option);
@@ -222,6 +246,37 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
             <Button variant={paginationType === 'none' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('none')}>No more items to load</Button>
           </Box>
         )}
+
+{showLimitOptions && (
+        <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
+          <FormControl>
+            <FormLabel>
+              <h4>What is the maximum number of rows you want to extract?</h4>
+            </FormLabel>
+            <RadioGroup row value={selectedLimit} onChange={handleLimitChange} sx={{ width: '500px' }}>
+              <FormControlLabel value="10" control={<Radio />} label="10" />
+              <FormControlLabel value="100" control={<Radio />} label="100" />
+              <FormControlLabel value="custom" control={<Radio />} label="Custom" />
+              {selectedLimit === 'custom' && (
+                <TextField
+                  type="number"
+                  value={customLimit}
+                  onChange={handleCustomLimitChange}
+                  placeholder="Enter number"
+                  sx={{
+                    marginLeft: '10px',
+                    marginTop: '-3px',
+                    '& input': {
+                      padding: '10px',
+                    },
+                  }}
+                />
+              )}
+            </RadioGroup>
+          </FormControl>
+          <Button variant="contained" onClick={handleConfirmListCapture}>Confirm Limit</Button>
+        </Box>
+      )}
 
         {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
         {getText &&
