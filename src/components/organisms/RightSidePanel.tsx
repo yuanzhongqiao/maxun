@@ -34,9 +34,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: number]: boolean }>({});
   const [showPaginationOptions, setShowPaginationOptions] = useState(false);
   const [showLimitOptions, setShowLimitOptions] = useState(false);
-  const [selectedLimit, setSelectedLimit] = useState<string>('10');
   const [captureStage, setCaptureStage] = useState<'initial' | 'pagination' | 'limit' | 'complete'>('initial');
-
 
   const { lastAction, notify } = useGlobalInfoStore();
   const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, paginationMode, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitMode, limitType, customLimit, updateLimitType, updateCustomLimit, stopLimitMode, startLimitMode } = useActionContext();
@@ -50,10 +48,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     } else {
       setErrors(prevErrors => ({ ...prevErrors, [id]: '' }));
     }
-  };
-
-  const handleLimitChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedLimit(event.target.value);
   };
 
   const handleTextStepConfirm = (id: number) => {
@@ -130,20 +124,20 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           listSelector: step.listSelector,
           fields: fields,
           pagination: { type: paginationType, selector: step.pagination?.selector },
-          limit: parseInt(selectedLimit === 'custom' ? customLimit : selectedLimit),
+          limit: parseInt(limitType === 'custom' ? customLimit : limitType),
         };
 
       }
     });
 
     return settings;
-  }, [browserSteps, paginationType, selectedLimit, customLimit]);
+  }, [browserSteps, paginationType, limitType, customLimit]);
 
   const resetListState = useCallback(() => {
     setShowPaginationOptions(false);
     updatePaginationType('');
     setShowLimitOptions(false); 
-    setSelectedLimit('10');
+    updateLimitType('10');
     updateLimitType('');
     updateCustomLimit('');
   }, [updatePaginationType, updateLimitType, updateCustomLimit]);
@@ -168,7 +162,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const handleConfirmListCapture = useCallback(() => {
     switch (captureStage) {
       case 'initial':
-        // Start pagination mode
         startPaginationMode();
         setShowPaginationOptions(true);
         setCaptureStage('pagination');
@@ -188,7 +181,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           return;
         }
 
-        // Close pagination mode and start limit mode
         stopPaginationMode();
         setShowPaginationOptions(false);
         startLimitMode();
@@ -208,7 +200,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           return;
         }
 
-        // Close limit mode and emit settings
         stopLimitMode();
         setShowLimitOptions(false);
         stopCaptureAndEmitGetListSettings();
@@ -216,7 +207,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
         break;
 
       case 'complete':
-        // Reset the capture process
         setCaptureStage('initial');
         break;
     }
