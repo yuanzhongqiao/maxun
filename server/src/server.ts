@@ -31,7 +31,7 @@ app.use('/workflow', workflow);
 app.use('/storage', storage);
 
 app.get('/', function (req, res) {
-    return res.send('Welcome to the BR recorder server :-)');
+    return res.send('Maxun server started 🚀');
 });
 
 server.listen(SERVER_PORT, () => logger.log('info',`Server listening on port ${SERVER_PORT}`));
