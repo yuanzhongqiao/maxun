@@ -147,7 +147,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     updateLimitType(''); // Reset limit type
     updateCustomLimit(''); // Reset custom limit value
   }, [updatePaginationType, updateLimitType, updateCustomLimit]);
-  
+
 
   const handleStopGetList = useCallback(() => {
     stopGetList();
@@ -221,7 +221,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
         break;
     }
   }, [captureStage, paginationType, limitType, customLimit, startPaginationMode, stopPaginationMode, startLimitMode, stopLimitMode, notify, stopCaptureAndEmitGetListSettings, getListSettingsObject]);
-  
+
 
 
   const handlePaginationSettingSelect = (option: PaginationType) => {
@@ -259,8 +259,8 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
               <Button variant="outlined" onClick={handleConfirmListCapture}>
                 {captureStage === 'initial' ? 'Start Capture' :
-                 captureStage === 'pagination' ? 'Confirm Pagination' :
-                 captureStage === 'limit' ? 'Confirm Limit' : 'Finish Capture'}
+                  captureStage === 'pagination' ? 'Confirm Pagination' :
+                    captureStage === 'limit' ? 'Confirm Limit' : 'Finish Capture'}
               </Button>
               <Button variant="outlined" color="error" onClick={handleStopGetList}>Discard</Button>
             </Box>
