@@ -246,35 +246,33 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           </Box>
         )}
 
-{showLimitOptions && (
-        <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
-          <FormControl>
-            <FormLabel>
-              <h4>What is the maximum number of rows you want to extract?</h4>
-            </FormLabel>
-            <RadioGroup row value={selectedLimit} onChange={handleLimitChange} sx={{ width: '500px' }}>
-              <FormControlLabel value="10" control={<Radio />} label="10" />
-              <FormControlLabel value="100" control={<Radio />} label="100" />
-              <FormControlLabel value="custom" control={<Radio />} label="Custom" />
-              {selectedLimit === 'custom' && (
-                <TextField
-                  type="number"
-                  value={customLimit}
-                  onChange={handleCustomLimitChange}
-                  placeholder="Enter number"
-                  sx={{
-                    marginLeft: '10px',
-                    marginTop: '-3px',
-                    '& input': {
-                      padding: '10px',
-                    },
-                  }}
-                />
-              )}
-            </RadioGroup>
-          </FormControl>
-          <Button variant="contained" onClick={handleConfirmListCapture}>Confirm Limit</Button>
-        </Box>
+{limitMode && (
+        <FormControl>
+        <FormLabel>
+          <h4>What is the maximum number of rows you want to extract?</h4>
+        </FormLabel>
+        <RadioGroup row value={limitType} onChange={(e) => updateLimitType(e.target.value as LimitType)} sx={{ width: '500px' }}>
+          <FormControlLabel value="10" control={<Radio />} label="10" />
+          <FormControlLabel value="100" control={<Radio />} label="100" />
+          <FormControlLabel value="custom" control={<Radio />} label="Custom" />
+          {limitType === 'custom' && (
+            <TextField
+              type="number"
+              value={customLimit}
+              onChange={(e) => updateCustomLimit(e.target.value)}
+              placeholder="Enter number"
+              sx={{
+                marginLeft: '10px',
+                marginTop: '-3px',
+                '& input': {
+                  padding: '10px',
+                },
+              }}
+            />
+          )}
+        </RadioGroup>
+      </FormControl>
+    
       )}
 
         {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
