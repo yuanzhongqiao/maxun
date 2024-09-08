@@ -126,7 +126,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
               </Grid>
               <Grid id="browser-content" ref={browserContentRef} item xs>
                 <BrowserContent />
-                <InterpretationLog />
+                <InterpretationLog isOpen={showOutputData} setIsOpen={setShowOutputData} />
               </Grid>
               <Grid item xs={2}>
                 <RightSidePanel onFinishCapture={handleShowOutputData} />
