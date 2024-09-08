@@ -37,7 +37,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const [selectedLimit, setSelectedLimit] = useState<string>('10');
 
   const { lastAction, notify } = useGlobalInfoStore();
-  const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, paginationMode, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitMode, limitType, customLimit, updateLimitType,  updateCustomLimit, stopLimitMode } = useActionContext();
+  const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, paginationMode, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitMode, limitType, customLimit, updateLimitType, updateCustomLimit, stopLimitMode } = useActionContext();
   const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep } = useBrowserSteps();
   const { socket } = useSocketStore();
 
@@ -246,34 +246,34 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           </Box>
         )}
 
-{limitMode && (
-        <FormControl>
-        <FormLabel>
-          <h4>What is the maximum number of rows you want to extract?</h4>
-        </FormLabel>
-        <RadioGroup row value={limitType} onChange={(e) => updateLimitType(e.target.value as LimitType)} sx={{ width: '500px' }}>
-          <FormControlLabel value="10" control={<Radio />} label="10" />
-          <FormControlLabel value="100" control={<Radio />} label="100" />
-          <FormControlLabel value="custom" control={<Radio />} label="Custom" />
-          {limitType === 'custom' && (
-            <TextField
-              type="number"
-              value={customLimit}
-              onChange={(e) => updateCustomLimit(e.target.value)}
-              placeholder="Enter number"
-              sx={{
-                marginLeft: '10px',
-                marginTop: '-3px',
-                '& input': {
-                  padding: '10px',
-                },
-              }}
-            />
-          )}
-        </RadioGroup>
-      </FormControl>
-    
-      )}
+        {limitMode && (
+          <FormControl>
+            <FormLabel>
+              <h4>What is the maximum number of rows you want to extract?</h4>
+            </FormLabel>
+            <RadioGroup row value={limitType} onChange={(e) => updateLimitType(e.target.value as LimitType)} sx={{ width: '500px' }}>
+              <FormControlLabel value="10" control={<Radio />} label="10" />
+              <FormControlLabel value="100" control={<Radio />} label="100" />
+              <FormControlLabel value="custom" control={<Radio />} label="Custom" />
+              {limitType === 'custom' && (
+                <TextField
+                  type="number"
+                  value={customLimit}
+                  onChange={(e) => updateCustomLimit(e.target.value)}
+                  placeholder="Enter number"
+                  sx={{
+                    marginLeft: '10px',
+                    marginTop: '-3px',
+                    '& input': {
+                      padding: '10px',
+                    },
+                  }}
+                />
+              )}
+            </RadioGroup>
+          </FormControl>
+
+        )}
 
         {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
         {getText &&
