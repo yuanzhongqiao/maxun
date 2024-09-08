@@ -88,6 +88,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     if (hasTextSteps) {
       socket?.emit('action', { action: 'scrapeSchema', settings });
     }
+    onFinishCapture();
   }, [stopGetText, getTextSettingsObject, socket, browserSteps, confirmedTextSteps]);
 
 
@@ -143,6 +144,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       notify('error', 'Unable to create list settings. Make sure you have defined a field for the list.');
     }
     handleStopGetList();
+    onFinishCapture();
   }, [stopGetList, getListSettingsObject, socket, notify, handleStopGetList]);
 
   const handleConfirmListCapture = useCallback(() => {
