@@ -485,12 +485,12 @@ export class WorkflowGenerator {
     const generalSelector = await getNonUniqueSelectors(page, coordinates)
     const childSelectors = await getChildSelectors(page, generalSelector.generalSelector);
 
-    console.log('Non Unique Selectors [DEBUG]:', generalSelector);
-    console.log('Child Selectors [DEBUG]:', childSelectors);
+    console.log(`Get List value while generating selector`, this.getList);
 
     const selectorBasedOnCustomAction = (this.getList === true)
       ? await getNonUniqueSelectors(page, coordinates)
       : await getSelectors(page, coordinates);
+      
     const bestSelector = getBestSelectorForAction(
       {
         type: action,
@@ -522,13 +522,13 @@ export class WorkflowGenerator {
         if (this.listSelector !== '') {
           const childSelectors = await getChildSelectors(page, this.listSelector || '');
           this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo, childSelectors })
+        } else {
+          this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo });
         }
       } else {
         this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo });
       }
     }
-    // reset getList after usage
-    this.getList = false;
   }
 
   /**
