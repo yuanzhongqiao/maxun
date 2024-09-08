@@ -6,7 +6,7 @@ import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import { SimpleBox } from "../atoms/Box";
 import Typography from "@mui/material/Typography";
 import { useGlobalInfoStore } from "../../context/globalInfo";
-import { PaginationType, useActionContext } from '../../context/browserActions';
+import { PaginationType, useActionContext, LimitType } from '../../context/browserActions';
 import { useBrowserSteps } from '../../context/browserSteps';
 import { useSocketStore } from '../../context/socket';
 import { ScreenshotSettings } from '../../shared/types';
@@ -35,9 +35,11 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const [showPaginationOptions, setShowPaginationOptions] = useState(false);
   const [showLimitOptions, setShowLimitOptions] = useState(false);
   const [selectedLimit, setSelectedLimit] = useState<string>('10');
+  const [captureStage, setCaptureStage] = useState<'initial' | 'pagination' | 'limit' | 'complete'>('initial');
+
 
   const { lastAction, notify } = useGlobalInfoStore();
-  const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, paginationMode, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitMode, limitType, customLimit, updateLimitType, updateCustomLimit, stopLimitMode } = useActionContext();
+  const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, paginationMode, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitMode, limitType, customLimit, updateLimitType, updateCustomLimit, stopLimitMode, startLimitMode } = useActionContext();
   const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep } = useBrowserSteps();
   const { socket } = useSocketStore();
 
@@ -52,10 +54,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
   const handleLimitChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedLimit(event.target.value);
-  };
-
-  const handleCustomLimitChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCustomLimit(event.target.value);
   };
 
   const handleTextStepConfirm = (id: number) => {
@@ -143,8 +141,13 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
   const resetListState = useCallback(() => {
     setShowPaginationOptions(false);
-    updatePaginationType('');
-  }, []);
+    updatePaginationType(''); // Reset pagination type
+    setShowLimitOptions(false); // Reset limit options
+    setSelectedLimit('10'); // Reset limit value to default
+    updateLimitType(''); // Reset limit type
+    updateCustomLimit(''); // Reset custom limit value
+  }, [updatePaginationType, updateLimitType, updateCustomLimit]);
+  
 
   const handleStopGetList = useCallback(() => {
     stopGetList();
@@ -152,7 +155,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   }, [stopGetList, resetListState]);
 
   const stopCaptureAndEmitGetListSettings = useCallback(() => {
-    stopPaginationMode();
     const settings = getListSettingsObject();
     if (settings) {
       socket?.emit('action', { action: 'scrapeList', settings });
@@ -164,31 +166,63 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   }, [stopGetList, getListSettingsObject, socket, notify, handleStopGetList]);
 
   const handleConfirmListCapture = useCallback(() => {
-    if (!paginationMode) {
-      startPaginationMode();
+    switch (captureStage) {
+      case 'initial':
+        // Start pagination mode
+        startPaginationMode();
+        setShowPaginationOptions(true);
+        setCaptureStage('pagination');
+        break;
+
+      case 'pagination':
+        if (!paginationType) {
+          notify('error', 'Please select a pagination type.');
+          return;
+        }
+
+        const settings = getListSettingsObject();
+        const paginationSelector = settings.pagination?.selector;
+
+        if (['clickNext', 'clickLoadMore'].includes(paginationType) && !paginationSelector) {
+          notify('error', 'Please select the pagination element first.');
+          return;
+        }
+
+        // Close pagination mode and start limit mode
+        stopPaginationMode();
+        setShowPaginationOptions(false);
+        startLimitMode();
+        setShowLimitOptions(true);
+        setCaptureStage('limit');
+        break;
+
+      case 'limit':
+        if (!limitType || (limitType === 'custom' && !customLimit)) {
+          notify('error', 'Please select a limit or enter a custom limit.');
+          return;
+        }
+
+        const limit = limitType === 'custom' ? parseInt(customLimit) : parseInt(limitType);
+        if (isNaN(limit) || limit <= 0) {
+          notify('error', 'Please enter a valid limit.');
+          return;
+        }
+
+        // Close limit mode and emit settings
+        stopLimitMode();
+        setShowLimitOptions(false);
+        stopCaptureAndEmitGetListSettings();
+        setCaptureStage('complete');
+        break;
+
+      case 'complete':
+        // Reset the capture process
+        setCaptureStage('initial');
+        break;
     }
-    if (!paginationType) {
-      setShowPaginationOptions(true);
-      return;
-    }
-    if (!selectedLimit || (selectedLimit === 'custom' && !customLimit)) {
-      setShowLimitOptions(true);
-      return;
-    }
-    const settings = getListSettingsObject();
-    const paginationSelector = settings.pagination?.selector;
-    if (['clickNext', 'clickLoadMore'].includes(paginationType)) {
-      if (paginationSelector === '') {
-        notify('error', 'Please select the pagination element first.');
-        return;
-      }
-    }
-    //updateListStepLimit(parseInt(selectedLimit === 'custom' ? customLimit : selectedLimit));
-    stopCaptureAndEmitGetListSettings();
-    setShowPaginationOptions(false);
-    setShowLimitOptions(false);
-    updatePaginationType('');
-  }, [paginationType, selectedLimit, customLimit, stopCaptureAndEmitGetListSettings, notify]);
+  }, [captureStage, paginationType, limitType, customLimit, startPaginationMode, stopPaginationMode, startLimitMode, stopLimitMode, notify, stopCaptureAndEmitGetListSettings, getListSettingsObject]);
+  
+
 
   const handlePaginationSettingSelect = (option: PaginationType) => {
     updatePaginationType(option);
@@ -220,20 +254,18 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
         {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetList}>Capture List</Button>}
-        {getList &&
+        {getList && (
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
-              {
-                paginationMode ?
-                  paginationType !== "" ?
-                    <Button variant="outlined" onClick={handleConfirmListCapture}>Confirm</Button>
-                    : null
-                  : <Button variant="outlined" onClick={handleConfirmListCapture}>Confirm</Button>
-              }
+              <Button variant="outlined" onClick={handleConfirmListCapture}>
+                {captureStage === 'initial' ? 'Start Capture' :
+                 captureStage === 'pagination' ? 'Confirm Pagination' :
+                 captureStage === 'limit' ? 'Confirm Limit' : 'Finish Capture'}
+              </Button>
               <Button variant="outlined" color="error" onClick={handleStopGetList}>Discard</Button>
             </Box>
           </>
-        }
+        )}
 
         {showPaginationOptions && (
           <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
@@ -246,7 +278,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           </Box>
         )}
 
-        {limitMode && (
+        {showLimitOptions && (
           <FormControl>
             <FormLabel>
               <h4>What is the maximum number of rows you want to extract?</h4>
