@@ -46,6 +46,7 @@ export const ActionProvider = ({ children }: { children: ReactNode }) => {
     const startPaginationMode = () => setPaginationMode(true);
     const stopPaginationMode = () => {
         setPaginationMode(false);
+        // Automatically start limit mode when pagination mode ends
         setLimitMode(true);
     };
 
