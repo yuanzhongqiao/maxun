@@ -115,24 +115,26 @@ export const BrowserWindow = () => {
             if (listSelector) {
                 socket?.emit('listSelector', { selector: listSelector });
                 if (paginationMode) {
-                    // Pagination mode: only set highlighterData if type is not empty, 'none', 'scrollDown', or 'scrollUp'
+                    // only set highlighterData if type is not empty, 'none', 'scrollDown', or 'scrollUp'
                     if (paginationType !== '' && !['none', 'scrollDown', 'scrollUp'].includes(paginationType)) {
                         setHighlighterData(data);
                     } else {
                         setHighlighterData(null);
                     }
                 } else if (data.childSelectors && data.childSelectors.includes(data.selector)) {
-                    // !Pagination mode: highlight only valid child elements within the listSelector
+                    // highlight only valid child elements within the listSelector
                     setHighlighterData(data);
                 } else {
-                    // If not a valid child in normal mode, clear the highlighter
+                    // if !valid child in normal mode, clear the highlighter
                     setHighlighterData(null);
                 }
             } else {
-                setHighlighterData(data); // Set highlighterData for the initial listSelector selection
+                // set highlighterData for the initial listSelector selection
+                setHighlighterData(data);
             }
         } else {
-            setHighlighterData(data); // For non-list steps
+            // for non-list steps
+            setHighlighterData(data);
         }
     }, [highlighterData, getList, socket, listSelector, paginationMode, paginationType]);
 
