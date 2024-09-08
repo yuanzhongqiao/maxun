@@ -112,7 +112,6 @@ export const BrowserWindow = () => {
 
     const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: ElementInfo | null, childSelectors?: string[] }) => {
         if (getList === true) {
-            socket?.emit('setGetList', { getList: true });
             if (listSelector) {
                 socket?.emit('listSelector', { selector: listSelector });
                 if (paginationMode) {
