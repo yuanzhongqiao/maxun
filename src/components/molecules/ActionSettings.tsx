@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import styled from "styled-components";
 import { Button } from "@mui/material";
-import { ActionDescription } from "../organisms/RightSidePanel";
+//import { ActionDescription } from "../organisms/RightSidePanel";
 import * as Settings from "./action-settings";
 import { useSocketStore } from "../../context/socket";
 
@@ -42,7 +42,7 @@ export const ActionSettings = ({ action }: ActionSettingsProps) => {
 
   return (
     <div>
-      <ActionDescription>Action settings:</ActionDescription>
+      {/* <ActionDescription>Action settings:</ActionDescription> */}
       <ActionSettingsWrapper action={action}>
         <form onSubmit={handleSubmit}>
           <DisplaySettings />

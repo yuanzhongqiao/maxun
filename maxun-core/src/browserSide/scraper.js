@@ -421,7 +421,6 @@ async function clickNextPagination(selector, scrapedData, limit) {
     return results;
   };
 
-
   window.scrollDown = async function (selector, limit) {
     let previousHeight = 0;
     let itemsLoaded = 0;

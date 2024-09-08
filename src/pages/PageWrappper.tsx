@@ -7,11 +7,8 @@ import { MainPage } from "./MainPage";
 import { useGlobalInfoStore } from "../context/globalInfo";
 import { getActiveBrowserId } from "../api/recording";
 import { AlertSnackbar } from "../components/atoms/AlertSnackbar";
-import { InterpretationLog } from "../components/molecules/InterpretationLog";
-
 
 export const PageWrapper = () => {
-
   const [recordingName, setRecordingName] = useState('');
   const [open, setOpen] = useState(false);
 
@@ -54,7 +51,6 @@ export const PageWrapper = () => {
               <BrowserDimensionsProvider>
                 <React.Fragment>
                   <RecordingPage recordingName={recordingName} />
-                  <InterpretationLog />
                 </React.Fragment>
               </BrowserDimensionsProvider>
             )

@@ -50,17 +50,19 @@ const getAttributeOptions = (tagName: string, elementInfo: ElementInfo | null): 
 export const BrowserWindow = () => {
     const [canvasRef, setCanvasReference] = useState<React.RefObject<HTMLCanvasElement> | undefined>(undefined);
     const [screenShot, setScreenShot] = useState<string>("");
-    const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string, elementInfo: ElementInfo | null; } | null>(null);
+    const [highlighterData, setHighlighterData] = useState<{ rect: DOMRect, selector: string, elementInfo: ElementInfo | null, childSelectors?: string[] } | null>(null);
     const [showAttributeModal, setShowAttributeModal] = useState(false);
     const [attributeOptions, setAttributeOptions] = useState<AttributeOption[]>([]);
     const [selectedElement, setSelectedElement] = useState<{ selector: string, info: ElementInfo | null } | null>(null);
+    const [currentListId, setCurrentListId] = useState<number | null>(null);
 
     const [listSelector, setListSelector] = useState<string | null>(null);
     const [fields, setFields] = useState<Record<string, TextStep>>({});
+    const [paginationSelector, setPaginationSelector] = useState<string>('');
 
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
-    const { getText, getList } = useActionContext();
+    const { getText, getList, paginationMode, paginationType } = useActionContext();
     const { addTextStep, addListStep } = useBrowserSteps();
 
     const onMouseMove = (e: MouseEvent) => {
@@ -77,6 +79,18 @@ export const BrowserWindow = () => {
             }
         }
     };
+
+    const resetListState = useCallback(() => {
+        setListSelector(null);
+        setFields({});
+        setCurrentListId(null);
+    }, []);
+
+    useEffect(() => {
+        if (!getList) {
+            resetListState();
+        }
+    }, [getList, resetListState]);
 
     const screencastHandler = useCallback((data: string) => {
         setScreenShot(data);
@@ -96,12 +110,33 @@ export const BrowserWindow = () => {
         }
     }, [screenShot, canvasRef, socket, screencastHandler]);
 
-    const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: ElementInfo | null }) => {
+    const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: ElementInfo | null, childSelectors?: string[] }) => {
         if (getList === true) {
             socket?.emit('setGetList', { getList: true });
+            if (listSelector) {
+                socket?.emit('listSelector', { selector: listSelector });
+                if (paginationMode) {
+                    // Pagination mode: only set highlighterData if type is not empty, 'none', 'scrollDown', or 'scrollUp'
+                    if (paginationType !== '' && paginationType !== 'scrollDown' && paginationType !== 'scrollUp' && paginationType !== 'none') {
+                        setHighlighterData(data);
+                    } else {
+                        setHighlighterData(null);
+                    }
+                } else if (data.childSelectors && data.childSelectors.includes(data.selector)) {
+                    // !Pagination mode: highlight only valid child elements within the listSelector
+                    setHighlighterData(data);
+                } else {
+                    // If not a valid child in normal mode, clear the highlighter
+                    setHighlighterData(null);
+                }
+            } else {
+                setHighlighterData(data); // Set highlighterData for the initial listSelector selection
+            }
+        } else {
+            setHighlighterData(data); // For non-list steps
         }
-        setHighlighterData(data);
-    }, [highlighterData, getList, socket]);
+    }, [highlighterData, getList, socket, listSelector, paginationMode, paginationType]);
+
 
     useEffect(() => {
         document.addEventListener('mousemove', onMouseMove, false);
@@ -127,6 +162,7 @@ export const BrowserWindow = () => {
                 clickY >= highlightRect.top &&
                 clickY <= highlightRect.bottom
             ) {
+
                 const options = getAttributeOptions(highlighterData.elementInfo?.tagName || '', highlighterData.elementInfo);
 
                 if (getText === true) {
@@ -153,17 +189,32 @@ export const BrowserWindow = () => {
                     }
                 }
 
+                if (paginationMode && getList) {
+                    // Only allow selection in pagination mode if type is not empty, 'scrollDown', or 'scrollUp'
+                    if (paginationType !== '' && paginationType !== 'scrollDown' && paginationType !== 'scrollUp' && paginationType !== 'none') {
+                        setPaginationSelector(highlighterData.selector);
+                        addListStep(listSelector!, fields, currentListId || 0, { type: paginationType, selector: highlighterData.selector });
+                    }
+                    return;
+                }
+
                 if (getList === true && !listSelector) {
                     setListSelector(highlighterData.selector);
-                } else if (getList === true && listSelector) {
+                    setCurrentListId(Date.now());
+                    setFields({});
+                } else if (getList === true && listSelector && currentListId) {
+                    const attribute = options[0].value;
+                    const data = attribute === 'href' ? highlighterData.elementInfo?.url || '' :
+                        attribute === 'src' ? highlighterData.elementInfo?.imageUrl || '' :
+                            highlighterData.elementInfo?.innerText || '';
+                    // Add fields to the list
                     if (options.length === 1) {
-                        // Handle directly without showing the modal
                         const attribute = options[0].value;
                         const newField: TextStep = {
                             id: Date.now(),
                             type: 'text',
                             label: `Label ${Object.keys(fields).length + 1}`,
-                            data: highlighterData.elementInfo?.innerText || '',
+                            data: data,
                             selectorObj: {
                                 selector: highlighterData.selector,
                                 tag: highlighterData.elementInfo?.tagName,
@@ -176,14 +227,15 @@ export const BrowserWindow = () => {
                                 ...prevFields,
                                 [newField.label]: newField
                             };
+                            console.log(updatedFields)
                             return updatedFields;
                         });
 
                         if (listSelector) {
-                            addListStep(listSelector, { ...fields, [newField.label]: newField });
+                            addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId, { type: '', selector: paginationSelector });
                         }
+
                     } else {
-                        // Show the modal if there are multiple options
                         setAttributeOptions(options);
                         setSelectedElement({
                             selector: highlighterData.selector,
@@ -217,12 +269,12 @@ export const BrowserWindow = () => {
                         attribute: attribute
                     });
                 }
-                if (getList === true) {
+                if (getList === true && listSelector && currentListId) {
                     const newField: TextStep = {
                         id: Date.now(),
                         type: 'text',
                         label: `Label ${Object.keys(fields).length + 1}`,
-                        data: selectedElement.info?.innerText || '',
+                        data: data,
                         selectorObj: {
                             selector: selectedElement.selector,
                             tag: selectedElement.info?.tagName,
@@ -235,17 +287,31 @@ export const BrowserWindow = () => {
                             ...prevFields,
                             [newField.label]: newField
                         };
+                        console.log(updatedFields)
+
                         return updatedFields;
                     });
 
                     if (listSelector) {
-                        addListStep(listSelector, { ...fields, [newField.label]: newField });
+                        addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId, { type: '', selector: paginationSelector });
                     }
+
                 }
             }
         }
         setShowAttributeModal(false);
     };
+
+    const resetPaginationSelector = useCallback(() => {
+        setPaginationSelector('');
+    }, []);
+
+    useEffect(() => {
+        if (!paginationMode) {
+            resetPaginationSelector();
+        }
+    }, [paginationMode, resetPaginationSelector]);
+
 
     return (
         <div onClick={handleClick}>

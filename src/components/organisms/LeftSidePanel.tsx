@@ -14,21 +14,21 @@ import { RunSettings } from "../molecules/RunSettings";
 
 const fetchWorkflow = (id: string, callback: (response: WorkflowFile) => void) => {
   getActiveWorkflow(id).then(
-    (response ) => {
-      if (response){
+    (response) => {
+      if (response) {
         callback(response);
       } else {
         throw new Error("No workflow found");
       }
     }
-  ).catch((error) => {console.log(error.message)})
+  ).catch((error) => { console.log(error.message) })
 };
 
 interface LeftSidePanelProps {
   sidePanelRef: HTMLDivElement | null;
   alreadyHasScrollbar: boolean;
   recordingName: string;
-  handleSelectPairForEdit: (pair:WhereWhatPair, index:number) => void;
+  handleSelectPairForEdit: (pair: WhereWhatPair, index: number) => void;
 }
 
 export const LeftSidePanel = (
@@ -59,10 +59,11 @@ export const LeftSidePanel = (
       fetchWorkflow(id, workflowHandler);
     }
     // fetch workflow in 15min intervals
-    let interval = setInterval(() =>{
-    if (id) {
-      fetchWorkflow(id, workflowHandler);
-    }}, (1000 * 60 * 15));
+    let interval = setInterval(() => {
+      if (id) {
+        fetchWorkflow(id, workflowHandler);
+      }
+    }, (1000 * 60 * 15));
     return () => clearInterval(interval)
   }, [id]);
 
@@ -104,19 +105,19 @@ export const LeftSidePanel = (
         flexDirection: 'column',
       }}
     >
-      <SidePanelHeader/>
+      <SidePanelHeader />
       <TabContext value={tab}>
-          <Tabs value={tab} onChange={(e, newTab) => setTab(newTab)}>
-            <Tab label="Recording" value='recording' />
-            <Tab label="Settings" value='settings' onClick={() => {
-              getParamsOfActiveWorkflow(id).then((response) => {
-                if (response) {
-                  setParams(response);
-                }
-              })
-            }}/>
-          </Tabs>
-        <TabPanel value='recording' sx={{padding: '0px'}}>
+        <Tabs value={tab} onChange={(e, newTab) => setTab(newTab)}>
+          <Tab label="Recording" value='recording' />
+          <Tab label="Settings" value='settings' onClick={() => {
+            getParamsOfActiveWorkflow(id).then((response) => {
+              if (response) {
+                setParams(response);
+              }
+            })
+          }} />
+        </Tabs>
+        <TabPanel value='recording' sx={{ padding: '0px' }}>
           <LeftSidePanelContent
             workflow={workflow}
             updateWorkflow={setWorkflow}
@@ -126,7 +127,7 @@ export const LeftSidePanel = (
         </TabPanel>
         <TabPanel value='settings'>
           <LeftSidePanelSettings params={params}
-          settings={settings} setSettings={setSettings}/>
+            settings={settings} setSettings={setSettings} />
         </TabPanel>
       </TabContext>
     </Paper>

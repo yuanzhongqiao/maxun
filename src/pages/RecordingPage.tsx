@@ -32,6 +32,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
     pair: null,
     index: 0,
   });
+  const [showOutputData, setShowOutputData] = useState(false);
 
   const browserContentRef = React.useRef<HTMLDivElement>(null);
   const workflowListRef = React.useRef<HTMLDivElement>(null);
@@ -40,6 +41,10 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
   const { setWidth } = useBrowserDimensionsStore();
   const { browserId, setBrowserId } = useGlobalInfoStore();
 
+  const handleShowOutputData = useCallback(() => {
+    setShowOutputData(true);
+  }, []);
+
   const handleSelectPairForEdit = (pair: WhereWhatPair, index: number) => {
     setPairForEdit({
       pair,
@@ -47,7 +52,6 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
     });
   };
 
-  //resize browser content when loaded event is fired
   useEffect(() => changeBrowserDimensions(), [isLoaded])
 
   useEffect(() => {
@@ -122,10 +126,10 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
               </Grid>
               <Grid id="browser-content" ref={browserContentRef} item xs>
                 <BrowserContent />
-                <InterpretationLog />
+                <InterpretationLog isOpen={showOutputData} setIsOpen={setShowOutputData} />
               </Grid>
               <Grid item xs={2}>
-                <RightSidePanel />
+                <RightSidePanel onFinishCapture={handleShowOutputData} />
               </Grid>
             </Grid>
             : <Loader />}

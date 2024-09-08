@@ -19,6 +19,11 @@ export interface ListStep {
     type: 'list';
     listSelector: string;
     fields: { [key: string]: TextStep };
+    pagination?: {
+        type: string;
+        selector: string;
+    };
+    limit?: number;
 }
 
 type BrowserStep = TextStep | ScreenshotStep | ListStep;
@@ -33,7 +38,7 @@ export interface SelectorObject {
 interface BrowserStepsContextType {
     browserSteps: BrowserStep[];
     addTextStep: (label: string, data: string, selectorObj: SelectorObject) => void;
-    addListStep: (listSelector: string, fields: { [key: string]: TextStep }) => void
+    addListStep: (listSelector: string, fields: { [key: string]: TextStep }, listId: number, pagination?: { type: string; selector: string }, limit?: number) => void
     addScreenshotStep: (fullPage: boolean) => void;
     deleteBrowserStep: (id: number) => void;
     updateBrowserTextStepLabel: (id: number, newLabel: string) => void;
@@ -51,10 +56,10 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         ]);
     };
 
-    const addListStep = (listSelector: string, newFields: { [key: string]: TextStep }) => {
+    const addListStep = (listSelector: string, newFields: { [key: string]: TextStep }, listId: number, pagination?: { type: string; selector: string }, limit?: number) => {
         setBrowserSteps(prevSteps => {
             const existingListStepIndex = prevSteps.findIndex(
-                step => step.type === 'list' && step.listSelector === listSelector
+                step => step.type === 'list' && step.id === listId
             );
             if (existingListStepIndex !== -1) {
                 // Update the existing ListStep with new fields
@@ -62,19 +67,20 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
                 const existingListStep = updatedSteps[existingListStepIndex] as ListStep;
                 updatedSteps[existingListStepIndex] = {
                     ...existingListStep,
-                    fields: { ...existingListStep.fields, ...newFields }
+                    fields: { ...existingListStep.fields, ...newFields },
+                    pagination: pagination,
+                    limit: limit,
                 };
                 return updatedSteps;
             } else {
                 // Create a new ListStep
                 return [
                     ...prevSteps,
-                    { id: Date.now(), type: 'list', listSelector, fields: newFields }
+                    { id: listId, type: 'list', listSelector, fields: newFields, pagination, limit }
                 ];
             }
         });
     };
-
 
     const addScreenshotStep = (fullPage: boolean) => {
         setBrowserSteps(prevSteps => [

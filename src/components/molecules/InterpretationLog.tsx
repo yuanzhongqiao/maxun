@@ -1,30 +1,57 @@
 import * as React from 'react';
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Highlight from 'react-highlight'
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import { Button, TextField } from '@mui/material';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import Highlight from 'react-highlight';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSocketStore } from "../../context/socket";
+import { useBrowserDimensionsStore } from "../../context/browserDimensions";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import StorageIcon from '@mui/icons-material/Storage';
 
-export const InterpretationLog = () => {
-  const [expanded, setExpanded] = useState<boolean>(false);
+interface InterpretationLogProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, setIsOpen }) => {  
   const [log, setLog] = useState<string>('');
+  const [selectedOption, setSelectedOption] = useState<string>('10');
+  const [customValue, setCustomValue] = useState('');
+  const [tableData, setTableData] = useState<any[]>([]);
 
   const logEndRef = useRef<HTMLDivElement | null>(null);
 
-  const handleChange = (isExpanded: boolean) => (event: React.SyntheticEvent) => {
-    setExpanded(isExpanded);
-  };
-
+  const { width } = useBrowserDimensionsStore();
   const { socket } = useSocketStore();
+
+  const toggleDrawer = (newOpen: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+    if (
+      event.type === 'keydown' &&
+      ((event as React.KeyboardEvent).key === 'Tab' ||
+        (event as React.KeyboardEvent).key === 'Shift')
+    ) {
+      return;
+    }
+    setIsOpen(newOpen);
+  };
 
   const scrollLogToBottom = () => {
     if (logEndRef.current) {
-      logEndRef.current.scrollIntoView({ behavior: "smooth" })
+      logEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }
+  };
 
   const handleLog = useCallback((msg: string, date: boolean = true) => {
     if (!date) {
@@ -33,14 +60,20 @@ export const InterpretationLog = () => {
       setLog((prevState) => prevState + '\n' + `[${new Date().toLocaleString()}] ` + msg);
     }
     scrollLogToBottom();
-  }, [log, scrollLogToBottom])
+  }, [log, scrollLogToBottom]);
 
-  const handleSerializableCallback = useCallback((data: string) => {
+  const handleSerializableCallback = useCallback((data: any) => {
     setLog((prevState) =>
       prevState + '\n' + '---------- Serializable output data received ----------' + '\n'
       + JSON.stringify(data, null, 2) + '\n' + '--------------------------------------------------');
+    
+    // Set table data
+    if (Array.isArray(data)) {
+      setTableData(data);
+    }
+    
     scrollLogToBottom();
-  }, [log, scrollLogToBottom])
+  }, [log, scrollLogToBottom]);
 
   const handleBinaryCallback = useCallback(({ data, mimetype }: any) => {
     setLog((prevState) =>
@@ -48,7 +81,15 @@ export const InterpretationLog = () => {
       + `mimetype: ${mimetype}` + '\n' + `data: ${JSON.stringify(data)}` + '\n'
       + '------------------------------------------------');
     scrollLogToBottom();
-  }, [log, scrollLogToBottom])
+  }, [log, scrollLogToBottom]);
+
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedOption(event.target.value);
+  };
+
+  const handleCustomValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomValue(event.target.value);
+  };
 
   useEffect(() => {
     socket?.on('log', handleLog);
@@ -58,41 +99,113 @@ export const InterpretationLog = () => {
       socket?.off('log', handleLog);
       socket?.off('serializableCallback', handleSerializableCallback);
       socket?.off('binaryCallback', handleBinaryCallback);
-    }
-  }, [socket, handleLog])
+    };
+  }, [socket, handleLog, handleSerializableCallback, handleBinaryCallback]);
 
+  // Extract columns dynamically from the first item of tableData
+  const columns = tableData.length > 0 ? Object.keys(tableData[0]) : [];
+  
   return (
     <div>
-      <Accordion
-        expanded={expanded}
-        onChange={handleChange(!expanded)}
-        style={{ background: '#3f4853', color: 'white', borderRadius: '0px' }}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}
-          aria-controls="panel1bh-content"
-          id="panel1bh-header"
-        >
-          <Typography sx={{ width: '33%', flexShrink: 0 }}>
-            Interpretation Log
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails sx={{
-          background: '#19171c',
-          overflowY: 'scroll',
-          width: '100%',
-          aspectRatio: '4/1',
-          boxSizing: 'border-box',
+      <button
+        onClick={toggleDrawer(true)}
+        style={{
+          color: 'white',
+          background: '#3f4853',
+          border: 'none',
+          padding: '10px 20px',
+          width: 1280,
+          textAlign: 'left'
         }}>
-          <div>
-            <Highlight className="javascript">
-              {log}
-            </Highlight>
-            <div style={{ float: "left", clear: "both" }}
-              ref={logEndRef} />
+        Interpretation Log
+      </button>
+      <SwipeableDrawer
+        anchor="bottom"
+        open={isOpen}
+        onClose={toggleDrawer(false)}
+        onOpen={toggleDrawer(true)}
+        PaperProps={{
+          sx: {
+            background: 'white',
+            color: 'black',
+            padding: '10px',
+            height: 720,
+            width: width - 10,
+            display: 'flex'
+          }
+        }}
+      >
+        <Typography variant="h6" gutterBottom>
+          <StorageIcon /> Output Data Preview
+        </Typography>
+        <div style={{
+          height: '50vh',
+          overflow: 'none',
+          padding: '10px',
+        }}>
+          {/* <Highlight className="javascript">
+            {log}
+          </Highlight> */}
+          {tableData.length > 0 && (
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
+                <TableHead>
+                  <TableRow>
+                    {columns.map((column) => (
+                      <TableCell key={column}>{column}</TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {tableData.map((row, index) => (
+                    <TableRow key={index}>
+                      {columns.map((column) => (
+                        <TableCell key={column}>{row[column]}</TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '200px' }}>
+            <FormControl>
+              <FormLabel>
+                <h4>What is the maximum number of rows you want to extract?</h4>
+              </FormLabel>
+              <RadioGroup row value={selectedOption} onChange={handleRadioChange} sx={{ width: '500px' }}>
+                <FormControlLabel value="10" control={<Radio />} label="10" />
+                <FormControlLabel value="100" control={<Radio />} label="100" />
+                <FormControlLabel value="custom" control={<Radio />} label="Custom" />
+                {selectedOption === 'custom' && (
+                  <TextField
+                    type="number"
+                    value={customValue}
+                    onChange={handleCustomValueChange}
+                    placeholder="Enter number"
+                    sx={{
+                      marginLeft: '10px',
+                      marginTop: '-3px',
+                      '& input': {
+                        padding: '10px',
+                      },
+                    }}
+                  />
+                )}
+              </RadioGroup>
+            </FormControl>
+            <div style={{ paddingBottom: '40px' }}>
+              <h4>How can we find the next item?</h4>
+              <p>Select and review the pagination setting this webpage is using</p>
+              <Button variant="outlined">
+                Select Pagination Setting
+              </Button>
+            </div>
           </div>
-        </AccordionDetails>
-      </Accordion>
+          <div style={{ float: "left", clear: "both" }}
+            ref={logEndRef} />
+        </div>
+      </SwipeableDrawer>
     </div>
   );
 }

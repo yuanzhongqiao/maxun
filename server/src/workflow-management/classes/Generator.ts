@@ -7,6 +7,7 @@ import {
   getElementInformation,
   getRect,
   getSelectors,
+  getChildSelectors,
   getNonUniqueSelectors,
   isRuleOvershadowing,
   selectorAlreadyInWorkflow
@@ -52,6 +53,8 @@ export class WorkflowGenerator {
    * Used to provide appropriate selectors for the getList action.
    */
   private getList: boolean = false;
+
+  private listSelector: string = '';
 
   /**
    * The public constructor of the WorkflowGenerator.
@@ -103,6 +106,9 @@ export class WorkflowGenerator {
     this.socket.on('setGetList', (data: { getList: boolean }) => {
       this.getList = data.getList;
     });
+    this.socket.on('listSelector', (data: { selector: string }) => {
+      this.listSelector = data.selector;
+    })
   }
 
   /**
@@ -476,6 +482,11 @@ export class WorkflowGenerator {
    */
   private generateSelector = async (page: Page, coordinates: Coordinates, action: ActionType) => {
     const elementInfo = await getElementInformation(page, coordinates);
+    const generalSelector = await getNonUniqueSelectors(page, coordinates)
+    const childSelectors = await getChildSelectors(page, generalSelector.generalSelector);
+
+    console.log('Non Unique Selectors [DEBUG]:', generalSelector);
+    console.log('Child Selectors [DEBUG]:', childSelectors);
 
     const selectorBasedOnCustomAction = (this.getList === true)
       ? await getNonUniqueSelectors(page, coordinates)
@@ -507,7 +518,14 @@ export class WorkflowGenerator {
     const displaySelector = await this.generateSelector(page, coordinates, ActionType.Click);
     const elementInfo = await getElementInformation(page, coordinates);
     if (rect) {
-      this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo });
+      if (this.getList === true) {
+        if (this.listSelector !== '') {
+          const childSelectors = await getChildSelectors(page, this.listSelector || '');
+          this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo, childSelectors })
+        }
+      } else {
+        this.socket.emit('highlighter', { rect, selector: displaySelector, elementInfo });
+      }
     }
     // reset getList after usage
     this.getList = false;
