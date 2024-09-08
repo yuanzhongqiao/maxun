@@ -19,7 +19,11 @@ import { SidePanelHeader } from '../molecules/SidePanelHeader';
 // 3. Add description for each browser step
 // 4. Handle non custom action steps
 
-export const RightSidePanel = () => {
+interface RightSidePanelProps {
+  onFinishCapture: () => void;
+}
+
+export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture }) => {
   const [textLabels, setTextLabels] = useState<{ [id: number]: string }>({});
   const [errors, setErrors] = useState<{ [id: number]: string }>({});
   const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: number]: boolean }>({});

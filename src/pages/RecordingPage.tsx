@@ -129,7 +129,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
                 <InterpretationLog />
               </Grid>
               <Grid item xs={2}>
-                <RightSidePanel />
+                <RightSidePanel onFinishCapture={handleShowOutputData} />
               </Grid>
             </Grid>
             : <Loader />}
