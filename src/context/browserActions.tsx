@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { useSocketStore } from './socket';
 
 export type PaginationType = 'scrollDown' | 'scrollUp' | 'clickNext' | 'clickLoadMore' | 'none' | '';
 export type LimitType = '10' | '100' | 'custom' | '';
@@ -39,6 +40,8 @@ export const ActionProvider = ({ children }: { children: ReactNode }) => {
     const [limitType, setLimitType] = useState<LimitType>('');
     const [customLimit, setCustomLimit] = useState<string>('');
 
+    const {socket} = useSocketStore();
+
     const updatePaginationType = (type: PaginationType) => setPaginationType(type);
     const updateLimitType = (type: LimitType) => setLimitType(type);
     const updateCustomLimit = (limit: string) => setCustomLimit(limit);
@@ -52,9 +55,14 @@ export const ActionProvider = ({ children }: { children: ReactNode }) => {
     const startGetText = () => setGetText(true);
     const stopGetText = () => setGetText(false);
 
-    const startGetList = () => setGetList(true);
+    const startGetList = () => {
+        setGetList(true);
+        socket?.emit('setGetList', { getList: true });
+    }
+        
     const stopGetList = () => {
         setGetList(false);
+        socket?.emit('setGetList', { getList: false });
         setPaginationType('');
         setLimitType('');
         setCustomLimit('');
