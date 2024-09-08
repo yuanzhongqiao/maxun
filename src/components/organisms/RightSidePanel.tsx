@@ -141,11 +141,11 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
   const resetListState = useCallback(() => {
     setShowPaginationOptions(false);
-    updatePaginationType(''); // Reset pagination type
-    setShowLimitOptions(false); // Reset limit options
-    setSelectedLimit('10'); // Reset limit value to default
-    updateLimitType(''); // Reset limit type
-    updateCustomLimit(''); // Reset custom limit value
+    updatePaginationType('');
+    setShowLimitOptions(false); 
+    setSelectedLimit('10');
+    updateLimitType('');
+    updateCustomLimit('');
   }, [updatePaginationType, updateLimitType, updateCustomLimit]);
 
 
