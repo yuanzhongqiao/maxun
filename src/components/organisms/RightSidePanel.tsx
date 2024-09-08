@@ -136,7 +136,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
   const stopCaptureAndEmitGetListSettings = useCallback(() => {
     stopPaginationMode();
-    stopGetList();
     const settings = getListSettingsObject();
     if (settings) {
       socket?.emit('action', { action: 'scrapeList', settings });
