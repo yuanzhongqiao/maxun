@@ -258,7 +258,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
               <Button variant="outlined" onClick={handleConfirmListCapture}>
-                {captureStage === 'initial' ? 'Start Capture' :
+                {captureStage === 'initial' ? 'Confirm Capture' :
                   captureStage === 'pagination' ? 'Confirm Pagination' :
                     captureStage === 'limit' ? 'Confirm Limit' : 'Finish Capture'}
               </Button>
