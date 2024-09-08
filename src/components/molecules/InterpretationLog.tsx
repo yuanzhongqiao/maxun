@@ -20,12 +20,16 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import StorageIcon from '@mui/icons-material/Storage';
 
-export const InterpretationLog = () => {
-  const [open, setOpen] = useState<boolean>(false);
+interface InterpretationLogProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, setIsOpen }) => {  
   const [log, setLog] = useState<string>('');
   const [selectedOption, setSelectedOption] = useState<string>('10');
   const [customValue, setCustomValue] = useState('');
-  const [tableData, setTableData] = useState<any[]>([]); // State for table data
+  const [tableData, setTableData] = useState<any[]>([]);
 
   const logEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -40,7 +44,7 @@ export const InterpretationLog = () => {
     ) {
       return;
     }
-    setOpen(newOpen);
+    setIsOpen(newOpen);
   };
 
   const scrollLogToBottom = () => {
@@ -117,7 +121,7 @@ export const InterpretationLog = () => {
       </button>
       <SwipeableDrawer
         anchor="bottom"
-        open={open}
+        open={isOpen}
         onClose={toggleDrawer(false)}
         onOpen={toggleDrawer(true)}
         PaperProps={{
