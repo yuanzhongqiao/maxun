@@ -23,7 +23,6 @@ import RadioGroup from '@mui/material/RadioGroup';
 // 2. Handle field deletion | confirmation
 // 3. Add description for each browser step
 // 4. Handle non custom action steps
-
 interface RightSidePanelProps {
   onFinishCapture: () => void;
 }
@@ -136,12 +135,10 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const resetListState = useCallback(() => {
     setShowPaginationOptions(false);
     updatePaginationType('');
-    setShowLimitOptions(false); 
-    updateLimitType('10');
+    setShowLimitOptions(false);
     updateLimitType('');
     updateCustomLimit('');
   }, [updatePaginationType, updateLimitType, updateCustomLimit]);
-
 
   const handleStopGetList = useCallback(() => {
     stopGetList();
@@ -172,15 +169,12 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           notify('error', 'Please select a pagination type.');
           return;
         }
-
         const settings = getListSettingsObject();
         const paginationSelector = settings.pagination?.selector;
-
         if (['clickNext', 'clickLoadMore'].includes(paginationType) && !paginationSelector) {
           notify('error', 'Please select the pagination element first.');
           return;
         }
-
         stopPaginationMode();
         setShowPaginationOptions(false);
         startLimitMode();
@@ -193,13 +187,11 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           notify('error', 'Please select a limit or enter a custom limit.');
           return;
         }
-
         const limit = limitType === 'custom' ? parseInt(customLimit) : parseInt(limitType);
         if (isNaN(limit) || limit <= 0) {
           notify('error', 'Please enter a valid limit.');
           return;
         }
-
         stopLimitMode();
         setShowLimitOptions(false);
         stopCaptureAndEmitGetListSettings();
@@ -211,8 +203,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
         break;
     }
   }, [captureStage, paginationType, limitType, customLimit, startPaginationMode, stopPaginationMode, startLimitMode, stopLimitMode, notify, stopCaptureAndEmitGetListSettings, getListSettingsObject]);
-
-
 
   const handlePaginationSettingSelect = (option: PaginationType) => {
     updatePaginationType(option);
@@ -239,9 +229,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       <SimpleBox height={60} width='100%' background='lightGray' radius='0%'>
         <Typography sx={{ padding: '10px' }}>Last action: {` ${lastAction}`}</Typography>
       </SimpleBox>
-
       <SidePanelHeader />
-
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
         {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetList}>Capture List</Button>}
         {getList && (
@@ -256,7 +244,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
             </Box>
           </>
         )}
-
         {showPaginationOptions && (
           <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
             <Typography>How can we find the next list item on the page?</Typography>
@@ -267,7 +254,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
             <Button variant={paginationType === 'none' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('none')}>No more items to load</Button>
           </Box>
         )}
-
         {showLimitOptions && (
           <FormControl>
             <FormLabel>
@@ -296,7 +282,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           </FormControl>
 
         )}
-
         {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
         {getText &&
           <>
@@ -306,7 +291,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
             </Box>
           </>
         }
-
         {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetScreenshot}>Capture Screenshot</Button>}
         {getScreenshot && (
           <Box display="flex" flexDirection="column" gap={2}>
@@ -316,7 +300,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           </Box>
         )}
       </Box>
-
       <Box>
         {browserSteps.map(step => (
           <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }}>
