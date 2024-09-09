@@ -8,7 +8,7 @@ import { TextField, Typography } from "@mui/material";
 import { WarningText } from "../atoms/texts";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
 import FlagIcon from '@mui/icons-material/Flag';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
 interface SaveRecordingProps {
   fileName: string;
