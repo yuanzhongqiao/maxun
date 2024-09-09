@@ -14,13 +14,13 @@ interface NavBarProps {
   isRecording: boolean;
 }
 
-export const NavBar = ({newRecording, recordingName, isRecording}:NavBarProps) => {
+export const NavBar = ({ newRecording, recordingName, isRecording }: NavBarProps) => {
 
   const { notify, browserId, setBrowserId, recordingLength } = useGlobalInfoStore();
 
   // If recording is in progress, the resources and change page view by setting browserId to null
   // else it won't affect the page
-  const goToMainMenu = async() => {
+  const goToMainMenu = async () => {
     if (browserId) {
       await stopRecording(browserId);
       notify('warning', 'Current Recording was terminated');
@@ -43,8 +43,8 @@ export const NavBar = ({newRecording, recordingName, isRecording}:NavBarProps) =
         display: 'flex',
         justifyContent: 'flex-start',
       }}>
-      <RecordingIcon/>
-      <div style={{padding: '11px'}}><ProjectName>Maxun</ProjectName></div>
+        <RecordingIcon />
+        <div style={{ padding: '11px' }}><ProjectName>Maxun</ProjectName></div>
       </div>
       <div style={{
         display: 'flex',
@@ -66,18 +66,19 @@ export const NavBar = ({newRecording, recordingName, isRecording}:NavBarProps) =
             fontSize: '0.875rem',
             lineHeight: '1.75',
             letterSpacing: '0.02857em',
-            '&:hover': { color: 'red', backgroundColor: 'white' }}
+            '&:hover': { color: 'red', backgroundColor: 'white' }
+          }
           }
         >
-          <Circle sx={{marginRight: '5px'}}/> {isRecording ? 'NEW' : 'RECORD'}
+          <Circle sx={{ marginRight: '5px' }} /> {isRecording ? 'NEW' : 'RECORD'}
         </IconButton>
         {
           recordingLength > 0
-            ? <SaveRecording fileName={recordingName}/>
-            :null
+            ? <SaveRecording fileName={recordingName} />
+            : null
         }
-        { isRecording ? <Button sx={{
-          width:'100px',
+        {isRecording ? <Button sx={{
+          width: '100px',
           background: '#fff',
           color: 'rgba(25, 118, 210, 0.7)',
           padding: '9px',
@@ -87,9 +88,9 @@ export const NavBar = ({newRecording, recordingName, isRecording}:NavBarProps) =
             color: 'rgb(25, 118, 210)',
           }
         }} onClick={goToMainMenu}>
-          <MeetingRoomIcon sx={{marginRight: '5px'}}/>
+          <MeetingRoomIcon sx={{ marginRight: '5px' }} />
           exit</Button>
-          : null }
+          : null}
       </div>
 
     </NavBarWrapper>
