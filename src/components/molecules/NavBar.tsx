@@ -7,6 +7,7 @@ import { RecordingIcon } from "../atoms/RecorderIcon";
 import { SaveRecording } from "./SaveRecording";
 import { Circle } from "@mui/icons-material";
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
+import { useNavigate } from "react-router-dom";
 
 interface NavBarProps {
   newRecording: () => void;
@@ -17,6 +18,7 @@ interface NavBarProps {
 export const NavBar = ({ newRecording, recordingName, isRecording }: NavBarProps) => {
 
   const { notify, browserId, setBrowserId, recordingLength } = useGlobalInfoStore();
+  const navigate = useNavigate();
 
   // If recording is in progress, the resources and change page view by setting browserId to null
   // else it won't affect the page
@@ -26,6 +28,7 @@ export const NavBar = ({ newRecording, recordingName, isRecording }: NavBarProps
       notify('warning', 'Current Recording was terminated');
       setBrowserId(null);
     }
+    navigate('/');
   };
 
   const handleNewRecording = async () => {
