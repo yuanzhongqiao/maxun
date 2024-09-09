@@ -168,6 +168,12 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording }: Rec
                                 </IconButton>
                               </TableCell>
                             );
+                            case 'schedule':
+                    return (
+                      <TableCell key={column.id} align={column.align}>
+                        <ScheduleButton handleSchedule={() => {/* todo: schedule logic here */}} />
+                      </TableCell>
+                    );
                           case 'delete':
                             return (
                               <TableCell key={column.id} align={column.align}>
