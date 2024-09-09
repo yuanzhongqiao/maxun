@@ -223,3 +223,19 @@ const InterpretButton = ({ handleInterpret }: InterpretButtonProps) => {
     </IconButton>
   )
 }
+
+interface ScheduleButtonProps {
+  handleSchedule: () => void;
+}
+
+const ScheduleButton = ({ handleSchedule }: ScheduleButtonProps) => {
+  return (
+    <IconButton
+      aria-label="schedule"
+      size="small"
+      onClick={handleSchedule}
+      sx={{ '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
+      <Assignment />
+    </IconButton>
+  );
+};
