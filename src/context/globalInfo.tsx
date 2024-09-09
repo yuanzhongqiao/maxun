@@ -16,6 +16,8 @@ interface GlobalInfo {
   setRerenderRuns: (rerenderRuns: boolean) => void;
   recordingLength: number;
   setRecordingLength: (recordingLength: number) => void;
+  recordingName: string;
+  setRecordingName: (recordingName: string) => void;
 };
 
 class GlobalInfoStore implements Partial<GlobalInfo> {
@@ -29,6 +31,7 @@ class GlobalInfoStore implements Partial<GlobalInfo> {
   };
   recordings: string[] = [];
   rerenderRuns = false;
+  recordingName = '';
 };
 
 const globalInfoStore = new GlobalInfoStore();
@@ -43,6 +46,7 @@ export const GlobalInfoProvider = ({ children }: { children: JSX.Element }) => {
   const [recordings, setRecordings] = useState<string[]>(globalInfoStore.recordings);
   const [rerenderRuns, setRerenderRuns] = useState<boolean>(globalInfoStore.rerenderRuns);
   const [recordingLength, setRecordingLength] = useState<number>(globalInfoStore.recordingLength);
+  const [recordingName, setRecordingName] = useState<string>(globalInfoStore.recordingName);
 
   const notify = (severity: 'error' | 'warning' | 'info' | 'success', message: string) => {
     setNotification({ severity, message, isOpen: true });
@@ -75,6 +79,8 @@ export const GlobalInfoProvider = ({ children }: { children: JSX.Element }) => {
         setRerenderRuns,
         recordingLength,
         setRecordingLength,
+        recordingName,
+        setRecordingName
       }}
     >
       {children}
