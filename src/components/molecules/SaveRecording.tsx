@@ -8,6 +8,7 @@ import { TextField, Typography } from "@mui/material";
 import { WarningText } from "../atoms/texts";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
 import FlagIcon from '@mui/icons-material/Flag';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 interface SaveRecordingProps {
   fileName: string;
@@ -22,6 +23,7 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
 
   const { browserId, setBrowserId, notify, recordings } = useGlobalInfoStore();
   const { socket } = useSocketStore();
+  const navigate = useNavigate();
 
   const handleChangeOfTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -47,6 +49,7 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
       await stopRecording(browserId);
     }
     setBrowserId(null);
+    navigate('/');
   }, [setBrowserId, browserId, notify]);
 
   // notifies backed to save the recording in progress,
