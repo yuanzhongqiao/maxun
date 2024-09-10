@@ -10,7 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import { useEffect } from "react";
 import { WorkflowFile } from "maxun-core";
 import { IconButton } from "@mui/material";
-import { Assignment, DeleteForever, Edit, PlayCircle } from "@mui/icons-material";
+import { Schedule, DeleteForever, Edit, PlayCircle } from "@mui/icons-material";
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
 
@@ -242,7 +242,7 @@ const ScheduleButton = ({ handleSchedule }: ScheduleButtonProps) => {
       handleSchedule();
     }}
       sx={{ '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
-      <PlayCircle />
+      <Schedule />
     </IconButton>
   )
 }
