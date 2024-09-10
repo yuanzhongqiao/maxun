@@ -72,9 +72,10 @@ interface Data {
 interface RecordingsTableProps {
   handleEditRecording: (fileName: string) => void;
   handleRunRecording: (fileName: string, params: string[]) => void;
+  handleScheduleRecording: (fileName: string, params: string[]) => void;
 }
 
-export const RecordingsTable = ({ handleEditRecording, handleRunRecording }: RecordingsTableProps) => {
+export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handleScheduleRecording }: RecordingsTableProps) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState<Data[]>([]);
@@ -171,7 +172,7 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording }: Rec
                           case 'schedule':
                             return (
                               <TableCell key={column.id} align={column.align}>
-                                <ScheduleButton handleSchedule={() => {/* todo: schedule logic here */ }} />
+                                <ScheduleButton handleSchedule={() => handleScheduleRecording(row.name, row.params || []) } />
                               </TableCell>
                             );
                           case 'delete':
@@ -230,18 +231,20 @@ const InterpretButton = ({ handleInterpret }: InterpretButtonProps) => {
   )
 }
 
+
 interface ScheduleButtonProps {
   handleSchedule: () => void;
 }
 
 const ScheduleButton = ({ handleSchedule }: ScheduleButtonProps) => {
   return (
-    <IconButton
-      aria-label="schedule"
-      size="small"
-      onClick={handleSchedule}
+    <IconButton aria-label="add" size="small" onClick={() => {
+      handleSchedule();
+    }}
       sx={{ '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
-      <Assignment />
+      <PlayCircle />
     </IconButton>
-  );
-};
+  )
+}
+
+
