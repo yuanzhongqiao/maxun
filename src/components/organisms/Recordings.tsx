@@ -58,7 +58,7 @@ export const Recordings = ({ handleEditRecording, handleRunRecording, setFileNam
         isTask={params.length !== 0}
         params={params}
       />
- <ScheduleSettingsModal isOpen={scheduleSettingsAreOpen}
+      <ScheduleSettingsModal isOpen={scheduleSettingsAreOpen}
         handleClose={handleScheduleClose}
         handleStart={(settings) => handleScheduleRecording(settings)}
         isTask={params.length !== 0}
