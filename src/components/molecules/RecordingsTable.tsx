@@ -172,7 +172,7 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
                           case 'schedule':
                             return (
                               <TableCell key={column.id} align={column.align}>
-                                <ScheduleButton handleSchedule={() => handleScheduleRecording(row.name, row.params || []) } />
+                                <ScheduleButton handleSchedule={() => handleScheduleRecording(row.name, row.params || [])} />
                               </TableCell>
                             );
                           case 'delete':
@@ -246,5 +246,3 @@ const ScheduleButton = ({ handleSchedule }: ScheduleButtonProps) => {
     </IconButton>
   )
 }
-
-
