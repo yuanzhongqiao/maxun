@@ -7,7 +7,7 @@ import { record, workflow, storage } from './routes';
 import { BrowserPool } from "./browser-management/classes/BrowserPool";
 import logger from './logger'
 import { SERVER_PORT } from "./constants/config";
-import {Server} from "socket.io";
+import { Server } from "socket.io";
 import { worker } from './workflow-management/scheduler';
 
 const app = express();
@@ -37,7 +37,7 @@ app.get('/', function (req, res) {
 
 /**
  * Starts the worker for the workflow queue.
- */
+*/
 worker.run();
 
-server.listen(SERVER_PORT, () => logger.log('info',`Server listening on port ${SERVER_PORT}`));
+server.listen(SERVER_PORT, () => logger.log('info', `Server listening on port ${SERVER_PORT}`));
