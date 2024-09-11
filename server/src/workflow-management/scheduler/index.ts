@@ -11,7 +11,7 @@ const connection = new IORedis();
 
 const workflowQueue = new Queue('workflow', { connection });
 
-const worker = new Worker('workflow', async job => {
+export const worker = new Worker('workflow', async job => {
   const { fileName, runId } = job.data;
   try {
     const result = await runWorkflow(fileName, runId);
@@ -30,7 +30,7 @@ worker.on('failed', (job: any, err) => {
   console.error(`Job ${job.id} failed for ${job.data.fileName}_${job.data.runId}:`, err);
 });
 
-async function runWorkflow(fileName, runId) {
+async function runWorkflow(fileName:any, runId:any) {
   try {
     // read the recording from storage
     const recording = await readFile(`./../storage/recordings/${fileName}.waw.json`);
