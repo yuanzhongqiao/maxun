@@ -10,6 +10,7 @@ import { chromium } from "playwright";
 import { browserPool } from "../server";
 import fs from "fs";
 import { uuid } from "uuidv4";
+import { workflowQueue } from '../workflow-management/scheduler';
 
 export const router = Router();
 
@@ -185,6 +186,27 @@ router.post('/runs/run/:fileName/:runId', async (req, res) => {
     const {message} = e as Error;
     logger.log('info', `Error while running a recording with name: ${req.params.fileName}_${req.params.runId}.json`);
     return res.send(false);
+  }
+});
+
+router.post('/schedule/:fileName/:runId', async (req, res) => {
+  try {
+    const { fileName, runId } = req.params;
+    const { scheduleTime } = req.body;
+    
+    if (!fileName || !runId || !scheduleTime) {
+      return res.status(400).json({ error: 'Missing required parameters' });
+    }
+
+    const delay = new Date(scheduleTime).getTime() - Date.now();
+    
+    // Add job to the queue with delay
+    await workflowQueue.add('run workflow', { fileName, runId }, { delay: Math.max(0, delay) });
+    
+    res.status(200).json({ message: 'Workflow scheduled successfully' });
+  } catch (error) {
+    console.error('Error scheduling workflow:', error);
+    res.status(500).json({ error: 'Failed to schedule workflow' });
   }
 });
 
