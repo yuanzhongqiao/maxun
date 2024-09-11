@@ -209,7 +209,6 @@ router.put('/schedule/:fileName/', async (req, res) => {
       return res.status(400).json({ error: 'Missing required parameters' });
     }
 
-    // Validate inputs
     if (!['HOURS', 'DAYS', 'WEEKS', 'MONTHS'].includes(frequencyUnit)) {
       return res.status(400).json({ error: 'Invalid frequency unit' });
     }
@@ -228,7 +227,6 @@ router.put('/schedule/:fileName/', async (req, res) => {
       return res.status(400).json({ error: 'Invalid start day' });
     }
 
-    // Generate cron expression
     let cronExpression;
     switch (frequencyUnit) {
       case 'HOURS':
@@ -256,7 +254,6 @@ router.put('/schedule/:fileName/', async (req, res) => {
 
     const runId = uuid();
 
-    // Schedule the recurring job
     await workflowQueue.add(
       'run workflow',
       { fileName, runId },
