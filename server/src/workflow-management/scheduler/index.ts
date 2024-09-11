@@ -29,7 +29,6 @@ worker.on('failed', (job: any, err) => {
   console.error(`Job ${job.id} failed for ${job.data.fileName}_${job.data.runId}:`, err);
 });
 
-export { workflowQueue };
 
 async function runWorkflow(fileName, runId) {
   try {
@@ -83,4 +82,4 @@ async function runWorkflow(fileName, runId) {
   }
 }
 
-export { runWorkflow };
+export { workflowQueue, runWorkflow };
