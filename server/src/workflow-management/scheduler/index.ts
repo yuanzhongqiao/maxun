@@ -65,7 +65,7 @@ async function runWorkflow(fileName: string, runId: string) {
       duration: '',
       task: '', // Optionally set based on workflow
       browserId: browserId,
-      interpreterSettings: {}, // Placeholder for any settings needed
+      interpreterSettings:  { maxConcurrency: 1, maxRepeats: 1, debug: true },
       log: '',
       runId: runId,
     };
@@ -80,7 +80,7 @@ async function runWorkflow(fileName: string, runId: string) {
     );
 
     // Log creation of the run
-    logger.log('debug', `Created run with name: ${fileName}_${runId}.json`);
+    logger.log('debug', `Scheduled run with name: ${fileName}.json`);
 
     return {
       browserId: browserId,
@@ -88,7 +88,8 @@ async function runWorkflow(fileName: string, runId: string) {
     };
   } catch (e) {
     const { message } = e as Error;
-    logger.log('info', `Error while creating a run with name: ${fileName}_${runId}.json`);
+    logger.log('info', `Error while scheduling a run with name: ${fileName}.json`);
+    console.log(message)
     return false;
   }
 }
