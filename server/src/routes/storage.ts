@@ -107,6 +107,9 @@ router.put('/runs/:fileName', async (req, res) => {
       JSON.stringify({ ...run_meta }, null, 2)
     );
     logger.log('debug', `Created run with name: ${req.params.fileName}.json`);
+
+    console.log('Run meta:', run_meta);
+
     return res.send({
       browserId: id,
       runId: runId,
@@ -189,9 +192,11 @@ router.post('/runs/run/:fileName/:runId', async (req, res) => {
   }
 });
 
-router.post('/schedule/:fileName/:runId', async (req, res) => {
+router.put('/schedule/:fileName/', async (req, res) => {
   try {
-    const { fileName, runId } = req.params;
+    const runId = uuid();
+
+    const { fileName } = req.params;
     const { scheduleTime } = req.body;
     
     if (!fileName || !runId || !scheduleTime) {
