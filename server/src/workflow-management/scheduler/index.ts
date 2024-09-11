@@ -7,8 +7,8 @@ import { browserPool } from "../../server";
 import fs from "fs";
 
 const connection = new IORedis({
-  host: 'localhost', 
-  port: 6379,     
+  host: 'localhost',
+  port: 6379,
   maxRetriesPerRequest: null,
 });
 
@@ -41,7 +41,7 @@ worker.on('failed', (job: any, err) => {
   console.error(`Job ${job.id} failed for ${job.data.fileName}_${job.data.runId}:`, err);
 });
 
-async function runWorkflow(fileName:any, runId:any) {
+async function runWorkflow(fileName: any, runId: any) {
   try {
     // read the recording from storage
     const recording = await readFile(`./../storage/recordings/${fileName}.waw.json`);
