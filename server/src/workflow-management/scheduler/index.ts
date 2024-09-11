@@ -29,7 +29,6 @@ worker.on('failed', (job: any, err) => {
   console.error(`Job ${job.id} failed for ${job.data.fileName}_${job.data.runId}:`, err);
 });
 
-
 async function runWorkflow(fileName, runId) {
   try {
     // read the recording from storage
