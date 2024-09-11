@@ -6,6 +6,7 @@ import logger from '../../logger';
 import { browserPool } from "../../server";
 import fs from "fs";
 
+// todo: specify connection config
 const connection = new IORedis();
 
 const workflowQueue = new Queue('workflow', { connection });
