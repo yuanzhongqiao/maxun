@@ -5,6 +5,8 @@ import { createRemoteBrowserForRun, destroyRemoteBrowser } from '../../browser-m
 import logger from '../../logger';
 import { browserPool } from "../../server";
 import fs from "fs";
+import { uuid } from "uuidv4";
+import { chromium } from "playwright";
 
 const connection = new IORedis({
   host: 'localhost',
@@ -41,54 +43,52 @@ worker.on('failed', (job: any, err) => {
   console.error(`Job ${job.id} failed for ${job.data.fileName}_${job.data.runId}:`, err);
 });
 
-async function runWorkflow(fileName: any, runId: any) {
+async function runWorkflow(fileName: string, runId: string) {
   try {
-    // read the recording from storage
-    const recording = await readFile(`./../storage/recordings/${fileName}.waw.json`);
-    const parsedRecording = JSON.parse(recording);
-    // read the run from storage
-    const run = await readFile(`./../storage/runs/${fileName}_${runId}.json`);
-    const parsedRun = JSON.parse(run);
+    // Create a browser for the run
+    const browserId = createRemoteBrowserForRun({
+      browser: chromium,
+      launchOptions: { headless: true }
+    });
 
-    // interpret the run in active browser
-    const browser = browserPool.getRemoteBrowser(parsedRun.browserId);
-    const currentPage = browser?.getCurrentPage();
-    if (browser && currentPage) {
-      const interpretationInfo = await browser.interpreter.InterpretRecording(
-        parsedRecording.recording, currentPage, parsedRun.interpreterSettings);
-      const duration = Math.round((new Date().getTime() - new Date(parsedRun.startedAt).getTime()) / 1000);
-      const durString = (() => {
-        if (duration < 60) {
-          return `${duration} s`;
-        }
-        else {
-          const minAndS = (duration / 60).toString().split('.');
-          return `${minAndS[0]} m ${minAndS[1]} s`;
-        }
-      })();
-      await destroyRemoteBrowser(parsedRun.browserId);
-      const run_meta = {
-        ...parsedRun,
-        status: interpretationInfo.result,
-        finishedAt: new Date().toLocaleString(),
-        duration: durString,
-        browserId: null,
-        log: interpretationInfo.log.join('\n'),
-        serializableOutput: interpretationInfo.serializableOutput,
-        binaryOutput: interpretationInfo.binaryOutput,
-      };
-      fs.mkdirSync('../storage/runs', { recursive: true });
-      await saveFile(
-        `../storage/runs/${parsedRun.name}_${runId}.json`,
-        JSON.stringify(run_meta, null, 2)
-      );
-      return true;
-    } else {
-      throw new Error('Could not destroy browser');
+    // Create a unique runId if not provided
+    if (!runId) {
+      runId = uuid();
     }
+
+    // Set up run metadata
+    const run_meta = {
+      status: 'RUNNING',
+      name: fileName,
+      startedAt: new Date().toLocaleString(),
+      finishedAt: '',
+      duration: '',
+      task: '', // Optionally set based on workflow
+      browserId: browserId,
+      interpreterSettings: {}, // Placeholder for any settings needed
+      log: '',
+      runId: runId,
+    };
+
+    // Ensure directory exists
+    fs.mkdirSync('../storage/runs', { recursive: true });
+
+    // Save the run metadata to a file
+    await saveFile(
+      `../storage/runs/${fileName}_${runId}.json`,
+      JSON.stringify(run_meta, null, 2)
+    );
+
+    // Log creation of the run
+    logger.log('debug', `Created run with name: ${fileName}_${runId}.json`);
+
+    return {
+      browserId: browserId,
+      runId: runId,
+    };
   } catch (e) {
     const { message } = e as Error;
-    logger.log('info', `Error while running a recording with name: ${fileName}_${runId}.json`);
+    logger.log('info', `Error while creating a run with name: ${fileName}_${runId}.json`);
     return false;
   }
 }
