@@ -6,8 +6,19 @@ import logger from '../../logger';
 import { browserPool } from "../../server";
 import fs from "fs";
 
-// todo: specify connection config
-const connection = new IORedis();
+const connection = new IORedis({
+  host: 'localhost', 
+  port: 6379,     
+  maxRetriesPerRequest: null,
+});
+
+connection.on('connect', () => {
+  console.log('Connected to Redis!');
+});
+
+connection.on('error', (err) => {
+  console.error('Redis connection error:', err);
+});
 
 const workflowQueue = new Queue('workflow', { connection });
 
