@@ -35,9 +35,4 @@ app.get('/', function (req, res) {
     return res.send('Maxun server started 🚀');
 });
 
-/**
- * Starts the worker for the workflow queue.
-*/
-worker.run();
-
 server.listen(SERVER_PORT, () => logger.log('info', `Server listening on port ${SERVER_PORT}`));
