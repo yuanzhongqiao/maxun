@@ -62,7 +62,7 @@ async function runWorkflow(fileName: string, runId: string) {
       duration: '',
       task: '', // Optionally set based on workflow
       browserId: browserId,
-      interpreterSettings:  { maxConcurrency: 1, maxRepeats: 1, debug: true },
+      interpreterSettings: { maxConcurrency: 1, maxRepeats: 1, debug: true },
       log: '',
       runId: runId,
     };
