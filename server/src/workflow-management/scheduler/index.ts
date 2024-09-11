@@ -54,7 +54,7 @@ async function runWorkflow(fileName: string, runId: string) {
       browser: chromium,
       launchOptions: { headless: true }
     });
-    logger.log(`debug`,`Created browser with ID: ${browserId}`);
+    logger.log(`debug`, `Created browser with ID: ${browserId}`);
 
 
     const run_meta = {
@@ -112,7 +112,7 @@ async function executeRun(fileName: string, runId: string) {
     );
 
     // Interpret the run in active browser
-    
+
     logger.log('debug', `Active in exec : ${getActiveBrowserId()}`);
     const browser = browserPool.getRemoteBrowser(parsedRun.browserId);
     if (!browser) {
@@ -126,7 +126,7 @@ async function executeRun(fileName: string, runId: string) {
 
     const interpretationInfo = await browser.interpreter.InterpretRecording(
       parsedRecording.recording, currentPage, parsedRun.interpreterSettings);
-    
+
     const duration = Math.round((new Date().getTime() - new Date(parsedRun.startedAt).getTime()) / 1000);
     const durString = duration < 60 ? `${duration} s` : `${Math.floor(duration / 60)} m ${duration % 60} s`;
 
@@ -156,7 +156,7 @@ async function executeRun(fileName: string, runId: string) {
   } catch (error: any) {
     logger.log('info', `Error while running a recording with name: ${fileName}_${runId}.json`);
     console.log(error.message);
-    
+
     // Update run status to ERROR
     const errorRun = await readFile(`./../storage/runs/${fileName}_${runId}.json`);
     const parsedErrorRun = JSON.parse(errorRun);
