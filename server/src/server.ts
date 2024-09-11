@@ -8,6 +8,7 @@ import { BrowserPool } from "./browser-management/classes/BrowserPool";
 import logger from './logger'
 import { SERVER_PORT } from "./constants/config";
 import {Server} from "socket.io";
+import { worker } from './workflow-management/scheduler';
 
 const app = express();
 app.use(cors());
@@ -33,5 +34,10 @@ app.use('/storage', storage);
 app.get('/', function (req, res) {
     return res.send('Maxun server started 🚀');
 });
+
+/**
+ * Starts the worker for the workflow queue.
+ */
+worker.run();
 
 server.listen(SERVER_PORT, () => logger.log('info',`Server listening on port ${SERVER_PORT}`));
