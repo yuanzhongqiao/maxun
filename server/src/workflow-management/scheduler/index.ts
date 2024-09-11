@@ -45,18 +45,15 @@ worker.on('failed', (job: any, err) => {
 
 async function runWorkflow(fileName: string, runId: string) {
   try {
-    // Create a browser for the run
     const browserId = createRemoteBrowserForRun({
       browser: chromium,
       launchOptions: { headless: true }
     });
 
-    // Create a unique runId if not provided
     if (!runId) {
       runId = uuid();
     }
 
-    // Set up run metadata
     const run_meta = {
       status: 'RUNNING',
       name: fileName,
@@ -70,16 +67,12 @@ async function runWorkflow(fileName: string, runId: string) {
       runId: runId,
     };
 
-    // Ensure directory exists
     fs.mkdirSync('../storage/runs', { recursive: true });
-
-    // Save the run metadata to a file
     await saveFile(
       `../storage/runs/${fileName}_${runId}.json`,
       JSON.stringify(run_meta, null, 2)
     );
 
-    // Log creation of the run
     logger.log('debug', `Scheduled run with name: ${fileName}.json`);
 
     return {
