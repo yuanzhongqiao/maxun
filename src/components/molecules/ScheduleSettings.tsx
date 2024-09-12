@@ -58,7 +58,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
         padding: '20px',
         '& > *': { marginBottom: '20px' },
       }}>
-        <Typography variant="h6">Schedule Settings</Typography>
+        <Typography variant="h6" sx={{ marginBottom: '20px' }}>Schedule Settings</Typography>
 
         <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
           <Typography sx={{ marginRight: '10px' }}>Run once every</Typography>
