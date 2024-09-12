@@ -38,21 +38,17 @@ export const worker = new Worker('workflow', async job => {
   }
 }, { connection });
 
-// Listen for job completion and close worker/queue
 worker.on('completed', async (job: any) => {
   console.log(`Job ${job.id} completed for ${job.data.fileName}_${job.data.runId}`);
 
-  // Gracefully close the worker and queue
   await worker.close();
   await workflowQueue.close();
   console.log('Worker and queue have been closed.');
 });
 
-// Listen for job failure and close worker/queue
 worker.on('failed', async (job: any, err) => {
   console.error(`Job ${job.id} failed for ${job.data.fileName}_${job.data.runId}:`, err);
 
-  // Gracefully close the worker and queue
   await worker.close();
   await workflowQueue.close();
   console.log('Worker and queue have been closed after failure.');
@@ -110,22 +106,17 @@ async function runWorkflow(fileName: string, runId: string) {
 
 async function executeRun(fileName: string, runId: string) {
   try {
-    // Read the recording from storage
     const recording = await readFile(`./../storage/recordings/${fileName}.waw.json`);
     const parsedRecording = JSON.parse(recording);
 
-    // Read the run from storage
     const run = await readFile(`./../storage/runs/${fileName}_${runId}.json`);
     const parsedRun = JSON.parse(run);
 
-    // Update status to RUNNING
     parsedRun.status = 'RUNNING';
     await saveFile(
       `../storage/runs/${fileName}_${runId}.json`,
       JSON.stringify(parsedRun, null, 2)
     );
-
-    // Interpret the run in active browser
 
     const browser = browserPool.getRemoteBrowser(parsedRun.browserId);
     if (!browser) {
@@ -166,7 +157,6 @@ async function executeRun(fileName: string, runId: string) {
     logger.log('info', `Error while running a recording with name: ${fileName}_${runId}.json`);
     console.log(error.message);
 
-    // Update run status to ERROR
     const errorRun = await readFile(`./../storage/runs/${fileName}_${runId}.json`);
     const parsedErrorRun = JSON.parse(errorRun);
     parsedErrorRun.status = 'ERROR';
@@ -188,7 +178,7 @@ async function readyForRunHandler(browserId: string, fileName: string, runId: st
       logger.log('info', `Interpretation of ${fileName} succeeded`);
     } else {
       logger.log('error', `Interpretation of ${fileName} failed`);
-      await destroyRemoteBrowser(browserId);  // Destroy browser if failed
+      await destroyRemoteBrowser(browserId);
     }
 
     resetRecordingState(browserId, fileName, runId);
@@ -200,7 +190,6 @@ async function readyForRunHandler(browserId: string, fileName: string, runId: st
 }
 
 function resetRecordingState(browserId: string, fileName: string, runId: string) {
-  // Reset the running recording name, log, and run id to empty strings
   browserId = '';
   fileName = '';
   runId = '';
@@ -212,12 +201,10 @@ async function handleRunRecording(fileName: string, runId: string) {
     const result = await runWorkflow(fileName, runId);
     const { browserId, runId: newRunId } = result;
 
-    // Type guard to ensure browserId and newRunId are defined
     if (!browserId || !newRunId) {
       throw new Error('browserId or runId is undefined');
     }
 
-    // Initialize socket connection
     const socket = io(`http://localhost:8080/${browserId}`, {
       transports: ['websocket'],
       rejectUnauthorized: false
@@ -225,10 +212,8 @@ async function handleRunRecording(fileName: string, runId: string) {
 
     socket.on('ready-for-run', () => readyForRunHandler(browserId, fileName, newRunId));
 
-    // Log or notify that the recording is running
     logger.log('info', `Running recording: ${fileName}`);
 
-    // Cleanup should only happen after the run is completed
     socket.on('disconnect', () => {
       cleanupSocketListeners(socket, browserId, newRunId);
     });
