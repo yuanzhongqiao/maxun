@@ -133,7 +133,6 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
         <Button
           variant="contained"
           onClick={() => handleStart(settings)}
-          sx={{ ...textStyle, width: '100%' }}
         >
           Start
         </Button>
