@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { GenericModal } from "../atoms/GenericModal";
-import { MenuItem, TextField, Typography } from "@mui/material";
+import { MenuItem, TextField, Typography, Box } from "@mui/material";
 import { Dropdown } from "../atoms/DropdownMui";
 import Button from "@mui/material/Button";
 import { modalStyle } from "./AddWhereCondModal";
@@ -38,19 +38,22 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
       onClose={handleClose}
       modalStyle={modalStyle}
     >
-      <div style={{
+      <Box sx={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-start',
-        marginLeft: '65px',
+        padding: '20px',
+        '& > *': { marginBottom: '20px' },
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
-          <Typography>Run once every</Typography>
+        <Typography variant="h6">Schedule Settings</Typography>
+        
+        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+          <Typography sx={{ marginRight: '10px' }}>Run once every</Typography>
           <TextField
             type="number"
             value={settings.runEvery}
             onChange={(e) => handleChange('runEvery', parseInt(e.target.value))}
-            style={{ width: '60px', margin: '0 10px' }}
+            sx={{ width: '60px', marginRight: '10px' }}
           />
           <Dropdown
             label="unit"
@@ -64,10 +67,10 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
             <MenuItem value="weeks">weeks</MenuItem>
             <MenuItem value="months">months</MenuItem>
           </Dropdown>
-        </div>
+        </Box>
 
-        <div style={{ marginBottom: '15px' }}>
-          <Typography>Start from</Typography>
+        <Box sx={{ width: '100%' }}>
+          <Typography sx={{ marginBottom: '5px' }}>Start from</Typography>
           <Dropdown
             label="start from"
             id="startFrom"
@@ -82,36 +85,36 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
             <MenuItem value="Saturday">Saturday</MenuItem>
             <MenuItem value="Sunday">Sunday</MenuItem>
           </Dropdown>
-        </div>
+        </Box>
 
-        <div style={{ marginBottom: '15px' }}>
-          <Typography>At around</Typography>
-          <TextField
-            type="time"
-            value={settings.atTime}
-            onChange={(e) => handleChange('atTime', e.target.value)}
-          />
-        </div>
+        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+          <Box sx={{ marginRight: '20px' }}>
+            <Typography sx={{ marginBottom: '5px' }}>At around</Typography>
+            <TextField
+              type="time"
+              value={settings.atTime}
+              onChange={(e) => handleChange('atTime', e.target.value)}
+            />
+          </Box>
+          <Box>
+            <Typography sx={{ marginBottom: '5px' }}>Timezone</Typography>
+            <Dropdown
+              label="timezone"
+              id="timezone"
+              value={settings.timezone}
+              handleSelect={(e) => handleChange('timezone', e.target.value)}
+            >
+              <MenuItem value="UTC">UTC</MenuItem>
+              <MenuItem value="America/New_York">America/New_York</MenuItem>
+              <MenuItem value="Europe/London">Europe/London</MenuItem>
+              <MenuItem value="Asia/Tokyo">Asia/Tokyo</MenuItem>
+              <MenuItem value="Asia/Kolkata">Asia/Kolkata</MenuItem>
+            </Dropdown>
+          </Box>
+        </Box>
 
-        <div style={{ marginBottom: '15px' }}>
-          <Typography>Timezone</Typography>
-          <Dropdown
-            label="timezone"
-            id="timezone"
-            value={settings.timezone}
-            handleSelect={(e) => handleChange('timezone', e.target.value)}
-          >
-            <MenuItem value="UTC">UTC</MenuItem>
-            <MenuItem value="America/New_York">America/New_York</MenuItem>
-            <MenuItem value="Europe/London">Europe/London</MenuItem>
-            <MenuItem value="Asia/Tokyo">Asia/Tokyo</MenuItem>
-            <MenuItem value="Asia/Kolkata">Asia/Kolkata</MenuItem>
-            {/* Add more timezone options as needed */}
-          </Dropdown>
-        </div>
-
-        <Button onClick={() => handleStart(settings)}>Start</Button>
-      </div>
+        <Button variant="contained" onClick={() => handleStart(settings)}>Start</Button>
+      </Box>
     </GenericModal>
   );
 }
