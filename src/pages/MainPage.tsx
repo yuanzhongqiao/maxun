@@ -4,10 +4,11 @@ import { Grid, Stack } from "@mui/material";
 import { Recordings } from "../components/organisms/Recordings";
 import { Runs } from "../components/organisms/Runs";
 import { useGlobalInfoStore } from "../context/globalInfo";
-import { createRunForStoredRecording, interpretStoredRecording, notifyAboutAbort } from "../api/storage";
+import { createRunForStoredRecording, interpretStoredRecording, notifyAboutAbort, scheduleStoredRecording } from "../api/storage";
 import { io, Socket } from "socket.io-client";
 import { stopRecording } from "../api/recording";
 import { RunSettings } from "../components/molecules/RunSettings";
+import { ScheduleSettings } from "../components/molecules/ScheduleSettings";
 
 interface MainPageProps {
   handleEditRecording: (fileName: string) => void;
@@ -102,7 +103,7 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
           handleEditRecording={handleEditRecording}
           handleRunRecording={handleRunRecording}
           setFileName={setFileName}
-          handleScheduleRecording={() => {}}
+          handleScheduleRecording={(settings: ScheduleSettings) => scheduleStoredRecording(runningRecordingName, settings)}
         />;
       case 'runs':
         return <Runs
