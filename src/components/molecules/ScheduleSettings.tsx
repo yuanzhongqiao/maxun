@@ -83,7 +83,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
           </Dropdown>
         </Box>
 
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
           <Typography sx={{ marginBottom: '5px' }}>Start from</Typography>
           <Dropdown
             label=""
