@@ -34,7 +34,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
 
   const textStyle = {
     width: '150px',
-    height: '50px',
+    height: '52px',
     marginRight: '10px',
   };
 
