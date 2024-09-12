@@ -155,11 +155,7 @@ async function executeRun(fileName: string, runId: string) {
       JSON.stringify(updated_run_meta, null, 2)
     );
 
-    return {
-      browserId: parsedRun.browserId,
-      runId: runId,
-      success: true,
-    };
+    return true;
   } catch (error: any) {
     logger.log('info', `Error while running a recording with name: ${fileName}_${runId}.json`);
     console.log(error.message);
@@ -174,11 +170,7 @@ async function executeRun(fileName: string, runId: string) {
       JSON.stringify(parsedErrorRun, null, 2)
     );
 
-    return {
-      runId: runId,
-      success: false,
-      error: error.message,
-    };
+    return false;
   }
 }
 export { workflowQueue, runWorkflow };
