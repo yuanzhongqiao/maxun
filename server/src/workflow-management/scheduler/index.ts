@@ -10,7 +10,6 @@ import { uuid } from "uuidv4";
 import { chromium } from "playwright";
 import { io, Socket } from "socket.io-client";
 
-
 const connection = new IORedis({
   host: 'localhost',
   port: 6379,
@@ -39,11 +38,11 @@ export const worker = new Worker('workflow', async job => {
 }, { connection });
 
 worker.on('completed', async (job: any) => {
-  logger.log(`info`,`Job ${job.id} completed for ${job.data.fileName}_${job.data.runId}`);
+  logger.log(`info`, `Job ${job.id} completed for ${job.data.fileName}_${job.data.runId}`);
 
   await worker.close();
   await workflowQueue.close();
-  logger.log(`info`,`Worker and queue have been closed.`);
+  logger.log(`info`, `Worker and queue have been closed.`);
 });
 
 worker.on('failed', async (job: any, err) => {
