@@ -1,6 +1,7 @@
 import { default as axios } from "axios";
 import { WorkflowFile } from "maxun-core";
 import { RunSettings } from "../components/molecules/RunSettings";
+import { ScheduleSettings } from "../components/molecules/ScheduleSettings";
 import { CreateRunResponse } from "../pages/MainPage";
 
 export const getStoredRecordings = async (): Promise<string[] | null> => {
@@ -117,4 +118,18 @@ export const notifyAboutAbort = async (fileName: string, runId:string): Promise<
   }
 }
 
-
+export const scheduleStoredRecording = async (fileName: string, settings: RunSettings): Promise<CreateRunResponse> => {
+  try {
+    const response = await axios.put(
+      `http://localhost:8080/storage/schedule/${fileName}`,
+      {...settings});
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error(`Couldn't schedule recording ${fileName}. Please try again later.`);
+    }
+  } catch(error: any) {
+    console.log(error);
+    return {browserId: '', runId: ''};
+  }
+}
