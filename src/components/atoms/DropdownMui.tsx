@@ -14,7 +14,7 @@ interface DropdownProps {
 
 export const Dropdown = ({ id, label, value, handleSelect, children, sx }: DropdownProps) => {
   return (
-    <FormControl sx={{ minWidth: 120 }} size="small">
+    <FormControl sx={sx} size="small">
       <InputLabel id={id}>{label}</InputLabel>
       <Select
         labelId={id}
