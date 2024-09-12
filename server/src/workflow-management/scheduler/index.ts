@@ -4,7 +4,7 @@ import { deleteFile, readFile, readFiles, saveFile } from "../storage";
 import { createRemoteBrowserForRun, destroyRemoteBrowser, getActiveBrowserId } from '../../browser-management/controller';
 import { RemoteBrowser } from '../../browser-management/classes/RemoteBrowser';
 import logger from '../../logger';
-import { browserPool } from "../../server";
+import { browserPool, io } from "../../server";
 import fs from "fs";
 import { uuid } from "uuidv4";
 import { chromium } from "playwright";
@@ -61,7 +61,6 @@ async function runWorkflow(fileName: string, runId: string) {
     runId = uuid();
   }
 
-  // Phase 1: Scheduling
   try {
     const browserId = createRemoteBrowserForRun({
       browser: chromium,
@@ -87,9 +86,6 @@ async function runWorkflow(fileName: string, runId: string) {
     );
 
     logger.log('debug', `Scheduled run with name: ${fileName}_${runId}.json`);
-
-    // Phase 2: Running
-    return await executeRun(fileName, runId);
 
   } catch (e) {
     const { message } = e as Error;
