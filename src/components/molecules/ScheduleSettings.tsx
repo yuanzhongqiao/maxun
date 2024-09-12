@@ -32,7 +32,6 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
     setSettings(prev => ({ ...prev, [field]: value }));
   };
 
-  // Styling to ensure uniformity of elements
   const commonStyle = {
     width: '150px',
     height: '50px',
@@ -45,7 +44,6 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
     height: '59px',
     marginRight: '10px',
   };
-
 
   return (
     <GenericModal
