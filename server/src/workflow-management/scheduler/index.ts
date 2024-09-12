@@ -4,10 +4,12 @@ import { deleteFile, readFile, readFiles, saveFile } from "../storage";
 import { createRemoteBrowserForRun, destroyRemoteBrowser, getActiveBrowserId } from '../../browser-management/controller';
 import { RemoteBrowser } from '../../browser-management/classes/RemoteBrowser';
 import logger from '../../logger';
-import { browserPool, io } from "../../server";
+import { browserPool } from "../../server";
 import fs from "fs";
 import { uuid } from "uuidv4";
 import { chromium } from "playwright";
+import { io, Socket } from "socket.io-client";
+
 
 const connection = new IORedis({
   host: 'localhost',
@@ -28,7 +30,7 @@ const workflowQueue = new Queue('workflow', { connection });
 export const worker = new Worker('workflow', async job => {
   const { fileName, runId } = job.data;
   try {
-    const result = await runWorkflow(fileName, runId);
+    const result = await handleRunRecording(fileName, runId);
     return result;
   } catch (error) {
     console.error('Error running workflow:', error);
@@ -55,6 +57,9 @@ worker.on('failed', async (job: any, err) => {
   await workflowQueue.close();
   console.log('Worker and queue have been closed after failure.');
 });
+
+const existingJobs = workflowQueue.getRepeatableJobs();
+logger.log(`info`, `jobs ${existingJobs}`)
 
 async function runWorkflow(fileName: string, runId: string) {
   if (!runId) {
@@ -86,6 +91,11 @@ async function runWorkflow(fileName: string, runId: string) {
     );
 
     logger.log('debug', `Scheduled run with name: ${fileName}_${runId}.json`);
+
+    return {
+      browserId,
+      runId
+    }
 
   } catch (e) {
     const { message } = e as Error;
@@ -169,4 +179,42 @@ async function executeRun(fileName: string, runId: string) {
     return false;
   }
 }
+
+
+async function handleRunRecording(fileName: string, runId: string) {
+  try {
+    const result = await runWorkflow(fileName, runId);
+    const { browserId, runId: newRunId } = result;
+
+    // Type guard to ensure browserId and newRunId are defined
+    if (!browserId || !newRunId) {
+      throw new Error('browserId or runId is undefined');
+    }
+
+    // Initialize socket connection
+    const socket = io(`http://localhost:8080/${browserId}`, {
+      transports: ['websocket'],
+      rejectUnauthorized: false
+    });
+
+    socket.on('ready-for-run', () => readyForRunHandler(browserId, fileName, newRunId));
+
+    // Log or notify that the recording is running
+    logger.log('info', `Running recording: ${fileName}`);
+
+    // Cleanup should only happen after the run is completed
+    socket.on('disconnect', () => {
+      cleanupSocketListeners(socket, browserId, newRunId);
+    });
+
+  } catch (error: any) {
+    console.error('Error running recording:', error);
+  }
+}
+
+function cleanupSocketListeners(socket: Socket, browserId: string, runId: string) {
+  socket.off('ready-for-run', () => readyForRunHandler(browserId, '', runId));
+  logger.log('info', `Cleaned up listeners for browserId: ${browserId}, runId: ${runId}`);
+}
+
 export { workflowQueue, runWorkflow };
