@@ -199,6 +199,13 @@ async function readyForRunHandler(browserId: string, fileName: string, runId: st
   }
 }
 
+function resetRecordingState(browserId: string, fileName: string, runId: string) {
+  // Reset the running recording name, log, and run id to empty strings
+  browserId = '';
+  fileName = '';
+  runId = '';
+  logger.log(`info`, `reset values for ${browserId}, ${fileName}, and ${runId}`);
+}
 
 async function handleRunRecording(fileName: string, runId: string) {
   try {
