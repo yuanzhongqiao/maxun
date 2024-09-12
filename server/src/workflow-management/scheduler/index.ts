@@ -28,7 +28,7 @@ const workflowQueue = new Queue('workflow', { connection });
 export const worker = new Worker('workflow', async job => {
   const { fileName, runId } = job.data;
   try {
-    const result = await runWorkflow(fileName, runId);
+    const result = await scheduleWorkflow(fileName, runId);
     return result;
   } catch (error) {
     console.error('Error running workflow:', error);
@@ -56,7 +56,7 @@ worker.on('failed', async (job: any, err) => {
   console.log('Worker and queue have been closed after failure.');
 });
 
-async function runWorkflow(fileName: string, runId: string) {
+async function scheduleWorkflow(fileName: string, runId: string) {
   if (!runId) {
     runId = uuid();
   }
@@ -169,4 +169,4 @@ async function executeRun(fileName: string, runId: string) {
     return false;
   }
 }
-export { workflowQueue, runWorkflow };
+export { workflowQueue, scheduleWorkflow };
