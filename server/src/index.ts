@@ -11,3 +11,4 @@ export * from "./workflow-management/storage";
 export * from "./workflow-management/utils";
 export * from "./workflow-management/classes/Interpreter";
 export * from "./workflow-management/classes/Generator";
+export * from "./workflow-management/scheduler";	
