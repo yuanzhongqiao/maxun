@@ -7,7 +7,7 @@ import { ScheduleSettings, ScheduleSettingsModal } from "../molecules/ScheduleSe
 interface RecordingsProps {
   handleEditRecording: (fileName: string) => void;
   handleRunRecording: (settings: RunSettings) => void;
-  handleScheduleRecording: (settings: RunSettings) => void;
+  handleScheduleRecording: (settings: ScheduleSettings) => void;
   setFileName: (fileName: string) => void;
 }
 
