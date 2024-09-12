@@ -134,7 +134,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
           variant="contained"
           onClick={() => handleStart(settings)}
         >
-          Start
+          Save
         </Button>
       </Box>
     </GenericModal>
