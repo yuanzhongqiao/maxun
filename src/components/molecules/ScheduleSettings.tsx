@@ -32,13 +32,13 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
     setSettings(prev => ({ ...prev, [field]: value }));
   };
 
-  const commonStyle = {
+  const textStyle = {
     width: '150px',
     height: '50px',
     marginRight: '10px',
   };
 
-  const commonDStyle = {
+  const dropDownStyle = {
     marginTop: '2px',
     width: '150px',
     height: '59px',
@@ -66,14 +66,14 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
             type="number"
             value={settings.runEvery}
             onChange={(e) => handleChange('runEvery', parseInt(e.target.value))}
-            sx={commonStyle}
+            sx={textStyle}
           />
           <Dropdown
             label="unit"
             id="runEveryUnit"
             value={settings.runEveryUnit}
             handleSelect={(e) => handleChange('runEveryUnit', e.target.value)}
-            sx={commonDStyle}
+            sx={dropDownStyle}
           >
             <MenuItem value="minutes">minutes</MenuItem>
             <MenuItem value="hours">hours</MenuItem>
@@ -90,7 +90,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
             id="startFrom"
             value={settings.startFrom}
             handleSelect={(e) => handleChange('startFrom', e.target.value)}
-            sx={commonDStyle}
+            sx={dropDownStyle}
           >
             <MenuItem value="Monday">Monday</MenuItem>
             <MenuItem value="Tuesday">Tuesday</MenuItem>
@@ -109,7 +109,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
               type="time"
               value={settings.atTime}
               onChange={(e) => handleChange('atTime', e.target.value)}
-              sx={commonStyle}
+              sx={textStyle}
             />
           </Box>
           <Box>
@@ -119,7 +119,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
               id="timezone"
               value={settings.timezone}
               handleSelect={(e) => handleChange('timezone', e.target.value)}
-              sx={commonDStyle}
+              sx={dropDownStyle}
             >
               <MenuItem value="UTC">UTC</MenuItem>
               <MenuItem value="America/New_York">America/New_York</MenuItem>
@@ -133,7 +133,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
         <Button
           variant="contained"
           onClick={() => handleStart(settings)}
-          sx={{ ...commonStyle, width: '100%' }}
+          sx={{ ...textStyle, width: '100%' }}
         >
           Start
         </Button>
