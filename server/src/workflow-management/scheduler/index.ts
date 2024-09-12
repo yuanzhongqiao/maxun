@@ -180,6 +180,25 @@ async function executeRun(fileName: string, runId: string) {
   }
 }
 
+async function readyForRunHandler(browserId: string, fileName: string, runId: string) {
+  try {
+    const interpretation = await executeRun(fileName, runId);
+
+    if (interpretation) {
+      logger.log('info', `Interpretation of ${fileName} succeeded`);
+    } else {
+      logger.log('error', `Interpretation of ${fileName} failed`);
+      await destroyRemoteBrowser(browserId);  // Destroy browser if failed
+    }
+
+    resetRecordingState(browserId, fileName, runId);
+
+  } catch (error: any) {
+    console.error(`Error during readyForRunHandler: ${error.message}`);
+    await destroyRemoteBrowser(browserId);
+  }
+}
+
 
 async function handleRunRecording(fileName: string, runId: string) {
   try {
