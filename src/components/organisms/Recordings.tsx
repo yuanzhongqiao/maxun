@@ -61,8 +61,6 @@ export const Recordings = ({ handleEditRecording, handleRunRecording, setFileNam
       <ScheduleSettingsModal isOpen={scheduleSettingsAreOpen}
         handleClose={handleScheduleClose}
         handleStart={(settings) => handleScheduleRecording(settings)}
-        isTask={params.length !== 0}
-        params={params}
       />
 
       <Grid container direction="column" sx={{ padding: '30px' }}>
