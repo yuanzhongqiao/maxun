@@ -69,7 +69,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
             sx={textStyle}
           />
           <Dropdown
-            label="unit"
+            label=""
             id="runEveryUnit"
             value={settings.runEveryUnit}
             handleSelect={(e) => handleChange('runEveryUnit', e.target.value)}
@@ -86,7 +86,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
         <Box sx={{ width: '100%' }}>
           <Typography sx={{ marginBottom: '5px' }}>Start from</Typography>
           <Dropdown
-            label="start from"
+            label=""
             id="startFrom"
             value={settings.startFrom}
             handleSelect={(e) => handleChange('startFrom', e.target.value)}
@@ -115,7 +115,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
           <Box>
             <Typography sx={{ marginBottom: '5px' }}>Timezone</Typography>
             <Dropdown
-              label="timezone"
+              label=""
               id="timezone"
               value={settings.timezone}
               handleSelect={(e) => handleChange('timezone', e.target.value)}
