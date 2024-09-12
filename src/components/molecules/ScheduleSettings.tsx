@@ -69,7 +69,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
         <div style={{ marginBottom: '15px' }}>
           <Typography>Start from</Typography>
           <Dropdown
-          label="start from"
+            label="start from"
             id="startFrom"
             value={settings.startFrom}
             handleSelect={(e) => handleChange('startFrom', e.target.value)}
@@ -96,7 +96,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
         <div style={{ marginBottom: '15px' }}>
           <Typography>Timezone</Typography>
           <Dropdown
-            label="timezone"	
+            label="timezone"
             id="timezone"
             value={settings.timezone}
             handleSelect={(e) => handleChange('timezone', e.target.value)}
