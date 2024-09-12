@@ -33,25 +33,25 @@ export const worker = new Worker('workflow', async job => {
     const result = await handleRunRecording(fileName, runId);
     return result;
   } catch (error) {
-    console.error('Error running workflow:', error);
+    logger.error('Error running workflow:', error);
     throw error;
   }
 }, { connection });
 
 worker.on('completed', async (job: any) => {
-  console.log(`Job ${job.id} completed for ${job.data.fileName}_${job.data.runId}`);
+  logger.log(`info`,`Job ${job.id} completed for ${job.data.fileName}_${job.data.runId}`);
 
   await worker.close();
   await workflowQueue.close();
-  console.log('Worker and queue have been closed.');
+  logger.log(`info`,`Worker and queue have been closed.`);
 });
 
 worker.on('failed', async (job: any, err) => {
-  console.error(`Job ${job.id} failed for ${job.data.fileName}_${job.data.runId}:`, err);
+  logger.log(`error`, `Job ${job.id} failed for ${job.data.fileName}_${job.data.runId}:`, err);
 
   await worker.close();
   await workflowQueue.close();
-  console.log('Worker and queue have been closed after failure.');
+  logger.log(`info`, `Worker and queue have been closed after failure.`);
 });
 
 const existingJobs = workflowQueue.getRepeatableJobs();
@@ -184,7 +184,7 @@ async function readyForRunHandler(browserId: string, fileName: string, runId: st
     resetRecordingState(browserId, fileName, runId);
 
   } catch (error: any) {
-    console.error(`Error during readyForRunHandler: ${error.message}`);
+    logger.error(`Error during readyForRunHandler: ${error.message}`);
     await destroyRemoteBrowser(browserId);
   }
 }
@@ -219,7 +219,7 @@ async function handleRunRecording(fileName: string, runId: string) {
     });
 
   } catch (error: any) {
-    console.error('Error running recording:', error);
+    logger.error('Error running recording:', error);
   }
 }
 
