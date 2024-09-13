@@ -50,6 +50,7 @@ const BrowserStepsContext = createContext<BrowserStepsContextType | undefined>(u
 
 export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [browserSteps, setBrowserSteps] = useState<BrowserStep[]>([]);
+     const [discardedFields, setDiscardedFields] = useState<Set<string>>(new Set());
 
     const addTextStep = (label: string, data: string, selectorObj: SelectorObject) => {
         setBrowserSteps(prevSteps => [
