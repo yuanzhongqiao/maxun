@@ -214,7 +214,7 @@ export const BrowserWindow = () => {
                         const newField: TextStep = {
                             id: Date.now(),
                             type: 'text',
-                            label: `Label ${Object.keys(fields).length + 1}`,
+                            label: ``,
                             data: data,
                             selectorObj: {
                                 selector: highlighterData.selector,
@@ -274,7 +274,7 @@ export const BrowserWindow = () => {
                     const newField: TextStep = {
                         id: Date.now(),
                         type: 'text',
-                        label: `Label ${Object.keys(fields).length + 1}`,
+                        label: ``,
                         data: data,
                         selectorObj: {
                             selector: selectedElement.selector,
