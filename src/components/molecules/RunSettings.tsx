@@ -40,32 +40,32 @@ export const RunSettingsModal = ({ isOpen, handleStart, handleClose, isTask, par
         alignItems: 'flex-start',
         marginLeft: '65px',
       }}>
-        { isTask
+        {isTask
           ?
           (
             <React.Fragment>
-            <Typography sx={{ margin: '20px 0px' }} >Recording parameters:</Typography>
-              { params?.map((item, index) => {
-            return <TextField
-              sx={{ marginBottom: '15px' }}
-              key={`param-${index}`}
-              type="string"
-              label={item}
-              required
-              onChange={(e) => setSettings(
-                {
-                  ...settings,
-                  params: settings.params
-                    ? {
-                    ...settings.params,
-                    [item]: e.target.value,
-                  }
-                  : {
-                    [item]: e.target.value,
-                  },
-                })}
-            />
-          }) }
+              <Typography sx={{ margin: '20px 0px' }} >Recording parameters:</Typography>
+              {params?.map((item, index) => {
+                return <TextField
+                  sx={{ marginBottom: '15px' }}
+                  key={`param-${index}`}
+                  type="string"
+                  label={item}
+                  required
+                  onChange={(e) => setSettings(
+                    {
+                      ...settings,
+                      params: settings.params
+                        ? {
+                          ...settings.params,
+                          [item]: e.target.value,
+                        }
+                        : {
+                          [item]: e.target.value,
+                        },
+                    })}
+                />
+              })}
             </React.Fragment>)
           : null
         }
