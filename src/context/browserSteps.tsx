@@ -42,12 +42,15 @@ interface BrowserStepsContextType {
     addScreenshotStep: (fullPage: boolean) => void;
     deleteBrowserStep: (id: number) => void;
     updateBrowserTextStepLabel: (id: number, newLabel: string) => void;
+    updateListTextFieldLabel: (listId: number, fieldKey: string, newLabel: string) => void;
+    removeListTextField: (listId: number, fieldKey: string) => void;
 }
 
 const BrowserStepsContext = createContext<BrowserStepsContextType | undefined>(undefined);
 
 export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [browserSteps, setBrowserSteps] = useState<BrowserStep[]>([]);
+    const [discardedFields, setDiscardedFields] = useState<Set<string>>(new Set());
 
     const addTextStep = (label: string, data: string, selectorObj: SelectorObject) => {
         setBrowserSteps(prevSteps => [
@@ -62,12 +65,19 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
                 step => step.type === 'list' && step.id === listId
             );
             if (existingListStepIndex !== -1) {
-                // Update the existing ListStep with new fields
+                // Update the existing ListStep with new fields, excluding discarded ones
                 const updatedSteps = [...prevSteps];
                 const existingListStep = updatedSteps[existingListStepIndex] as ListStep;
+                const filteredNewFields = Object.entries(newFields).reduce((acc, [key, value]) => {
+                    if (!discardedFields.has(`${listId}-${key}`)) {
+                        acc[key] = value;
+                    }
+                    return acc;
+                }, {} as { [key: string]: TextStep });
+
                 updatedSteps[existingListStepIndex] = {
                     ...existingListStep,
-                    fields: { ...existingListStep.fields, ...newFields },
+                    fields: { ...existingListStep.fields, ...filteredNewFields },
                     pagination: pagination,
                     limit: limit,
                 };
@@ -81,7 +91,6 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
             }
         });
     };
-
     const addScreenshotStep = (fullPage: boolean) => {
         setBrowserSteps(prevSteps => [
             ...prevSteps,
@@ -101,6 +110,41 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         );
     };
 
+    const updateListTextFieldLabel = (listId: number, fieldKey: string, newLabel: string) => {
+        setBrowserSteps(prevSteps =>
+            prevSteps.map(step => {
+                if (step.type === 'list' && step.id === listId) {
+                    return {
+                        ...step,
+                        fields: {
+                            ...step.fields,
+                            [fieldKey]: {
+                                ...step.fields[fieldKey],
+                                label: newLabel
+                            }
+                        }
+                    };
+                }
+                return step;
+            })
+        );
+    };
+
+    const removeListTextField = (listId: number, fieldKey: string) => {
+        setBrowserSteps(prevSteps =>
+            prevSteps.map(step => {
+                if (step.type === 'list' && step.id === listId) {
+                    const { [fieldKey]: _, ...remainingFields } = step.fields;
+                    return {
+                        ...step,
+                        fields: remainingFields
+                    };
+                }
+                return step;
+            })
+        );
+        setDiscardedFields(prevDiscarded => new Set(prevDiscarded).add(`${listId}-${fieldKey}`));
+    };
     return (
         <BrowserStepsContext.Provider value={{
             browserSteps,
@@ -109,6 +153,8 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
             addScreenshotStep,
             deleteBrowserStep,
             updateBrowserTextStepLabel,
+            updateListTextFieldLabel,
+            removeListTextField,
         }}>
             {children}
         </BrowserStepsContext.Provider>

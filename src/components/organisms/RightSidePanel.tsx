@@ -19,29 +19,34 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 
 // TODO: 
-// 1. Handle field label update 
-// 2. Handle field deletion | confirmation
-// 3. Add description for each browser step
-// 4. Handle non custom action steps
+// 1. Add description for each browser step
+// 2. Handle non custom action steps
 interface RightSidePanelProps {
   onFinishCapture: () => void;
 }
 
 export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture }) => {
-  const [textLabels, setTextLabels] = useState<{ [id: number]: string }>({});
-  const [errors, setErrors] = useState<{ [id: number]: string }>({});
-  const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: number]: boolean }>({});
+  const [textLabels, setTextLabels] = useState<{ [id: string]: string }>({});
+  const [errors, setErrors] = useState<{ [id: string]: string }>({});
+  const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: string]: boolean }>({});
+  const [confirmedListTextFields, setConfirmedListTextFields] = useState<{ [listId: string]: { [fieldKey: string]: boolean } }>({});
   const [showPaginationOptions, setShowPaginationOptions] = useState(false);
   const [showLimitOptions, setShowLimitOptions] = useState(false);
   const [captureStage, setCaptureStage] = useState<'initial' | 'pagination' | 'limit' | 'complete'>('initial');
 
   const { lastAction, notify } = useGlobalInfoStore();
   const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, paginationMode, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitMode, limitType, customLimit, updateLimitType, updateCustomLimit, stopLimitMode, startLimitMode } = useActionContext();
-  const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep } = useBrowserSteps();
+  const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep, updateListTextFieldLabel, removeListTextField } = useBrowserSteps();
   const { socket } = useSocketStore();
 
-  const handleTextLabelChange = (id: number, label: string) => {
-    setTextLabels(prevLabels => ({ ...prevLabels, [id]: label }));
+  const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
+    if (listId !== undefined && fieldKey !== undefined) {
+      // This is a text field within a list step
+      updateListTextFieldLabel(listId, fieldKey, label);
+    } else {
+      // This is a standalone text step
+      setTextLabels(prevLabels => ({ ...prevLabels, [id]: label }));
+    }
     if (!label.trim()) {
       setErrors(prevErrors => ({ ...prevErrors, [id]: 'Label cannot be empty' }));
     } else {
@@ -67,6 +72,32 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     });
     setErrors(prevErrors => {
       const { [id]: _, ...rest } = prevErrors;
+      return rest;
+    });
+  };
+
+  const handleListTextFieldConfirm = (listId: number, fieldKey: string) => {
+    setConfirmedListTextFields(prev => ({
+      ...prev,
+      [listId]: {
+        ...(prev[listId] || {}),
+        [fieldKey]: true
+      }
+    }));
+  };
+
+  const handleListTextFieldDiscard = (listId: number, fieldKey: string) => {
+    removeListTextField(listId, fieldKey);
+    setConfirmedListTextFields(prev => {
+      const updatedListFields = { ...(prev[listId] || {}) };
+      delete updatedListFields[fieldKey];
+      return {
+        ...prev,
+        [listId]: updatedListFields
+      };
+    });
+    setErrors(prev => {
+      const { [fieldKey]: _, ...rest } = prev;
       return rest;
     });
   };
@@ -131,6 +162,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
     return settings;
   }, [browserSteps, paginationType, limitType, customLimit]);
+  
 
   const resetListState = useCallback(() => {
     setShowPaginationOptions(false);
@@ -369,7 +401,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                     <TextField
                       label="Field Label"
                       value={field.label || ''}
-                      onChange={() => { }}
+                      onChange={(e) => handleTextLabelChange(field.id, e.target.value, step.id, key)}
                       fullWidth
                       margin="normal"
                       InputProps={{
@@ -394,6 +426,23 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                         )
                       }}
                     />
+                    {!confirmedListTextFields[step.id]?.[key] && (
+                      <Box display="flex" justifyContent="space-between" gap={2}>
+                        <Button
+                          variant="contained"
+                          onClick={() => handleListTextFieldConfirm(step.id, key)}
+                          disabled={!field.label?.trim()}
+                        >
+                          Confirm
+                        </Button>
+                        <Button
+                          variant="contained"
+                          onClick={() => handleListTextFieldDiscard(step.id, key)}
+                        >
+                          Discard
+                        </Button>
+                      </Box>
+                    )}
                   </Box>
                 ))}
               </>
