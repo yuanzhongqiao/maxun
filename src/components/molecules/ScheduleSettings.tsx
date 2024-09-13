@@ -55,6 +55,13 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
     'Asia/Kolkata'
   ];
 
+  const units = [
+    'HOURS',
+    'DAYS',
+    'WEEKS',
+    'MONTHS'
+  ]
+
   return (
     <GenericModal
       isOpen={isOpen}
@@ -86,10 +93,9 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
             handleSelect={(e) => handleChange('runEveryUnit', e.target.value)}
             sx={dropDownStyle}
           >
-            <MenuItem value="HOURS">hours</MenuItem>
-            <MenuItem value="DAYS">days</MenuItem>
-            <MenuItem value="WEEKS">weeks</MenuItem>
-            <MenuItem value="MONTHS">months</MenuItem>
+            {units.map((un) => (
+              <MenuItem key={un} value={un}>{un}</MenuItem>
+            ))}
           </Dropdown>
         </Box>
 
