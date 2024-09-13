@@ -28,10 +28,10 @@ interface RightSidePanelProps {
 }
 
 export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture }) => {
-  const [textLabels, setTextLabels] = useState<{ [id: number]: string }>({});
-  const [errors, setErrors] = useState<{ [id: number]: string }>({});
-  const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: number]: boolean }>({});
-  const [confirmedListTextFields, setConfirmedListTextFields] = useState<{ [listId: number]: { [fieldKey: string]: boolean } }>({});
+  const [textLabels, setTextLabels] = useState<{ [id: string]: string }>({});
+  const [errors, setErrors] = useState<{ [id: string]: string }>({});
+  const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: string]: boolean }>({});
+  const [confirmedListTextFields, setConfirmedListTextFields] = useState<{ [listId: string]: { [fieldKey: string]: boolean } }>({});
   const [showPaginationOptions, setShowPaginationOptions] = useState(false);
   const [showLimitOptions, setShowLimitOptions] = useState(false);
   const [captureStage, setCaptureStage] = useState<'initial' | 'pagination' | 'limit' | 'complete'>('initial');
@@ -90,13 +90,18 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
   const handleListTextFieldDiscard = (listId: number, fieldKey: string) => {
     removeListTextField(listId, fieldKey);
-    setConfirmedListTextFields(prev => ({
-      ...prev,
-      [listId]: {
-        ...(prev[listId] || {}),
-        [fieldKey]: false
-      }
-    }));
+    setConfirmedListTextFields(prev => {
+      const updatedListFields = { ...(prev[listId] || {}) };
+      delete updatedListFields[fieldKey];
+      return {
+        ...prev,
+        [listId]: updatedListFields
+      };
+    });
+    setErrors(prev => {
+      const { [fieldKey]: _, ...rest } = prev;
+      return rest;
+    });
   };
 
   const getTextSettingsObject = useCallback(() => {
@@ -159,6 +164,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
     return settings;
   }, [browserSteps, paginationType, limitType, customLimit]);
+  
 
   const resetListState = useCallback(() => {
     setShowPaginationOptions(false);
