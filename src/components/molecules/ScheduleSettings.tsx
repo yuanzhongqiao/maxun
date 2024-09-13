@@ -22,8 +22,8 @@ export interface ScheduleSettings {
 export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: ScheduleSettingsProps) => {
   const [settings, setSettings] = useState<ScheduleSettings>({
     runEvery: 1,
-    runEveryUnit: 'hours',
-    startFrom: 'Monday',
+    runEveryUnit: 'HOURS',
+    startFrom: 'MONDAY',
     atTime: '00:00',
     timezone: 'UTC'
   });
@@ -31,6 +31,8 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
   const handleChange = (field: keyof ScheduleSettings, value: string | number) => {
     setSettings(prev => ({ ...prev, [field]: value }));
   };
+
+  console.log(`Settings:`, settings);
 
   const textStyle = {
     width: '150px',
@@ -44,6 +46,14 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
     height: '59px',
     marginRight: '10px',
   };
+
+  const timezones = [
+    'UTC',
+    'America/New_York',
+    'Europe/London',
+    'Asia/Tokyo',
+    'Asia/Kolkata'
+  ];
 
   return (
     <GenericModal
@@ -67,6 +77,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
             value={settings.runEvery}
             onChange={(e) => handleChange('runEvery', parseInt(e.target.value))}
             sx={textStyle}
+            inputProps={{ min: 1 }}
           />
           <Dropdown
             label=""
@@ -75,11 +86,10 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
             handleSelect={(e) => handleChange('runEveryUnit', e.target.value)}
             sx={dropDownStyle}
           >
-            <MenuItem value="minutes">minutes</MenuItem>
-            <MenuItem value="hours">hours</MenuItem>
-            <MenuItem value="days">days</MenuItem>
-            <MenuItem value="weeks">weeks</MenuItem>
-            <MenuItem value="months">months</MenuItem>
+            <MenuItem value="HOURS">hours</MenuItem>
+            <MenuItem value="DAYS">days</MenuItem>
+            <MenuItem value="WEEKS">weeks</MenuItem>
+            <MenuItem value="MONTHS">months</MenuItem>
           </Dropdown>
         </Box>
 
@@ -92,13 +102,13 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
             handleSelect={(e) => handleChange('startFrom', e.target.value)}
             sx={dropDownStyle}
           >
-            <MenuItem value="Monday">Monday</MenuItem>
-            <MenuItem value="Tuesday">Tuesday</MenuItem>
-            <MenuItem value="Wednesday">Wednesday</MenuItem>
-            <MenuItem value="Thursday">Thursday</MenuItem>
-            <MenuItem value="Friday">Friday</MenuItem>
-            <MenuItem value="Saturday">Saturday</MenuItem>
-            <MenuItem value="Sunday">Sunday</MenuItem>
+            <MenuItem value="MONDAY">Monday</MenuItem>
+            <MenuItem value="TUESDAY">Tuesday</MenuItem>
+            <MenuItem value="WEDNESDAY">Wednesday</MenuItem>
+            <MenuItem value="THURSDAY">Thursday</MenuItem>
+            <MenuItem value="FRIDAY">Friday</MenuItem>
+            <MenuItem value="SATURDAY">Saturday</MenuItem>
+            <MenuItem value="SUNDAY">Sunday</MenuItem>
           </Dropdown>
         </Box>
 
@@ -121,11 +131,9 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
               handleSelect={(e) => handleChange('timezone', e.target.value)}
               sx={dropDownStyle}
             >
-              <MenuItem value="UTC">UTC</MenuItem>
-              <MenuItem value="America/New_York">America/New_York</MenuItem>
-              <MenuItem value="Europe/London">Europe/London</MenuItem>
-              <MenuItem value="Asia/Tokyo">Asia/Tokyo</MenuItem>
-              <MenuItem value="Asia/Kolkata">Asia/Kolkata</MenuItem>
+              {timezones.map((tz) => (
+                <MenuItem key={tz} value={tz}>{tz}</MenuItem>
+              ))}
             </Dropdown>
           </Box>
         </Box>
