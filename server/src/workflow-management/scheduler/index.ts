@@ -52,8 +52,12 @@ worker.on('failed', async (job: any, err) => {
   logger.log(`info`, `Worker and queue have been closed after failure.`);
 });
 
-const existingJobs = workflowQueue.getRepeatableJobs();
-logger.log(`info`, `jobs ${existingJobs}`)
+async function jobCounts () {
+  const jobCounts = await workflowQueue.getJobCounts();
+   console.log('Jobs:', jobCounts);
+}
+
+jobCounts();
 
 async function runWorkflow(fileName: string, runId: string) {
   if (!runId) {
