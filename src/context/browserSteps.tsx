@@ -43,6 +43,7 @@ interface BrowserStepsContextType {
     deleteBrowserStep: (id: number) => void;
     updateBrowserTextStepLabel: (id: number, newLabel: string) => void;
     updateListTextFieldLabel: (listId: number, fieldKey: string, newLabel: string) => void;
+    removeListTextField: (listId: number, fieldKey: string) => void;
 }
 
 const BrowserStepsContext = createContext<BrowserStepsContextType | undefined>(undefined);
@@ -131,6 +132,7 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
             deleteBrowserStep,
             updateBrowserTextStepLabel,
             updateListTextFieldLabel,
+            removeListTextField,
         }}>
             {children}
         </BrowserStepsContext.Provider>
