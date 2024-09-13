@@ -65,12 +65,19 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
                 step => step.type === 'list' && step.id === listId
             );
             if (existingListStepIndex !== -1) {
-                // Update the existing ListStep with new fields
+                // Update the existing ListStep with new fields, excluding discarded ones
                 const updatedSteps = [...prevSteps];
                 const existingListStep = updatedSteps[existingListStepIndex] as ListStep;
+                const filteredNewFields = Object.entries(newFields).reduce((acc, [key, value]) => {
+                    if (!discardedFields.has(`${listId}-${key}`)) {
+                        acc[key] = value;
+                    }
+                    return acc;
+                }, {} as { [key: string]: TextStep });
+
                 updatedSteps[existingListStepIndex] = {
                     ...existingListStep,
-                    fields: { ...existingListStep.fields, ...newFields },
+                    fields: { ...existingListStep.fields, ...filteredNewFields },
                     pagination: pagination,
                     limit: limit,
                 };
@@ -84,7 +91,6 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
             }
         });
     };
-
     const addScreenshotStep = (fullPage: boolean) => {
         setBrowserSteps(prevSteps => [
             ...prevSteps,
