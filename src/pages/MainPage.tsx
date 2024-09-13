@@ -19,6 +19,11 @@ export interface CreateRunResponse {
   runId: string;
 }
 
+export interface ScheduleRunResponse {
+  message: string;
+  runId: string;
+}
+
 export const MainPage = ({ handleEditRecording }: MainPageProps) => {
 
   const [content, setContent] = React.useState('recordings');
