@@ -42,6 +42,7 @@ interface BrowserStepsContextType {
     addScreenshotStep: (fullPage: boolean) => void;
     deleteBrowserStep: (id: number) => void;
     updateBrowserTextStepLabel: (id: number, newLabel: string) => void;
+    updateListTextFieldLabel: (listId: number, fieldKey: string, newLabel: string) => void;
 }
 
 const BrowserStepsContext = createContext<BrowserStepsContextType | undefined>(undefined);
@@ -109,6 +110,7 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
             addScreenshotStep,
             deleteBrowserStep,
             updateBrowserTextStepLabel,
+            updateListTextFieldLabel,
         }}>
             {children}
         </BrowserStepsContext.Provider>
