@@ -19,10 +19,8 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 
 // TODO: 
-// 1. Handle field label update 
-// 2. Handle field deletion | confirmation
-// 3. Add description for each browser step
-// 4. Handle non custom action steps
+// 1. Add description for each browser step
+// 2. Handle non custom action steps
 interface RightSidePanelProps {
   onFinishCapture: () => void;
 }
