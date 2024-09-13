@@ -48,14 +48,6 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
     marginRight: '10px',
   };
 
-  const timezones = [
-    'UTC',
-    'America/New_York',
-    'Europe/London',
-    'Asia/Tokyo',
-    'Asia/Kolkata'
-  ];
-
   const units = [
     'HOURS',
     'DAYS',
