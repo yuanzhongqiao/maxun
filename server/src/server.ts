@@ -7,7 +7,8 @@ import { record, workflow, storage } from './routes';
 import { BrowserPool } from "./browser-management/classes/BrowserPool";
 import logger from './logger'
 import { SERVER_PORT } from "./constants/config";
-import {Server} from "socket.io";
+import { Server } from "socket.io";
+import { worker } from './workflow-management/scheduler';
 
 const app = express();
 app.use(cors());
@@ -31,7 +32,7 @@ app.use('/workflow', workflow);
 app.use('/storage', storage);
 
 app.get('/', function (req, res) {
-    return res.send('Welcome to the BR recorder server :-)');
+    return res.send('Maxun server started 🚀');
 });
 
-server.listen(SERVER_PORT, () => logger.log('info',`Server listening on port ${SERVER_PORT}`));
+server.listen(SERVER_PORT, () => logger.log('info', `Server listening on port ${SERVER_PORT}`));

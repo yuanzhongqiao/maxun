@@ -12,6 +12,8 @@ import { useGlobalInfoStore } from "../../context/globalInfo";
 import { getStoredRuns } from "../../api/storage";
 import { RunSettings } from "./RunSettings";
 import { CollapsibleRow } from "./ColapsibleRow";
+import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface Column {
   id: 'status' | 'name' | 'startedAt' | 'finishedAt' | 'duration' | 'task' | 'runId' | 'delete';
@@ -86,68 +88,81 @@ export const RunsTable = (
     } else {
       console.log('No runs found.');
     }
-  }
+  };
 
-  useEffect( () => {
+  useEffect(() => {
     if (rows.length === 0 || rerenderRuns) {
       fetchRuns();
       setRerenderRuns(false);
     }
-
   }, [rerenderRuns]);
-
 
   const handleDelete = () => {
     setRows([]);
     notify('success', 'Run deleted successfully');
     fetchRuns();
-  }
+  };
+
+  // Group runs by recording name
+  const groupedRows = rows.reduce((acc, row) => {
+    if (!acc[row.name]) {
+      acc[row.name] = [];
+    }
+    acc[row.name].push(row);
+    return acc;
+  }, {} as Record<string, Data[]>);
 
   return (
     <React.Fragment>
       <TableContainer component={Paper} sx={{ width: '100%', overflow: 'hidden' }}>
-        <Table stickyHeader aria-label="sticky table" >
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.length !== 0 ? rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) =>
-                  <CollapsibleRow
-                    row={row}
-                    handleDelete={handleDelete}
-                    key={`row-${row.id}`}
-                    isOpen={runId === row.runId && runningRecordingName === row.name}
-                    currentLog={currentInterpretationLog}
-                    abortRunHandler={abortRunHandler}
-                    runningRecordingName={runningRecordingName}
-                  />
-                )
-              : null }
-          </TableBody>
-        </Table>
+        {Object.entries(groupedRows).map(([name, group]) => (
+          <Accordion key={name}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="h6">{name}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell />
+                    {columns.map((column) => (
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{ minWidth: column.minWidth }}
+                      >
+                        {column.label}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {group.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                    <CollapsibleRow
+                      row={row}
+                      handleDelete={handleDelete}
+                      key={`row-${row.id}`}
+                      isOpen={runId === row.runId && runningRecordingName === row.name}
+                      currentLog={currentInterpretationLog}
+                      abortRunHandler={abortRunHandler}
+                      runningRecordingName={runningRecordingName}
+                    />
+                  ))}
+                </TableBody>
+              </Table>
+            </AccordionDetails>
+          </Accordion>
+        ))}
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 50]}
         component="div"
-        count={rows ? rows.length : 0}
+        count={rows.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-  </React.Fragment>
+    </React.Fragment>
   );
-}
+};

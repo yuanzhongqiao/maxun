@@ -53,10 +53,11 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
             switch (event.type) {
                 case 'mousedown':
                     const clickCoordinates = getMappedCoordinates(event, canvasRef.current, width, height);
-                    if (getTextRef.current === true || getListRef.current === true) {
-                        // todo: remove console.log and return
-                        console.log('get text or get list is true');
-                    } else {
+                    if (getTextRef.current === true) {
+                        console.log('Capturing Text...');
+                    } else if (getListRef.current === true){
+                        console.log('Capturing List...');
+                    }else {
                         socket.emit('input:mousedown', clickCoordinates);
                     }
                     notifyLastAction('click');

@@ -8,20 +8,22 @@ import { TextField, Typography } from "@mui/material";
 import { WarningText } from "../atoms/texts";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
 import FlagIcon from '@mui/icons-material/Flag';
+import { useNavigate } from 'react-router-dom';
 
 interface SaveRecordingProps {
   fileName: string;
 }
 
-export const SaveRecording = ({fileName}: SaveRecordingProps) => {
+export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
 
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [needConfirm, setNeedConfirm] = useState<boolean>(false);
   const [recordingName, setRecordingName] = useState<string>(fileName);
   const [waitingForSave, setWaitingForSave] = useState<boolean>(false);
 
-  const { browserId, setBrowserId, notify, recordings } =  useGlobalInfoStore();
+  const { browserId, setBrowserId, notify, recordings } = useGlobalInfoStore();
   const { socket } = useSocketStore();
+  const navigate = useNavigate();
 
   const handleChangeOfTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -41,12 +43,13 @@ export const SaveRecording = ({fileName}: SaveRecordingProps) => {
     }
   };
 
-  const exitRecording = useCallback(async() => {
+  const exitRecording = useCallback(async () => {
     notify('success', 'Recording saved successfully');
     if (browserId) {
       await stopRecording(browserId);
     }
     setBrowserId(null);
+    navigate('/');
   }, [setBrowserId, browserId, notify]);
 
   // notifies backed to save the recording in progress,
@@ -66,45 +69,45 @@ export const SaveRecording = ({fileName}: SaveRecordingProps) => {
   return (
     <div>
       <Button sx={{
-        width:'100px',
+        width: '100px',
         background: 'white',
         color: 'rgba(0,128,0,0.7)',
-        '&:hover': {background: 'white', color: 'green'},
+        '&:hover': { background: 'white', color: 'green' },
         padding: '11px',
         marginRight: '10px',
       }} onClick={() => setOpenModal(true)}>
-        <FlagIcon sx={{marginRight:'3px'}}/> FINISH
+        <FlagIcon sx={{ marginRight: '3px' }} /> FINISH
       </Button>
 
       <GenericModal isOpen={openModal} onClose={() => setOpenModal(false)} modalStyle={modalStyle}>
-        <form onSubmit={handleSaveRecording} style={{paddingTop:'50px', display: 'flex', flexDirection: 'column'}} >
+        <form onSubmit={handleSaveRecording} style={{ paddingTop: '50px', display: 'flex', flexDirection: 'column' }} >
           <Typography>Save the recording as:</Typography>
           <TextField
             required
-            sx={{width: '250px', paddingBottom: '10px', margin: '15px 0px'}}
+            sx={{ width: '250px', paddingBottom: '10px', margin: '15px 0px' }}
             onChange={handleChangeOfTitle}
             id="title"
             label="Recording title"
             variant="outlined"
             defaultValue={recordingName ? recordingName : null}
           />
-            { needConfirm
-              ?
-              (<React.Fragment>
-                <Button color="error" variant="contained" onClick={saveRecording}>Confirm</Button>
-                <WarningText>
-                  <NotificationImportantIcon color="warning"/>
-                  Recording already exists, please confirm the recording's overwrite.
-                </WarningText>
-              </React.Fragment>)
-              : <Button type="submit" variant="contained">Save</Button>
-            }
-          { waitingForSave &&
-              <Tooltip title='Optimizing and saving the workflow' placement={"bottom"}>
-                  <Box sx={{ width: '100%' }}>
-                      <LinearProgress/>
-                  </Box>
-              </Tooltip>
+          {needConfirm
+            ?
+            (<React.Fragment>
+              <Button color="error" variant="contained" onClick={saveRecording}>Confirm</Button>
+              <WarningText>
+                <NotificationImportantIcon color="warning" />
+                Recording already exists, please confirm the recording's overwrite.
+              </WarningText>
+            </React.Fragment>)
+            : <Button type="submit" variant="contained">Save</Button>
+          }
+          {waitingForSave &&
+            <Tooltip title='Optimizing and saving the workflow' placement={"bottom"}>
+              <Box sx={{ width: '100%' }}>
+                <LinearProgress />
+              </Box>
+            </Tooltip>
           }
         </form>
       </GenericModal>
@@ -119,7 +122,7 @@ const modalStyle = {
   width: '20%',
   backgroundColor: 'background.paper',
   p: 4,
-  height:'fit-content',
-  display:'block',
+  height: 'fit-content',
+  display: 'block',
   padding: '20px',
 };

@@ -10,6 +10,9 @@ import { chromium } from "playwright";
 import { browserPool } from "../server";
 import fs from "fs";
 import { uuid } from "uuidv4";
+import { workflowQueue } from '../workflow-management/scheduler';
+import moment from 'moment-timezone';
+import cron from 'node-cron';
 
 export const router = Router();
 
@@ -106,6 +109,9 @@ router.put('/runs/:fileName', async (req, res) => {
       JSON.stringify({ ...run_meta }, null, 2)
     );
     logger.log('debug', `Created run with name: ${req.params.fileName}.json`);
+
+    console.log('Run meta:', run_meta);
+
     return res.send({
       browserId: id,
       runId: runId,
@@ -187,6 +193,98 @@ router.post('/runs/run/:fileName/:runId', async (req, res) => {
     return res.send(false);
   }
 });
+
+router.put('/schedule/:fileName/', async (req, res) => {
+  console.log(req.body);
+  try {
+    const { fileName } = req.params;
+    const { 
+      runEvery, 
+      runEveryUnit, 
+      startFrom, 
+      atTime, 
+      timezone 
+    } = req.body;
+
+    if (!fileName || !runEvery || !runEveryUnit || !startFrom || !atTime || !timezone) {
+      return res.status(400).json({ error: 'Missing required parameters' });
+    }
+
+    if (!['HOURS', 'DAYS', 'WEEKS', 'MONTHS'].includes(runEveryUnit)) {
+      return res.status(400).json({ error: 'Invalid runEvery unit' });
+    }
+
+    if (!moment.tz.zone(timezone)) {
+      return res.status(400).json({ error: 'Invalid timezone' });
+    }
+
+    const [hours, minutes] = atTime.split(':').map(Number);
+    if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+      return res.status(400).json({ error: 'Invalid time format' });
+    }
+
+    const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+    if (!days.includes(startFrom)) {
+      return res.status(400).json({ error: 'Invalid start day' });
+    }
+
+    let cronExpression;
+    switch (runEveryUnit) {
+      case 'HOURS':
+        cronExpression = `${minutes} */${runEvery} * * *`;
+        break;
+      case 'DAYS':
+        cronExpression = `${minutes} ${hours} */${runEvery} * *`;
+        break;
+      case 'WEEKS':
+        const dayIndex = days.indexOf(startFrom);
+        cronExpression = `${minutes} ${hours} * * ${dayIndex}/${7 * runEvery}`;
+        break;
+      case 'MONTHS':
+        cronExpression = `${minutes} ${hours} 1-7 */${runEvery} *`;
+        if (startFrom !== 'SUNDAY') {
+          const dayIndex = days.indexOf(startFrom);
+          cronExpression += ` ${dayIndex}`;
+        }
+        break;
+    }
+
+    if (!cronExpression || !cron.validate(cronExpression)) {
+      return res.status(400).json({ error: 'Invalid cron expression generated' });
+    }
+
+    const runId = uuid();
+
+    await workflowQueue.add(
+      'run workflow',
+      { fileName, runId },
+      { 
+        repeat: {
+          pattern: cronExpression,
+          tz: timezone
+        }
+      }
+    );
+
+    res.status(200).json({ 
+      message: 'success', 
+      runId,
+      // cronExpression,
+      // nextRunTime: getNextRunTime(cronExpression, timezone)
+    });
+
+  } catch (error) {
+    console.error('Error scheduling workflow:', error);
+    res.status(500).json({ error: 'Failed to schedule workflow' });
+  }
+});
+
+// function getNextRunTime(cronExpression, timezone) {
+//   const schedule = cron.schedule(cronExpression, () => {}, { timezone });
+//   const nextDate = schedule.nextDate();
+//   schedule.stop();
+//   return nextDate.toDate();
+// }
 
 /**
  * POST endpoint for aborting a current interpretation of the run.

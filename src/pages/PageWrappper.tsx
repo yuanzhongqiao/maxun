@@ -7,21 +7,27 @@ import { MainPage } from "./MainPage";
 import { useGlobalInfoStore } from "../context/globalInfo";
 import { getActiveBrowserId } from "../api/recording";
 import { AlertSnackbar } from "../components/atoms/AlertSnackbar";
+import { Routes, Route, useNavigate } from 'react-router-dom';
 
 export const PageWrapper = () => {
-  const [recordingName, setRecordingName] = useState('');
   const [open, setOpen] = useState(false);
 
-  const { browserId, setBrowserId, notification } = useGlobalInfoStore();
+  const navigate = useNavigate();
+
+  const { browserId, setBrowserId, notification, recordingName, setRecordingName } = useGlobalInfoStore();
 
   const handleNewRecording = () => {
     setBrowserId('new-recording');
     setRecordingName('');
+    navigate('/recording');
+
   }
 
   const handleEditRecording = (fileName: string) => {
     setRecordingName(fileName);
     setBrowserId('new-recording');
+    navigate('/recording');
+
   }
 
   const isNotification = (): boolean => {
@@ -36,6 +42,7 @@ export const PageWrapper = () => {
       const id = await getActiveBrowserId();
       if (id) {
         setBrowserId(id);
+        navigate('/recording');
       }
     }
     isRecordingInProgress();
@@ -46,18 +53,20 @@ export const PageWrapper = () => {
       <SocketProvider>
         <React.Fragment>
           <NavBar newRecording={handleNewRecording} recordingName={recordingName} isRecording={!!browserId} />
-          {browserId
-            ? (
-              <BrowserDimensionsProvider>
-                <React.Fragment>
-                  <RecordingPage recordingName={recordingName} />
-                </React.Fragment>
-              </BrowserDimensionsProvider>
-            )
-            : <MainPage
-              handleEditRecording={handleEditRecording}
+          <Routes>
+            <Route
+              path="/"
+              element={<MainPage handleEditRecording={handleEditRecording} />}
             />
-          }
+            <Route
+              path="/recording"
+              element={
+                <BrowserDimensionsProvider>
+                  <RecordingPage recordingName={recordingName} />
+                </BrowserDimensionsProvider>
+              }
+            />
+          </Routes>
         </React.Fragment>
       </SocketProvider>
       {isNotification() ?

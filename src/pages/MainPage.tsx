@@ -4,10 +4,11 @@ import { Grid, Stack } from "@mui/material";
 import { Recordings } from "../components/organisms/Recordings";
 import { Runs } from "../components/organisms/Runs";
 import { useGlobalInfoStore } from "../context/globalInfo";
-import { createRunForStoredRecording, interpretStoredRecording, notifyAboutAbort } from "../api/storage";
+import { createRunForStoredRecording, interpretStoredRecording, notifyAboutAbort, scheduleStoredRecording } from "../api/storage";
 import { io, Socket } from "socket.io-client";
 import { stopRecording } from "../api/recording";
 import { RunSettings } from "../components/molecules/RunSettings";
+import { ScheduleSettings } from "../components/molecules/ScheduleSettings";
 
 interface MainPageProps {
   handleEditRecording: (fileName: string) => void;
@@ -15,6 +16,11 @@ interface MainPageProps {
 
 export interface CreateRunResponse {
   browserId: string;
+  runId: string;
+}
+
+export interface ScheduleRunResponse {
+  message: string;
   runId: string;
 }
 
@@ -95,6 +101,17 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
     }
   }, [runningRecordingName, sockets, ids, readyForRunHandler, debugMessageHandler])
 
+  const handleScheduleRecording = (settings: ScheduleSettings) => {
+    scheduleStoredRecording(runningRecordingName, settings)
+      .then(({message, runId}: ScheduleRunResponse) => {
+        if (message === 'success') {
+          notify('success', `Recording ${runningRecordingName} scheduled successfully`);
+        } else {
+          notify('error', `Failed to schedule recording ${runningRecordingName}`);
+        }
+      });
+  }
+
   const DisplayContent = () => {
     switch (content) {
       case 'recordings':
@@ -102,6 +119,7 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
           handleEditRecording={handleEditRecording}
           handleRunRecording={handleRunRecording}
           setFileName={setFileName}
+          handleScheduleRecording={handleScheduleRecording}
         />;
       case 'runs':
         return <Runs
