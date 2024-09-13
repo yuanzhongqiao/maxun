@@ -88,6 +88,16 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     }));
   };
 
+  const handleListTextFieldDiscard = (listId: number, fieldKey: string) => {
+    removeListTextField(listId, fieldKey);
+    setConfirmedListTextFields(prev => ({
+        ...prev,
+        [listId]: {
+            ...(prev[listId] || {}),
+            [fieldKey]: false
+        }
+    }));
+};
 
   const getTextSettingsObject = useCallback(() => {
     const settings: Record<string, { selector: string; tag?: string;[key: string]: any }> = {};
