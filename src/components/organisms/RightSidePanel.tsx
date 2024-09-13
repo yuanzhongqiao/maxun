@@ -375,7 +375,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                     <TextField
                       label="Field Label"
                       value={field.label || ''}
-                      onChange={() => { }}
+                      onChange={(e) => handleTextLabelChange(field.id, e.target.value, step.id, key)}
                       fullWidth
                       margin="normal"
                       InputProps={{
