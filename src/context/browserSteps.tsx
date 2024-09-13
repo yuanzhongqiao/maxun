@@ -123,6 +123,21 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         );
     };
 
+    const removeListTextField = (listId: number, fieldKey: string) => {
+        setBrowserSteps(prevSteps =>
+            prevSteps.map(step => {
+                if (step.type === 'list' && step.id === listId) {
+                    const { [fieldKey]: _, ...remainingFields } = step.fields;
+                    return {
+                        ...step,
+                        fields: remainingFields
+                    };
+                }
+                return step;
+            })
+        );
+    };
+
     return (
         <BrowserStepsContext.Provider value={{
             browserSteps,
