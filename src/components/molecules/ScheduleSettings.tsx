@@ -118,7 +118,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
             handleSelect={(e) => handleChange('startFrom', e.target.value)}
             sx={dropDownStyle}
           >
-           {days.map((day) => (
+            {days.map((day) => (
               <MenuItem key={day} value={day}>{day}</MenuItem>
             ))}
           </Dropdown>
