@@ -40,8 +40,14 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep, updateListTextFieldLabel } = useBrowserSteps();
   const { socket } = useSocketStore();
 
-  const handleTextLabelChange = (id: number, label: string) => {
-    setTextLabels(prevLabels => ({ ...prevLabels, [id]: label }));
+  const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
+    if (listId !== undefined && fieldKey !== undefined) {
+      // This is a text field within a list step
+      updateListTextFieldLabel(listId, fieldKey, label);
+    } else {
+      // This is a standalone text step
+      setTextLabels(prevLabels => ({ ...prevLabels, [id]: label }));
+    }
     if (!label.trim()) {
       setErrors(prevErrors => ({ ...prevErrors, [id]: 'Label cannot be empty' }));
     } else {
