@@ -195,54 +195,55 @@ router.post('/runs/run/:fileName/:runId', async (req, res) => {
 });
 
 router.put('/schedule/:fileName/', async (req, res) => {
+  console.log(req.body);
   try {
     const { fileName } = req.params;
     const { 
-      frequency, 
-      frequencyUnit, 
-      startDay, 
-      time, 
+      runEvery, 
+      runEveryUnit, 
+      startFrom, 
+      atTime, 
       timezone 
     } = req.body;
 
-    if (!fileName || !frequency || !frequencyUnit || !startDay || !time || !timezone) {
+    if (!fileName || !runEvery || !runEveryUnit || !startFrom || !atTime || !timezone) {
       return res.status(400).json({ error: 'Missing required parameters' });
     }
 
-    if (!['HOURS', 'DAYS', 'WEEKS', 'MONTHS'].includes(frequencyUnit)) {
-      return res.status(400).json({ error: 'Invalid frequency unit' });
+    if (!['HOURS', 'DAYS', 'WEEKS', 'MONTHS'].includes(runEveryUnit)) {
+      return res.status(400).json({ error: 'Invalid runEvery unit' });
     }
 
     if (!moment.tz.zone(timezone)) {
       return res.status(400).json({ error: 'Invalid timezone' });
     }
 
-    const [hours, minutes] = time.split(':').map(Number);
+    const [hours, minutes] = atTime.split(':').map(Number);
     if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
       return res.status(400).json({ error: 'Invalid time format' });
     }
 
     const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
-    if (!days.includes(startDay)) {
+    if (!days.includes(startFrom)) {
       return res.status(400).json({ error: 'Invalid start day' });
     }
 
     let cronExpression;
-    switch (frequencyUnit) {
+    switch (runEveryUnit) {
       case 'HOURS':
-        cronExpression = `${minutes} */${frequency} * * *`;
+        cronExpression = `${minutes} */${runEvery} * * *`;
         break;
       case 'DAYS':
-        cronExpression = `${minutes} ${hours} */${frequency} * *`;
+        cronExpression = `${minutes} ${hours} */${runEvery} * *`;
         break;
       case 'WEEKS':
-        const dayIndex = days.indexOf(startDay);
-        cronExpression = `${minutes} ${hours} * * ${dayIndex}/${7 * frequency}`;
+        const dayIndex = days.indexOf(startFrom);
+        cronExpression = `${minutes} ${hours} * * ${dayIndex}/${7 * runEvery}`;
         break;
       case 'MONTHS':
-        cronExpression = `${minutes} ${hours} 1-7 */${frequency} *`;
-        if (startDay !== 'SUNDAY') {
-          const dayIndex = days.indexOf(startDay);
+        cronExpression = `${minutes} ${hours} 1-7 */${runEvery} *`;
+        if (startFrom !== 'SUNDAY') {
+          const dayIndex = days.indexOf(startFrom);
           cronExpression += ` ${dayIndex}`;
         }
         break;
@@ -271,7 +272,7 @@ router.put('/schedule/:fileName/', async (req, res) => {
       // cronExpression,
       // nextRunTime: getNextRunTime(cronExpression, timezone)
     });
-    
+
   } catch (error) {
     console.error('Error scheduling workflow:', error);
     res.status(500).json({ error: 'Failed to schedule workflow' });
