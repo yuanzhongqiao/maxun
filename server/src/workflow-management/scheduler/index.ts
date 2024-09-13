@@ -1,8 +1,7 @@
 import { Queue, Worker } from 'bullmq';
 import IORedis from 'ioredis';
-import { deleteFile, readFile, readFiles, saveFile } from "../storage";
-import { createRemoteBrowserForRun, destroyRemoteBrowser, getActiveBrowserId } from '../../browser-management/controller';
-import { RemoteBrowser } from '../../browser-management/classes/RemoteBrowser';
+import { readFile, saveFile } from "../storage";
+import { createRemoteBrowserForRun, destroyRemoteBrowser } from '../../browser-management/controller';
 import logger from '../../logger';
 import { browserPool } from "../../server";
 import fs from "fs";
