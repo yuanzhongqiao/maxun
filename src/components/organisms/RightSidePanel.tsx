@@ -78,6 +78,17 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     });
   };
 
+  const handleListTextFieldConfirm = (listId: number, fieldKey: string) => {
+    setConfirmedListTextFields(prev => ({
+      ...prev,
+      [listId]: {
+        ...(prev[listId] || {}),
+        [fieldKey]: true
+      }
+    }));
+  };
+
+
   const getTextSettingsObject = useCallback(() => {
     const settings: Record<string, { selector: string; tag?: string;[key: string]: any }> = {};
     browserSteps.forEach(step => {
