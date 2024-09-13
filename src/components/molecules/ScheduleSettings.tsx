@@ -62,6 +62,16 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
     'MONTHS'
   ]
 
+  const days = [
+    'MONDAY',
+    'TUESDAY',
+    'WEDNESDAY',
+    'THURSDAY',
+    'FRIDAY',
+    'SATURDAY',
+    'SUNDAY'
+  ]
+
   return (
     <GenericModal
       isOpen={isOpen}
@@ -108,13 +118,9 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
             handleSelect={(e) => handleChange('startFrom', e.target.value)}
             sx={dropDownStyle}
           >
-            <MenuItem value="MONDAY">Monday</MenuItem>
-            <MenuItem value="TUESDAY">Tuesday</MenuItem>
-            <MenuItem value="WEDNESDAY">Wednesday</MenuItem>
-            <MenuItem value="THURSDAY">Thursday</MenuItem>
-            <MenuItem value="FRIDAY">Friday</MenuItem>
-            <MenuItem value="SATURDAY">Saturday</MenuItem>
-            <MenuItem value="SUNDAY">Sunday</MenuItem>
+           {days.map((day) => (
+              <MenuItem key={day} value={day}>{day}</MenuItem>
+            ))}
           </Dropdown>
         </Box>
 
