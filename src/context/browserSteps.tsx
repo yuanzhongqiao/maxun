@@ -142,7 +142,7 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
                 }
                 return step;
             })
-        );        
+        );
         setDiscardedFields(prevDiscarded => new Set(prevDiscarded).add(`${listId}-${fieldKey}`));
     };
     return (
