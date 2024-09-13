@@ -136,9 +136,7 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
                 }
                 return step;
             })
-        );
-        
-        // Add the discarded field to the set of discarded fields
+        );        
         setDiscardedFields(prevDiscarded => new Set(prevDiscarded).add(`${listId}-${fieldKey}`));
     };
     return (
