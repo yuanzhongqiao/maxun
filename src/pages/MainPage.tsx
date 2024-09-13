@@ -101,6 +101,17 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
     }
   }, [runningRecordingName, sockets, ids, readyForRunHandler, debugMessageHandler])
 
+  const handleScheduleRecording = (settings: ScheduleSettings) => {
+    scheduleStoredRecording(runningRecordingName, settings)
+      .then(({message, runId}: ScheduleRunResponse) => {
+        if (message === 'success') {
+          notify('success', `Recording ${runningRecordingName} scheduled successfully`);
+        } else {
+          notify('error', `Failed to schedule recording ${runningRecordingName}`);
+        }
+      });
+  }
+
   const DisplayContent = () => {
     switch (content) {
       case 'recordings':
@@ -108,7 +119,7 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
           handleEditRecording={handleEditRecording}
           handleRunRecording={handleRunRecording}
           setFileName={setFileName}
-          handleScheduleRecording={(settings: ScheduleSettings) => scheduleStoredRecording(runningRecordingName, settings)}
+          handleScheduleRecording={handleScheduleRecording}
         />;
       case 'runs':
         return <Runs
