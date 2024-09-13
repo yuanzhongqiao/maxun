@@ -102,7 +102,7 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         );
     };
 
-         const updateListTextFieldLabel = (listId: number, fieldKey: string, newLabel: string) => {
+    const updateListTextFieldLabel = (listId: number, fieldKey: string, newLabel: string) => {
         setBrowserSteps(prevSteps =>
             prevSteps.map(step => {
                 if (step.type === 'list' && step.id === listId) {
