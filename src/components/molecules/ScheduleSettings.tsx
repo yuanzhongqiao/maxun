@@ -103,8 +103,8 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
             handleSelect={(e) => handleChange('runEveryUnit', e.target.value)}
             sx={dropDownStyle}
           >
-            {units.map((un) => (
-              <MenuItem key={un} value={un}>{un}</MenuItem>
+            {units.map((unit) => (
+              <MenuItem key={unit} value={unit}>{unit}</MenuItem>
             ))}
           </Dropdown>
         </Box>
