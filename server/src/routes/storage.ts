@@ -268,10 +268,10 @@ router.put('/schedule/:fileName/', async (req, res) => {
     res.status(200).json({ 
       message: 'Workflow scheduled successfully', 
       runId,
-      cronExpression,
+      // cronExpression,
       // nextRunTime: getNextRunTime(cronExpression, timezone)
     });
-
+    
   } catch (error) {
     console.error('Error scheduling workflow:', error);
     res.status(500).json({ error: 'Failed to schedule workflow' });
