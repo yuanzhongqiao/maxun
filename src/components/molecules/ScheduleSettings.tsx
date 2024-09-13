@@ -4,6 +4,7 @@ import { MenuItem, TextField, Typography, Box } from "@mui/material";
 import { Dropdown } from "../atoms/DropdownMui";
 import Button from "@mui/material/Button";
 import { modalStyle } from "./AddWhereCondModal";
+import { validMomentTimezones } from '../../constants/const';
 
 interface ScheduleSettingsProps {
   isOpen: boolean;
@@ -143,7 +144,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
               handleSelect={(e) => handleChange('timezone', e.target.value)}
               sx={dropDownStyle}
             >
-              {timezones.map((tz) => (
+              {validMomentTimezones.map((tz) => (
                 <MenuItem key={tz} value={tz}>{tz}</MenuItem>
               ))}
             </Dropdown>
