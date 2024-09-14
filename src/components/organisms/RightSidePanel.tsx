@@ -41,6 +41,10 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
+      // Prevent editing if the field is confirmed
+    if (confirmedListTextFields[listId]?.[fieldKey]) {
+      return;
+    }
       // This is a text field within a list step
       updateListTextFieldLabel(listId, fieldKey, label);
     } else {
