@@ -290,15 +290,12 @@ export const BrowserWindow = () => {
                             ...prevFields,
                             [newField.id]: newField
                         };
-                        console.log(updatedFields)
-
                         return updatedFields;
                     });
 
                     if (listSelector) {
                         addListStep(listSelector, { ...fields, [newField.id]: newField }, currentListId, { type: '', selector: paginationSelector });
                     }
-
                 }
             }
         }
