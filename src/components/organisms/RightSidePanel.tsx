@@ -299,7 +299,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                   captureStage === 'pagination' ? 'Confirm Pagination' :
                     captureStage === 'limit' ? 'Confirm Limit' : 'Finish Capture'}
               </Button>
-              <Button variant="outlined" color="error" onClick={handleStopGetList}>Discard</Button>
+              <Button variant="outlined" color="error" onClick={discardGetList}>Discard</Button>
             </Box>
           </>
         )}
@@ -354,7 +354,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
               <Button variant="outlined" onClick={stopCaptureAndEmitGetTextSettings} >Confirm</Button>
-              <Button variant="outlined" color="error" onClick={stopGetText} >Discard</Button>
+              <Button variant="outlined" color="error" onClick={discardGetText} >Discard</Button>
             </Box>
           </>
         }
