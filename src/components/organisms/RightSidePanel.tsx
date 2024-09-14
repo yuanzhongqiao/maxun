@@ -242,8 +242,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
   const handlePaginationSettingSelect = (option: PaginationType) => {
     updatePaginationType(option);
-    if (['clickNext', 'clickLoadMore'].includes(option)) {
-    }
   };
 
   const captureScreenshot = (fullPage: boolean) => {
