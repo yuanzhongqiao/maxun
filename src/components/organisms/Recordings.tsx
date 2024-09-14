@@ -8,12 +8,14 @@ interface RecordingsProps {
   handleEditRecording: (fileName: string) => void;
   handleRunRecording: (settings: RunSettings) => void;
   handleScheduleRecording: (settings: ScheduleSettings) => void;
+  handleIntegrateRecording: (settings: ScheduleSettings) => void;
   setFileName: (fileName: string) => void;
 }
 
-export const Recordings = ({ handleEditRecording, handleRunRecording, setFileName, handleScheduleRecording }: RecordingsProps) => {
+export const Recordings = ({ handleEditRecording, handleRunRecording, setFileName, handleScheduleRecording, handleIntegrateRecording }: RecordingsProps) => {
   const [runSettingsAreOpen, setRunSettingsAreOpen] = useState(false);
   const [scheduleSettingsAreOpen, setScheduleSettingsAreOpen] = useState(false);
+  const [integrateSettingsAreOpen, setIntegrateSettingsAreOpen] = useState(false);
   const [params, setParams] = useState<string[]>([]);
 
   const handleSettingsAndRun = (fileName: string, params: string[]) => {
@@ -68,6 +70,7 @@ export const Recordings = ({ handleEditRecording, handleRunRecording, setFileNam
             handleEditRecording={handleEditRecording}
             handleRunRecording={handleSettingsAndRun}
             handleScheduleRecording={handleSettingsAndSchedule}
+            handleIntegrateRecording={handleSettingsAndSchedule}
           />
         </Grid>
       </Grid>
