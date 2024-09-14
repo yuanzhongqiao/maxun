@@ -409,6 +409,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                       fullWidth
                       margin="normal"
                       InputProps={{
+                        readOnly: confirmedListTextFields[field.id]?.[key],
                         startAdornment: (
                           <InputAdornment position="start">
                             <EditIcon />
