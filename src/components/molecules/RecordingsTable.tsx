@@ -181,7 +181,7 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
                                 <ScheduleButton handleSchedule={() => handleScheduleRecording(row.name, row.params || [])} />
                               </TableCell>
                             );
-                            case 'integrate':
+                          case 'integrate':
                             return (
                               <TableCell key={column.id} align={column.align}>
                                 <IntegrateButton handleIntegrate={() => handleIntegrateRecording(row.name, row.params || [])} />
