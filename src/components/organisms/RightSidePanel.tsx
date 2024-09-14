@@ -244,7 +244,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     updatePaginationType(option);
   };
 
-  const handleStopGetText = useCallback(() => {
+  const discardGetText = useCallback(() => {
     stopGetText();
     browserSteps.forEach(step => {
       if (step.type === 'text') {
@@ -257,7 +257,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     notify('info', 'All text capture steps discarded');
   }, [browserSteps, stopGetText, deleteBrowserStep]);
   
-  const handleStopGetList = useCallback(() => {
+  const discardGetList = useCallback(() => {
     stopGetList();
     browserSteps.forEach(step => {
       if (step.type === 'list') {
