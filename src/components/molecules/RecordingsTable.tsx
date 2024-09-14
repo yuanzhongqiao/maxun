@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { WorkflowFile } from "maxun-core";
 import { IconButton } from "@mui/material";
 import { Schedule, DeleteForever, Edit, PlayCircle } from "@mui/icons-material";
+import LinkIcon from '@mui/icons-material/Link';
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
 
@@ -269,7 +270,7 @@ const IntegrateButton = ({ handleIntegrate }: IntegrateButtonProps) => {
       handleIntegrate();
     }}
       sx={{ '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
-      <Schedule />
+      <LinkIcon />
     </IconButton>
   )
 }
