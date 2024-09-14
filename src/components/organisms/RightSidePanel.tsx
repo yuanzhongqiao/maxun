@@ -41,6 +41,10 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
+      // Prevent editing if the field is confirmed
+      if (confirmedListTextFields[listId]?.[fieldKey]) {
+        return;
+      }
       // This is a text field within a list step
       updateListTextFieldLabel(listId, fieldKey, label);
     } else {
@@ -162,7 +166,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
     return settings;
   }, [browserSteps, paginationType, limitType, customLimit]);
-  
+
 
   const resetListState = useCallback(() => {
     setShowPaginationOptions(false);
@@ -238,9 +242,32 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
   const handlePaginationSettingSelect = (option: PaginationType) => {
     updatePaginationType(option);
-    if (['clickNext', 'clickLoadMore'].includes(option)) {
-    }
   };
+
+  const discardGetText = useCallback(() => {
+    stopGetText();
+    browserSteps.forEach(step => {
+      if (step.type === 'text') {
+        deleteBrowserStep(step.id);
+      }
+    });
+    setTextLabels({});
+    setErrors({});
+    setConfirmedTextSteps({});
+    notify('info', 'Capture Text steps discarded');
+  }, [browserSteps, stopGetText, deleteBrowserStep]);
+
+  const discardGetList = useCallback(() => {
+    stopGetList();
+    browserSteps.forEach(step => {
+      if (step.type === 'list') {
+        deleteBrowserStep(step.id);
+      }
+    });
+    resetListState();
+    notify('info', 'Capture List steps discarded');
+  }, [browserSteps, stopGetList, deleteBrowserStep, resetListState]);
+
 
   const captureScreenshot = (fullPage: boolean) => {
     const screenshotSettings: ScreenshotSettings = {
@@ -272,7 +299,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                   captureStage === 'pagination' ? 'Confirm Pagination' :
                     captureStage === 'limit' ? 'Confirm Limit' : 'Finish Capture'}
               </Button>
-              <Button variant="outlined" color="error" onClick={handleStopGetList}>Discard</Button>
+              <Button variant="outlined" color="error" onClick={discardGetList}>Discard</Button>
             </Box>
           </>
         )}
@@ -327,7 +354,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
               <Button variant="outlined" onClick={stopCaptureAndEmitGetTextSettings} >Confirm</Button>
-              <Button variant="outlined" color="error" onClick={stopGetText} >Discard</Button>
+              <Button variant="outlined" color="error" onClick={discardGetText} >Discard</Button>
             </Box>
           </>
         }
@@ -405,6 +432,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                       fullWidth
                       margin="normal"
                       InputProps={{
+                        readOnly: confirmedListTextFields[field.id]?.[key],
                         startAdornment: (
                           <InputAdornment position="start">
                             <EditIcon />

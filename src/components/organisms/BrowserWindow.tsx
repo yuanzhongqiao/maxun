@@ -216,7 +216,7 @@ export const BrowserWindow = () => {
                         const newField: TextStep = {
                             id: Date.now(),
                             type: 'text',
-                            label: ``,
+                            label: `Label ${Object.keys(fields).length + 1}`,
                             data: data,
                             selectorObj: {
                                 selector: highlighterData.selector,
@@ -228,14 +228,14 @@ export const BrowserWindow = () => {
                         setFields(prevFields => {
                             const updatedFields = {
                                 ...prevFields,
-                                [newField.label]: newField
+                                [newField.id]: newField
                             };
                             console.log(updatedFields)
                             return updatedFields;
                         });
 
                         if (listSelector) {
-                            addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId, { type: '', selector: paginationSelector });
+                            addListStep(listSelector, { ...fields, [newField.id]: newField }, currentListId, { type: '', selector: paginationSelector });
                         }
 
                     } else {
@@ -276,7 +276,7 @@ export const BrowserWindow = () => {
                     const newField: TextStep = {
                         id: Date.now(),
                         type: 'text',
-                        label: ``,
+                        label: `Label ${Object.keys(fields).length + 1}`,
                         data: data,
                         selectorObj: {
                             selector: selectedElement.selector,
@@ -288,17 +288,14 @@ export const BrowserWindow = () => {
                     setFields(prevFields => {
                         const updatedFields = {
                             ...prevFields,
-                            [newField.label]: newField
+                            [newField.id]: newField
                         };
-                        console.log(updatedFields)
-
                         return updatedFields;
                     });
 
                     if (listSelector) {
-                        addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId, { type: '', selector: paginationSelector });
+                        addListStep(listSelector, { ...fields, [newField.id]: newField }, currentListId, { type: '', selector: paginationSelector });
                     }
-
                 }
             }
         }

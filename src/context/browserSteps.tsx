@@ -91,6 +91,7 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
             }
         });
     };
+    
     const addScreenshotStep = (fullPage: boolean) => {
         setBrowserSteps(prevSteps => [
             ...prevSteps,
