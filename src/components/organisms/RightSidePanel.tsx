@@ -244,6 +244,28 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     updatePaginationType(option);
   };
 
+  const handleStopGetText = useCallback(() => {
+    stopGetText();
+  
+    // Delete all text steps from browserSteps
+    browserSteps.forEach(step => {
+      if (step.type === 'text') {
+        deleteBrowserStep(step.id);
+      }
+    });
+  
+    // Clear all related UI state
+    setTextLabels({});
+    setErrors({});
+    setConfirmedTextSteps({});
+  
+    // Optionally notify user of deletion
+    notify('info', 'All text capture steps discarded');
+  }, [browserSteps, stopGetText, deleteBrowserStep]);
+  
+
+  
+
   const captureScreenshot = (fullPage: boolean) => {
     const screenshotSettings: ScreenshotSettings = {
       fullPage,
