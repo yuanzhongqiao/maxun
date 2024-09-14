@@ -246,24 +246,27 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
   const handleStopGetText = useCallback(() => {
     stopGetText();
-  
-    // Delete all text steps from browserSteps
     browserSteps.forEach(step => {
       if (step.type === 'text') {
         deleteBrowserStep(step.id);
       }
     });
-  
-    // Clear all related UI state
     setTextLabels({});
     setErrors({});
     setConfirmedTextSteps({});
-  
-    // Optionally notify user of deletion
     notify('info', 'All text capture steps discarded');
   }, [browserSteps, stopGetText, deleteBrowserStep]);
   
-
+  const handleStopGetList = useCallback(() => {
+    stopGetList();
+    browserSteps.forEach(step => {
+      if (step.type === 'list') {
+        deleteBrowserStep(step.id);
+      }
+    });
+    resetListState();
+    notify('info', 'All list capture steps discarded');
+  }, [browserSteps, stopGetList, deleteBrowserStep, resetListState]);
   
 
   const captureScreenshot = (fullPage: boolean) => {
