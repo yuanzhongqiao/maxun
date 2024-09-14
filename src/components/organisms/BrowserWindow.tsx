@@ -62,7 +62,7 @@ export const BrowserWindow = () => {
 
     const { socket } = useSocketStore();
     const { width, height } = useBrowserDimensionsStore();
-    const { getText, getList, paginationMode, paginationType } = useActionContext();
+    const { getText, getList, paginationMode, paginationType, limitMode } = useActionContext();
     const { addTextStep, addListStep } = useBrowserSteps();
 
     const onMouseMove = (e: MouseEvent) => {
@@ -114,7 +114,9 @@ export const BrowserWindow = () => {
         if (getList === true) {
             if (listSelector) {
                 socket?.emit('listSelector', { selector: listSelector });
-                if (paginationMode) {
+                if (limitMode) {
+                    setHighlighterData(null);
+                } else if (paginationMode) {
                     // only set highlighterData if type is not empty, 'none', 'scrollDown', or 'scrollUp'
                     if (paginationType !== '' && !['none', 'scrollDown', 'scrollUp'].includes(paginationType)) {
                         setHighlighterData(data);
