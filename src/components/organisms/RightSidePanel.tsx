@@ -254,7 +254,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     setTextLabels({});
     setErrors({});
     setConfirmedTextSteps({});
-    notify('info', 'All text capture steps discarded');
+    notify('info', 'Capture Text steps discarded');
   }, [browserSteps, stopGetText, deleteBrowserStep]);
   
   const discardGetList = useCallback(() => {
@@ -265,7 +265,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       }
     });
     resetListState();
-    notify('info', 'All list capture steps discarded');
+    notify('info', 'Capture List steps discarded');
   }, [browserSteps, stopGetList, deleteBrowserStep, resetListState]);
   
 
