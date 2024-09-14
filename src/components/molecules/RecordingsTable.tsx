@@ -78,9 +78,10 @@ interface RecordingsTableProps {
   handleEditRecording: (fileName: string) => void;
   handleRunRecording: (fileName: string, params: string[]) => void;
   handleScheduleRecording: (fileName: string, params: string[]) => void;
+  handleIntegrateRecording: (fileName: string, params: string[]) => void;
 }
 
-export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handleScheduleRecording }: RecordingsTableProps) => {
+export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handleScheduleRecording, handleIntegrateRecording }: RecordingsTableProps) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState<Data[]>([]);
@@ -180,6 +181,12 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
                                 <ScheduleButton handleSchedule={() => handleScheduleRecording(row.name, row.params || [])} />
                               </TableCell>
                             );
+                            case 'integrate':
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                <IntegrateButton handleIntegrate={() => handleIntegrateRecording(row.name, row.params || [])} />
+                              </TableCell>
+                            );
                           case 'delete':
                             return (
                               <TableCell key={column.id} align={column.align}>
@@ -245,6 +252,21 @@ const ScheduleButton = ({ handleSchedule }: ScheduleButtonProps) => {
   return (
     <IconButton aria-label="add" size="small" onClick={() => {
       handleSchedule();
+    }}
+      sx={{ '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
+      <Schedule />
+    </IconButton>
+  )
+}
+
+interface IntegrateButtonProps {
+  handleIntegrate: () => void;
+}
+
+const IntegrateButton = ({ handleIntegrate }: IntegrateButtonProps) => {
+  return (
+    <IconButton aria-label="add" size="small" onClick={() => {
+      handleIntegrate();
     }}
       sx={{ '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
       <Schedule />
