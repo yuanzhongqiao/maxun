@@ -256,7 +256,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     setConfirmedTextSteps({});
     notify('info', 'Capture Text steps discarded');
   }, [browserSteps, stopGetText, deleteBrowserStep]);
-  
+
   const discardGetList = useCallback(() => {
     stopGetList();
     browserSteps.forEach(step => {
@@ -267,7 +267,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     resetListState();
     notify('info', 'Capture List steps discarded');
   }, [browserSteps, stopGetList, deleteBrowserStep, resetListState]);
-  
+
 
   const captureScreenshot = (fullPage: boolean) => {
     const screenshotSettings: ScreenshotSettings = {
