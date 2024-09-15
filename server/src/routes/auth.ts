@@ -50,4 +50,17 @@ router.get('/sheets', async (req, res) => {
       res.status(500).send('Failed to list sheets');
     }
   });
-  
+
+router..get('/sheets/:sheetId', async (req, res) => {
+    try {
+      const sheets = google.sheets({ version: 'v4', auth: oauth2Client });
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId: req.params.sheetId,
+        range: 'Sheet1', // Adjust range as needed
+      });
+      res.json(response.data.values);
+    } catch (error) {
+      console.error('Error reading sheet:', error);
+      res.status(500).send('Failed to read sheet');
+    }
+  });
