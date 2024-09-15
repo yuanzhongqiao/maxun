@@ -2,13 +2,11 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import 'dotenv/config';
-
 import { record, workflow, storage, auth } from './routes';
 import { BrowserPool } from "./browser-management/classes/BrowserPool";
 import logger from './logger'
 import { SERVER_PORT } from "./constants/config";
 import { Server } from "socket.io";
-import { worker } from './workflow-management/scheduler';
 
 const app = express();
 app.use(cors());
