@@ -51,7 +51,7 @@ router.get('/sheets', async (req, res) => {
     }
   });
 
-router..get('/sheets/:sheetId', async (req, res) => {
+router.get('/sheets/:sheetId', async (req, res) => {
     try {
       const sheets = google.sheets({ version: 'v4', auth: oauth2Client });
       const response = await sheets.spreadsheets.values.get({
