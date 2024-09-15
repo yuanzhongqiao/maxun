@@ -25,17 +25,21 @@ router.get('/auth/google', (req, res) => {
 
 // Callback route for Google OAuth 2.0
 router.get('/auth/google/callback', async (req, res) => {
-    const { code } = req.query;
-    try {
-        const { tokens } = await oauth2Client.getToken(code);
-        oauth2Client.setCredentials(tokens);
-        // Store tokens securely (e.g., in a database)
-        res.send('Authentication successful');
-    } catch (error) {
-        console.error('Error during authentication:', error);
-        res.status(500).send('Authentication failed');
+    const code = req.query.code;
+    if (typeof code !== 'string') {
+      res.status(400).send('Invalid authorization code');
+      return;
     }
-});
+    try {
+      const { tokens } = await oauth2Client.getToken(code);
+      oauth2Client.setCredentials(tokens);
+      // Store tokens securely (e.g., in a database)
+      res.send('Authentication successful');
+    } catch (error) {
+      console.error('Error during authentication:', error);
+      res.status(500).send('Authentication failed');
+    }
+  });
 
 router.get('/sheets', async (req, res) => {
     try {
