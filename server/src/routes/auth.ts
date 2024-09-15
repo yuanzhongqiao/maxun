@@ -64,3 +64,21 @@ router.get('/sheets/:sheetId', async (req, res) => {
       res.status(500).send('Failed to read sheet');
     }
   });
+
+router.post('/sheets/:sheetId', async (req, res) => {
+    try {
+      const sheets = google.sheets({ version: 'v4', auth: oauth2Client });
+      const response = await sheets.spreadsheets.values.append({
+        spreadsheetId: req.params.sheetId,
+        range: 'Sheet1', // Adjust range as needed
+        valueInputOption: 'USER_ENTERED',
+        resource: {
+          values: [req.body.values], // Expect an array of values in the request body
+        },
+      });
+      res.json(response.data);
+    } catch (error) {
+      console.error('Error writing to sheet:', error);
+      res.status(500).send('Failed to write to sheet');
+    }
+  });
