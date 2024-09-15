@@ -28,6 +28,7 @@
     "express": "^4.17.2",
     "fortawesome": "^0.0.1-security",
     "google-auth-library": "^9.14.1",
+    "googleapis": "^144.0.0",
     "ioredis": "^5.4.1",
     "joi": "^17.6.0",
     "loglevel": "^1.8.0",
