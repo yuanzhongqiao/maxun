@@ -33,7 +33,7 @@ router.get('/auth/google/callback', async (req, res) => {
     try {
       const { tokens } = await oauth2Client.getToken(code);
       oauth2Client.setCredentials(tokens);
-      // Store tokens securely (e.g., in a database)
+      // TODO: Store tokens securely (e.g., in a database)
       res.send('Authentication successful');
     } catch (error) {
       console.error('Error during authentication:', error);
