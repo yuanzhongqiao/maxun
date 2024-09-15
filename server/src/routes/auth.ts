@@ -36,3 +36,18 @@ router.get('/auth/google/callback', async (req, res) => {
       res.status(500).send('Authentication failed');
     }
   });
+
+router.get('/sheets', async (req, res) => {
+    try {
+      const drive = google.drive({ version: 'v3', auth: oauth2Client });
+      const response = await drive.files.list({
+        q: "mimeType='application/vnd.google-apps.spreadsheet'",
+        fields: 'files(id, name)'
+      });
+      res.json(response.data.files);
+    } catch (error) {
+      console.error('Error listing sheets:', error);
+      res.status(500).send('Failed to list sheets');
+    }
+  });
+  
