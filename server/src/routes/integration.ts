@@ -44,7 +44,7 @@ router.post('/write-to-sheet', async (req, res) => {
         spreadsheetId,
         range,
         valueInputOption: 'USER_ENTERED',
-        resource: {
+        requestBody: {
           values: values, // Expecting an array of arrays, like [['data1', 'data2'], ['data3', 'data4']]
         },
       });
