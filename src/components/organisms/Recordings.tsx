@@ -3,6 +3,7 @@ import { RecordingsTable } from "../molecules/RecordingsTable";
 import { Grid } from "@mui/material";
 import { RunSettings, RunSettingsModal } from "../molecules/RunSettings";
 import { ScheduleSettings, ScheduleSettingsModal } from "../molecules/ScheduleSettings";
+import { IntegrationSettings, IntegrationSettingsModal } from "../molecules/IntegrationSettings";
 
 interface RecordingsProps {
   handleEditRecording: (fileName: string) => void;
@@ -17,6 +18,17 @@ export const Recordings = ({ handleEditRecording, handleRunRecording, setFileNam
   const [scheduleSettingsAreOpen, setScheduleSettingsAreOpen] = useState(false);
   const [integrateSettingsAreOpen, setIntegrateSettingsAreOpen] = useState(false);
   const [params, setParams] = useState<string[]>([]);
+
+  const handleSettingsAndIntegrate = (fileName: string, params: string[]) => {
+    if (params.length === 0) {
+      setIntegrateSettingsAreOpen(true);
+      setFileName(fileName);
+    } else {
+      setParams(params);
+      setIntegrateSettingsAreOpen(true);
+      setFileName(fileName);
+    }
+  }
 
   const handleSettingsAndRun = (fileName: string, params: string[]) => {
     if (params.length === 0) {
