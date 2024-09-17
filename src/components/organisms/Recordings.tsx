@@ -9,7 +9,7 @@ interface RecordingsProps {
   handleEditRecording: (fileName: string) => void;
   handleRunRecording: (settings: RunSettings) => void;
   handleScheduleRecording: (settings: ScheduleSettings) => void;
-  handleIntegrateRecording: (settings: ScheduleSettings) => void;
+  handleIntegrateRecording: (settings: IntegrationSettings) => void;
   setFileName: (fileName: string) => void;
 }
 
