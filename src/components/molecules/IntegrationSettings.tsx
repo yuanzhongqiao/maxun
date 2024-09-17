@@ -6,7 +6,7 @@ import { modalStyle } from "./AddWhereCondModal";
 
 interface IntegrationProps {
   isOpen: boolean;
-  handleSubmit: (data: IntegrationSettings) => void;
+  handleStart: (data: IntegrationSettings) => void;
   handleClose: () => void;
 }
 
@@ -17,7 +17,7 @@ export interface IntegrationSettings {
   data: string;
 }
 
-export const IntegrationSettingsModal = ({ isOpen, handleSubmit, handleClose }: IntegrationProps) => {
+export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: IntegrationProps) => {
 
   const [settings, setSettings] = useState<IntegrationSettings>({
     credentials: '',
@@ -83,7 +83,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleSubmit, handleClose }: 
           fullWidth
         />
 
-        <Button variant="contained" color="primary" onClick={() => handleSubmit(settings)} style={{ marginTop: '10px' }}>
+        <Button variant="contained" color="primary" onClick={() => handleStart(settings)} style={{ marginTop: '10px' }}>
           Submit
         </Button>
       </div>
