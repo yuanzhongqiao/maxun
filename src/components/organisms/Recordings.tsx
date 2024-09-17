@@ -58,6 +58,12 @@ export const Recordings = ({ handleEditRecording, handleRunRecording, setFileNam
     setFileName('');
   }
 
+  const handleIntegrateClose = () => {
+    setParams([]);
+    setIntegrateSettingsAreOpen(false);
+    setFileName('');
+  }
+
   const handleScheduleClose = () => {
     setParams([]);
     setScheduleSettingsAreOpen(false);
@@ -75,6 +81,12 @@ export const Recordings = ({ handleEditRecording, handleRunRecording, setFileNam
       <ScheduleSettingsModal isOpen={scheduleSettingsAreOpen}
         handleClose={handleScheduleClose}
         handleStart={(settings) => handleScheduleRecording(settings)}
+      />
+      <IntegrationSettingsModal isOpen={integrateSettingsAreOpen}
+        handleClose={handleIntegrateClose}
+        isTask={params.length !== 0}
+        params={params}
+        handleStart={(settings) => handleIntegrateRecording(settings)}
       />
       <Grid container direction="column" sx={{ padding: '30px' }}>
         <Grid item xs>
