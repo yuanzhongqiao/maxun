@@ -17,7 +17,7 @@ export interface IntegrationSettings {
   data: string;
 }
 
-export const IntegrationModal = ({ isOpen, handleSubmit, handleClose }: IntegrationProps) => {
+export const IntegrationSettingsModal = ({ isOpen, handleSubmit, handleClose }: IntegrationProps) => {
 
   const [settings, setSettings] = useState<IntegrationSettings>({
     credentials: '',
