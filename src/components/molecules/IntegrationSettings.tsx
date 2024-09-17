@@ -73,16 +73,6 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                     fullWidth
                 />
 
-                <TextField
-                    sx={{ marginBottom: '15px' }}
-                    label="Data (comma-separated, newline for rows)"
-                    multiline
-                    rows={4}
-                    value={settings.data}
-                    onChange={handleChange('data')}
-                    fullWidth
-                />
-
                 <Button variant="contained" color="primary" onClick={() => handleStart(settings)} style={{ marginTop: '10px' }}>
                     Submit
                 </Button>
