@@ -1,32 +1,34 @@
 import React, { useState } from 'react';
 import { GenericModal } from "../atoms/GenericModal";
 import { MenuItem, TextField, Typography } from "@mui/material";
-import { Dropdown } from "../atoms/DropdownMui";
 import Button from "@mui/material/Button";
 import { modalStyle } from "./AddWhereCondModal";
 
-interface IntegrationSettingsProps {
+interface GoogleSheetsIntegrationProps {
   isOpen: boolean;
-  handleStart: (settings: IntegrationSettings) => void;
+  handleSubmit: (data: GoogleSheetsSettings) => void;
   handleClose: () => void;
-  isTask: boolean;
-  params?: string[];
 }
 
-export interface IntegrationSettings {
-  maxConcurrency: number;
-  maxRepeats: number;
-  debug: boolean;
-  params?: any;
+export interface GoogleSheetsSettings {
+  credentials: string;
+  spreadsheetId: string;
+  range: string;
+  data: string;
 }
 
-export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose, isTask, params }: IntegrationSettingsProps) => {
+export const GoogleSheetsIntegrationModal = ({ isOpen, handleSubmit, handleClose }: GoogleSheetsIntegrationProps) => {
 
-  const [settings, setSettings] = React.useState<IntegrationSettings>({
-    maxConcurrency: 1,
-    maxRepeats: 1,
-    debug: true,
+  const [settings, setSettings] = useState<GoogleSheetsSettings>({
+    credentials: '',
+    spreadsheetId: '',
+    range: '',
+    data: '',
   });
+
+  const handleChange = (field: keyof GoogleSheetsSettings) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSettings({ ...settings, [field]: e.target.value });
+  };
 
   return (
     <GenericModal
@@ -40,75 +42,51 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose, isT
         alignItems: 'flex-start',
         marginLeft: '65px',
       }}>
-        {isTask
-          ?
-          (
-            <React.Fragment>
-              <Typography sx={{ margin: '20px 0px' }} >Recording parameters:</Typography>
-              {params?.map((item, index) => {
-                return <TextField
-                  sx={{ marginBottom: '15px' }}
-                  key={`param-${index}`}
-                  type="string"
-                  label={item}
-                  required
-                  onChange={(e) => setSettings(
-                    {
-                      ...settings,
-                      params: settings.params
-                        ? {
-                          ...settings.params,
-                          [item]: e.target.value,
-                        }
-                        : {
-                          [item]: e.target.value,
-                        },
-                    })}
-                />
-              })}
-            </React.Fragment>)
-          : null
-        }
-        <Typography sx={{ margin: '20px 0px' }} >Interpreter settings:</Typography>
+        <Typography sx={{ margin: '20px 0px' }}>Google Sheets Integration</Typography>
+
         <TextField
           sx={{ marginBottom: '15px' }}
-          type="number"
-          label="maxConcurrency"
+          label="Service Account JSON"
+          multiline
+          rows={10}
           required
-          onChange={(e) => setSettings(
-            {
-              ...settings,
-              maxConcurrency: parseInt(e.target.value),
-            })}
-          defaultValue={settings.maxConcurrency}
+          value={settings.credentials}
+          onChange={handleChange('credentials')}
+          fullWidth
         />
+
         <TextField
           sx={{ marginBottom: '15px' }}
-          type="number"
-          label="maxRepeats"
+          label="Google Spreadsheet ID"
           required
-          onChange={(e) => setSettings(
-            {
-              ...settings,
-              maxRepeats: parseInt(e.target.value),
-            })}
-          defaultValue={settings.maxRepeats}
+          value={settings.spreadsheetId}
+          onChange={handleChange('spreadsheetId')}
+          fullWidth
         />
-        <Dropdown
-          id="debug"
-          label="debug"
-          value={settings.debug?.toString()}
-          handleSelect={(e) => setSettings(
-            {
-              ...settings,
-              debug: e.target.value === "true",
-            })}
-        >
-          <MenuItem value="true">true</MenuItem>
-          <MenuItem value="false">false</MenuItem>
-        </Dropdown>
-        <Button onClick={() => handleStart(settings)}>Start</Button>
+
+        <TextField
+          sx={{ marginBottom: '15px' }}
+          label="Range (e.g., Sheet1!A1:B2)"
+          required
+          value={settings.range}
+          onChange={handleChange('range')}
+          fullWidth
+        />
+
+        <TextField
+          sx={{ marginBottom: '15px' }}
+          label="Data (comma-separated, newline for rows)"
+          multiline
+          rows={4}
+          value={settings.data}
+          onChange={handleChange('data')}
+          fullWidth
+        />
+
+        <Button variant="contained" color="primary" onClick={() => handleSubmit(settings)} style={{ marginTop: '10px' }}>
+          Submit
+        </Button>
       </div>
     </GenericModal>
   );
-}
+};
