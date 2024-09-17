@@ -9,6 +9,7 @@ import { io, Socket } from "socket.io-client";
 import { stopRecording } from "../api/recording";
 import { RunSettings } from "../components/molecules/RunSettings";
 import { ScheduleSettings } from "../components/molecules/ScheduleSettings";
+import { IntegrationSettings } from "../components/molecules/IntegrationSettings";
 
 interface MainPageProps {
   handleEditRecording: (fileName: string) => void;
@@ -112,6 +113,10 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
       });
   }
 
+  const handleIntegrateRecording = (settings: IntegrationSettings) => {
+    console.log(`Integration settings:`, settings);
+  }
+
   const DisplayContent = () => {
     switch (content) {
       case 'recordings':
@@ -120,7 +125,7 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
           handleRunRecording={handleRunRecording}
           setFileName={setFileName}
           handleScheduleRecording={handleScheduleRecording}
-          handleIntegrateRecording={handleScheduleRecording}
+          handleIntegrateRecording={handleIntegrateRecording}
         />;
       case 'runs':
         return <Runs
