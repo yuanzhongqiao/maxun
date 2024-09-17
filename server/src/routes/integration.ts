@@ -20,7 +20,13 @@ router.post('/upload-credentials', (req, res) => {
 
 router.post('/write-to-sheet', async (req, res) => {
     try {
-        const { spreadsheetId, range, values } = req.body;
+        const { spreadsheetId, range } = req.body;
+
+         // Todo: remove this. This is just for testing purposes.
+        const values = [
+            ['Scraped Data 1', 'More Data'],
+            ['Scraped Data 2', 'More Data'],
+        ];
 
         // Load the stored credentials
         const credentialsPath = path.join(__dirname, 'service_account_credentials.json');
