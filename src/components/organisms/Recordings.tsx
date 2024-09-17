@@ -84,8 +84,6 @@ export const Recordings = ({ handleEditRecording, handleRunRecording, setFileNam
       />
       <IntegrationSettingsModal isOpen={integrateSettingsAreOpen}
         handleClose={handleIntegrateClose}
-        isTask={params.length !== 0}
-        params={params}
         handleStart={(settings) => handleIntegrateRecording(settings)}
       />
       <Grid container direction="column" sx={{ padding: '30px' }}>
