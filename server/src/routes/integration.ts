@@ -28,6 +28,10 @@ router.post('/write-to-sheet', async (req, res) => {
             ['Scraped Data 2', 'More Data'],
         ];
 
+        const resource = {
+            values,
+          };
+
         // Load the stored credentials
         const credentialsPath = path.join(__dirname, 'service_account_credentials.json');
         if (!fs.existsSync(credentialsPath)) {
@@ -38,9 +42,15 @@ router.post('/write-to-sheet', async (req, res) => {
 
         // Authenticate with Google using the service account credentials
         const auth = new google.auth.GoogleAuth({
-            credentials,
+            credentials: {
+                client_email: credentials.client_email,
+                private_key: credentials.private_key,
+            },
             scopes: ['https://www.googleapis.com/auth/spreadsheets'],
         });
+        const authToken = await auth.getClient();
+        console.log('authToken:', authToken);
+        // return authToken;
 
         const sheets = google.sheets({ version: 'v4', auth });
 
@@ -49,10 +59,8 @@ router.post('/write-to-sheet', async (req, res) => {
             spreadsheetId,
             range,
             valueInputOption: 'USER_ENTERED',
-            requestBody: {
-                values: values, // Expecting an array of arrays, like [['data1', 'data2'], ['data3', 'data4']]
-            },
-        });
+            requestBody: resource,
+          });
 
         res.status(200).json({ message: 'Data written to Google Sheet successfully.' });
     } catch (error) {
