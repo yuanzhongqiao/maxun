@@ -4,29 +4,29 @@ import { MenuItem, TextField, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import { modalStyle } from "./AddWhereCondModal";
 
-interface GoogleSheetsIntegrationProps {
+interface IntegrationProps {
   isOpen: boolean;
-  handleSubmit: (data: GoogleSheetsSettings) => void;
+  handleSubmit: (data: IntegrationSettings) => void;
   handleClose: () => void;
 }
 
-export interface GoogleSheetsSettings {
+export interface IntegrationSettings {
   credentials: string;
   spreadsheetId: string;
   range: string;
   data: string;
 }
 
-export const GoogleSheetsIntegrationModal = ({ isOpen, handleSubmit, handleClose }: GoogleSheetsIntegrationProps) => {
+export const IntegrationModal = ({ isOpen, handleSubmit, handleClose }: IntegrationProps) => {
 
-  const [settings, setSettings] = useState<GoogleSheetsSettings>({
+  const [settings, setSettings] = useState<IntegrationSettings>({
     credentials: '',
     spreadsheetId: '',
     range: '',
     data: '',
   });
 
-  const handleChange = (field: keyof GoogleSheetsSettings) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (field: keyof IntegrationSettings) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setSettings({ ...settings, [field]: e.target.value });
   };
 
