@@ -82,7 +82,7 @@ export const Recordings = ({ handleEditRecording, handleRunRecording, setFileNam
             handleEditRecording={handleEditRecording}
             handleRunRecording={handleSettingsAndRun}
             handleScheduleRecording={handleSettingsAndSchedule}
-            handleIntegrateRecording={handleSettingsAndSchedule}
+            handleIntegrateRecording={handleSettingsAndIntegrate}
           />
         </Grid>
       </Grid>
