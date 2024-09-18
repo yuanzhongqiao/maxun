@@ -1,4 +1,4 @@
-import { Router } from 'express';;
+import { Router } from 'express';
 import { google, sheets_v4 } from "googleapis";
 import fs from 'fs';
 import path from 'path';
