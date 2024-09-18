@@ -21,6 +21,7 @@ function saveIntegrations(integrations: any) {
 }
 
 router.post('/upload-credentials', async (req, res) => {
+    try {
     const { fileName, credentials, spreadsheetId, range } = req.body;
 
     console.log(`fileName: ${fileName}, credentials: ${credentials}, spreadsheetId: ${spreadsheetId}, range: ${range}`);
@@ -38,10 +39,11 @@ router.post('/upload-credentials', async (req, res) => {
 
     // Save the updated integrations back to the file
     saveIntegrations(integrations);
+    logger.log('info', 'Service account credentials saved successfully.');
 
-    try {
-        //fs.writeFileSync(storedCredentialsPath, JSON.stringify(credentials));
-        logger.log('info', 'Service account credentials saved successfully.');
+    return res.send(true);
+
+    //fs.writeFileSync(storedCredentialsPath, JSON.stringify(credentials));
     } catch (error: any) {
         logger.log('error', `Error saving credentials: ${error.message}`);
         return res.status(500).json({ message: 'Failed to save credentials.', error: error.message });
