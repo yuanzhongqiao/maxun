@@ -19,7 +19,7 @@ router.post('/upload-credentials', async (req, res) => {
     try {
         fs.writeFileSync(storedCredentialsPath, JSON.stringify(credentials));
         logger.log('info', 'Service account credentials saved successfully.');
-    } catch (error) {
+    } catch (error: any) {
         logger.log('error', `Error saving credentials: ${error.message}`);
         return res.status(500).json({ message: 'Failed to save credentials.', error: error.message });
     }
@@ -27,7 +27,7 @@ router.post('/upload-credentials', async (req, res) => {
     let storedCredentials;
     try {
         storedCredentials = JSON.parse(fs.readFileSync(storedCredentialsPath, 'utf-8'));
-    } catch (error) {
+    } catch (error: any) {
         logger.log('error', `Error reading credentials: ${error.message}`);
         return res.status(500).json({ message: 'Failed to read credentials.', error: error.message });
     }
@@ -44,7 +44,7 @@ router.post('/upload-credentials', async (req, res) => {
 
         authToken = await auth.getClient();
         logger.log('info', 'Authenticated with Google Sheets API successfully.');
-    } catch (error) {
+    } catch (error: any) {
         logger.log('error', `Google Sheets API Authentication failed: ${error.message}`);
         return res.status(500).json({ message: 'Authentication with Google failed.', error: error.message });
     }
@@ -68,7 +68,7 @@ router.post('/upload-credentials', async (req, res) => {
         });
         logger.log('info', `Data written to Google Sheet: ${spreadsheetId}, Range: ${range}`);
         return res.status(200).json({ message: 'Data written to Google Sheet successfully.' });
-    } catch (error) {
+    } catch (error: any ) {
         logger.log('error', `Failed to write to Google Sheet: ${error.message}`);
         return res.status(500).json({ message: 'Failed to write to Google Sheet.', error: error.message });
     }
