@@ -13,7 +13,7 @@ router.post('/upload-credentials', async (req, res) => {
         return res.status(400).json({ message: 'Credentials, Spreadsheet ID, and Range are required.' });
     }
 
-    // Todo: Store the credentials in a secure place (for test, we store them locally)
+    // Store the credentials in a secure place (for test, we store them locally)
     const storedCredentialsPath = path.join(__dirname, 'service_account_credentials.json');
 
     try {
@@ -42,7 +42,7 @@ router.post('/upload-credentials', async (req, res) => {
             scopes: ['https://www.googleapis.com/auth/spreadsheets'],
         });
 
-        authToken = await auth.getClient();
+        authToken = await auth.getClient() as any; // Casting to avoid type errors
         logger.log('info', 'Authenticated with Google Sheets API successfully.');
     } catch (error: any) {
         logger.log('error', `Google Sheets API Authentication failed: ${error.message}`);
@@ -68,9 +68,8 @@ router.post('/upload-credentials', async (req, res) => {
         });
         logger.log('info', `Data written to Google Sheet: ${spreadsheetId}, Range: ${range}`);
         return res.status(200).json({ message: 'Data written to Google Sheet successfully.' });
-    } catch (error: any ) {
+    } catch (error: any) {
         logger.log('error', `Failed to write to Google Sheet: ${error.message}`);
         return res.status(500).json({ message: 'Failed to write to Google Sheet.', error: error.message });
     }
 });
-
