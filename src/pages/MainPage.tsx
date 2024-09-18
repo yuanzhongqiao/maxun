@@ -57,8 +57,8 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
     setRunningRecordingName(fileName);
   }
 
-  const readyForRunHandler = useCallback( (browserId: string, runId: string) => {
-    interpretStoredRecording(runningRecordingName, runId).then( async (interpretation: boolean) => {
+  const readyForRunHandler = useCallback((browserId: string, runId: string) => {
+    interpretStoredRecording(runningRecordingName, runId).then(async (interpretation: boolean) => {
       if (!aborted) {
         if (interpretation) {
           notify('success', `Interpretation of ${runningRecordingName} succeeded`);
@@ -80,8 +80,8 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
   }, [currentInterpretationLog])
 
   const handleRunRecording = useCallback((settings: RunSettings) => {
-    createRunForStoredRecording(runningRecordingName, settings).then(({browserId, runId}: CreateRunResponse) => {
-      setIds({browserId, runId});
+    createRunForStoredRecording(runningRecordingName, settings).then(({ browserId, runId }: CreateRunResponse) => {
+      setIds({ browserId, runId });
       const socket =
         io(`http://localhost:8080/${browserId}`, {
           transports: ["websocket"],
@@ -105,7 +105,7 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
 
   const handleScheduleRecording = (settings: ScheduleSettings) => {
     scheduleStoredRecording(runningRecordingName, settings)
-      .then(({message, runId}: ScheduleRunResponse) => {
+      .then(({ message, runId }: ScheduleRunResponse) => {
         if (message === 'success') {
           notify('success', `Recording ${runningRecordingName} scheduled successfully`);
         } else {
@@ -115,10 +115,15 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
   }
 
   const handleIntegrateRecording = (settings: IntegrationSettings) => {
-    handleUploadCredentials(runningRecordingName, settings.credentials, settings.spreadsheetId, settings.range).then(() => {
-        console.log(settings.spreadsheetId, settings.range)
-        notify('success', `Data written to Google Sheet successfully`);
-    });
+    handleUploadCredentials(runningRecordingName, settings.credentials, settings.spreadsheetId, settings.range)
+      .then((response) => {
+        if (response) {
+          notify('success', `Service Account credentials saved successfully.`);
+        } else {
+          notify('error', `Failed to save credentials.`);
+
+        }
+      })
   }
 
   const DisplayContent = () => {
@@ -144,9 +149,9 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
   }
 
   return (
-    <Stack direction='row' spacing={0} sx={{minHeight: '800px'}}>
-        <MainMenu value={content} handleChangeContent={setContent}/>
-      { DisplayContent() }
+    <Stack direction='row' spacing={0} sx={{ minHeight: '800px' }}>
+      <MainMenu value={content} handleChangeContent={setContent} />
+      {DisplayContent()}
     </Stack>
   );
 };
