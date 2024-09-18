@@ -1,70 +1,77 @@
 import { Router } from 'express';
-import { google, sheets_v4 } from "googleapis";
+import { google } from "googleapis";
 import fs from 'fs';
 import path from 'path';
+import logger from "../logger";
 
-export const router = Router()
+export const router = Router();
 
-router.post('/upload-credentials', (req, res) => {
-    const credentials = req.body.credentials;
+router.post('/upload-credentials', async (req, res) => {
+    const { credentials, spreadsheetId, range } = req.body;
 
-    if (!credentials) {
-        return res.status(400).json({ message: 'Credentials are required.' });
+    if (!credentials || !spreadsheetId || !range) {
+        return res.status(400).json({ message: 'Credentials, Spreadsheet ID, and Range are required.' });
     }
+
     // Todo: Store the credentials in a secure place (for test, we store them locally)
     const storedCredentialsPath = path.join(__dirname, 'service_account_credentials.json');
-    fs.writeFileSync(storedCredentialsPath, JSON.stringify(credentials));
-
-    res.status(200).json({ message: 'Service Account credentials saved successfully.' });
-});
-
-router.post('/write-to-sheet', async (req, res) => {
+    
     try {
-        const { spreadsheetId, range } = req.body;
+        fs.writeFileSync(storedCredentialsPath, JSON.stringify(credentials));
+        logger.log('info', 'Service account credentials saved successfully.');
+    } catch (error) {
+        logger.log('error', `Error saving credentials: ${error.message}`);
+        return res.status(500).json({ message: 'Failed to save credentials.', error: error.message });
+    }
 
-         // Todo: remove this. This is just for testing purposes.
-        const values = [
-            ['Scraped Data 1', 'More Data'],
-            ['Scraped Data 2', 'More Data'],
-        ];
+    let storedCredentials;
+    try {
+        storedCredentials = JSON.parse(fs.readFileSync(storedCredentialsPath, 'utf-8'));
+    } catch (error) {
+        logger.log('error', `Error reading credentials: ${error.message}`);
+        return res.status(500).json({ message: 'Failed to read credentials.', error: error.message });
+    }
 
-        const resource = {
-            values,
-          };
-
-        // Load the stored credentials
-        const credentialsPath = path.join(__dirname, 'service_account_credentials.json');
-        if (!fs.existsSync(credentialsPath)) {
-            return res.status(400).json({ message: 'No credentials found. Please provide credentials first.' });
-        }
-
-        const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf-8'));
-
-        // Authenticate with Google using the service account credentials
+    let authToken;
+    try {
         const auth = new google.auth.GoogleAuth({
             credentials: {
-                client_email: credentials.client_email,
-                private_key: credentials.private_key,
+                client_email: storedCredentials.client_email,
+                private_key: storedCredentials.private_key,
             },
             scopes: ['https://www.googleapis.com/auth/spreadsheets'],
         });
-        const authToken = await auth.getClient();
-        console.log('authToken:', authToken);
-        // return authToken;
 
-        const sheets = google.sheets({ version: 'v4', auth });
+        authToken = await auth.getClient();
+        logger.log('info', 'Authenticated with Google Sheets API successfully.');
+    } catch (error) {
+        logger.log('error', `Google Sheets API Authentication failed: ${error.message}`);
+        return res.status(500).json({ message: 'Authentication with Google failed.', error: error.message });
+    }
 
-        // Write data to the provided Google Sheet and range
+    const sheets = google.sheets({ version: 'v4', auth: authToken });
+
+    // Data to be written to the sheet
+    const values = [
+        ['Scraped Data 1', 'More Data', 'IDKKKKKKKKK'],
+    ];
+
+    const resource = {
+        values,
+    };
+
+    try {
         await sheets.spreadsheets.values.append({
             spreadsheetId,
             range,
             valueInputOption: 'USER_ENTERED',
             requestBody: resource,
-          });
-
-        res.status(200).json({ message: 'Data written to Google Sheet successfully.' });
+        });
+        logger.log('info', `Data written to Google Sheet: ${spreadsheetId}, Range: ${range}`);
+        return res.status(200).json({ message: 'Data written to Google Sheet successfully.' });
     } catch (error) {
-        console.error('Error writing to sheet:', error);
-        res.status(500).json({ message: 'Failed to write to Google Sheet.', error });
+        logger.log('error', `Failed to write to Google Sheet: ${error.message}`);
+        return res.status(500).json({ message: 'Failed to write to Google Sheet.', error: error.message });
     }
 });
+
