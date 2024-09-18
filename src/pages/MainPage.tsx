@@ -5,7 +5,7 @@ import { Recordings } from "../components/organisms/Recordings";
 import { Runs } from "../components/organisms/Runs";
 import { useGlobalInfoStore } from "../context/globalInfo";
 import { createRunForStoredRecording, interpretStoredRecording, notifyAboutAbort, scheduleStoredRecording } from "../api/storage";
-import { handleUploadCredentials, handleWriteToSheet } from "../api/interpretation"
+import { handleUploadCredentials } from "../api/interpretation"
 import { io, Socket } from "socket.io-client";
 import { stopRecording } from "../api/recording";
 import { RunSettings } from "../components/molecules/RunSettings";
@@ -115,10 +115,9 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
   }
 
   const handleIntegrateRecording = (settings: IntegrationSettings) => {
-    handleUploadCredentials(settings.credentials).then(() => {
-      handleWriteToSheet(settings.spreadsheetId, settings.range).then(() => {
+    handleUploadCredentials(settings.credentials, settings.spreadsheetId, settings.range).then(() => {
+        console.log(settings.spreadsheetId, settings.range)
         notify('success', `Data written to Google Sheet successfully`);
-      });
     });
   }
 
