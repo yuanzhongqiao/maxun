@@ -8,7 +8,7 @@ export const router = Router();
 // Temproary Path to the JSON file that will store the integration details
 const integrationsFilePath = path.join(__dirname, 'integrations.json');
 
-function loadIntegrations() {
+export function loadIntegrations() {
   if (fs.existsSync(integrationsFilePath)) {
     const data = fs.readFileSync(integrationsFilePath, 'utf-8');
     return JSON.parse(data);
