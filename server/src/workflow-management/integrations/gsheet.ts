@@ -28,7 +28,7 @@ export async function writeDataToSheet(spreadsheetId: string, range: string, dat
     });
 
     console.log(`Data written to Google Sheet: ${spreadsheetId}, Range: ${range}`);
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error writing data to Google Sheet: ${error.message}`);
     throw error;
   }
