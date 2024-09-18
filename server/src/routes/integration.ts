@@ -6,9 +6,9 @@ import logger from "../logger";
 export const router = Router();
 
 router.post('/upload-credentials', async (req, res) => {
-    const { credentials, spreadsheetId, range } = req.body;
+    const { fileName, credentials, spreadsheetId, range } = req.body;
 
-    if (!credentials || !spreadsheetId || !range) {
+    if (!fileName || !credentials || !spreadsheetId || !range) {
         return res.status(400).json({ message: 'Credentials, Spreadsheet ID, and Range are required.' });
     }
 
