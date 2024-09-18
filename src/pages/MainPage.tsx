@@ -115,7 +115,7 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
   }
 
   const handleIntegrateRecording = (settings: IntegrationSettings) => {
-    handleUploadCredentials(settings.credentials, settings.spreadsheetId, settings.range).then(() => {
+    handleUploadCredentials(runningRecordingName, settings.credentials, settings.spreadsheetId, settings.range).then(() => {
         console.log(settings.spreadsheetId, settings.range)
         notify('success', `Data written to Google Sheet successfully`);
     });
