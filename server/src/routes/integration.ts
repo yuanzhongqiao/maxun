@@ -15,7 +15,7 @@ router.post('/upload-credentials', async (req, res) => {
 
     // Todo: Store the credentials in a secure place (for test, we store them locally)
     const storedCredentialsPath = path.join(__dirname, 'service_account_credentials.json');
-    
+
     try {
         fs.writeFileSync(storedCredentialsPath, JSON.stringify(credentials));
         logger.log('info', 'Service account credentials saved successfully.');
@@ -51,7 +51,6 @@ router.post('/upload-credentials', async (req, res) => {
 
     const sheets = google.sheets({ version: 'v4', auth: authToken });
 
-    // Data to be written to the sheet
     const values = [
         ['Scraped Data 1', 'More Data', 'IDKKKKKKKKK'],
     ];
