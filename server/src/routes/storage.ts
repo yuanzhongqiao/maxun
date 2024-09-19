@@ -13,7 +13,7 @@ import { uuid } from "uuidv4";
 import { workflowQueue } from '../workflow-management/scheduler';
 import moment from 'moment-timezone';
 import cron from 'node-cron';
-import { updateGoogleSheet } from '../workflow-management/integrations/gsheet';
+import { googleSheetUpdateTasks } from '../workflow-management/integrations/gsheet';
 
 export const router = Router();
 
@@ -139,16 +139,6 @@ router.get('/runs/run/:fileName/:runId', async (req, res) => {
     return res.send(null);
   }
 });
-
-interface GoogleSheetUpdateTask {
-  name: string;
-  runId: string;
-  status: 'pending' | 'completed';
-}
-
-let googleSheetUpdateTasks: { [runId: string]: GoogleSheetUpdateTask } = {};
-
-console.log('googleSheetUpdateTasks:', googleSheetUpdateTasks);
 
 /**
  * PUT endpoint for finishing a run and saving it to the storage.
@@ -348,28 +338,3 @@ router.post('/runs/abort/:fileName/:runId', async (req, res) => {
     return res.send(false);
   }
 });
-
-const processGoogleSheetUpdates = async () => {
-  while (true) {
-    for (const runId in googleSheetUpdateTasks) {
-      const task = googleSheetUpdateTasks[runId];
-      if (task.status === 'pending') {
-        try {
-          try {
-            await updateGoogleSheet(task.name, task.runId);
-            console.log(`Successfully updated Google Sheets for run ${task.runId}`);
-            googleSheetUpdateTasks[runId].status = 'completed';
-
-          } catch (error: any) {
-            console.error(`update google sheet error ${task.runId}:`, error);
-          }
-        } catch (error: any) {
-          console.error(`Failed to update Google Sheets for run ${task.runId}:`, error);
-        }
-      }
-    }
-    await new Promise(resolve => setTimeout(resolve, 5000));
-  }
-};
-
-processGoogleSheetUpdates();
