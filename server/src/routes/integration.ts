@@ -12,7 +12,7 @@ router.post('/upload-credentials', async (req, res) => {
     }
     // *** TEMPORARILY WE STORE CREDENTIALS HERE ***
     const integrations = loadIntegrations();
-    integrations[fileName] = { fileName, spreadsheetId, range, credentials };
+    integrations = { fileName, spreadsheetId, range, credentials };
     saveIntegrations(integrations);
     logger.log('info', 'Service account credentials saved successfully.');
     return res.send(true);
