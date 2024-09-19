@@ -11,7 +11,7 @@ router.post('/upload-credentials', async (req, res) => {
       return res.status(400).json({ message: 'Credentials, Spreadsheet ID, and Range are required.' });
     }
     // *** TEMPORARILY WE STORE CREDENTIALS HERE ***
-    const integrations = loadIntegrations();
+    let integrations = loadIntegrations();
     integrations = { fileName, spreadsheetId, range, credentials };
     saveIntegrations(integrations);
     logger.log('info', 'Service account credentials saved successfully.');
