@@ -3,8 +3,6 @@ import fs from 'fs';
 import path from 'path';
 import logger from "../../logger";
 import { readFile } from "../storage";
-
-
 interface GoogleSheetUpdateTask {
   name: string;
   runId: string;
@@ -18,18 +16,20 @@ export let googleSheetUpdateTasks: { [runId: string]: GoogleSheetUpdateTask } = 
 
 
 // *** Temporary Path to the JSON file that will store the integration details ***
-const integrationsFilePath = path.join(__dirname, 'integrations.json');
+const getIntegrationsFilePath = (fileName: string) => path.join(__dirname, `integrations-${fileName}.json`);
 
-export function loadIntegrations() {
-  if (fs.existsSync(integrationsFilePath)) {
-    const data = fs.readFileSync(integrationsFilePath, 'utf-8');
+export function loadIntegrations(fileName: string) {
+  const filePath = getIntegrationsFilePath(fileName);
+  if (fs.existsSync(filePath)) {
+    const data = fs.readFileSync(filePath, 'utf-8');
     return JSON.parse(data);
   }
   return {};
 }
 
-export function saveIntegrations(integrations: any) {
-  fs.writeFileSync(integrationsFilePath, JSON.stringify(integrations, null, 2));
+export function saveIntegrations(fileName: string, integrations: any) {
+  const filePath = getIntegrationsFilePath(fileName);
+  fs.writeFileSync(filePath, JSON.stringify(integrations, null, 2));
 }
 
 export async function updateGoogleSheet(fileName: string, runId: string) {
@@ -39,7 +39,7 @@ export async function updateGoogleSheet(fileName: string, runId: string) {
 
     if (parsedRun.status === 'success' && parsedRun.serializableOutput) {
       const data = parsedRun.serializableOutput['item-0'] as { [key: string]: any }[];
-      const integrationConfig = await loadIntegrations();
+      const integrationConfig = await loadIntegrations(fileName);
 
       if (integrationConfig) {
         const { spreadsheetId, range, credentials } = integrationConfig;
