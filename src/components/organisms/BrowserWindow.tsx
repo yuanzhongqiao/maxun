@@ -235,7 +235,7 @@ export const BrowserWindow = () => {
                         });
 
                         if (listSelector) {
-                            addListStep(listSelector, { ...fields, [newField.id]: newField }, currentListId, { type: '', selector: paginationSelector });
+                            addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId, { type: '', selector: paginationSelector });
                         }
 
                     } else {
@@ -294,7 +294,7 @@ export const BrowserWindow = () => {
                     });
 
                     if (listSelector) {
-                        addListStep(listSelector, { ...fields, [newField.id]: newField }, currentListId, { type: '', selector: paginationSelector });
+                        addListStep(listSelector, { ...fields, [newField.label]: newField }, currentListId, { type: '', selector: paginationSelector });
                     }
                 }
             }
