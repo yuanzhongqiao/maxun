@@ -1,16 +1,17 @@
 import { google } from "googleapis";
 import fs from 'fs';
 import path from 'path';
+import logger from "../../logger";
 
 export async function writeDataToSheet(spreadsheetId: string, range: string, data: any[]) {
   try {
-    const credentialsPath = path.join(__dirname, 'service_account_credentials.json');
-    const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf-8'));
+    const integrationCredentialsPath = path.join(__dirname, 'integrations.json');
+    const integrationCredentials = JSON.parse(fs.readFileSync(integrationCredentialsPath, 'utf-8'));
 
     const auth = new google.auth.GoogleAuth({
       credentials: {
-        client_email: credentials.client_email,
-        private_key: credentials.private_key,
+        client_email: integrationCredentials.credentials.client_email,
+        private_key: integrationCredentials.credentials.private_key,
       },
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
@@ -27,9 +28,9 @@ export async function writeDataToSheet(spreadsheetId: string, range: string, dat
       requestBody: resource,
     });
 
-    console.log(`Data written to Google Sheet: ${spreadsheetId}, Range: ${range}`);
+    logger.log(`info`, `Data written to Google Sheet: ${spreadsheetId}, Range: ${range}`);
   } catch (error: any) {
-    console.error(`Error writing data to Google Sheet: ${error.message}`);
+    logger.log(`error`, `Error writing data to Google Sheet: ${error.message}`);
     throw error;
   }
 }
