@@ -13,7 +13,7 @@ import { uuid } from "uuidv4";
 import { workflowQueue } from '../workflow-management/scheduler';
 import moment from 'moment-timezone';
 import cron from 'node-cron';
-import { updateGoogleSheet } from './integration';
+import { updateGoogleSheet } from '../workflow-management/integrations/gsheet';
 
 export const router = Router();
 
