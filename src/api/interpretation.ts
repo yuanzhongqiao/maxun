@@ -6,7 +6,7 @@ export const handleUploadCredentials = async (fileName: any, credentials: any, s
         const response = await axios.post('http://localhost:8080/integration/upload-credentials', { fileName, credentials: JSON.parse(credentials), spreadsheetId, range });
         if (response.status === 200) {
             return response.data;
-          } else {
+        } else {
             throw new Error(`Couldn't make gsheet integration for ${fileName}`);
         }
     } catch (error) {
@@ -18,12 +18,12 @@ export const handleUploadCredentials = async (fileName: any, credentials: any, s
 export const handleWriteToGsheet = async (fileName: string, runId: string): Promise<{
     success: boolean;
     message: string;
-  }> => {
+}> => {
     try {
         const response = await axios.post(`http://localhost:8080/integration/update-google-sheet/${fileName}/${runId}`);
         if (response.status === 200) {
             return response.data;
-          } else {
+        } else {
             throw new Error(`Couldn't make gsheet integration for ${fileName}`);
         }
     } catch (error) {
