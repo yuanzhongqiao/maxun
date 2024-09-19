@@ -140,7 +140,7 @@ async function executeRun(fileName: string, runId: string) {
 
     const updated_run_meta = {
       ...parsedRun,
-      status: interpretationInfo.result,
+      status: 'success',
       finishedAt: new Date().toLocaleString(),
       duration: durString,
       browserId: null,
