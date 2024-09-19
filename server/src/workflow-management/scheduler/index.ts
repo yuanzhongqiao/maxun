@@ -8,6 +8,7 @@ import { readFile, saveFile } from "../storage";
 import { createRemoteBrowserForRun, destroyRemoteBrowser } from '../../browser-management/controller';
 import logger from '../../logger';
 import { browserPool } from "../../server";
+import { googleSheetUpdateTasks, processGoogleSheetUpdates } from "../integrations/gsheet";
 
 const connection = new IORedis({
   host: 'localhost',
@@ -52,9 +53,9 @@ worker.on('failed', async (job: any, err) => {
   logger.log(`info`, `Worker and queue have been closed after failure.`);
 });
 
-async function jobCounts () {
+async function jobCounts() {
   const jobCounts = await workflowQueue.getJobCounts();
-   console.log('Jobs:', jobCounts);
+  console.log('Jobs:', jobCounts);
 }
 
 jobCounts();
@@ -140,10 +141,10 @@ async function executeRun(fileName: string, runId: string) {
 
     const updated_run_meta = {
       ...parsedRun,
-      status: interpretationInfo.result,
+      status: 'success',
       finishedAt: new Date().toLocaleString(),
       duration: durString,
-      browserId: null,
+      browserId: parsedRun.browserId,
       log: interpretationInfo.log.join('\n'),
       serializableOutput: interpretationInfo.serializableOutput,
       binaryOutput: interpretationInfo.binaryOutput,
@@ -153,7 +154,13 @@ async function executeRun(fileName: string, runId: string) {
       `../storage/runs/${fileName}_${runId}.json`,
       JSON.stringify(updated_run_meta, null, 2)
     );
-
+    googleSheetUpdateTasks[runId] = {
+      name: parsedRun.name,
+      runId: runId,
+      status: 'pending',
+      retries: 5,
+    };
+    processGoogleSheetUpdates();
     return true;
   } catch (error: any) {
     logger.log('info', `Error while running a recording with name: ${fileName}_${runId}.json`);

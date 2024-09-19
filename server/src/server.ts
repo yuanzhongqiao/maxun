@@ -2,13 +2,11 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import 'dotenv/config';
-
-import { record, workflow, storage } from './routes';
+import { record, workflow, storage, auth, integration } from './routes';
 import { BrowserPool } from "./browser-management/classes/BrowserPool";
 import logger from './logger'
 import { SERVER_PORT } from "./constants/config";
 import { Server } from "socket.io";
-import { worker } from './workflow-management/scheduler';
 
 const app = express();
 app.use(cors());
@@ -30,6 +28,8 @@ export const browserPool = new BrowserPool();
 app.use('/record', record);
 app.use('/workflow', workflow);
 app.use('/storage', storage);
+app.use('/auth', auth);
+app.use('/integration', integration);
 
 app.get('/', function (req, res) {
     return res.send('Maxun server started 🚀');

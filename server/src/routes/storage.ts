@@ -1,6 +1,6 @@
 /**
  * RESTful API endpoints handling the recording storage.
- */
+*/
 
 import { Router } from 'express';
 import logger from "../logger";
@@ -13,6 +13,7 @@ import { uuid } from "uuidv4";
 import { workflowQueue } from '../workflow-management/scheduler';
 import moment from 'moment-timezone';
 import cron from 'node-cron';
+import { googleSheetUpdateTasks, processGoogleSheetUpdates } from '../workflow-management/integrations/gsheet';
 
 export const router = Router();
 
@@ -20,7 +21,7 @@ export const router = Router();
  * Logs information about recordings API.
  */
 router.all('/', (req, res, next) => {
-  logger.log('debug',`The recordings API was invoked: ${req.url}`)
+  logger.log('debug', `The recordings API was invoked: ${req.url}`)
   next() // pass control to the next handler
 })
 
@@ -45,7 +46,7 @@ router.delete('/recordings/:fileName', async (req, res) => {
     await deleteFile(`./../storage/recordings/${req.params.fileName}.waw.json`);
     return res.send(true);
   } catch (e) {
-    const {message} = e as Error;
+    const { message } = e as Error;
     logger.log('info', `Error while deleting a recording with name: ${req.params.fileName}.waw.json`);
     return res.send(false);
   }
@@ -72,7 +73,7 @@ router.delete('/runs/:fileName', async (req, res) => {
     await deleteFile(`./../storage/runs/${req.params.fileName}.json`);
     return res.send(true);
   } catch (e) {
-    const {message} = e as Error;
+    const { message } = e as Error;
     logger.log('info', `Error while deleting a run with name: ${req.params.fileName}.json`);
     return res.send(false);
   }
@@ -117,7 +118,7 @@ router.put('/runs/:fileName', async (req, res) => {
       runId: runId,
     });
   } catch (e) {
-    const {message} = e as Error;
+    const { message } = e as Error;
     logger.log('info', `Error while creating a run with name: ${req.params.fileName}.json`);
     return res.send('');
   }
@@ -144,10 +145,9 @@ router.get('/runs/run/:fileName/:runId', async (req, res) => {
  */
 router.post('/runs/run/:fileName/:runId', async (req, res) => {
   try {
-    // read the recording from storage
     const recording = await readFile(`./../storage/recordings/${req.params.fileName}.waw.json`)
     const parsedRecording = JSON.parse(recording);
-    // read the run from storage
+
     const run = await readFile(`./../storage/runs/${req.params.fileName}_${req.params.runId}.json`)
     const parsedRun = JSON.parse(run);
 
@@ -168,27 +168,34 @@ router.post('/runs/run/:fileName/:runId', async (req, res) => {
         }
       })();
       await destroyRemoteBrowser(parsedRun.browserId);
-        const run_meta = {
-          ...parsedRun,
-          status: interpretationInfo.result,
-          finishedAt: new Date().toLocaleString(),
-          duration: durString,
-          browserId: null,
-          log: interpretationInfo.log.join('\n'),
-          serializableOutput: interpretationInfo.serializableOutput,
-          binaryOutput: interpretationInfo.binaryOutput,
-        };
-        fs.mkdirSync('../storage/runs', { recursive: true })
-        await saveFile(
-          `../storage/runs/${parsedRun.name}_${req.params.runId}.json`,
-          JSON.stringify(run_meta, null, 2)
-        );
-        return res.send(true);
-      } else {
-        throw new Error('Could not destroy browser');
-      }
+      const run_meta = {
+        ...parsedRun,
+        status: 'success',
+        finishedAt: new Date().toLocaleString(),
+        duration: durString,
+        browserId: parsedRun.browserId,
+        log: interpretationInfo.log.join('\n'),
+        serializableOutput: interpretationInfo.serializableOutput,
+        binaryOutput: interpretationInfo.binaryOutput,
+      };
+      fs.mkdirSync('../storage/runs', { recursive: true })
+      await saveFile(
+        `../storage/runs/${parsedRun.name}_${req.params.runId}.json`,
+        JSON.stringify(run_meta, null, 2)
+      );
+      googleSheetUpdateTasks[req.params.runId] = {
+        name: parsedRun.name,
+        runId: req.params.runId,
+        status: 'pending',
+        retries: 5,
+      };
+      processGoogleSheetUpdates();
+      return res.send(true);
+    } else {
+      throw new Error('Could not destroy browser');
+    }
   } catch (e) {
-    const {message} = e as Error;
+    const { message } = e as Error;
     logger.log('info', `Error while running a recording with name: ${req.params.fileName}_${req.params.runId}.json`);
     return res.send(false);
   }
@@ -198,12 +205,12 @@ router.put('/schedule/:fileName/', async (req, res) => {
   console.log(req.body);
   try {
     const { fileName } = req.params;
-    const { 
-      runEvery, 
-      runEveryUnit, 
-      startFrom, 
-      atTime, 
-      timezone 
+    const {
+      runEvery,
+      runEveryUnit,
+      startFrom,
+      atTime,
+      timezone
     } = req.body;
 
     if (!fileName || !runEvery || !runEveryUnit || !startFrom || !atTime || !timezone) {
@@ -258,7 +265,7 @@ router.put('/schedule/:fileName/', async (req, res) => {
     await workflowQueue.add(
       'run workflow',
       { fileName, runId },
-      { 
+      {
         repeat: {
           pattern: cronExpression,
           tz: timezone
@@ -266,8 +273,8 @@ router.put('/schedule/:fileName/', async (req, res) => {
       }
     );
 
-    res.status(200).json({ 
-      message: 'success', 
+    res.status(200).json({
+      message: 'success',
       runId,
       // cronExpression,
       // nextRunTime: getNextRunTime(cronExpression, timezone)
@@ -291,11 +298,9 @@ router.put('/schedule/:fileName/', async (req, res) => {
  */
 router.post('/runs/abort/:fileName/:runId', async (req, res) => {
   try {
-    // read the run from storage
     const run = await readFile(`./../storage/runs/${req.params.fileName}_${req.params.runId}.json`)
     const parsedRun = JSON.parse(run);
 
-    //get current log
     const browser = browserPool.getRemoteBrowser(parsedRun.browserId);
     const currentLog = browser?.interpreter.debugMessages.join('/n');
     const serializableOutput = browser?.interpreter.serializableData.reduce((reducedObject, item, index) => {
@@ -326,7 +331,7 @@ router.post('/runs/abort/:fileName/:runId', async (req, res) => {
     );
     return res.send(true);
   } catch (e) {
-    const {message} = e as Error;
+    const { message } = e as Error;
     logger.log('info', `Error while running a recording with name: ${req.params.fileName}_${req.params.runId}.json`);
     return res.send(false);
   }

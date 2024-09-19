@@ -11,11 +11,12 @@ import { useEffect } from "react";
 import { WorkflowFile } from "maxun-core";
 import { IconButton } from "@mui/material";
 import { Schedule, DeleteForever, Edit, PlayCircle } from "@mui/icons-material";
+import LinkIcon from '@mui/icons-material/Link';
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
 
 interface Column {
-  id: 'interpret' | 'name' | 'create_date' | 'edit' | 'pairs' | 'update_date' | 'delete' | 'schedule';
+  id: 'interpret' | 'name' | 'create_date' | 'edit' | 'pairs' | 'update_date' | 'delete' | 'schedule' | 'integrate';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -47,6 +48,11 @@ const columns: readonly Column[] = [
     minWidth: 80,
   },
   {
+    id: 'integrate',
+    label: 'Integrate',
+    minWidth: 80,
+  },
+  {
     id: 'update_date',
     label: 'Updated at',
     minWidth: 80,
@@ -73,9 +79,10 @@ interface RecordingsTableProps {
   handleEditRecording: (fileName: string) => void;
   handleRunRecording: (fileName: string, params: string[]) => void;
   handleScheduleRecording: (fileName: string, params: string[]) => void;
+  handleIntegrateRecording: (fileName: string, params: string[]) => void;
 }
 
-export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handleScheduleRecording }: RecordingsTableProps) => {
+export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handleScheduleRecording, handleIntegrateRecording }: RecordingsTableProps) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState<Data[]>([]);
@@ -175,6 +182,12 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
                                 <ScheduleButton handleSchedule={() => handleScheduleRecording(row.name, row.params || [])} />
                               </TableCell>
                             );
+                          case 'integrate':
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                <IntegrateButton handleIntegrate={() => handleIntegrateRecording(row.name, row.params || [])} />
+                              </TableCell>
+                            );
                           case 'delete':
                             return (
                               <TableCell key={column.id} align={column.align}>
@@ -243,6 +256,21 @@ const ScheduleButton = ({ handleSchedule }: ScheduleButtonProps) => {
     }}
       sx={{ '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
       <Schedule />
+    </IconButton>
+  )
+}
+
+interface IntegrateButtonProps {
+  handleIntegrate: () => void;
+}
+
+const IntegrateButton = ({ handleIntegrate }: IntegrateButtonProps) => {
+  return (
+    <IconButton aria-label="add" size="small" onClick={() => {
+      handleIntegrate();
+    }}
+      sx={{ '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
+      <LinkIcon />
     </IconButton>
   )
 }

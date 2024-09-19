@@ -3,18 +3,32 @@ import { RecordingsTable } from "../molecules/RecordingsTable";
 import { Grid } from "@mui/material";
 import { RunSettings, RunSettingsModal } from "../molecules/RunSettings";
 import { ScheduleSettings, ScheduleSettingsModal } from "../molecules/ScheduleSettings";
+import { IntegrationSettings, IntegrationSettingsModal } from "../molecules/IntegrationSettings";
 
 interface RecordingsProps {
   handleEditRecording: (fileName: string) => void;
   handleRunRecording: (settings: RunSettings) => void;
   handleScheduleRecording: (settings: ScheduleSettings) => void;
+  handleIntegrateRecording: (settings: IntegrationSettings) => void;
   setFileName: (fileName: string) => void;
 }
 
-export const Recordings = ({ handleEditRecording, handleRunRecording, setFileName, handleScheduleRecording }: RecordingsProps) => {
+export const Recordings = ({ handleEditRecording, handleRunRecording, setFileName, handleScheduleRecording, handleIntegrateRecording }: RecordingsProps) => {
   const [runSettingsAreOpen, setRunSettingsAreOpen] = useState(false);
   const [scheduleSettingsAreOpen, setScheduleSettingsAreOpen] = useState(false);
+  const [integrateSettingsAreOpen, setIntegrateSettingsAreOpen] = useState(false);
   const [params, setParams] = useState<string[]>([]);
+
+  const handleSettingsAndIntegrate = (fileName: string, params: string[]) => {
+    if (params.length === 0) {
+      setIntegrateSettingsAreOpen(true);
+      setFileName(fileName);
+    } else {
+      setParams(params);
+      setIntegrateSettingsAreOpen(true);
+      setFileName(fileName);
+    }
+  }
 
   const handleSettingsAndRun = (fileName: string, params: string[]) => {
     if (params.length === 0) {
@@ -44,6 +58,12 @@ export const Recordings = ({ handleEditRecording, handleRunRecording, setFileNam
     setFileName('');
   }
 
+  const handleIntegrateClose = () => {
+    setParams([]);
+    setIntegrateSettingsAreOpen(false);
+    setFileName('');
+  }
+
   const handleScheduleClose = () => {
     setParams([]);
     setScheduleSettingsAreOpen(false);
@@ -62,12 +82,17 @@ export const Recordings = ({ handleEditRecording, handleRunRecording, setFileNam
         handleClose={handleScheduleClose}
         handleStart={(settings) => handleScheduleRecording(settings)}
       />
+      <IntegrationSettingsModal isOpen={integrateSettingsAreOpen}
+        handleClose={handleIntegrateClose}
+        handleStart={(settings) => handleIntegrateRecording(settings)}
+      />
       <Grid container direction="column" sx={{ padding: '30px' }}>
         <Grid item xs>
           <RecordingsTable
             handleEditRecording={handleEditRecording}
             handleRunRecording={handleSettingsAndRun}
             handleScheduleRecording={handleSettingsAndSchedule}
+            handleIntegrateRecording={handleSettingsAndIntegrate}
           />
         </Grid>
       </Grid>
