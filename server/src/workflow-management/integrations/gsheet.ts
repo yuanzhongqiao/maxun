@@ -94,7 +94,7 @@ export async function writeDataToSheet(fileName: string, spreadsheetId: string, 
   }
 }
 
-const processGoogleSheetUpdates = async () => {
+export const processGoogleSheetUpdates = async () => {
   while (true) {
     let hasPendingTasks = false;
     for (const runId in googleSheetUpdateTasks) {
@@ -122,9 +122,4 @@ const processGoogleSheetUpdates = async () => {
     await new Promise(resolve => setTimeout(resolve, 5000));
   }
 };
-
-export const startProcessGoogleSheetUpdates = () => {
-  if (Object.keys(googleSheetUpdateTasks).length > 0) {
-    processGoogleSheetUpdates();
-  }
-};
+ 
