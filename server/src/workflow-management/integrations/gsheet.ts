@@ -8,8 +8,11 @@ import { readFile } from "../storage";
 interface GoogleSheetUpdateTask {
   name: string;
   runId: string;
-  status: 'pending' | 'completed';
+  status: 'pending' | 'completed' | 'failed';
+  retries: number;
 }
+
+const MAX_RETRIES = 5;
 
 export let googleSheetUpdateTasks: { [runId: string]: GoogleSheetUpdateTask } = {};
 
@@ -93,16 +96,22 @@ export async function writeDataToSheet(spreadsheetId: string, range: string, dat
 
 const processGoogleSheetUpdates = async () => {
   while (true) {
-    let hasPendingTasks = false; 
+    let hasPendingTasks = false;
     for (const runId in googleSheetUpdateTasks) {
       const task = googleSheetUpdateTasks[runId];
       if (task.status === 'pending') {
-        hasPendingTasks = true; 
+        hasPendingTasks = true;
         try {
           await updateGoogleSheet(task.name, task.runId);
           console.log(`Successfully updated Google Sheets for run ${task.runId}`);
           delete googleSheetUpdateTasks[runId];
         } catch (error: any) {
+          if (task.retries < MAX_RETRIES) {
+            googleSheetUpdateTasks[runId].retries += 1;
+          } else {
+            // Mark as failed after maximum retries
+            googleSheetUpdateTasks[runId].status = 'failed';
+          }
           console.error(`Failed to update Google Sheets for run ${task.runId}:`, error);
         }
       }
