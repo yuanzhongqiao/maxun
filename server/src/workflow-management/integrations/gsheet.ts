@@ -4,6 +4,16 @@ import path from 'path';
 import logger from "../../logger";
 import { readFile } from "../storage";
 
+
+interface GoogleSheetUpdateTask {
+  name: string;
+  runId: string;
+  status: 'pending' | 'completed';
+}
+
+export let googleSheetUpdateTasks: { [runId: string]: GoogleSheetUpdateTask } = {};
+
+
 // *** Temporary Path to the JSON file that will store the integration details ***
 const integrationsFilePath = path.join(__dirname, 'integrations.json');
 
@@ -80,3 +90,32 @@ export async function writeDataToSheet(spreadsheetId: string, range: string, dat
     throw error;
   }
 }
+
+const processGoogleSheetUpdates = async () => {
+  while (true) {
+    let hasPendingTasks = false; 
+    for (const runId in googleSheetUpdateTasks) {
+      const task = googleSheetUpdateTasks[runId];
+      if (task.status === 'pending') {
+        hasPendingTasks = true; 
+        try {
+          await updateGoogleSheet(task.name, task.runId);
+          console.log(`Successfully updated Google Sheets for run ${task.runId}`);
+          delete googleSheetUpdateTasks[runId];
+        } catch (error: any) {
+          console.error(`Failed to update Google Sheets for run ${task.runId}:`, error);
+        }
+      }
+    }
+    if (!hasPendingTasks) {
+      break;
+    }
+    await new Promise(resolve => setTimeout(resolve, 5000));
+  }
+};
+
+export const startProcessGoogleSheetUpdates = () => {
+  if (Object.keys(googleSheetUpdateTasks).length > 0) {
+    processGoogleSheetUpdates();
+  }
+};
