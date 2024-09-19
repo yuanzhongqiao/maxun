@@ -53,9 +53,9 @@ worker.on('failed', async (job: any, err) => {
   logger.log(`info`, `Worker and queue have been closed after failure.`);
 });
 
-async function jobCounts () {
+async function jobCounts() {
   const jobCounts = await workflowQueue.getJobCounts();
-   console.log('Jobs:', jobCounts);
+  console.log('Jobs:', jobCounts);
 }
 
 jobCounts();
