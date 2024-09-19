@@ -146,7 +146,7 @@ router.post('/runs/run/:fileName/:runId', async (req, res) => {
   try {
     const recording = await readFile(`./../storage/recordings/${req.params.fileName}.waw.json`)
     const parsedRecording = JSON.parse(recording);
-    
+
     const run = await readFile(`./../storage/runs/${req.params.fileName}_${req.params.runId}.json`)
     const parsedRun = JSON.parse(run);
 
@@ -172,7 +172,7 @@ router.post('/runs/run/:fileName/:runId', async (req, res) => {
           status: interpretationInfo.result,
           finishedAt: new Date().toLocaleString(),
           duration: durString,
-          browserId: null,
+          browserId: parsedRun.browserId,
           log: interpretationInfo.log.join('\n'),
           serializableOutput: interpretationInfo.serializableOutput,
           binaryOutput: interpretationInfo.binaryOutput,
