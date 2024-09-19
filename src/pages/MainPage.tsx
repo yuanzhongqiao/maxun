@@ -5,7 +5,7 @@ import { Recordings } from "../components/organisms/Recordings";
 import { Runs } from "../components/organisms/Runs";
 import { useGlobalInfoStore } from "../context/globalInfo";
 import { createRunForStoredRecording, interpretStoredRecording, notifyAboutAbort, scheduleStoredRecording } from "../api/storage";
-import { handleUploadCredentials } from "../api/interpretation"
+import { handleUploadCredentials } from "../api/integration"
 import { io, Socket } from "socket.io-client";
 import { stopRecording } from "../api/recording";
 import { RunSettings } from "../components/molecules/RunSettings";
@@ -121,7 +121,6 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
           notify('success', `Service Account credentials saved successfully.`);
         } else {
           notify('error', `Failed to save credentials.`);
-
         }
       })
   }
