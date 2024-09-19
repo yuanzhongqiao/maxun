@@ -199,7 +199,7 @@ router.post('/runs/run/:fileName/:runId', async (req, res) => {
       googleSheetUpdateTasks[req.params.runId] = {
         name: parsedRun.name,
         runId: req.params.runId,
-        status: 'pending', 
+        status: 'pending',
       };
 
       return;
