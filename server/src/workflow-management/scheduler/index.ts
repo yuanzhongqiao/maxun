@@ -143,7 +143,7 @@ async function executeRun(fileName: string, runId: string) {
       status: 'success',
       finishedAt: new Date().toLocaleString(),
       duration: durString,
-      browserId: null,
+      browserId: parsedRun.browserId,
       log: interpretationInfo.log.join('\n'),
       serializableOutput: interpretationInfo.serializableOutput,
       binaryOutput: interpretationInfo.binaryOutput,
