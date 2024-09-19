@@ -1,6 +1,6 @@
 /**
  * RESTful API endpoints handling the recording storage.
- */
+*/
 
 import { Router } from 'express';
 import logger from "../logger";
@@ -190,6 +190,7 @@ router.post('/runs/run/:fileName/:runId', async (req, res) => {
         name: parsedRun.name,
         runId: req.params.runId,
         status: 'pending',
+        retries: 5,
       };
 
       return;
