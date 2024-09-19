@@ -42,15 +42,15 @@ export async function updateGoogleSheet(fileName: string, runId: string) {
       const integrationConfig = await loadIntegrations(fileName);
 
       if (integrationConfig) {
-        const { spreadsheetId, range, credentials } = integrationConfig;
+        const { fileName, spreadsheetId, range, credentials } = integrationConfig;
 
-        if (spreadsheetId && range && credentials) {
+        if (fileName && spreadsheetId && range && credentials) {
           // Convert data to Google Sheets format (headers and rows)
           const headers = Object.keys(data[0]);
           const rows = data.map((row: { [key: string]: any }) => Object.values(row));
           const outputData = [headers, ...rows];
 
-          await writeDataToSheet(spreadsheetId, range, outputData);
+          await writeDataToSheet(fileName, spreadsheetId, range, outputData);
           logger.log('info', `Data written to Google Sheet successfully for ${fileName}_${runId}`);
         }
       }
@@ -62,10 +62,10 @@ export async function updateGoogleSheet(fileName: string, runId: string) {
   }
 };
 
-export async function writeDataToSheet(spreadsheetId: string, range: string, data: any[]) {
+export async function writeDataToSheet(fileName: string, spreadsheetId: string, range: string, data: any[]) {
   try {
-    const integrationCredentialsPath = path.join(__dirname, 'integrations.json');
-    const integrationCredentials = JSON.parse(fs.readFileSync(integrationCredentialsPath, 'utf-8'));
+    const integrationCredentialsPath = getIntegrationsFilePath(fileName);
+    const integrationCredentials = JSON.parse(fs.readFileSync(integrationCredentialsPath, 'utf-8'));;
 
     const auth = new google.auth.GoogleAuth({
       credentials: {
