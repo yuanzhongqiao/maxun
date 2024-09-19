@@ -38,7 +38,7 @@ router.post('/upload-credentials', async (req, res) => {
     const integrations = loadIntegrations();
 
     // Add or update the integration for the specific task (fileName)
-    integrations[fileName] = { spreadsheetId, range };
+    integrations[fileName] = { fileName, spreadsheetId, range, credentials };
 
     // Save the updated integrations back to the file
     saveIntegrations(integrations);
@@ -59,19 +59,23 @@ router.post('/update-google-sheet/:fileName/:runId', async (req, res) => {
       const parsedRun = JSON.parse(run);
   
       if (parsedRun.status === 'success' && parsedRun.serializableOutput) {
-        const data = parsedRun.serializableOutput as { [key: string]: any }[];
+        const data = parsedRun.serializableOutput['item-0'] as { [key: string]: any }[];
         const integrationConfig = await loadIntegrations();
+
+        logger.log(`info`, `integration config ${JSON.stringify(integrationConfig)}`)
         
         if (integrationConfig) {
-          const { spreadsheetId, sheetName, credentials } = integrationConfig;
-  
-          if (spreadsheetId && sheetName && credentials) {
+          const { spreadsheetId, range, credentials } = integrationConfig;
+
+          logger.log(`info`, `data from routeeeeeeeeeeeeeeeee: ${JSON.stringify(data)}`)
+
+          if (spreadsheetId && range && credentials) {
             // Convert data to Google Sheets format (headers and rows)
             const headers = Object.keys(data[0]);
             const rows = data.map((row: { [key: string]: any }) => Object.values(row));
             const outputData = [headers, ...rows]; // Include headers
   
-            await writeDataToSheet(spreadsheetId, sheetName, outputData);
+            await writeDataToSheet(spreadsheetId, range, outputData);
             logger.log('info', `Data written to Google Sheet successfully for ${req.params.fileName}_${req.params.runId}`);
             return res.send({ success: true, message: 'Data updated in Google Sheet' });
           }
@@ -91,28 +95,26 @@ export async function updateGoogleSheet(fileName: string, runId: string) {
     const parsedRun = JSON.parse(run);
 
     if (parsedRun.status === 'success' && parsedRun.serializableOutput) {
-      const data = parsedRun.serializableOutput as { [key: string]: any }[];
-      const integrationConfig = await loadIntegrations(); // Assume this function loads config
-
+      const data = parsedRun.serializableOutput['item-0'] as { [key: string]: any }[];
+      const integrationConfig = await loadIntegrations();
+      
       if (integrationConfig) {
-        const { spreadsheetId, sheetName } = integrationConfig;
+        const { spreadsheetId, range, credentials } = integrationConfig;
 
-        if (spreadsheetId && sheetName) {
+        if (spreadsheetId && range && credentials) {
           // Convert data to Google Sheets format (headers and rows)
           const headers = Object.keys(data[0]);
           const rows = data.map((row: { [key: string]: any }) => Object.values(row));
-          const outputData = [headers, ...rows]; // Include headers
+          const outputData = [headers, ...rows];
 
-          await writeDataToSheet(spreadsheetId, sheetName, outputData);
+          await writeDataToSheet(spreadsheetId, range, outputData);
           logger.log('info', `Data written to Google Sheet successfully for ${fileName}_${runId}`);
         }
-      } else {
-        logger.log('error', 'Google Sheet integration not configured');
       }
-    } else {
-      logger.log('error', 'Run not successful or no data to update');
+      logger.log('error', `Google Sheet integration not configured for ${fileName}_${runId}`);
     }
+    logger.log('error', `Run not successful or no data to update for ${fileName}_${runId}`);
   } catch (error: any) {
     logger.log('error', `Failed to write data to Google Sheet for ${fileName}_${runId}: ${error.message}`);
   }
-}
+};
