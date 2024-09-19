@@ -13,7 +13,7 @@ import { uuid } from "uuidv4";
 import { workflowQueue } from '../workflow-management/scheduler';
 import moment from 'moment-timezone';
 import cron from 'node-cron';
-import { googleSheetUpdateTasks } from '../workflow-management/integrations/gsheet';
+import { googleSheetUpdateTasks, processGoogleSheetUpdates } from '../workflow-management/integrations/gsheet';
 
 export const router = Router();
 
@@ -183,17 +183,14 @@ router.post('/runs/run/:fileName/:runId', async (req, res) => {
         `../storage/runs/${parsedRun.name}_${req.params.runId}.json`,
         JSON.stringify(run_meta, null, 2)
       );
-
-      res.send(true);
-
       googleSheetUpdateTasks[req.params.runId] = {
         name: parsedRun.name,
         runId: req.params.runId,
         status: 'pending',
         retries: 5,
       };
-
-      return;
+      processGoogleSheetUpdates();
+      return res.send(true);
     } else {
       throw new Error('Could not destroy browser');
     }
