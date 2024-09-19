@@ -7,7 +7,7 @@ import logger from "../logger";
 import { deleteFile, readFile, readFiles, saveFile } from "../workflow-management/storage";
 import { createRemoteBrowserForRun, destroyRemoteBrowser } from "../browser-management/controller";
 import { chromium } from "playwright";
-import { browserPool } from "../server";
+import { browserPool, io } from "../server";
 import fs from "fs";
 import { uuid } from "uuidv4";
 import { workflowQueue } from '../workflow-management/scheduler';
@@ -182,6 +182,7 @@ router.post('/runs/run/:fileName/:runId', async (req, res) => {
           `../storage/runs/${parsedRun.name}_${req.params.runId}.json`,
           JSON.stringify(run_meta, null, 2)
         );
+        io.emit('run-finished', { success: true });        
         return res.send(true);
       } else {
         throw new Error('Could not destroy browser');
