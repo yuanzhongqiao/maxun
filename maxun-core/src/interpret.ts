@@ -448,7 +448,6 @@ export default class Interpreter extends EventEmitter {
           break;
         case 'clickLoadMore':
           while (true) {
-              // Find and click the 'Load More' button
               const loadMoreButton = await page.$(config.pagination.selector);
               if (!loadMoreButton) {
                   // No more "Load More" button, so scrape the remaining items
@@ -456,15 +455,12 @@ export default class Interpreter extends EventEmitter {
                   allResults = allResults.concat(finalResults);
                   return allResults;
               }
-      
               // Click the 'Load More' button to load additional items
               await loadMoreButton.click();
               await page.waitForTimeout(2000); // Wait for new items to load
-      
               // After clicking 'Load More', scroll down to load more items
               await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
               await page.waitForTimeout(2000);
-      
               // Check if more items are available
               const currentHeight = await page.evaluate(() => document.body.scrollHeight);
               if (currentHeight === previousHeight) {
@@ -473,9 +469,7 @@ export default class Interpreter extends EventEmitter {
                   allResults = allResults.concat(finalResults);
                   return allResults;
               }
-      
               previousHeight = currentHeight;
-      
               if (config.limit && allResults.length >= config.limit) {
                   // If limit is set and reached, return the limited results
                   allResults = allResults.slice(0, config.limit);
