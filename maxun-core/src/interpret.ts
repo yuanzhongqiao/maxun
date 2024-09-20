@@ -447,11 +447,41 @@ export default class Interpreter extends EventEmitter {
           await page.waitForTimeout(1000);
           break;
         case 'clickLoadMore':
-          const loadMoreButton = await page.$(config.pagination.selector);
-          if (!loadMoreButton) {
-            return allResults;
+          while (true) {
+              // Find and click the 'Load More' button
+              const loadMoreButton = await page.$(config.pagination.selector);
+              if (!loadMoreButton) {
+                  // No more "Load More" button, so scrape the remaining items
+                  const finalResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+                  allResults = allResults.concat(finalResults);
+                  return allResults;
+              }
+      
+              // Click the 'Load More' button to load additional items
+              await loadMoreButton.click();
+              await page.waitForTimeout(2000); // Wait for new items to load
+      
+              // After clicking 'Load More', scroll down to load more items
+              await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+              await page.waitForTimeout(2000);
+      
+              // Check if more items are available
+              const currentHeight = await page.evaluate(() => document.body.scrollHeight);
+              if (currentHeight === previousHeight) {
+                  // No more items loaded, return the scraped results
+                  const finalResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+                  allResults = allResults.concat(finalResults);
+                  return allResults;
+              }
+      
+              previousHeight = currentHeight;
+      
+              if (config.limit && allResults.length >= config.limit) {
+                  // If limit is set and reached, return the limited results
+                  allResults = allResults.slice(0, config.limit);
+                  break;
+              }
           }
-          await loadMoreButton.click();
           break;
         default:
           const results = await page.evaluate((cfg) => window.scrapeList(cfg), config);
