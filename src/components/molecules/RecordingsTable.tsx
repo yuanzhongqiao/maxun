@@ -117,7 +117,6 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
     if (rows.length === 0) {
       fetchRecordings();
     }
-
   }, []);
 
   return (
