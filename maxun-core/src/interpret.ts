@@ -406,6 +406,17 @@ export default class Interpreter extends EventEmitter {
           previousHeight = currentHeight;
           break;
         case 'scrollUp':
+          await page.evaluate(() => window.scrollTo(0, 0));
+          await page.waitForTimeout(2000);
+      
+          const currentTopHeight = await page.evaluate(() => document.documentElement.scrollTop);
+          if (currentTopHeight === 0) {
+              const finalResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+              allResults = allResults.concat(finalResults);
+              return allResults;
+          }
+      
+          previousHeight = currentTopHeight;
           break;
         case 'clickNext':
           const pageResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
