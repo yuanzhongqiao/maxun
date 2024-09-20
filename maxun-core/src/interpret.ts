@@ -408,14 +408,14 @@ export default class Interpreter extends EventEmitter {
         case 'scrollUp':
           await page.evaluate(() => window.scrollTo(0, 0));
           await page.waitForTimeout(2000);
-      
+
           const currentTopHeight = await page.evaluate(() => document.documentElement.scrollTop);
           if (currentTopHeight === 0) {
-              const finalResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
-              allResults = allResults.concat(finalResults);
-              return allResults;
+            const finalResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+            allResults = allResults.concat(finalResults);
+            return allResults;
           }
-      
+
           previousHeight = currentTopHeight;
           break;
         case 'clickNext':
@@ -448,33 +448,33 @@ export default class Interpreter extends EventEmitter {
           break;
         case 'clickLoadMore':
           while (true) {
-              const loadMoreButton = await page.$(config.pagination.selector);
-              if (!loadMoreButton) {
-                  // No more "Load More" button, so scrape the remaining items
-                  const finalResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
-                  allResults = allResults.concat(finalResults);
-                  return allResults;
-              }
-              // Click the 'Load More' button to load additional items
-              await loadMoreButton.click();
-              await page.waitForTimeout(2000); // Wait for new items to load
-              // After clicking 'Load More', scroll down to load more items
-              await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-              await page.waitForTimeout(2000);
-              // Check if more items are available
-              const currentHeight = await page.evaluate(() => document.body.scrollHeight);
-              if (currentHeight === previousHeight) {
-                  // No more items loaded, return the scraped results
-                  const finalResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
-                  allResults = allResults.concat(finalResults);
-                  return allResults;
-              }
-              previousHeight = currentHeight;
-              if (config.limit && allResults.length >= config.limit) {
-                  // If limit is set and reached, return the limited results
-                  allResults = allResults.slice(0, config.limit);
-                  break;
-              }
+            const loadMoreButton = await page.$(config.pagination.selector);
+            if (!loadMoreButton) {
+              // No more "Load More" button, so scrape the remaining items
+              const finalResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+              allResults = allResults.concat(finalResults);
+              return allResults;
+            }
+            // Click the 'Load More' button to load additional items
+            await loadMoreButton.click();
+            await page.waitForTimeout(2000); // Wait for new items to load
+            // After clicking 'Load More', scroll down to load more items
+            await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+            await page.waitForTimeout(2000);
+            // Check if more items are available
+            const currentHeight = await page.evaluate(() => document.body.scrollHeight);
+            if (currentHeight === previousHeight) {
+              // No more items loaded, return the scraped results
+              const finalResults = await page.evaluate((cfg) => window.scrapeList(cfg), config);
+              allResults = allResults.concat(finalResults);
+              return allResults;
+            }
+            previousHeight = currentHeight;
+            if (config.limit && allResults.length >= config.limit) {
+              // If limit is set and reached, return the limited results
+              allResults = allResults.slice(0, config.limit);
+              break;
+            }
           }
           break;
         default:
