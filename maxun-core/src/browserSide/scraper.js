@@ -97,7 +97,6 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
       metric = (1 - (Math.max(...sizes) - Math.min(...sizes)) / Math.max(...sizes));
     }
 
-    // console.debug(`Total ${metricType} is ${metric}.`)
     if (metric > maxSelector.metric && elements.length < maxCountPerPage) {
       maxSelector = { selector, metric };
     }
