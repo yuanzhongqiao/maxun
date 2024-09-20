@@ -97,7 +97,6 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
       metric = (1 - (Math.max(...sizes) - Math.min(...sizes)) / Math.max(...sizes));
     }
 
-    // console.debug(`Total ${metricType} is ${metric}.`)
     if (metric > maxSelector.metric && elements.length < maxCountPerPage) {
       maxSelector = { selector, metric };
     }
@@ -125,85 +124,6 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
 
   return out;
 }
-
-async function scrollDownToLoadMore(selector, limit) {
-  let previousHeight = 0;
-  let itemsLoaded = 0;
-
-  while (itemsLoaded < limit) {
-    window.scrollBy(0, window.innerHeight);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    const currentHeight = document.body.scrollHeight;
-
-    if (currentHeight === previousHeight) {
-      break; // No more items to load
-    }
-
-    previousHeight = currentHeight;
-    itemsLoaded += document.querySelectorAll(selector).length;
-  }
-}
-
-async function scrollUpToLoadMore(selector, limit) {
-  let previousHeight = 0;
-  let itemsLoaded = 0;
-
-  while (itemsLoaded < limit) {
-    window.scrollBy(0, -window.innerHeight);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    const currentHeight = document.body.scrollHeight;
-
-    if (currentHeight === previousHeight) {
-      break; // No more items to load
-    }
-
-    previousHeight = currentHeight;
-    itemsLoaded += document.querySelectorAll(selector).length;
-  }
-}
-
-async function clickNextPagination(selector, scrapedData, limit) {
-  // Check if the limit is already met
-  if (scrapedData.length >= limit) {
-    return false; // Return false to indicate no further action is needed
-  }
-
-  // Check if a single "Next" button exists
-  let nextButton = document.querySelector(selector);
-
-  if (nextButton) {
-    nextButton.click();
-    return true; // Indicate that pagination occurred
-  } else {
-    // Handle pagination with numbers
-    const paginationButtons = document.querySelectorAll(selector);
-    let clicked = false;
-
-    // Loop through pagination buttons to find the current active page
-    for (let i = 0; i < paginationButtons.length - 1; i++) {
-      const button = paginationButtons[i];
-      if (button.classList.contains('active')) {
-        // Click the next button if available
-        const nextButtonInPagination = paginationButtons[i + 1];
-        if (nextButtonInPagination) {
-          nextButtonInPagination.click();
-          clicked = true;
-          break;
-        }
-      }
-    }
-
-    // If no next button was clicked, we might be on the last page
-    if (!clicked) {
-      throw new Error("No more items to load or pagination has ended.");
-    }
-
-    return clicked; // Indicate whether pagination occurred
-  }
-}
-
 
 /**
  * Returns a "scrape" result from the current page.
@@ -420,43 +340,5 @@ async function clickNextPagination(selector, scrapedData, limit) {
 
     return results;
   };
-
-  window.scrollDown = async function (selector, limit) {
-    let previousHeight = 0;
-    let itemsLoaded = 0;
-
-    while (itemsLoaded < limit) {
-      window.scrollTo(0, document.body.scrollHeight);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      const currentHeight = document.body.scrollHeight;
-
-      if (currentHeight === previousHeight) {
-        break; // No more items to load
-      }
-
-      previousHeight = currentHeight;
-      itemsLoaded += document.querySelectorAll(selector).length;
-    }
-  }
-
-  window.scrollUp = async function (selector, limit) {
-    let previousHeight = 0;
-    let itemsLoaded = 0;
-
-    while (itemsLoaded < limit) {
-      window.scrollBy(0, -window.innerHeight);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      const currentHeight = document.body.scrollHeight;
-
-      if (currentHeight === previousHeight) {
-        break; // No more items to load
-      }
-
-      previousHeight = currentHeight;
-      itemsLoaded += document.querySelectorAll(selector).length;
-    }
-  }
-
+  
 })(window);

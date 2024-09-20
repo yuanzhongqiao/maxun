@@ -228,9 +228,8 @@ export const BrowserWindow = () => {
                         setFields(prevFields => {
                             const updatedFields = {
                                 ...prevFields,
-                                [newField.id]: newField
+                                [newField.label]: newField
                             };
-                            console.log(updatedFields)
                             return updatedFields;
                         });
 
@@ -288,7 +287,7 @@ export const BrowserWindow = () => {
                     setFields(prevFields => {
                         const updatedFields = {
                             ...prevFields,
-                            [newField.id]: newField
+                            [newField.label]: newField
                         };
                         return updatedFields;
                     });
