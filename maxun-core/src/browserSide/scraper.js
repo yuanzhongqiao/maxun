@@ -126,25 +126,6 @@ function scrapableHeuristics(maxCountPerPage = 50, minArea = 20000, scrolls = 3,
   return out;
 }
 
-async function scrollDownToLoadMore(selector, limit) {
-  let previousHeight = 0;
-  let itemsLoaded = 0;
-
-  while (itemsLoaded < limit) {
-    window.scrollBy(0, window.innerHeight);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    const currentHeight = document.body.scrollHeight;
-
-    if (currentHeight === previousHeight) {
-      break; // No more items to load
-    }
-
-    previousHeight = currentHeight;
-    itemsLoaded += document.querySelectorAll(selector).length;
-  }
-}
-
 /**
  * Returns a "scrape" result from the current page.
  * @returns {Array<Object>} *Curated* array of scraped information (with sparse rows removed)
