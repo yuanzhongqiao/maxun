@@ -164,47 +164,6 @@ async function scrollUpToLoadMore(selector, limit) {
   }
 }
 
-async function clickNextPagination(selector, scrapedData, limit) {
-  // Check if the limit is already met
-  if (scrapedData.length >= limit) {
-    return false; // Return false to indicate no further action is needed
-  }
-
-  // Check if a single "Next" button exists
-  let nextButton = document.querySelector(selector);
-
-  if (nextButton) {
-    nextButton.click();
-    return true; // Indicate that pagination occurred
-  } else {
-    // Handle pagination with numbers
-    const paginationButtons = document.querySelectorAll(selector);
-    let clicked = false;
-
-    // Loop through pagination buttons to find the current active page
-    for (let i = 0; i < paginationButtons.length - 1; i++) {
-      const button = paginationButtons[i];
-      if (button.classList.contains('active')) {
-        // Click the next button if available
-        const nextButtonInPagination = paginationButtons[i + 1];
-        if (nextButtonInPagination) {
-          nextButtonInPagination.click();
-          clicked = true;
-          break;
-        }
-      }
-    }
-
-    // If no next button was clicked, we might be on the last page
-    if (!clicked) {
-      throw new Error("No more items to load or pagination has ended.");
-    }
-
-    return clicked; // Indicate whether pagination occurred
-  }
-}
-
-
 /**
  * Returns a "scrape" result from the current page.
  * @returns {Array<Object>} *Curated* array of scraped information (with sparse rows removed)
