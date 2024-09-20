@@ -230,7 +230,6 @@ export const BrowserWindow = () => {
                                 ...prevFields,
                                 [newField.label]: newField
                             };
-                            console.log(updatedFields)
                             return updatedFields;
                         });
 
