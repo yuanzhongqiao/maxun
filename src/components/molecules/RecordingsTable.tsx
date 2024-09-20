@@ -16,7 +16,7 @@ import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
 
 interface Column {
-  id: 'interpret' | 'name' | 'create_date' | 'edit' | 'pairs' | 'update_date' | 'delete' | 'schedule' | 'integrate';
+  id: 'interpret' | 'name' | 'create_date' | 'edit' | 'update_date' | 'delete' | 'schedule' | 'integrate';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -35,11 +35,6 @@ const columns: readonly Column[] = [
   {
     id: 'edit',
     label: 'Edit',
-    minWidth: 80,
-  },
-  {
-    id: 'pairs',
-    label: 'Pairs',
     minWidth: 80,
   },
   {
@@ -69,7 +64,6 @@ interface Data {
   id: number;
   name: string;
   create_date: string;
-  pairs: number;
   update_date: string;
   content: WorkflowFile;
   params: string[];
@@ -123,7 +117,6 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
     if (rows.length === 0) {
       fetchRecordings();
     }
-
   }, []);
 
   return (
