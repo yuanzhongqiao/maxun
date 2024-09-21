@@ -91,7 +91,7 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
             }
         });
     };
-    
+
     const addScreenshotStep = (fullPage: boolean) => {
         setBrowserSteps(prevSteps => [
             ...prevSteps,
@@ -123,17 +123,17 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
                             label: newLabel
                         }
                     };
-    
+
                     return {
-                        ...step, 
-                        fields: updatedFields 
+                        ...step,
+                        fields: updatedFields
                     };
                 }
                 return step;
             })
         );
     };
-    
+
 
     const removeListTextField = (listId: number, fieldKey: string) => {
         setBrowserSteps(prevSteps =>
