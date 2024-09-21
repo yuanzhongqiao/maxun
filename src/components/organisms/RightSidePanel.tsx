@@ -118,7 +118,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const stopCaptureAndEmitGetTextSettings = useCallback(() => {
     const hasUnconfirmedTextSteps = browserSteps.some(step => step.type === 'text' && !confirmedTextSteps[step.id]);
     if (hasUnconfirmedTextSteps) {
-      notify('error', 'Please confirm no labels are empty');
+      notify('error', 'Please confirm all text fields');
       return;
     }
     stopGetText();
