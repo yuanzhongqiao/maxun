@@ -5,7 +5,7 @@ import {
     BrowserContext,
 } from 'playwright';
 import { Socket } from "socket.io";
-import { fullLists, PlaywrightBlocker, Request } from '@cliqz/adblocker-playwright';
+import { PlaywrightBlocker } from '@cliqz/adblocker-playwright';
 import fetch from 'cross-fetch';
 
 import logger from '../../logger';
@@ -124,7 +124,6 @@ export class RemoteBrowser {
                         await this.changeTab(tabInfo.index - 1);
                     }
                 }
-                // close the page and log it
                 await page.close();
                 logger.log(
                     'debug',
@@ -187,9 +186,7 @@ export class RemoteBrowser {
      */
     public makeAndEmitScreenshot = async (): Promise<void> => {
         try {
-            const screenshot = await this.currentPage?.screenshot(
-                { type: 'jpeg', quality: 90, fullPage: true }
-            );
+            const screenshot = await this.currentPage?.screenshot();
             if (screenshot) {
                 this.emitScreenshot(screenshot.toString('base64'));
             }
@@ -322,7 +319,7 @@ export class RemoteBrowser {
             logger.log('warn', 'client is not initialized');
             return;
         }
-        await this.client.send('Page.startScreencast', { format: 'jpeg', quality: 90 });
+        await this.client.send('Page.startScreencast', { format: 'jpeg', quality: 75 });
         logger.log('info', `Browser started with screencasting a page.`);
     };
 
