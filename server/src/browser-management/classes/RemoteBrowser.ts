@@ -124,7 +124,6 @@ export class RemoteBrowser {
                         await this.changeTab(tabInfo.index - 1);
                     }
                 }
-                // close the page and log it
                 await page.close();
                 logger.log(
                     'debug',
