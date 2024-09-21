@@ -132,42 +132,40 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     onFinishCapture();
   }, [stopGetText, getTextSettingsObject, socket, browserSteps, confirmedTextSteps]);
 
-
   const getListSettingsObject = useCallback(() => {
     let settings: {
       listSelector?: string;
-      fields?: Record<string, { selector: string; tag?: string;[key: string]: any }>;
+      fields?: Record<string, { selector: string; tag?: string; [key: string]: any }>;
       pagination?: { type: string; selector?: string };
       limit?: number;
     } = {};
-
+  
     browserSteps.forEach(step => {
       if (step.type === 'list' && step.listSelector && Object.keys(step.fields).length > 0) {
-        const fields: Record<string, { selector: string; tag?: string;[key: string]: any }> = {};
-        Object.entries(step.fields).forEach(([label, field]) => {
+        const fields: Record<string, { selector: string; tag?: string; [key: string]: any }> = {};
+  
+        Object.entries(step.fields).forEach(([id, field]) => {
           if (field.selectorObj?.selector) {
-            fields[label] = {
+            fields[field.label] = {
               selector: field.selectorObj.selector,
               tag: field.selectorObj.tag,
               attribute: field.selectorObj.attribute,
             };
           }
         });
-
+  
         settings = {
           listSelector: step.listSelector,
           fields: fields,
           pagination: { type: paginationType, selector: step.pagination?.selector },
           limit: parseInt(limitType === 'custom' ? customLimit : limitType),
         };
-
       }
     });
-
+  
     return settings;
   }, [browserSteps, paginationType, limitType, customLimit]);
-
-
+  
   const resetListState = useCallback(() => {
     setShowPaginationOptions(false);
     updatePaginationType('');
