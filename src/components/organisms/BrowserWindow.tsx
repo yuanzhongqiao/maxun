@@ -228,13 +228,14 @@ export const BrowserWindow = () => {
                         setFields(prevFields => {
                             const updatedFields = {
                                 ...prevFields,
-                                [newField.label]: newField
+                                [newField.id]: newField
                             };
-                            if (listSelector) {
-                                addListStep(listSelector, updatedFields, currentListId, { type: '', selector: paginationSelector });
-                            }
                             return updatedFields;
                         });
+
+                        if (listSelector) {
+                            addListStep(listSelector, { ...fields, [newField.id]: newField }, currentListId, { type: '', selector: paginationSelector });
+                        }
 
                     } else {
                         setAttributeOptions(options);
@@ -286,13 +287,14 @@ export const BrowserWindow = () => {
                     setFields(prevFields => {
                         const updatedFields = {
                             ...prevFields,
-                            [newField.label]: newField
+                            [newField.id]: newField
                         };
-                        if (listSelector) {
-                            addListStep(listSelector, updatedFields, currentListId, { type: '', selector: paginationSelector });
-                        }
                         return updatedFields;
                     });
+
+                    if (listSelector) {
+                        addListStep(listSelector, { ...fields, [newField.id]: newField }, currentListId, { type: '', selector: paginationSelector });
+                    }
                 }
             }
         }
