@@ -192,13 +192,13 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     switch (captureStage) {
       case 'initial':
         startPaginationMode();
-        setShowPaginationOptions(true);
-        setCaptureStage('pagination');
         const hasUnconfirmedListTextFields = browserSteps.some(step => step.type === 'list' && Object.values(step.fields).some(field => !confirmedListTextFields[step.id]?.[field.id]));
         if (hasUnconfirmedListTextFields) {
           notify('error', 'Please confirm all field labels.');
           return;
         }
+        setShowPaginationOptions(true);
+        setCaptureStage('pagination');
         break;
 
       case 'pagination':
