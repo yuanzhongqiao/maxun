@@ -213,7 +213,7 @@ export default class Interpreter extends EventEmitter {
             : Object.entries(value).map((a) => Object.fromEntries([a]));
           // every condition is treated as a single context
 
-          switch (key as keyof typeof operators) {
+          switch (key as (typeof operators)[number]) {
             case '$and':
               return array?.every((x) => this.applicable(x, context));
             case '$or':
