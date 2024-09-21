@@ -45,10 +45,8 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       if (confirmedListTextFields[listId]?.[fieldKey]) {
         return;
       }
-      // This is a text field within a list step
       updateListTextFieldLabel(listId, fieldKey, label);
     } else {
-      // This is a standalone text step
       setTextLabels(prevLabels => ({ ...prevLabels, [id]: label }));
     }
     if (!label.trim()) {
@@ -120,7 +118,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const stopCaptureAndEmitGetTextSettings = useCallback(() => {
     const hasUnconfirmedTextSteps = browserSteps.some(step => step.type === 'text' && !confirmedTextSteps[step.id]);
     if (hasUnconfirmedTextSteps) {
-      notify('error', 'Please confirm no labels are empty');
+      notify('error', 'Please confirm all text fields');
       return;
     }
     stopGetText();
@@ -135,15 +133,15 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const getListSettingsObject = useCallback(() => {
     let settings: {
       listSelector?: string;
-      fields?: Record<string, { selector: string; tag?: string; [key: string]: any }>;
+      fields?: Record<string, { selector: string; tag?: string;[key: string]: any }>;
       pagination?: { type: string; selector?: string };
       limit?: number;
     } = {};
-  
+
     browserSteps.forEach(step => {
       if (step.type === 'list' && step.listSelector && Object.keys(step.fields).length > 0) {
-        const fields: Record<string, { selector: string; tag?: string; [key: string]: any }> = {};
-  
+        const fields: Record<string, { selector: string; tag?: string;[key: string]: any }> = {};
+
         Object.entries(step.fields).forEach(([id, field]) => {
           if (field.selectorObj?.selector) {
             fields[field.label] = {
@@ -153,7 +151,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
             };
           }
         });
-  
+
         settings = {
           listSelector: step.listSelector,
           fields: fields,
@@ -162,10 +160,10 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
         };
       }
     });
-  
+
     return settings;
   }, [browserSteps, paginationType, limitType, customLimit]);
-  
+
   const resetListState = useCallback(() => {
     setShowPaginationOptions(false);
     updatePaginationType('');
@@ -194,6 +192,11 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     switch (captureStage) {
       case 'initial':
         startPaginationMode();
+        const hasUnconfirmedListTextFields = browserSteps.some(step => step.type === 'list' && Object.values(step.fields).some(field => !confirmedListTextFields[step.id]?.[field.id]));
+        if (hasUnconfirmedListTextFields) {
+          notify('error', 'Please confirm all field labels.');
+          return;
+        }
         setShowPaginationOptions(true);
         setCaptureStage('pagination');
         break;
@@ -252,7 +255,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     setTextLabels({});
     setErrors({});
     setConfirmedTextSteps({});
-    notify('info', 'Capture Text steps discarded');
+    notify('error', 'Capture Text Discarded');
   }, [browserSteps, stopGetText, deleteBrowserStep]);
 
   const discardGetList = useCallback(() => {
@@ -263,7 +266,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       }
     });
     resetListState();
-    notify('info', 'Capture List steps discarded');
+    notify('error', 'Capture List Discarded');
   }, [browserSteps, stopGetList, deleteBrowserStep, resetListState]);
 
 
