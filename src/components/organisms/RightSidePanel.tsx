@@ -133,15 +133,15 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const getListSettingsObject = useCallback(() => {
     let settings: {
       listSelector?: string;
-      fields?: Record<string, { selector: string; tag?: string; [key: string]: any }>;
+      fields?: Record<string, { selector: string; tag?: string;[key: string]: any }>;
       pagination?: { type: string; selector?: string };
       limit?: number;
     } = {};
-  
+
     browserSteps.forEach(step => {
       if (step.type === 'list' && step.listSelector && Object.keys(step.fields).length > 0) {
-        const fields: Record<string, { selector: string; tag?: string; [key: string]: any }> = {};
-  
+        const fields: Record<string, { selector: string; tag?: string;[key: string]: any }> = {};
+
         Object.entries(step.fields).forEach(([id, field]) => {
           if (field.selectorObj?.selector) {
             fields[field.label] = {
@@ -151,7 +151,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
             };
           }
         });
-  
+
         settings = {
           listSelector: step.listSelector,
           fields: fields,
@@ -160,10 +160,10 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
         };
       }
     });
-  
+
     return settings;
   }, [browserSteps, paginationType, limitType, customLimit]);
-  
+
   const resetListState = useCallback(() => {
     setShowPaginationOptions(false);
     updatePaginationType('');
