@@ -61,13 +61,11 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
     const addListStep = (listSelector: string, newFields: { [key: string]: TextStep }, listId: number, pagination?: { type: string; selector: string }, limit?: number) => {
         setBrowserSteps(prevSteps => {
-            const existingListStepIndex = prevSteps.findIndex(
-                step => step.type === 'list' && step.id === listId
-            );
+            const existingListStepIndex = prevSteps.findIndex(step => step.type === 'list' && step.id === listId);
             if (existingListStepIndex !== -1) {
-                // Update the existing ListStep with new fields, excluding discarded ones
                 const updatedSteps = [...prevSteps];
                 const existingListStep = updatedSteps[existingListStepIndex] as ListStep;
+
                 const filteredNewFields = Object.entries(newFields).reduce((acc, [key, value]) => {
                     if (!discardedFields.has(`${listId}-${key}`)) {
                         acc[key] = value;
@@ -133,7 +131,6 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
             })
         );
     };
-
 
     const removeListTextField = (listId: number, fieldKey: string) => {
         setBrowserSteps(prevSteps =>
