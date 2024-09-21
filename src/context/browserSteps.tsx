@@ -115,21 +115,25 @@ export const BrowserStepsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         setBrowserSteps(prevSteps =>
             prevSteps.map(step => {
                 if (step.type === 'list' && step.id === listId) {
-                    return {
-                        ...step,
-                        fields: {
-                            ...step.fields,
-                            [fieldKey]: {
-                                ...step.fields[fieldKey],
-                                label: newLabel
-                            }
+                    // Ensure deep copy of the fields object
+                    const updatedFields = {
+                        ...step.fields,
+                        [fieldKey]: {
+                            ...step.fields[fieldKey],
+                            label: newLabel
                         }
+                    };
+    
+                    return {
+                        ...step, 
+                        fields: updatedFields 
                     };
                 }
                 return step;
             })
         );
     };
+    
 
     const removeListTextField = (listId: number, fieldKey: string) => {
         setBrowserSteps(prevSteps =>
