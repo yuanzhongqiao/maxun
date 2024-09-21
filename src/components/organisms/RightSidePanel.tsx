@@ -45,10 +45,8 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       if (confirmedListTextFields[listId]?.[fieldKey]) {
         return;
       }
-      // This is a text field within a list step
       updateListTextFieldLabel(listId, fieldKey, label);
     } else {
-      // This is a standalone text step
       setTextLabels(prevLabels => ({ ...prevLabels, [id]: label }));
     }
     if (!label.trim()) {
