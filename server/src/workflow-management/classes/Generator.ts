@@ -23,6 +23,8 @@ interface PersistedGeneratedData {
   lastUsedSelector: string;
   lastIndex: number | null;
   lastAction: string;
+  lastUsedSelectorTagName: string;
+  lastUsedSelectorInnerText: string;
 }
 
 interface MetaData {
