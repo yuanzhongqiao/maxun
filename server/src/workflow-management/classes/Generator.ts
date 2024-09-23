@@ -330,6 +330,8 @@ export class WorkflowGenerator {
     }
 
     if (this.generatedData.lastUsedSelector) {
+      const elementInfo = await this.getLastUsedSelectorInfo(page, this.generatedData.lastUsedSelector);
+
       this.socket.emit('decision', {
         pair, actionType: 'customAction',
         lastData: {
