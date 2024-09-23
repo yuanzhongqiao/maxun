@@ -311,6 +311,7 @@ export class WorkflowGenerator {
     const elementHandle = await page.$(selector);
     if (elementHandle) {
       const tagName = await elementHandle.evaluate(el => (el as HTMLElement).tagName);
+      // TODO: based on tagName, send data. Always innerText won't hold true. For now, can roll. 
       const innerText = await elementHandle.evaluate(el => (el as HTMLElement).innerText);
 
       return { tagName, innerText };
