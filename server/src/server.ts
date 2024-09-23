@@ -43,4 +43,8 @@ app.get('/', function (req, res) {
     return res.send('Maxun server started 🚀');
 });
 
+app.get('/csrf-token', (req, res) => {
+    res.json({ csrfToken: req.csrfToken() })
+  })
+
 server.listen(SERVER_PORT, () => logger.log('info', `Server listening on port ${SERVER_PORT}`));
