@@ -80,10 +80,7 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
             Do you want to use your previous selection as a condition for performing this action?
             </Typography>
             <Box style={{ marginTop: '4px' }}>
-              [previous action: <b>{decisionModal.action}</b>]
-              <pre>{decisionModal.selector}</pre>
-              <pre>{decisionModal.tagName}</pre>
-              <pre>{decisionModal.innerText}</pre>
+              [Your previous action was: <b>{decisionModal.action}, on {decisionModal.innerText} {decisionModal.tagName}</b>]
             </Box>
           </React.Fragment>);
       default: return null;
