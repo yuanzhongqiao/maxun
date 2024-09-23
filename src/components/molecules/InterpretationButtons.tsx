@@ -81,7 +81,7 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
             </Typography>
             <Box style={{ marginTop: '4px' }}>
             <Typography>Your previous action was:
-                <b>{decisionModal.action}, on an element with text {decisionModal.innerText} </b>
+                <b>{decisionModal.action.charAt(0).toUpperCase() }, on an element with text {decisionModal.innerText} </b>
                 </Typography>
             </Box>
           </React.Fragment>);
