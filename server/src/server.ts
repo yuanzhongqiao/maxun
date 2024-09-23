@@ -4,9 +4,13 @@ import cors from 'cors';
 import 'dotenv/config';
 import { record, workflow, storage, auth, integration } from './routes';
 import { BrowserPool } from "./browser-management/classes/BrowserPool";
-import logger from './logger'
+import logger from './logger';
+import cookieParser from 'cookie-parser';
+import csrf from 'csurf';
 import { SERVER_PORT } from "./constants/config";
 import { Server } from "socket.io";
+
+const csrfProtection = csrf({ cookie: true })
 
 const app = express();
 app.use(cors());
@@ -24,6 +28,9 @@ export const io = new Server(server);
  * {@link BrowserPool} globally exported singleton instance for managing browsers.
  */
 export const browserPool = new BrowserPool();
+
+
+app.use(csrfProtection)
 
 app.use('/record', record);
 app.use('/workflow', workflow);
