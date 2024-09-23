@@ -299,6 +299,17 @@ export class WorkflowGenerator {
     await this.addPairToWorkflowAndNotifyClient(pair, page);
   };
 
+  private async getLastUsedSelectorInfo(page: Page, selector: string) {
+    const elementHandle = await page.$(selector);
+    if (elementHandle) {
+      const tagName = await elementHandle.evaluate(el => (el as HTMLElement).tagName);
+      const innerText = await elementHandle.evaluate(el => (el as HTMLElement).innerText);
+  
+      return { tagName, innerText };
+    }
+    return { tagName: '', innerText: '' }; 
+  }
+
   /**
    * Generates a pair for the custom action event.
    * @param action The type of the custom action.
