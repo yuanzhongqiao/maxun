@@ -1,9 +1,11 @@
+import { Router } from 'express';
 import { hashPassword, comparePassword } from '../utils/auth';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 // Todo: DB 
+export const router = Router();
 
-const register = async (req, res) => {
+router.post('/register', async (req, res) => {
     try {
         const { email, password } = req.body
 
@@ -34,7 +36,7 @@ const register = async (req, res) => {
     } catch (error) {
         res.status(500).send(`Could not register user - ${error.message}`)
     }
-}
+})
 
 const login = async (req, res) => {
     try {
