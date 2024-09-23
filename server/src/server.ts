@@ -29,7 +29,8 @@ export const io = new Server(server);
  */
 export const browserPool = new BrowserPool();
 
-
+// parse cookies - "cookie" is true in csrfProtection
+app.use(cookieParser())
 app.use(csrfProtection)
 
 app.use('/record', record);
