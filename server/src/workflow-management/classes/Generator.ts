@@ -23,6 +23,8 @@ interface PersistedGeneratedData {
   lastUsedSelector: string;
   lastIndex: number | null;
   lastAction: string;
+  lastUsedSelectorTagName: string;
+  lastUsedSelectorInnerText: string;
 }
 
 interface MetaData {
@@ -97,6 +99,8 @@ export class WorkflowGenerator {
     lastUsedSelector: '',
     lastIndex: null,
     lastAction: '',
+    lastUsedSelectorTagName: '',
+    lastUsedSelectorInnerText: '',
   }
 
   /**
@@ -300,6 +304,22 @@ export class WorkflowGenerator {
   };
 
   /**
+   * Returns tag name and text content for the specified selector
+   * used in customAction for decision modal
+   */
+  private async getLastUsedSelectorInfo(page: Page, selector: string) {
+    const elementHandle = await page.$(selector);
+    if (elementHandle) {
+      const tagName = await elementHandle.evaluate(el => (el as HTMLElement).tagName);
+      // TODO: based on tagName, send data. Always innerText won't hold true. For now, can roll. 
+      const innerText = await elementHandle.evaluate(el => (el as HTMLElement).innerText);
+
+      return { tagName, innerText };
+    }
+    return { tagName: '', innerText: '' };
+  }
+
+  /**
    * Generates a pair for the custom action event.
    * @param action The type of the custom action.
    * @param settings The settings of the custom action.
@@ -315,11 +335,15 @@ export class WorkflowGenerator {
     }
 
     if (this.generatedData.lastUsedSelector) {
+      const elementInfo = await this.getLastUsedSelectorInfo(page, this.generatedData.lastUsedSelector);
+
       this.socket.emit('decision', {
         pair, actionType: 'customAction',
         lastData: {
           selector: this.generatedData.lastUsedSelector,
           action: this.generatedData.lastAction,
+          tagName: elementInfo.tagName,
+          innerText: elementInfo.innerText,
         }
       });
     } else {
@@ -486,7 +510,7 @@ export class WorkflowGenerator {
     const selectorBasedOnCustomAction = (this.getList === true)
       ? await getNonUniqueSelectors(page, coordinates)
       : await getSelectors(page, coordinates);
-      
+
     const bestSelector = getBestSelectorForAction(
       {
         type: action,

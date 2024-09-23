@@ -28,9 +28,11 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
     pair: WhereWhatPair | null,
     actionType: string,
     selector: string,
+    tagName: string,
+    innerText: string,
     action: string,
     open: boolean
-  }>({ pair: null, actionType: '', selector: '', action: '', open: false });
+  }>({ pair: null, actionType: '', selector: '', action: '', tagName: '', innerText: '', open: false });
 
   const { socket } = useSocketStore();
   const { notify } = useGlobalInfoStore();
@@ -48,14 +50,16 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
 
   const decisionHandler = useCallback(
     ({ pair, actionType, lastData }
-      : { pair: WhereWhatPair | null, actionType: string, lastData: { selector: string, action: string } }) => {
-      const { selector, action } = lastData;
+      : { pair: WhereWhatPair | null, actionType: string, lastData: { selector: string, action: string, tagName: string, innerText: string } }) => {
+      const { selector, action, tagName, innerText } = lastData;
       setDecisionModal((prevState) => {
         return {
           pair,
           actionType,
           selector,
           action,
+          tagName,
+          innerText,
           open: true,
         }
       })
@@ -64,7 +68,7 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
   const handleDecision = (decision: boolean) => {
     const { pair, actionType } = decisionModal;
     socket?.emit('decision', { pair, actionType, decision });
-    setDecisionModal({ pair: null, actionType: '', selector: '', action: '', open: false });
+    setDecisionModal({ pair: null, actionType: '', selector: '', action: '', tagName: '', innerText: '', open: false });
   }
 
   const handleDescription = () => {
@@ -73,12 +77,14 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
         return (
           <React.Fragment>
             <Typography>
-              Do you want to use the previously recorded selector
-              as a where condition for matching the action?
+              Do you want to use your previous selection as a condition for performing this action?
             </Typography>
             <Box style={{ marginTop: '4px' }}>
-              [previous action: <b>{decisionModal.action}</b>]
-              <pre>{decisionModal.selector}</pre>
+              <Typography>Your previous action was:
+                <b>{decisionModal.action.charAt(0).toUpperCase() + decisionModal.action.slice(1)} </b>,
+                on an element with text
+                <b>{decisionModal.innerText} </b>
+              </Typography>
             </Box>
           </React.Fragment>);
       default: return null;
