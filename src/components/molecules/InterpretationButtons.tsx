@@ -73,8 +73,7 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
         return (
           <React.Fragment>
             <Typography>
-              Do you want to use the previously recorded selector
-              as a where condition for matching the action?
+            Do you want to use your previous selection as a condition for performing this action?
             </Typography>
             <Box style={{ marginTop: '4px' }}>
               [previous action: <b>{decisionModal.action}</b>]
