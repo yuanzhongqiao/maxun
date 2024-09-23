@@ -62,3 +62,12 @@ const login = async (req, res) => {
         res.status(400).send(`Could not login user - ${error.message}`)
     }
 }
+
+const logout = async (req, res) => {
+    try {
+        res.clearCookie('token')
+        return res.json({ message: 'Logout successful' })
+    } catch (error) {
+        res.status(500).send(`Could not logout user - ${error.message}`)
+    }
+}
