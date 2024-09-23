@@ -50,7 +50,7 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
 
   const decisionHandler = useCallback(
     ({ pair, actionType, lastData }
-      : { pair: WhereWhatPair | null, actionType: string, lastData: { selector: string, action: string } }) => {
+      : { pair: WhereWhatPair | null, actionType: string, lastData: { selector: string, action: string, tagName: string, innerText: string } }) => {
       const { selector, action } = lastData;
       setDecisionModal((prevState) => {
         return {
