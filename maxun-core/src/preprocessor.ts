@@ -60,7 +60,7 @@ export default class Preprocessor {
         }
 
         // Recursion general case
-        return Object.values(object)
+        return (Object.values(object) as any[])
           .reduce((p: string[], v: any): string[] => [...p, ...getParamsRecurse(v)], []);
       }
       return [];

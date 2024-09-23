@@ -253,7 +253,7 @@ export default class Interpreter extends EventEmitter {
  * calls all mentioned functions on the Page object.\
  * \
  * Manipulates the iterator indexes (experimental feature, likely to be removed in
- * the following versions of waw-interpreter)
+ * the following versions of maxun-core)
  * @param page Playwright Page object
  * @param steps Array of actions.
  */
