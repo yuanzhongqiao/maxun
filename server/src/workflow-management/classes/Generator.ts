@@ -99,6 +99,8 @@ export class WorkflowGenerator {
     lastUsedSelector: '',
     lastIndex: null,
     lastAction: '',
+    lastUsedSelectorTagName: '',
+    lastUsedSelectorInnerText: '',
   }
 
   /**
