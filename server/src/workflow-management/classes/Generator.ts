@@ -308,10 +308,10 @@ export class WorkflowGenerator {
     if (elementHandle) {
       const tagName = await elementHandle.evaluate(el => (el as HTMLElement).tagName);
       const innerText = await elementHandle.evaluate(el => (el as HTMLElement).innerText);
-  
+
       return { tagName, innerText };
     }
-    return { tagName: '', innerText: '' }; 
+    return { tagName: '', innerText: '' };
   }
 
   /**
@@ -338,7 +338,7 @@ export class WorkflowGenerator {
           selector: this.generatedData.lastUsedSelector,
           action: this.generatedData.lastAction,
           tagName: elementInfo.tagName,
-        innerText: elementInfo.innerText,
+          innerText: elementInfo.innerText,
         }
       });
     } else {
@@ -505,7 +505,7 @@ export class WorkflowGenerator {
     const selectorBasedOnCustomAction = (this.getList === true)
       ? await getNonUniqueSelectors(page, coordinates)
       : await getSelectors(page, coordinates);
-      
+
     const bestSelector = getBestSelectorForAction(
       {
         type: action,
