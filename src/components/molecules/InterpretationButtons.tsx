@@ -28,9 +28,11 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
     pair: WhereWhatPair | null,
     actionType: string,
     selector: string,
+    tagName: string,
+    innerText: string,
     action: string,
     open: boolean
-  }>({ pair: null, actionType: '', selector: '', action: '', open: false });
+  }>({ pair: null, actionType: '', selector: '', action: '', tagName: '', innerText: '', open: false });
 
   const { socket } = useSocketStore();
   const { notify } = useGlobalInfoStore();
