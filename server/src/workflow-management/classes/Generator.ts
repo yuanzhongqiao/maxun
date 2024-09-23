@@ -303,6 +303,10 @@ export class WorkflowGenerator {
     await this.addPairToWorkflowAndNotifyClient(pair, page);
   };
 
+  /**
+   * Returns tag name and text content for the specified selector
+   * used in customAction for decision modal
+   */
   private async getLastUsedSelectorInfo(page: Page, selector: string) {
     const elementHandle = await page.$(selector);
     if (elementHandle) {
