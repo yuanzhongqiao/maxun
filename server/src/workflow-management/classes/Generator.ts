@@ -337,6 +337,8 @@ export class WorkflowGenerator {
         lastData: {
           selector: this.generatedData.lastUsedSelector,
           action: this.generatedData.lastAction,
+          tagName: elementInfo.tagName,
+        innerText: elementInfo.innerText,
         }
       });
     } else {
