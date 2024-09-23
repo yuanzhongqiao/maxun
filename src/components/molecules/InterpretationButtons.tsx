@@ -51,13 +51,15 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
   const decisionHandler = useCallback(
     ({ pair, actionType, lastData }
       : { pair: WhereWhatPair | null, actionType: string, lastData: { selector: string, action: string, tagName: string, innerText: string } }) => {
-      const { selector, action } = lastData;
+      const { selector, action, tagName, innerText } = lastData;
       setDecisionModal((prevState) => {
         return {
           pair,
           actionType,
           selector,
           action,
+          tagName,
+          innerText,
           open: true,
         }
       })
@@ -66,7 +68,7 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
   const handleDecision = (decision: boolean) => {
     const { pair, actionType } = decisionModal;
     socket?.emit('decision', { pair, actionType, decision });
-    setDecisionModal({ pair: null, actionType: '', selector: '', action: '', open: false });
+    setDecisionModal({ pair: null, actionType: '', selector: '', action: '', tagName: '', innerText: '', open: false });
   }
 
   const handleDescription = () => {
@@ -80,6 +82,8 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
             <Box style={{ marginTop: '4px' }}>
               [previous action: <b>{decisionModal.action}</b>]
               <pre>{decisionModal.selector}</pre>
+              <pre>{decisionModal.tagName}</pre>
+              <pre>{decisionModal.innerText}</pre>
             </Box>
           </React.Fragment>);
       default: return null;
