@@ -73,8 +73,8 @@ router.get('/current-user', async (req: AuthenticatedRequest, res) => {
             return res.status(401).send('Unauthorized');
         }
         const user = await User.findByPk(req.user.id, {
-      attributes: { exclude: ['password'] },
-    });
+            attributes: { exclude: ['password'] },
+        });
         return res.status(200).json({ ok: true });
     } catch (error) {
         return res.status(500).send(`Could not fetch current user : ${error.message}.`);
