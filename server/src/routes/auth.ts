@@ -65,7 +65,9 @@ router.get('/logout', async (req, res) => {
 
 router.get('/current-user', async (req, res) => {
     try {
-        const user = await User.findById(req.user._id).select('-password').exec();
+        const user = await User.findByPk(req.user.id, {
+      attributes: { exclude: ['password'] },
+    });
         return res.status(200).json({ ok: true });
     } catch (error) {
         return res.status(500).send(`Could not fetch current user : ${error.message}.`);
