@@ -1,5 +1,4 @@
 import { Router, Request, Response } from 'express';
-import { hashPassword, comparePassword } from '../utils/auth';
 import User from '../models/User';
 import jwt from 'jsonwebtoken';
 export const router = Router();
