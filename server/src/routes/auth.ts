@@ -18,8 +18,6 @@ router.post('/register', async (req, res) => {
         let userExist = await User.findOne({ where: { email } });
         if (userExist) return res.status(400).send('User already exists')
 
-        const hashedPassword = await hashPassword(password)
-
         const user = await User.create({ email, password });
 
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
