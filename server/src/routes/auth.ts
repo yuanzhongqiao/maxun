@@ -25,7 +25,7 @@ router.post('/register', async (req, res) => {
             httpOnly: true
         })
         res.json(user)
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).send(`Could not register user - ${error.message}`)
     }
 })
@@ -50,7 +50,7 @@ router.post('/login', async (req, res) => {
             httpOnly: true
         })
         res.json(user)
-    } catch (error) {
+    } catch (error: any) {
         res.status(400).send(`Could not login user - ${error.message}`)
     }
 })
@@ -59,7 +59,7 @@ router.get('/logout', async (req, res) => {
     try {
         res.clearCookie('token')
         return res.json({ message: 'Logout successful' })
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).send(`Could not logout user - ${error.message}`)
     }
 })
@@ -73,7 +73,7 @@ router.get('/current-user', async (req: AuthenticatedRequest, res) => {
             attributes: { exclude: ['password'] },
         });
         return res.status(200).json({ ok: true });
-    } catch (error) {
+    } catch (error: any) {
         return res.status(500).send(`Could not fetch current user : ${error.message}.`);
     }
 });
