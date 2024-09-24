@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { hashPassword, comparePassword } from '../utils/auth';
+import User from '../models/User';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 // Todo: DB 
@@ -12,23 +13,15 @@ router.post('/register', async (req, res) => {
         if (!email) return res.status(400).send('Email is required')
         if (!password || password.length < 6) return res.status(400).send('Password is required and must be at least 6 characters')
 
-        let userExist = await User.findOne({ email }).exec()
+        let userExist = await User.findOne({ where: { email } });
         if (userExist) return res.status(400).send('User already exists')
 
         const hashedPassword = await hashPassword(password)
 
-        // register user
-        const user = new User({
-            email,
-            password: hashedPassword
-        })
-        await user.save()
-        const token = jwt.sign({
-            _id: user._id
-        }, process.env.JWT_SECRET as string, {
-            expiresIn: '3d'
-        })
-        user.password = undefined
+        const user = await User.create({ email, password });
+
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+        // user.password = undefined
         res.cookie('token', token, {
             httpOnly: true
         })
