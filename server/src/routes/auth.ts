@@ -1,10 +1,14 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { hashPassword, comparePassword } from '../utils/auth';
 import User from '../models/User';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 // Todo: DB 
 export const router = Router();
+
+interface AuthenticatedRequest extends Request {
+    user?: { id: string };
+}
 
 router.post('/register', async (req, res) => {
     try {
@@ -63,8 +67,11 @@ router.get('/logout', async (req, res) => {
     }
 })
 
-router.get('/current-user', async (req, res) => {
+router.get('/current-user', async (req: AuthenticatedRequest, res) => {
     try {
+        if (!req.user) {
+            return res.status(401).send('Unauthorized');
+        }
         const user = await User.findByPk(req.user.id, {
       attributes: { exclude: ['password'] },
     });
