@@ -90,7 +90,7 @@ const Provider = ({ children }: ProviderProps) => {
     const getCsrfToken = async () => {
       const { data } = await axios.get('/api/csrf-token');
       console.log('CSRFFFFF =>>>>', data);
-      axios.defaults.headers['X-CSRF-TOKEN'] = data.getCsrfToken;
+      (axios.defaults.headers as any)['X-CSRF-TOKEN'] = data.getCsrfToken;
     };
     getCsrfToken();
   }, []);
