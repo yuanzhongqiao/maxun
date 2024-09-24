@@ -6,6 +6,11 @@ interface ProviderProps {
   children: React.ReactNode;
 }
 
+interface ActionType {
+    type: 'LOGIN' | 'LOGOUT';
+    payload?: any;
+  }
+
 type InitialStateType = {
   user: any;
 };
@@ -22,7 +27,7 @@ const Context = createContext<{
   dispatch: () => null,
 });
 
-const reducer = (state: InitialStateType, action) => {
+const reducer = (state: InitialStateType, action: ActionType) => {
   switch (action.type) {
     case 'LOGIN':
       return {
