@@ -1,5 +1,4 @@
 import { DataTypes, Model, Optional } from 'sequelize';
-import bcrypt from 'bcrypt';
 import sequelize from '../db/config';
 import { hashPassword, comparePassword } from '../utils/auth';
 
