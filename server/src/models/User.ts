@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import bcrypt from 'bcrypt';
 import sequelize from '../db/config';
+import { hashPassword } from '../utils/auth';
 
 interface UserAttributes {
     id: number;
@@ -47,8 +48,7 @@ User.init(
         hooks: {
             beforeCreate: async (user: User) => {
                 if (user.password) {
-                    const salt = await bcrypt.genSalt(10);
-                    user.password = await bcrypt.hash(user.password, salt);
+                    user.password = await hashPassword(user.password) as string;
                 }
             },
         },
