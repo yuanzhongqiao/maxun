@@ -53,7 +53,7 @@ const Provider = ({ children }: ProviderProps) => {
   useEffect(() => {
     dispatch({
       type: 'LOGIN',
-      payload: JSON.parse(window.localStorage.getItem('user')),
+      payload: JSON.parse(window.localStorage.getItem('user') || 'null'),
     });
   }, []);
 
