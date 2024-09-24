@@ -1,92 +1,79 @@
-import { Router } from 'express';;
-import { google, sheets_v4 } from "googleapis";
-import { OAuth2Client } from 'google-auth-library'
+import { Router, Request, Response } from 'express';
+import User from '../models/User';
+import jwt from 'jsonwebtoken';
+export const router = Router();
 
-export const router = Router()
+interface AuthenticatedRequest extends Request {
+    user?: { id: string };
+}
 
-const oauth2Client = new OAuth2Client(
-    '_CLIENT_ID',
-    '_CLIENT_SECRET',
-    '_REDIRECT_URI'
-);
-
-// initialize Google OAuth 2.0 flow
-router.get('/auth/google', (req, res) => {
-    const url = oauth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: [
-            'https://www.googleapis.com/auth/userinfo.profile',
-            'https://www.googleapis.com/auth/drive.file',
-            'https://www.googleapis.com/auth/spreadsheets'
-        ]
-    });
-    res.redirect(url);
-});
-
-// Callback route for Google OAuth 2.0
-router.get('/auth/google/callback', async (req, res) => {
-    const code = req.query.code;
-    if (typeof code !== 'string') {
-      res.status(400).send('Invalid authorization code');
-      return;
-    }
+router.post('/register', async (req, res) => {
     try {
-      const { tokens } = await oauth2Client.getToken(code);
-      oauth2Client.setCredentials(tokens);
-      // TODO: Store tokens securely (e.g., in a database)
-      res.send('Authentication successful');
-    } catch (error) {
-      console.error('Error during authentication:', error);
-      res.status(500).send('Authentication failed');
-    }
-  });
+        const { email, password } = req.body
 
-router.get('/sheets', async (req, res) => {
+        if (!email) return res.status(400).send('Email is required')
+        if (!password || password.length < 6) return res.status(400).send('Password is required and must be at least 6 characters')
+
+        let userExist = await User.findOne({ where: { email } });
+        if (userExist) return res.status(400).send('User already exists')
+
+        const user = await User.create({ email, password });
+
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+        user.password = undefined as unknown as string
+        res.cookie('token', token, {
+            httpOnly: true
+        })
+        res.json(user)
+    } catch (error: any) {
+        res.status(500).send(`Could not register user - ${error.message}`)
+    }
+})
+
+router.post('/login', async (req, res) => {
     try {
-        const drive = google.drive({ version: 'v3', auth: oauth2Client });
-        const response = await drive.files.list({
-            q: "mimeType='application/vnd.google-apps.spreadsheet'",
-            fields: 'files(id, name)'
+        const { email, password } = req.body;
+        if (!email || !password) return res.status(400).send('Email and password are required')
+        if (password.length < 6) return res.status(400).send('Password must be at least 6 characters')
+
+        let user = await User.findOne({ where: { email } });
+        const match = await user?.isValidPassword(password);
+        if (!match) return res.status(400).send('Invalid email or password')
+
+        const token = jwt.sign({ id: user?.id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+
+        // return user and token to client, exclude hashed password
+        if (user) {
+            user.password = undefined as unknown as string;
+        }
+        res.cookie('token', token, {
+            httpOnly: true
+        })
+        res.json(user)
+    } catch (error: any) {
+        res.status(400).send(`Could not login user - ${error.message}`)
+    }
+})
+
+router.get('/logout', async (req, res) => {
+    try {
+        res.clearCookie('token')
+        return res.json({ message: 'Logout successful' })
+    } catch (error: any) {
+        res.status(500).send(`Could not logout user - ${error.message}`)
+    }
+})
+
+router.get('/current-user', async (req: AuthenticatedRequest, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).send('Unauthorized');
+        }
+        const user = await User.findByPk(req.user.id, {
+            attributes: { exclude: ['password'] },
         });
-        res.json(response.data.files);
-    } catch (error) {
-        console.error('Error listing sheets:', error);
-        res.status(500).send('Failed to list sheets');
+        return res.status(200).json({ ok: true });
+    } catch (error: any) {
+        return res.status(500).send(`Could not fetch current user : ${error.message}.`);
     }
 });
-
-router.get('/sheets/:sheetId', async (req, res) => {
-    try {
-        const sheets = google.sheets({ version: 'v4', auth: oauth2Client });
-        const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: req.params.sheetId,
-            range: 'Sheet1', // Adjust range as needed
-        });
-        res.json(response.data.values);
-    } catch (error) {
-        console.error('Error reading sheet:', error);
-        res.status(500).send('Failed to read sheet');
-    }
-});
-
-router.post('/sheets/:sheetId', async (req, res) => {
-    try {
-      const sheets = google.sheets({ version: 'v4', auth: oauth2Client });
-      
-      const request: sheets_v4.Params$Resource$Spreadsheets$Values$Append = {
-        spreadsheetId: req.params.sheetId,
-        range: 'Sheet1', // Adjust range as needed
-        valueInputOption: 'USER_ENTERED',
-        requestBody: {
-          values: [req.body.values], // Expect an array of values in the request body
-        },
-      };
-  
-      const response = await sheets.spreadsheets.values.append(request);
-      
-      res.json(response.data);
-    } catch (error) {
-      console.error('Error writing to sheet:', error);
-      res.status(500).send('Failed to write to sheet');
-    }
-  });
