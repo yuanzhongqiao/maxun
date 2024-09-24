@@ -37,18 +37,14 @@ router.post('/login', async (req, res) => {
         if (!email || !password) return res.status(400).send('Email and password are required')
         if (password.length < 6) return res.status(400).send('Password must be at least 6 characters')
 
-        let user = await User.findOne({ email }).exec()
-        const match = await comparePassword(password, user.password)
+        let user = await User.findOne({ where: { email } });
+        const match = await user?.isValidPassword(password);
         if (!match) return res.status(400).send('Invalid email or password')
 
-        // create signed jwt
-        const token = jwt.sign({
-            _id: user._id
-        }, process.env.JWT_SECRET as string, {
-            expiresIn: '3d'
-        })
+        const token = jwt.sign({ id: user?.id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+
         // return user and token to client, exclude hashed password
-        user.password = undefined
+        // user.password = undefined
         res.cookie('token', token, {
             httpOnly: true
         })
