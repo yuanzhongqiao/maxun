@@ -1,9 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { hashPassword, comparePassword } from '../utils/auth';
 import User from '../models/User';
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-// Todo: DB 
 export const router = Router();
 
 interface AuthenticatedRequest extends Request {
