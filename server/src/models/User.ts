@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import bcrypt from 'bcrypt';
 import sequelize from '../db/config';
-import { hashPassword } from '../utils/auth';
+import { hashPassword, comparePassword } from '../utils/auth';
 
 interface UserAttributes {
     id: number;
@@ -18,7 +18,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
     public password!: string;
 
     public async isValidPassword(password: string): Promise<boolean> {
-        return bcrypt.compare(password, this.password);
+        return comparePassword(password, this.password);
     }
 }
 
