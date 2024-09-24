@@ -68,7 +68,7 @@ const Provider = ({ children }: ProviderProps) => {
             if (res.status === 401 && res.config && !res.config.__isRetryRequest) {
                 return new Promise((resolve, reject) => {
                     axios
-                        .get('/api/logout')
+                        .get('http://localhost:8080/auth/logout')
                         .then((data) => {
                             console.log('/401 error > logout');
                             dispatch({ type: 'LOGOUT' });
@@ -88,7 +88,7 @@ const Provider = ({ children }: ProviderProps) => {
     // csrf - include tokens in the axios header every time a request is made
     useEffect(() => {
         const getCsrfToken = async () => {
-            const { data } = await axios.get('/api/csrf-token');
+            const { data } = await axios.get('http://localhost:8080/csrf-token');
             console.log('CSRFFFFF =>>>>', data);
             (axios.defaults.headers as any)['X-CSRF-TOKEN'] = data.getCsrfToken;
         };
