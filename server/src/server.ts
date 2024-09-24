@@ -5,6 +5,7 @@ import 'dotenv/config';
 import { record, workflow, storage, auth, integration } from './routes';
 import { BrowserPool } from "./browser-management/classes/BrowserPool";
 import logger from './logger';
+import { connectDB, syncDB } from './db/config';
 import cookieParser from 'cookie-parser';
 import csrf from 'csurf';
 import { SERVER_PORT } from "./constants/config";
@@ -47,4 +48,8 @@ app.get('/csrf-token', (req, res) => {
     res.json({ csrfToken: req.csrfToken() })
   })
 
-server.listen(SERVER_PORT, () => logger.log('info', `Server listening on port ${SERVER_PORT}`));
+server.listen(SERVER_PORT, async () => {
+  await connectDB();
+  await syncDB();
+  logger.log('info', `Server listening on port ${SERVER_PORT}`);
+});
