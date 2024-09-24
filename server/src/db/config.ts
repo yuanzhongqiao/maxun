@@ -23,4 +23,14 @@ export const connectDB = async () => {
     }
 };
 
+export const syncDB = async () => {
+    try {
+      await sequelize.sync({ force: false });  // force: true will drop and recreate tables on every run
+      console.log('Database synced successfully!');
+    } catch (error) {
+      console.error('Failed to sync database:', error);
+    }
+  };
+  
+
 export default sequelize;
