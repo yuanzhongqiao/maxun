@@ -8,6 +8,8 @@ import { MainPage } from "./MainPage";
 import { useGlobalInfoStore } from "../context/globalInfo";
 import { getActiveBrowserId } from "../api/recording";
 import { AlertSnackbar } from "../components/atoms/AlertSnackbar";
+import Login from './Login';
+import Register from './Register';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 
 export const PageWrapper = () => {
@@ -67,6 +69,14 @@ export const PageWrapper = () => {
                     <RecordingPage recordingName={recordingName} />
                   </BrowserDimensionsProvider>
                 }
+              />
+              <Route
+                path="/login"
+                element={<Login />}
+              />
+              <Route
+                path="/register"
+                element={<Register />}
               />
             </Routes>
           </React.Fragment>
