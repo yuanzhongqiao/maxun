@@ -10,6 +10,7 @@ import { getActiveBrowserId } from "../api/recording";
 import { AlertSnackbar } from "../components/atoms/AlertSnackbar";
 import Login from './Login';
 import Register from './Register';
+import UserRoute from '../routes/userRoute';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 
 export const PageWrapper = () => {
@@ -60,14 +61,20 @@ export const PageWrapper = () => {
             <Routes>
               <Route
                 path="/"
-                element={<MainPage handleEditRecording={handleEditRecording} />}
+                element={
+                  <UserRoute>
+                <MainPage handleEditRecording={handleEditRecording} />
+                </UserRoute>
+              }
               />
               <Route
                 path="/recording"
                 element={
+                  <UserRoute>
                   <BrowserDimensionsProvider>
                     <RecordingPage recordingName={recordingName} />
                   </BrowserDimensionsProvider>
+                  </UserRoute>
                 }
               />
               <Route
