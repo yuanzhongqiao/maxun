@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { useGlobalInfoStore } from "../context/globalInfo";
 
-const SignIn = () => {
+const Login = () => {
     const [form, setForm] = useState({
         email: '',
         password: '',
@@ -122,4 +122,4 @@ const SignIn = () => {
     );
 };
 
-export default SignIn;
+export default Login;
