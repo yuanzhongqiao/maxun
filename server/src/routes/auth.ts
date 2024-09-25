@@ -65,18 +65,24 @@ router.get('/logout', async (req, res) => {
 })
 
 router.get('/current-user', async (req: AuthenticatedRequest, res) => {
+    console.log('Current user request received');
     try {
         if (!req.user) {
+            console.log('No user in request');
             return res.status(401).json({ ok: false, error: 'Unauthorized' });
         }
+        console.log('Fetching user with id:', req.user.id);
         const user = await User.findByPk(req.user.id, {
             attributes: { exclude: ['password'] },
         });
         if (!user) {
+            console.log('User not found in database');
             return res.status(404).json({ ok: false, error: 'User not found' });
         }
+        console.log('User found, sending response');
         return res.status(200).json({ ok: true, user: user });
     } catch (error: any) {
+        console.error('Error in current-user route:', error);
         return res.status(500).json({ ok: false, error: `Could not fetch current user: ${error.message}` });
     }
 });
