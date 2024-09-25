@@ -17,6 +17,6 @@ export const hashPassword = (password: string): Promise<string> => {
 }
 
 // password from frontend and hash from database
-export const comparePassword = (password: string, hash: any) => {
+export const comparePassword = (password: string, hash: string): Promise<boolean> => {
     return bcrypt.compare(password, hash)
 }
