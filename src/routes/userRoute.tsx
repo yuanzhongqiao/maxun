@@ -33,7 +33,7 @@ const UserRoute: React.FC<UserRouteProps> = ({ children }) => {
                     console.log('Request canceled:', err.message);
                     handleRedirect('Request timed out. Please try again.');
                 } else {
-                    handleRedirect(err.response?.data?.error || 'An error occurred. Please login again.');
+                    handleRedirect();
                 }
             } finally {
                 setLoading(false);
@@ -49,10 +49,12 @@ const UserRoute: React.FC<UserRouteProps> = ({ children }) => {
         };
     }, []);
 
-    const handleRedirect = (errorMessage: string) => {
+    const handleRedirect = (errorMessage?: string) => {
         setOk(false);
         setLoading(false);
-        notify('error', errorMessage);
+        if (errorMessage) {
+            notify('error', errorMessage);
+        }
         navigate('/login');
     };
 
