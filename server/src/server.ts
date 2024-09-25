@@ -55,9 +55,6 @@ app.get('/csrf-token', (req, res) => {
   res.json({ csrfToken: req.csrfToken() })
 })
 
-console.log('Environment Variables:');
-console.log('SECRET:', process.env.JWT_SECRET);
-
 server.listen(SERVER_PORT, async () => {
   await connectDB();
   await syncDB();
