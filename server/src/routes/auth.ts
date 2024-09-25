@@ -67,7 +67,7 @@ router.get('/logout', async (req, res) => {
 router.get('/current-user', async (req: AuthenticatedRequest, res) => {
     try {
         if (!req.user) {
-            return res.status(401).send('Unauthorized');
+            return res.status(401).json({ ok: false, error: 'Unauthorized' });
         }
         const user = await User.findByPk(req.user.id, {
             attributes: { exclude: ['password'] },
@@ -75,8 +75,8 @@ router.get('/current-user', async (req: AuthenticatedRequest, res) => {
         if (!user) {
             return res.status(404).json({ ok: false, error: 'User not found' });
         }
-        return res.status(200).json({ ok: true });
+        return res.status(200).json({ ok: true, user: user });
     } catch (error: any) {
-        return res.status(500).send(`Could not fetch current user : ${error.message}.`);
+        return res.status(500).json({ ok: false, error: `Could not fetch current user: ${error.message}` });
     }
 });
