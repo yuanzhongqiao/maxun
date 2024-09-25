@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavBar } from "../components/molecules/NavBar";
 import { SocketProvider } from "../context/socket";
 import { BrowserDimensionsProvider } from "../context/browserDimensions";
+import { AuthProvider } from '../context/auth';
 import { RecordingPage } from "./RecordingPage";
 import { MainPage } from "./MainPage";
 import { useGlobalInfoStore } from "../context/globalInfo";
@@ -50,6 +51,7 @@ export const PageWrapper = () => {
 
   return (
     <div>
+       <AuthProvider> 
       <SocketProvider>
         <React.Fragment>
           <NavBar newRecording={handleNewRecording} recordingName={recordingName} isRecording={!!browserId} />
@@ -69,6 +71,7 @@ export const PageWrapper = () => {
           </Routes>
         </React.Fragment>
       </SocketProvider>
+      </AuthProvider> 
       {isNotification() ?
         <AlertSnackbar severity={notification.severity}
           message={notification.message}
