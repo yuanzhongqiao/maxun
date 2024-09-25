@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
+import axios from 'axios';
 import styled from "styled-components";
 import { stopRecording } from "../../api/recording";
 import { useGlobalInfoStore } from "../../context/globalInfo";
@@ -7,7 +8,8 @@ import { RecordingIcon } from "../atoms/RecorderIcon";
 import { SaveRecording } from "./SaveRecording";
 import { Circle } from "@mui/icons-material";
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/auth';
 
 interface NavBarProps {
   newRecording: () => void;
@@ -18,7 +20,17 @@ interface NavBarProps {
 export const NavBar = ({ newRecording, recordingName, isRecording }: NavBarProps) => {
 
   const { notify, browserId, setBrowserId, recordingLength } = useGlobalInfoStore();
+  const { state, dispatch } = useContext(AuthContext);
+  const { user } = state;
   const navigate = useNavigate();
+
+  const logout = async () => {
+    dispatch({ type: 'LOGOUT' });
+    window.localStorage.removeItem('user');
+    const { data } = await axios.get('http://localhost:8080/auth/logout');
+    notify('success', data.message);
+    navigate('/login');
+  };
 
   // If recording is in progress, the resources and change page view by setting browserId to null
   // else it won't affect the page
@@ -94,6 +106,23 @@ export const NavBar = ({ newRecording, recordingName, isRecording }: NavBarProps
           <MeetingRoomIcon sx={{ marginRight: '5px' }} />
           exit</Button>
           : null}
+        {
+          user !== null ? (
+            <Button sx={{
+              width: '100px',
+              background: '#fff',
+              color: 'rgba(25, 118, 210, 0.7)',
+              padding: '9px',
+              marginRight: '19px',
+              '&:hover': {
+                background: 'white',
+                color: 'rgb(25, 118, 210)',
+              }
+            }} onClick={logout}>
+              <MeetingRoomIcon sx={{ marginRight: '5px' }} />
+              logout</Button>
+          ) : ""
+        }
       </div>
 
     </NavBarWrapper>
