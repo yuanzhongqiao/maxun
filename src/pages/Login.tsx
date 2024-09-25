@@ -40,7 +40,7 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const { data } = await axios.post(`/api/login`, { email, password });
+            const { data } = await axios.post(`http://localhost:8080/auth/login`, { email, password });
             dispatch({ type: 'LOGIN', payload: data });
             notify('success', 'Welcome to Maxun!');
             window.localStorage.setItem('user', JSON.stringify(data));
