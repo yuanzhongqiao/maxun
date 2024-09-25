@@ -48,6 +48,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const navigate = useNavigate();
+    axios.defaults.withCredentials = true;
 
     // get user info from local storage
     useEffect(() => {
