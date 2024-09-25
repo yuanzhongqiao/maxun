@@ -20,9 +20,7 @@ const UserRoute: React.FC<UserRouteProps> = ({ children }) => {
 
         const fetchUser = async () => {
             try {
-                const { data } = await axios.get('http://localhost:8080/auth/current-user', {
-                    signal: controller.signal
-                });
+                const { data } = await axios.get('http://localhost:8080/auth/current-user');
                 if (data.ok) {
                     setOk(true);
                 } else {
@@ -37,7 +35,6 @@ const UserRoute: React.FC<UserRouteProps> = ({ children }) => {
                 }
             } finally {
                 setLoading(false);
-                clearTimeout(timeoutId);
             }
         };
 
@@ -45,7 +42,6 @@ const UserRoute: React.FC<UserRouteProps> = ({ children }) => {
 
         return () => {
             controller.abort();
-            clearTimeout(timeoutId);
         };
     }, []);
 
