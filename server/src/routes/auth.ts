@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import User from '../models/User';
 import jwt from 'jsonwebtoken';
+import { hashPassword, comparePassword } from '../utils/auth';
 export const router = Router();
 
 interface AuthenticatedRequest extends Request {
@@ -16,8 +17,10 @@ router.post('/register', async (req, res) => {
 
         let userExist = await User.findOne({ where: { email } });
         if (userExist) return res.status(400).send('User already exists')
+        
+        const hashedPassword = await hashPassword(password)
 
-        const user = await User.create({ email, password });
+        const user = await User.create({ email, password: hashedPassword });
 
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
         user.password = undefined as unknown as string
@@ -37,7 +40,9 @@ router.post('/login', async (req, res) => {
         if (password.length < 6) return res.status(400).send('Password must be at least 6 characters')
 
         let user = await User.findOne({ where: { email } });
-        const match = await user?.isValidPassword(password);
+        if (!user) return res.status(400).send('User does not exist');
+
+        const match = await comparePassword(password, user.password)
         if (!match) return res.status(400).send('Invalid email or password')
 
         const token = jwt.sign({ id: user?.id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
