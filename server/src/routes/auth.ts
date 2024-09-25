@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import User from '../models/User';
 import jwt from 'jsonwebtoken';
 import { hashPassword, comparePassword } from '../utils/auth';
+import { requireSignIn } from '../middlewares/auth';
 export const router = Router();
 
 interface AuthenticatedRequest extends Request {
@@ -17,7 +18,7 @@ router.post('/register', async (req, res) => {
 
         let userExist = await User.findOne({ where: { email } });
         if (userExist) return res.status(400).send('User already exists')
-        
+
         const hashedPassword = await hashPassword(password)
 
         const user = await User.create({ email, password: hashedPassword });
@@ -39,7 +40,7 @@ router.post('/login', async (req, res) => {
         if (!email || !password) return res.status(400).send('Email and password are required')
         if (password.length < 6) return res.status(400).send('Password must be at least 6 characters')
 
-        let user = await User.findOne({raw: true, where: { email } });
+        let user = await User.findOne({ raw: true, where: { email } });
         if (!user) return res.status(400).send('User does not exist');
 
         const match = await comparePassword(password, user.password)
@@ -70,23 +71,19 @@ router.get('/logout', async (req, res) => {
     }
 })
 
-router.get('/current-user', async (req: AuthenticatedRequest, res) => {
-    console.log('Current user request received');
+router.get('/current-user', requireSignIn, async (req: AuthenticatedRequest, res) => {
     try {
         if (!req.user) {
-            console.log('No user in request');
             return res.status(401).json({ ok: false, error: 'Unauthorized' });
         }
-        console.log('Fetching user with id:', req.user.id);
         const user = await User.findByPk(req.user.id, {
             attributes: { exclude: ['password'] },
         });
         if (!user) {
-            console.log('User not found in database');
             return res.status(404).json({ ok: false, error: 'User not found' });
+        } else {
+            return res.status(200).json({ ok: true, user: user });
         }
-        console.log('User found, sending response');
-        return res.status(200).json({ ok: true, user: user });
     } catch (error: any) {
         console.error('Error in current-user route:', error);
         return res.status(500).json({ ok: false, error: `Could not fetch current user: ${error.message}` });
