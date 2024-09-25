@@ -15,9 +15,6 @@ const UserRoute: React.FC<UserRouteProps> = ({ children }) => {
     const { notify } = useGlobalInfoStore();
 
     useEffect(() => {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-
         const fetchUser = async () => {
             try {
                 const { data } = await axios.get('http://localhost:8080/auth/current-user');
@@ -39,10 +36,6 @@ const UserRoute: React.FC<UserRouteProps> = ({ children }) => {
         };
 
         fetchUser();
-
-        return () => {
-            controller.abort();
-        };
     }, []);
 
     const handleRedirect = (errorMessage?: string) => {
