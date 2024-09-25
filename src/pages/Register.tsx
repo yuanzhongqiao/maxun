@@ -43,7 +43,7 @@ const Register = () => {
             window.localStorage.setItem('user', JSON.stringify(data));
             navigate('/');
         } catch (err: any) {
-            notify('error', err.response.data.message);
+            notify('error', err.response.data || 'Registration Failed. Please try again.');
         } finally {
             setLoading(false);
         }
