@@ -2,7 +2,7 @@ import { useReducer, createContext, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-interface ProviderProps {
+interface AuthProviderProps {
     children: React.ReactNode;
 }
 
@@ -44,7 +44,7 @@ const reducer = (state: InitialStateType, action: ActionType) => {
     }
 };
 
-const Provider = ({ children }: ProviderProps) => {
+const AuthProvider = ({ children }: AuthProviderProps) => {
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const navigate = useNavigate();
@@ -100,4 +100,4 @@ const Provider = ({ children }: ProviderProps) => {
     );
 };
 
-export { AuthContext, Provider };
+export { AuthContext, AuthProvider };
