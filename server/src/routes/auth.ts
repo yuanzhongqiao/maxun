@@ -39,8 +39,10 @@ router.post('/login', async (req, res) => {
         if (!email || !password) return res.status(400).send('Email and password are required')
         if (password.length < 6) return res.status(400).send('Password must be at least 6 characters')
 
-        let user = await User.findOne({ where: { email } });
+        let user = await User.findOne({raw: true, where: { email } });
         if (!user) return res.status(400).send('User does not exist');
+
+        console.log('User found:', user.email, user.password);
 
         const match = await comparePassword(password, user.password)
         if (!match) return res.status(400).send('Invalid email or password')
@@ -57,6 +59,7 @@ router.post('/login', async (req, res) => {
         res.json(user)
     } catch (error: any) {
         res.status(400).send(`Could not login user - ${error.message}`)
+        console.log(`Could not login user - ${error}`)
     }
 })
 
