@@ -59,24 +59,16 @@ export const PageWrapper = () => {
           <React.Fragment>
             <NavBar newRecording={handleNewRecording} recordingName={recordingName} isRecording={!!browserId} />
             <Routes>
-              <Route
-                path="/"
-                element={
-                  <UserRoute>
-                    <MainPage handleEditRecording={handleEditRecording} />
-                  </UserRoute>
-                }
-              />
-              <Route
-                path="/recording"
-                element={
-                  <UserRoute>
-                    <BrowserDimensionsProvider>
-                      <RecordingPage recordingName={recordingName} />
-                    </BrowserDimensionsProvider>
-                  </UserRoute>
-                }
-              />
+              <Route element={<UserRoute />}>
+                <Route path="/" element={<MainPage handleEditRecording={handleEditRecording} />} />
+              </Route>
+              <Route element={<UserRoute />}>
+                <Route path="/recording" element={
+                  <BrowserDimensionsProvider>
+                    <RecordingPage recordingName={recordingName} />
+                  </BrowserDimensionsProvider>
+                } />
+              </Route>
               <Route
                 path="/login"
                 element={<Login />}
