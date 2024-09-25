@@ -59,7 +59,7 @@ const Register = () => {
                 }}
             >
                 <Typography component="h1" variant="h5">
-                    Register
+                    Create an account
                 </Typography>
                 <Box component="form" onSubmit={submitForm} sx={{ mt: 1 }}>
                     <TextField
