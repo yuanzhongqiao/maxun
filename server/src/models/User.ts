@@ -15,10 +15,6 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
     public id!: number;
     public email!: string;
     public password!: string;
-
-    public async isValidPassword(password: string): Promise<boolean> {
-        return comparePassword(password, this.password);
-    }
 }
 
 User.init(
@@ -44,13 +40,6 @@ User.init(
     {
         sequelize,
         tableName: 'user',
-        hooks: {
-            beforeCreate: async (user: User) => {
-                if (user.password) {
-                    user.password = await hashPassword(user.password) as string;
-                }
-            },
-        },
     }
 );
 
