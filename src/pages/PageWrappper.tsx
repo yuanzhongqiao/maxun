@@ -63,17 +63,17 @@ export const PageWrapper = () => {
                 path="/"
                 element={
                   <UserRoute>
-                <MainPage handleEditRecording={handleEditRecording} />
-                </UserRoute>
-              }
+                    <MainPage handleEditRecording={handleEditRecording} />
+                  </UserRoute>
+                }
               />
               <Route
                 path="/recording"
                 element={
                   <UserRoute>
-                  <BrowserDimensionsProvider>
-                    <RecordingPage recordingName={recordingName} />
-                  </BrowserDimensionsProvider>
+                    <BrowserDimensionsProvider>
+                      <RecordingPage recordingName={recordingName} />
+                    </BrowserDimensionsProvider>
                   </UserRoute>
                 }
               />
