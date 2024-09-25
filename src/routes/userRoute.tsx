@@ -1,9 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalInfoStore } from "../context/globalInfo";
 
-const UserRoute = ({ children }) => {
+interface UserRouteProps {
+  children: ReactNode;
+}
+
+const UserRoute: React.FC<UserRouteProps> = ({ children }) => {
   const [ok, setOk] = useState(true);
   const navigate = useNavigate(); 
 
