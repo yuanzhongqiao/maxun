@@ -63,12 +63,6 @@ const Login = () => {
             <Typography variant="h4" gutterBottom>
                 Login
             </Typography>
-
-            <Typography variant="body1" align="center" gutterBottom>
-                OR
-            </Typography>
-
-            {/* Login Form */}
             <Box component="form" onSubmit={submitForm} sx={{ maxWidth: 400, width: '100%' }}>
                 <TextField
                     fullWidth

@@ -61,7 +61,6 @@ const Register = () => {
                 <Typography component="h1" variant="h5">
                     Register
                 </Typography>
-                <Typography sx={{ mt: 2, mb: 2 }}>OR</Typography>
                 <Box component="form" onSubmit={submitForm} sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"
