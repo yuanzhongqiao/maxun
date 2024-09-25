@@ -6,6 +6,7 @@ import { record, workflow, storage, auth, integration } from './routes';
 import { BrowserPool } from "./browser-management/classes/BrowserPool";
 import logger from './logger';
 import { connectDB, syncDB } from './db/config';
+import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import csrf from 'csurf';
 import { SERVER_PORT } from "./constants/config";
@@ -30,6 +31,8 @@ export const io = new Server(server);
  */
 export const browserPool = new BrowserPool();
 
+app.use(bodyParser.json({ limit: '10mb' }))
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb', parameterLimit: 10000 }));
 // parse cookies - "cookie" is true in csrfProtection
 app.use(cookieParser())
 app.use(csrfProtection)
