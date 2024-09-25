@@ -1,6 +1,8 @@
 import { Router, Request, Response } from 'express';
 import User from '../models/User';
 import jwt from 'jsonwebtoken';
+import { hashPassword, comparePassword } from '../utils/auth';
+import { requireSignIn } from '../middlewares/auth';
 export const router = Router();
 
 interface AuthenticatedRequest extends Request {
@@ -17,7 +19,9 @@ router.post('/register', async (req, res) => {
         let userExist = await User.findOne({ where: { email } });
         if (userExist) return res.status(400).send('User already exists')
 
-        const user = await User.create({ email, password });
+        const hashedPassword = await hashPassword(password)
+
+        const user = await User.create({ email, password: hashedPassword });
 
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
         user.password = undefined as unknown as string
@@ -36,8 +40,10 @@ router.post('/login', async (req, res) => {
         if (!email || !password) return res.status(400).send('Email and password are required')
         if (password.length < 6) return res.status(400).send('Password must be at least 6 characters')
 
-        let user = await User.findOne({ where: { email } });
-        const match = await user?.isValidPassword(password);
+        let user = await User.findOne({ raw: true, where: { email } });
+        if (!user) return res.status(400).send('User does not exist');
+
+        const match = await comparePassword(password, user.password)
         if (!match) return res.status(400).send('Invalid email or password')
 
         const token = jwt.sign({ id: user?.id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
@@ -52,6 +58,7 @@ router.post('/login', async (req, res) => {
         res.json(user)
     } catch (error: any) {
         res.status(400).send(`Could not login user - ${error.message}`)
+        console.log(`Could not login user - ${error}`)
     }
 })
 
@@ -64,16 +71,21 @@ router.get('/logout', async (req, res) => {
     }
 })
 
-router.get('/current-user', async (req: AuthenticatedRequest, res) => {
+router.get('/current-user', requireSignIn, async (req: AuthenticatedRequest, res) => {
     try {
         if (!req.user) {
-            return res.status(401).send('Unauthorized');
+            return res.status(401).json({ ok: false, error: 'Unauthorized' });
         }
         const user = await User.findByPk(req.user.id, {
             attributes: { exclude: ['password'] },
         });
-        return res.status(200).json({ ok: true });
+        if (!user) {
+            return res.status(404).json({ ok: false, error: 'User not found' });
+        } else {
+            return res.status(200).json({ ok: true, user: user });
+        }
     } catch (error: any) {
-        return res.status(500).send(`Could not fetch current user : ${error.message}.`);
+        console.error('Error in current-user route:', error);
+        return res.status(500).json({ ok: false, error: `Could not fetch current user: ${error.message}` });
     }
 });

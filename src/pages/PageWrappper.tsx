@@ -2,11 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { NavBar } from "../components/molecules/NavBar";
 import { SocketProvider } from "../context/socket";
 import { BrowserDimensionsProvider } from "../context/browserDimensions";
+import { AuthProvider } from '../context/auth';
 import { RecordingPage } from "./RecordingPage";
 import { MainPage } from "./MainPage";
 import { useGlobalInfoStore } from "../context/globalInfo";
 import { getActiveBrowserId } from "../api/recording";
 import { AlertSnackbar } from "../components/atoms/AlertSnackbar";
+import Login from './Login';
+import Register from './Register';
+import UserRoute from '../routes/userRoute';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 
 export const PageWrapper = () => {
@@ -50,25 +54,33 @@ export const PageWrapper = () => {
 
   return (
     <div>
-      <SocketProvider>
-        <React.Fragment>
-          <NavBar newRecording={handleNewRecording} recordingName={recordingName} isRecording={!!browserId} />
-          <Routes>
-            <Route
-              path="/"
-              element={<MainPage handleEditRecording={handleEditRecording} />}
-            />
-            <Route
-              path="/recording"
-              element={
-                <BrowserDimensionsProvider>
-                  <RecordingPage recordingName={recordingName} />
-                </BrowserDimensionsProvider>
-              }
-            />
-          </Routes>
-        </React.Fragment>
-      </SocketProvider>
+      <AuthProvider>
+        <SocketProvider>
+          <React.Fragment>
+            <NavBar newRecording={handleNewRecording} recordingName={recordingName} isRecording={!!browserId} />
+            <Routes>
+              <Route element={<UserRoute />}>
+                <Route path="/" element={<MainPage handleEditRecording={handleEditRecording} />} />
+              </Route>
+              <Route element={<UserRoute />}>
+                <Route path="/recording" element={
+                  <BrowserDimensionsProvider>
+                    <RecordingPage recordingName={recordingName} />
+                  </BrowserDimensionsProvider>
+                } />
+              </Route>
+              <Route
+                path="/login"
+                element={<Login />}
+              />
+              <Route
+                path="/register"
+                element={<Register />}
+              />
+            </Routes>
+          </React.Fragment>
+        </SocketProvider>
+      </AuthProvider>
       {isNotification() ?
         <AlertSnackbar severity={notification.severity}
           message={notification.message}
