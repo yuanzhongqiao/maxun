@@ -88,9 +88,17 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     // csrf - include tokens in the axios header every time a request is made
     useEffect(() => {
         const getCsrfToken = async () => {
-            const { data } = await axios.get('http://localhost:8080/csrf-token');
-            console.log('CSRFFFFF =>>>>', data);
-            (axios.defaults.headers as any)['X-CSRF-TOKEN'] = data.getCsrfToken;
+            try {
+                const { data } = await axios.get('http://localhost:8080/csrf-token');
+                console.log('CSRF Token Response:', data);
+                if (data && data.csrfToken) {
+                    (axios.defaults.headers as any)['X-CSRF-TOKEN'] = data.csrfToken;
+                } else {
+                    console.error('CSRF token not found in the response');
+                }
+            } catch (error) {
+                console.error('Error fetching CSRF token:', error);
+            }
         };
         getCsrfToken();
     }, []);
