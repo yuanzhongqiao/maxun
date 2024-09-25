@@ -8,7 +8,8 @@ interface UserRouteProps {
 }
 
 const UserRoute: React.FC<UserRouteProps> = ({ children }) => {
-    const [ok, setOk] = useState<boolean>(true); // Default to true to allow rendering while fetching
+    const [loading, setLoading] = useState(true);
+    const [ok, setOk] = useState<boolean>(false);
     const navigate = useNavigate();
     const { notify } = useGlobalInfoStore();
 
@@ -26,6 +27,8 @@ const UserRoute: React.FC<UserRouteProps> = ({ children }) => {
             }
         } catch (err: any) {
             handleRedirect(err.response?.data?.error || 'An error occurred. Please login again.');
+        } finally {
+            setLoading(false);  // Remove loading state regardless of success or failure
         }
     };
 
@@ -33,13 +36,16 @@ const UserRoute: React.FC<UserRouteProps> = ({ children }) => {
         setOk(false);
         if (errorMessage) {
             notify('error', errorMessage);
+        } else {
+            notify('error', 'Please login again to continue');
         }
         navigate('/login');
     };
 
-    // If ok is true, render the children (protected route)
+    // Block rendering if loading the authentication status
+    if (loading) return null;
+
     return <>{ok ? children : null}</>;
 };
 
 export default UserRoute;
-
