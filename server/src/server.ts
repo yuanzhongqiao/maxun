@@ -41,12 +41,12 @@ app.use('/auth', auth);
 app.use('/integration', integration);
 
 app.get('/', function (req, res) {
-    return res.send('Maxun server started 🚀');
+  return res.send('Maxun server started 🚀');
 });
 
 app.get('/csrf-token', (req, res) => {
-    res.json({ csrfToken: req.csrfToken() })
-  })
+  res.json({ csrfToken: req.csrfToken() })
+})
 
 server.listen(SERVER_PORT, async () => {
   await connectDB();
