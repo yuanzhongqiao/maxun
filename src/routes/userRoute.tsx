@@ -2,6 +2,7 @@ import { useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalInfoStore } from "../context/globalInfo";
+import { CircularProgress } from '@mui/material';
 
 interface UserRouteProps {
     children: ReactNode;
@@ -56,7 +57,7 @@ const UserRoute: React.FC<UserRouteProps> = ({ children }) => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div><CircularProgress /></div>;
     }
 
     return ok ? <>{children}</> : null;
