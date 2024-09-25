@@ -8,29 +8,38 @@ interface UserRouteProps {
 }
 
 const UserRoute: React.FC<UserRouteProps> = ({ children }) => {
-    const [ok, setOk] = useState(true);
+    const [ok, setOk] = useState<boolean | null>(null);  // Use null to indicate loading state
     const navigate = useNavigate();
-
     const { notify } = useGlobalInfoStore();
+
     useEffect(() => {
         fetchUser();
     }, []);
 
     const fetchUser = async () => {
         try {
-            const { data } = await axios.get('/api/current-user');
+            const { data } = await axios.get('http://localhost:8080/auth/current-user');
             if (data.ok) {
                 setOk(true);
+            } else {
+                setOk(false);
+                notify('error', data.error || 'Please login again to continue');
+                navigate('/login');
             }
         } catch (err: any) {
             setOk(false);
-            notify('error', err.message || 'Please login again to continue');
-            navigate('/');
+            notify('error', err.response?.data?.error || 'An error occurred. Please login again.');
+            navigate('/login');
         }
     };
 
-    // Display loading message while fetching user data
-    return <div>{!ok ? <p>Loading...</p> : <>{children}</>}</div>;
+    // Loading state
+    if (ok === null) {
+        return <p>Loading...</p>;
+    }
+
+    // Render children if authenticated
+    return <>{ok ? children : null}</>;
 };
 
 export default UserRoute;
