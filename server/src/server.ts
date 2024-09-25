@@ -1,7 +1,8 @@
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
-import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config();
 import { record, workflow, storage, auth, integration } from './routes';
 import { BrowserPool } from "./browser-management/classes/BrowserPool";
 import logger from './logger';
@@ -53,6 +54,9 @@ app.get('/', function (req, res) {
 app.get('/csrf-token', (req, res) => {
   res.json({ csrfToken: req.csrfToken() })
 })
+
+console.log('Environment Variables:');
+console.log('SECRET:', process.env.JWT_SECRET);
 
 server.listen(SERVER_PORT, async () => {
   await connectDB();
