@@ -19,7 +19,7 @@ const initialState = {
     user: null,
 };
 
-const Context = createContext<{
+const AuthContext = createContext<{
     state: InitialStateType;
     dispatch: any;
 }>({
@@ -96,8 +96,8 @@ const Provider = ({ children }: ProviderProps) => {
     }, []);
 
     return (
-        <Context.Provider value={{ state, dispatch }}>{children}</Context.Provider>
+        <AuthContext.Provider value={{ state, dispatch }}>{children}</AuthContext.Provider>
     );
 };
 
-export { Context, Provider };
+export { AuthContext, Provider };
