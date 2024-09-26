@@ -3,6 +3,7 @@ import User from '../models/User';
 import jwt from 'jsonwebtoken';
 import { hashPassword, comparePassword } from '../utils/auth';
 import { requireSignIn } from '../middlewares/auth';
+import { genAPIKey } from '../utils/api';
 export const router = Router();
 
 interface AuthenticatedRequest extends Request {
@@ -87,5 +88,36 @@ router.get('/current-user', requireSignIn, async (req: AuthenticatedRequest, res
     } catch (error: any) {
         console.error('Error in current-user route:', error);
         return res.status(500).json({ ok: false, error: `Could not fetch current user: ${error.message}` });
+    }
+});
+
+router.post('/generate-api-key', async (req: AuthenticatedRequest, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ ok: false, error: 'Unauthorized' });
+        }
+        const user = await User.findByPk(req.user.id, {
+            attributes: { exclude: ['password'] },
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (user.api_key) {
+            return res.status(400).json({ message: 'API key already exists' });
+        }
+
+        const apiKey = genAPIKey();
+
+        user.api_key = apiKey;
+        await user.save();
+
+        return res.status(200).json({
+            message: 'API key generated successfully',
+            api_key: apiKey,
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error generating API key', error });
     }
 });
