@@ -5,6 +5,7 @@ interface UserAttributes {
     id: number;
     email: string;
     password: string;
+    api_key?: string | null;
 }
 
 // Optional fields for creating a new user
@@ -14,6 +15,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
     public id!: number;
     public email!: string;
     public password!: string;
+    public api_key!: string | null;
 }
 
 User.init(
@@ -34,6 +36,10 @@ User.init(
         password: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        api_key: {
+            type: DataTypes.STRING,
+            allowNull: true, 
         },
     },
     {
