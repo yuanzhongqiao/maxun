@@ -91,7 +91,7 @@ router.get('/current-user', requireSignIn, async (req: AuthenticatedRequest, res
     }
 });
 
-router.post('/generate-api-key', async (req: AuthenticatedRequest, res) => {
+router.post('/generate-api-key', requireSignIn, async (req: AuthenticatedRequest, res) => {
     try {
         if (!req.user) {
             return res.status(401).json({ ok: false, error: 'Unauthorized' });
