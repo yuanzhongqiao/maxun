@@ -85,7 +85,7 @@ router.get("/api/robots/:fileName", requireAPIKey, async (req: Request, res: Res
         const fileContent = await readFile(`./../storage/recordings/${req.params.fileName}.waw.json`);
 
         const recordingData = JSON.parse(fileContent);
-        const formattedRecording = formatRecording(recordingData);
+        const formattedRecording = formatRecordingById(recordingData);
 
         const response = {
             statusCode: 200,
