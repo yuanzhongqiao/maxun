@@ -1,5 +1,6 @@
 import { deleteFile, readFile, readFiles, saveFile } from "../workflow-management/storage";
 import { Router, Request, Response } from 'express';
+import { requireAPIKey } from "../middlewares/api";
 export const router = Router();
 
 const formatRecording = (recordingData: any) => {
@@ -26,7 +27,7 @@ const formatRecording = (recordingData: any) => {
 };
 
 
-router.get("/api/recordings", async (req: Request, res: Response) => {
+router.get("/api/recordings", requireAPIKey, async (req: Request, res: Response) => {
     try {
         const fileContents = await readFiles('./../storage/recordings/');
 
