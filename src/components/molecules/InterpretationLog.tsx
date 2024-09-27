@@ -25,7 +25,7 @@ interface InterpretationLogProps {
   setIsOpen: (isOpen: boolean) => void;
 }
 
-export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, setIsOpen }) => {  
+export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, setIsOpen }) => {
   const [log, setLog] = useState<string>('');
   const [selectedOption, setSelectedOption] = useState<string>('10');
   const [customValue, setCustomValue] = useState('');
@@ -66,12 +66,12 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
     setLog((prevState) =>
       prevState + '\n' + '---------- Serializable output data received ----------' + '\n'
       + JSON.stringify(data, null, 2) + '\n' + '--------------------------------------------------');
-    
+
     // Set table data
     if (Array.isArray(data)) {
       setTableData(data);
     }
-    
+
     scrollLogToBottom();
   }, [log, scrollLogToBottom]);
 
@@ -104,7 +104,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
 
   // Extract columns dynamically from the first item of tableData
   const columns = tableData.length > 0 ? Object.keys(tableData[0]) : [];
-  
+
   return (
     <div>
       <button
