@@ -103,7 +103,6 @@ export const processGoogleSheetUpdates = async () => {
         hasPendingTasks = true;
         try {
           await updateGoogleSheet(task.name, task.runId);
-          console.log(`Successfully updated Google Sheets for run ${task.runId}`);
           delete googleSheetUpdateTasks[runId];
         } catch (error: any) {
           if (task.retries < MAX_RETRIES) {
