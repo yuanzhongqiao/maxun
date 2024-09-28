@@ -21,7 +21,7 @@ const initialState = {
 
 const AuthContext = createContext<{
     state: InitialStateType;
-    dispatch: any;
+    dispatch: React.Dispatch<ActionType>;
 }>({
     state: initialState,
     dispatch: () => null,
@@ -46,38 +46,34 @@ const reducer = (state: InitialStateType, action: ActionType) => {
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
     const [state, dispatch] = useReducer(reducer, initialState);
-
     const navigate = useNavigate();
     axios.defaults.withCredentials = true;
 
-    // get user info from local storage
     useEffect(() => {
-        dispatch({
-            type: 'LOGIN',
-            payload: JSON.parse(window.localStorage.getItem('user') || 'null'),
-        });
+        const storedUser = window.localStorage.getItem('user');
+        if (storedUser) {
+            dispatch({ type: 'LOGIN', payload: JSON.parse(storedUser) });
+        }
     }, []);
 
     axios.interceptors.response.use(
         function (response) {
-            // any status code that lies within the range of 2XX causes this function to trigger
             return response;
         },
         function (error) {
-            // any status codes that fall outside the range of 2XX cause this function to trigger
-            let res = error.response;
+            const res = error.response;
             if (res.status === 401 && res.config && !res.config.__isRetryRequest) {
                 return new Promise((resolve, reject) => {
                     axios
                         .get('http://localhost:8080/auth/logout')
-                        .then((data) => {
+                        .then(() => {
                             console.log('/401 error > logout');
                             dispatch({ type: 'LOGOUT' });
                             window.localStorage.removeItem('user');
-                            navigate('/login'); // Replace router.push with navigate
+                            navigate('/login');
                         })
                         .catch((err) => {
-                            console.log('AXIOS INTERCEPTORS ERROR:', err);
+                            console.error('AXIOS INTERCEPTORS ERROR:', err);
                             reject(error);
                         });
                 });
@@ -86,16 +82,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         }
     );
 
-    // csrf - include tokens in the axios header every time a request is made
     useEffect(() => {
         const getCsrfToken = async () => {
             try {
                 const { data } = await axios.get('http://localhost:8080/csrf-token');
-                console.log('CSRF Token Response:', data);
-                if (data && data.csrfToken) {
+                if (data.csrfToken) {
                     (axios.defaults.headers as any)['X-CSRF-TOKEN'] = data.csrfToken;
-                } else {
-                    console.error('CSRF token not found in the response');
                 }
             } catch (error) {
                 console.error('Error fetching CSRF token:', error);
@@ -105,7 +97,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ state, dispatch }}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{ state, dispatch }}>
+            {children}
+        </AuthContext.Provider>
     );
 };
 
