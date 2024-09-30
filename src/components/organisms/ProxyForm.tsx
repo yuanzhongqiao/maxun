@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { TextField, Button, RadioGroup, FormControlLabel, Radio, Box, Typography } from '@mui/material';
-import { styled } from '@mui/system';
 import axios from 'axios';
+import { styled } from '@mui/system';
+import { TextField, Button, RadioGroup, FormControlLabel, Radio, Box, Typography } from '@mui/material';
+import { sendProxyConfig } from '../../api/proxy';
 
 const FormContainer = styled(Box)({
     display: 'flex',
@@ -30,16 +31,13 @@ const ProxyForm: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        try {
-            const response = await axios.post('http://localhost:8080/proxy/config', proxyConfig);
-            if (response.status === 200) {
-                return response.data;
-              } else {
-                throw new Error(`Failed to submit proxy configuration. Try again.`);
-              }
-        } catch (error) {
-            alert('Error submitting proxy configuration');
-        }
+        await sendProxyConfig(proxyConfig).then((response) => {
+            if (response) {
+                alert('Proxy configuration submitted successfully');
+            } else {
+                alert('Failed to submit proxy configuration. Try again.');
+            }
+        });
     };
 
     return (
