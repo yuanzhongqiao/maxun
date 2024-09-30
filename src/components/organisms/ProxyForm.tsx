@@ -31,7 +31,7 @@ const ProxyForm: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post('/api/proxy', proxyConfig);
+            const response = await axios.post('http://localhost:8080/proxy/config', proxyConfig);
             alert(`Success!`);
         } catch (error) {
             alert('Error submitting proxy configuration');
