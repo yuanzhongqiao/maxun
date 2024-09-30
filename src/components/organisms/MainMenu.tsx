@@ -37,17 +37,17 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
         >
           <Tab sx={{
             alignItems: 'baseline',
-            fontSize:'medium',
+            fontSize: 'medium',
           }} value="recordings" label="Recordings" />
           <Tab sx={{
             alignItems: 'baseline',
-            fontSize:'medium',
+            fontSize: 'medium',
           }} value="runs" label="Runs" />
-           <Tab sx={{
+          <Tab sx={{
             alignItems: 'baseline',
-            fontSize:'medium',
+            fontSize: 'medium',
           }} value="proxy" label="Proxy" />
-      </Tabs>
+        </Tabs>
       </Box>
     </Paper>
   );
