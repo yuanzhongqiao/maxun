@@ -55,7 +55,7 @@ const ProxyForm: React.FC = () => {
                     </RadioGroup>
                 </FormControl>
 
-                <Typography variant="subtitle1" gutterBottom>Proxy Configuration</Typography>
+                <Typography variant="subtitle1" gutterBottom style={{ marginBottom: '20px', marginTop: '20px'}}>Proxy Configuration</Typography>
 
                 <FormControl>
                     <TextField
