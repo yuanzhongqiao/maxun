@@ -3,7 +3,6 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { Paper } from "@mui/material";
-import styled from "styled-components";
 
 interface MainMenuProps {
   value: string;
