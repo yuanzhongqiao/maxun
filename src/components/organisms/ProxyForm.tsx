@@ -89,7 +89,7 @@ const ProxyForm: React.FC = () => {
         </FormControl>
 
         <Button variant="contained" color="primary" type="submit" fullWidth>
-          Submit Proxy
+          Add Proxy
         </Button>
       </form>
     </FormContainer>
