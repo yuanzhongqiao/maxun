@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { styled } from '@mui/system';
 import { TextField, Button, RadioGroup, FormControlLabel, Radio, Box, Typography } from '@mui/material';
 import { sendProxyConfig } from '../../api/proxy';
