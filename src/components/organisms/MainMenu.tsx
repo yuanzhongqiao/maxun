@@ -44,6 +44,10 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
             alignItems: 'baseline',
             fontSize:'medium',
           }} value="runs" label="Runs" />
+           <Tab sx={{
+            alignItems: 'baseline',
+            fontSize:'medium',
+          }} value="proxy" label="Proxy" />
       </Tabs>
       </Box>
     </Paper>
