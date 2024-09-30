@@ -8,7 +8,6 @@ const FormContainer = styled(Box)({
     flexDirection: 'column',
     gap: '16px',
     padding: '20px',
-    backgroundColor: '#f9f9f9',
     borderRadius: '8px',
 });
 
