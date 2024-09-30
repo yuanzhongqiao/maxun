@@ -56,6 +56,8 @@ const ProxyForm: React.FC = () => {
                     </RadioGroup>
                 </FormControl>
 
+                <Typography variant="subtitle1" gutterBottom>Proxy Configuration</Typography>
+
                 <FormControl>
                     <TextField
                         label="Proxy Server URL"
