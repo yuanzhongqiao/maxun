@@ -20,6 +20,10 @@ const FormContainer = styled(Box)({
   borderRadius: '8px',
 });
 
+const FormControl = styled(Box)({
+    marginBottom: '10px',
+});
+
 const ProxyForm: React.FC = () => {
   const [proxyConfig, setProxyConfig] = useState({
     type: '',
