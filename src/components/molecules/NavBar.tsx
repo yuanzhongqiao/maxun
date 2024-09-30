@@ -54,16 +54,16 @@ export const NavBar = ({ newRecording, recordingName, isRecording }: NavBarProps
 
   return (
     <NavBarWrapper>
-      {
-        user !== null ? (
-          <>
-            <div style={{
+                  <div style={{
               display: 'flex',
               justifyContent: 'flex-start',
             }}>
               <RecordingIcon />
               <div style={{ padding: '11px' }}><ProjectName>Maxun</ProjectName></div>
             </div>
+      {
+        user !== null ? (
+          <>
             <div style={{
               display: 'flex',
               justifyContent: 'flex-end',
