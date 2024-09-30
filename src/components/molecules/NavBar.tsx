@@ -54,78 +54,78 @@ export const NavBar = ({ newRecording, recordingName, isRecording }: NavBarProps
 
   return (
     <NavBarWrapper>
+      {
+        user !== null ? (
+          <>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+            }}>
+              <RecordingIcon />
+              <div style={{ padding: '11px' }}><ProjectName>Maxun</ProjectName></div>
+            </div>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+            }}>
+              <IconButton
+                aria-label="new"
+                size={"small"}
+                onClick={handleNewRecording}
+                sx={{
+                  width: isRecording ? '100px' : '130px',
+                  borderRadius: '5px',
+                  padding: '8px',
+                  background: 'white',
+                  color: 'rgba(255,0,0,0.7)',
+                  marginRight: '10px',
+                  fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
+                  fontWeight: '500',
+                  fontSize: '0.875rem',
+                  lineHeight: '1.75',
+                  letterSpacing: '0.02857em',
+                  '&:hover': { color: 'red', backgroundColor: 'white' }
+                }
+                }
+              >
+                <Circle sx={{ marginRight: '5px' }} /> {isRecording ? 'NEW' : 'RECORD'}
+              </IconButton>
               {
-                user !== null ? (
-                  <>
-                    <div style={{
-                      display: 'flex',
-                      justifyContent: 'flex-start',
-                    }}>
-                      <RecordingIcon />
-                      <div style={{ padding: '11px' }}><ProjectName>Maxun</ProjectName></div>
-                    </div>
-                    <div style={{
-                      display: 'flex',
-                      justifyContent: 'flex-end',
-                    }}>
-                      <IconButton
-                        aria-label="new"
-                        size={"small"}
-                        onClick={handleNewRecording}
-                        sx={{
-                          width: isRecording ? '100px' : '130px',
-                          borderRadius: '5px',
-                          padding: '8px',
-                          background: 'white',
-                          color: 'rgba(255,0,0,0.7)',
-                          marginRight: '10px',
-                          fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
-                          fontWeight: '500',
-                          fontSize: '0.875rem',
-                          lineHeight: '1.75',
-                          letterSpacing: '0.02857em',
-                          '&:hover': { color: 'red', backgroundColor: 'white' }
-                        }
-                        }
-                      >
-                        <Circle sx={{ marginRight: '5px' }} /> {isRecording ? 'NEW' : 'RECORD'}
-                      </IconButton>
-                      {
-                        recordingLength > 0
-                          ? <SaveRecording fileName={recordingName} />
-                          : null
-                      }
-                      {isRecording ? <Button sx={{
-                        width: '100px',
-                        background: '#fff',
-                        color: 'rgba(25, 118, 210, 0.7)',
-                        padding: '9px',
-                        marginRight: '19px',
-                        '&:hover': {
-                          background: 'white',
-                          color: 'rgb(25, 118, 210)',
-                        }
-                      }} onClick={goToMainMenu}>
-                        <MeetingRoomIcon sx={{ marginRight: '5px' }} />
-                        exit</Button>
-                        : null}
-                          <Button sx={{
-                            width: '100px',
-                            background: '#fff',
-                            color: 'rgba(25, 118, 210, 0.7)',
-                            padding: '9px',
-                            marginRight: '19px',
-                            '&:hover': {
-                              background: 'white',
-                              color: 'rgb(25, 118, 210)',
-                            }
-                          }} onClick={logout}>
-                            <MeetingRoomIcon sx={{ marginRight: '5px' }} />
-                            logout</Button>
-                    </div>
-                  </>
-                ) : ""
+                recordingLength > 0
+                  ? <SaveRecording fileName={recordingName} />
+                  : null
               }
+              {isRecording ? <Button sx={{
+                width: '100px',
+                background: '#fff',
+                color: 'rgba(25, 118, 210, 0.7)',
+                padding: '9px',
+                marginRight: '19px',
+                '&:hover': {
+                  background: 'white',
+                  color: 'rgb(25, 118, 210)',
+                }
+              }} onClick={goToMainMenu}>
+                <MeetingRoomIcon sx={{ marginRight: '5px' }} />
+                exit</Button>
+                : null}
+              <Button sx={{
+                width: '100px',
+                background: '#fff',
+                color: 'rgba(25, 118, 210, 0.7)',
+                padding: '9px',
+                marginRight: '19px',
+                '&:hover': {
+                  background: 'white',
+                  color: 'rgb(25, 118, 210)',
+                }
+              }} onClick={logout}>
+                <MeetingRoomIcon sx={{ marginRight: '5px' }} />
+                logout</Button>
+            </div>
+          </>
+        ) : ""
+      }
 
     </NavBarWrapper>
   );
