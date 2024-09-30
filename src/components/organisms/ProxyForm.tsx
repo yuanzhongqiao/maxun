@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { styled } from '@mui/system';
 import { TextField, Button, RadioGroup, FormControlLabel, Radio, Box, Typography } from '@mui/material';
 import { sendProxyConfig } from '../../api/proxy';
+import { useGlobalInfoStore } from '../../context/globalInfo';
 
 const FormContainer = styled(Box)({
     display: 'flex',
@@ -23,6 +24,8 @@ const ProxyForm: React.FC = () => {
         password: '',
     });
 
+    const { notify } = useGlobalInfoStore();
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setProxyConfig({ ...proxyConfig, [name]: value });
@@ -32,9 +35,9 @@ const ProxyForm: React.FC = () => {
         e.preventDefault();
         await sendProxyConfig(proxyConfig).then((response) => {
             if (response) {
-                alert('Proxy configuration submitted successfully');
+                notify('success','Proxy configuration submitted successfully');
             } else {
-                alert('Failed to submit proxy configuration. Try again.');
+                notify('error', 'Failed to submit proxy configuration. Try again.');
             }
         });
     };
