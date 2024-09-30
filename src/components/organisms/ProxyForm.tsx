@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, RadioGroup, FormControlLabel, Radio, Box } from '@mui/material';
+import { TextField, Button, RadioGroup, FormControlLabel, Radio, Box, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 import axios from 'axios';
 
@@ -43,6 +43,7 @@ const ProxyForm: React.FC = () => {
         <FormContainer>
             <form onSubmit={handleSubmit}>
                 <FormControl>
+                    <Typography variant="subtitle1" gutterBottom>Select Proxy Type</Typography>
                     <RadioGroup
                         name="type"
                         value={proxyConfig.type}
