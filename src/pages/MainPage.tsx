@@ -3,6 +3,7 @@ import { MainMenu } from "../components/organisms/MainMenu";
 import { Grid, Stack } from "@mui/material";
 import { Recordings } from "../components/organisms/Recordings";
 import { Runs } from "../components/organisms/Runs";
+import ProxyForm from '../components/organisms/ProxyForm';
 import { useGlobalInfoStore } from "../context/globalInfo";
 import { createRunForStoredRecording, interpretStoredRecording, notifyAboutAbort, scheduleStoredRecording } from "../api/storage";
 import { handleUploadCredentials } from "../api/integration"
@@ -142,6 +143,8 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
           runId={ids.runId}
           runningRecordingName={runningRecordingName}
         />;
+      case 'proxy':
+        return <ProxyForm />;
       default:
         return null;
     }
