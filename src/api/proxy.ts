@@ -2,7 +2,7 @@ import { default as axios } from "axios";
 
 export const sendProxyConfig = async (proxyConfig: {}): Promise<boolean> => {
     try {
-      const response = await axios.post(`http://localhost:8080/proxy/config`);
+      const response = await axios.post(`http://localhost:8080/proxy/config`, proxyConfig);
       if (response.status === 200) {
         return response.data;
       } else {
