@@ -22,6 +22,7 @@ const ProxyForm: React.FC = () => {
         server: '',
         username: '',
         password: '',
+        apiKey: '',
     });
 
     const { notify } = useGlobalInfoStore();
@@ -70,6 +71,16 @@ const ProxyForm: React.FC = () => {
                         fullWidth
                         required
                         helperText="e.g., http://proxy-server.com:8080"
+                    />
+                </FormControl>
+
+                <FormControl>
+                    <TextField
+                        label="API Key (Optional)"
+                        name="apiKey"
+                        value={proxyConfig.apiKey}
+                        onChange={handleChange}
+                        fullWidth
                     />
                 </FormControl>
 
