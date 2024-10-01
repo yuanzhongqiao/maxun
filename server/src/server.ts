@@ -3,7 +3,7 @@ import http from 'http';
 import cors from 'cors';
 import dotenv from 'dotenv';
 dotenv.config();
-import { record, workflow, storage, auth, integration } from './routes';
+import { record, workflow, storage, auth, integration, proxy } from './routes';
 import { BrowserPool } from "./browser-management/classes/BrowserPool";
 import logger from './logger';
 import { connectDB, syncDB } from './db/config';
@@ -46,6 +46,7 @@ app.use('/workflow', workflow);
 app.use('/storage', storage);
 app.use('/auth', auth);
 app.use('/integration', integration);
+app.use('/proxy', proxy);
 
 app.get('/', function (req, res) {
   return res.send('Maxun server started 🚀');
