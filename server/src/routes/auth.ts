@@ -97,7 +97,6 @@ router.post('/generate-api-key', requireSignIn, async (req: AuthenticatedRequest
             return res.status(401).json({ ok: false, error: 'Unauthorized' });
         }
         const user = await User.findByPk(req.user.id, {
-            raw: true,
             attributes: { exclude: ['password'] },
         });
 
@@ -145,24 +144,23 @@ router.get('/api-key', requireSignIn, async (req: AuthenticatedRequest, res) => 
     }
 });
 
-router.delete('/delete-api-key', requireSignIn, async (req: AuthenticatedRequest, res) => {
+router.delete('/delete-api-key', requireSignIn, async (req, res) => {
     try {
-        if (!req.user) {
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
-
-        const user = await User.findByPk(req.user.id, {
-            raw: true,
-        });
-
-        if (!user || !user.api_key) {
-            return res.status(404).json({ message: 'API Key not found' });
-        }
-
-        await user.update({ api_key: null });
-
-        return res.status(200).json({ message: 'API Key deleted successfully' });
-    } catch (error) {
-        return res.status(500).json({ message: 'Error deleting API key', error });
+      const user = await User.findByPk(req.user.id, { raw: true });
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      if (!user.api_key) {
+        return res.status(404).json({ message: 'API Key not found' });
+      }
+  
+      await User.update({ api_key: null }, { where: { id: req.user.id } });
+  
+      return res.status(200).json({ message: 'API Key deleted successfully' });
+    } catch (error: any) {
+      return res.status(500).json({ message: 'Error deleting API key', error: error.message });
     }
-});
+  });
+  
