@@ -104,7 +104,7 @@ const ApiKeyManager = () => {
             <TableBody>
               <TableRow>
                 <TableCell>{apiKeyName}</TableCell>
-                <TableCell>{showKey ? apiKey : '****************'}</TableCell>
+                <TableCell>{showKey ? `${apiKey?.substring(0, 10)}...` : '****************'}</TableCell>
                 <TableCell>
                   <Tooltip title="Copy API Key">
                     <IconButton onClick={copyToClipboard}>
