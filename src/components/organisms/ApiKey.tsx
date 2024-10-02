@@ -37,7 +37,7 @@ const ApiKey = () => {
   const [showKey, setShowKey] = useState<boolean>(false);
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
 
-  const {notify} = useGlobalInfoStore();
+  const { notify } = useGlobalInfoStore();
 
   useEffect(() => {
     const fetchApiKey = async () => {
