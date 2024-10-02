@@ -12,6 +12,7 @@ import {
   TableHead,
   TableRow,
   Tooltip,
+  Paper,
 } from '@mui/material';
 import { ContentCopy, Visibility, Delete } from '@mui/icons-material';
 import styled from 'styled-components';
@@ -23,6 +24,7 @@ const Container = styled(Box)`
   flex-direction: column;
   align-items: center;
   margin-top: 50px;
+  margin-left: 50px;
 `;
 
 const ApiKeyManager = () => {
@@ -89,7 +91,7 @@ const ApiKeyManager = () => {
       <Typography variant="h5">Manage Your API Key</Typography>
 
       {apiKey ? (
-        <TableContainer>
+      <TableContainer component={Paper} sx={{ width: '100%', overflow: 'hidden' }}>
           <Table>
             <TableHead>
               <TableRow>
