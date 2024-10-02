@@ -45,7 +45,7 @@ User.init(
         },
         api_key: {
             type: DataTypes.STRING,
-            allowNull: true, 
+            allowNull: true,
         },
         proxy_url: {
             type: DataTypes.STRING,
