@@ -2,14 +2,18 @@ import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
-  TextField,
   Typography,
   IconButton,
-  InputAdornment,
-  Tooltip,
   CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
 } from '@mui/material';
-import { ContentCopy } from '@mui/icons-material';
+import { ContentCopy, Visibility, Delete } from '@mui/icons-material';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useGlobalInfoStore } from '../../context/globalInfo';
@@ -21,28 +25,12 @@ const Container = styled(Box)`
   margin-top: 50px;
 `;
 
-const ApiKeyField = styled(TextField)`
-  width: 400px;
-  margin: 20px 0;
-`;
-
-const HiddenText = styled(Typography)`
-  color: #888;
-  font-style: italic;
-`;
-
-const CenteredContent = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-`;
-
 const ApiKeyManager = () => {
   const [apiKey, setApiKey] = useState<string | null>(null);
+  const [apiKeyName, setApiKeyName] = useState<string>('Maxun API Key');
   const [loading, setLoading] = useState<boolean>(true);
+  const [showKey, setShowKey] = useState<boolean>(false);
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
-
   const { notify } = useGlobalInfoStore();
 
   useEffect(() => {
@@ -73,6 +61,19 @@ const ApiKeyManager = () => {
     }
   };
 
+  const deleteApiKey = async () => {
+    setLoading(true);
+    try {
+      await axios.delete('http://localhost:8080/auth/delete-api-key');
+      setApiKey(null);
+      notify('success', 'API Key deleted successfully');
+    } catch (error) {
+      console.error('Error deleting API key', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const copyToClipboard = () => {
     if (apiKey) {
       navigator.clipboard.writeText(apiKey);
@@ -88,43 +89,52 @@ const ApiKeyManager = () => {
       <Typography variant="h5">Manage Your API Key</Typography>
 
       {apiKey ? (
-        <>
-          <ApiKeyField
-            label="Your API Key"
-            variant="outlined"
-            value="**** **** **** ****"
-            InputProps={{
-              readOnly: true,
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={copyToClipboard} edge="end">
-                    <ContentCopy />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>API Key Name</TableCell>
+                <TableCell>API Key</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>{apiKeyName}</TableCell>
+                <TableCell>{showKey ? apiKey : '****************'}</TableCell>
+                <TableCell>
+                  <Tooltip title="Copy API Key">
+                    <IconButton onClick={copyToClipboard}>
+                      <ContentCopy />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={showKey ? 'Hide API Key' : 'Show API Key'}>
+                    <IconButton onClick={() => setShowKey(!showKey)}>
+                      <Visibility />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete API Key">
+                    <IconButton onClick={deleteApiKey} color="error">
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
           {copySuccess && (
-            <Tooltip title="Copied!" open={copySuccess} placement="right">
-              <Typography variant="caption" color="primary">
-                Copied to Clipboard
-              </Typography>
-            </Tooltip>
+            <Typography variant="caption" color="primary">
+              Copied to Clipboard
+            </Typography>
           )}
-        </>
+        </TableContainer>
       ) : (
-        <CenteredContent>
+        <>
           <Typography>You haven't generated an API key yet.</Typography>
-          <Button
-            onClick={generateApiKey}
-            variant="contained"
-            color="primary"
-            style={{ marginTop: '20px' }}
-          >
+          <Button onClick={generateApiKey} variant="contained" color="primary">
             Generate API Key
           </Button>
-        </CenteredContent>
+        </>
       )}
     </Container>
   );
