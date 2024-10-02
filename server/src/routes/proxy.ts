@@ -17,7 +17,7 @@ router.post('/config', requireSignIn, async (req: AuthenticatedRequest, res: Res
         if (!req.user) {
             return res.status(401).json({ ok: false, error: 'Unauthorized' });
         }
-        
+
         const user = await User.findByPk(req.user.id, {
             attributes: { exclude: ['password'] },
         });
