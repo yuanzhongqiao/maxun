@@ -125,11 +125,6 @@ const ApiKeyManager = () => {
               </TableRow>
             </TableBody>
           </Table>
-          {copySuccess && (
-            <Typography variant="caption" color="primary">
-              Copied to Clipboard
-            </Typography>
-          )}
         </TableContainer>
       ) : (
         <>
