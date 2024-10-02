@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/system';
-import { TextField, Button, RadioGroup, FormControlLabel, Radio, Box, Typography } from '@mui/material';
+import { TextField, Button, Switch, FormControlLabel, Box, Typography } from '@mui/material';
 import { sendProxyConfig } from '../../api/proxy';
 import { useGlobalInfoStore } from '../../context/globalInfo';
 
@@ -22,12 +22,20 @@ const ProxyForm: React.FC = () => {
         username: '',
         password: '',
     });
+    const [requiresAuth, setRequiresAuth] = useState<boolean>(false);
 
     const { notify } = useGlobalInfoStore();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setProxyConfig({ ...proxyConfig, [name]: value });
+    };
+
+    const handleAuthToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setRequiresAuth(e.target.checked);
+        if (!e.target.checked) {
+            setProxyConfig({ ...proxyConfig, username: '', password: '' });
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -44,7 +52,9 @@ const ProxyForm: React.FC = () => {
     return (
         <FormContainer>
             <form onSubmit={handleSubmit}>
-                <Typography variant="subtitle1" gutterBottom style={{ marginBottom: '20px', marginTop: '20px' }}>Proxy Configuration</Typography>
+                <Typography variant="subtitle1" gutterBottom style={{ marginBottom: '20px', marginTop: '20px' }}>
+                    Proxy Configuration
+                </Typography>
                 <FormControl>
                     <TextField
                         label="Proxy Server URL"
@@ -57,24 +67,36 @@ const ProxyForm: React.FC = () => {
                     />
                 </FormControl>
                 <FormControl>
-                    <TextField
-                        label="Username (Optional)"
-                        name="username"
-                        value={proxyConfig.username}
-                        onChange={handleChange}
-                        fullWidth
+                    <FormControlLabel
+                        control={<Switch checked={requiresAuth} onChange={handleAuthToggle} />}
+                        label="Requires Authentication?"
                     />
                 </FormControl>
-                <FormControl>
-                    <TextField
-                        label="Password (Optional)"
-                        name="password"
-                        value={proxyConfig.password}
-                        onChange={handleChange}
-                        type="password"
-                        fullWidth
-                    />
-                </FormControl>
+                {requiresAuth && (
+                    <>
+                        <FormControl>
+                            <TextField
+                                label="Username"
+                                name="username"
+                                value={proxyConfig.username}
+                                onChange={handleChange}
+                                fullWidth
+                                required
+                            />
+                        </FormControl>
+                        <FormControl>
+                            <TextField
+                                label="Password"
+                                name="password"
+                                value={proxyConfig.password}
+                                onChange={handleChange}
+                                type="password"
+                                fullWidth
+                                required
+                            />
+                        </FormControl>
+                    </>
+                )}
                 <Button variant="contained" color="primary" type="submit" fullWidth>
                     Add Proxy
                 </Button>
