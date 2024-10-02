@@ -97,6 +97,7 @@ router.post('/generate-api-key', requireSignIn, async (req: AuthenticatedRequest
             return res.status(401).json({ ok: false, error: 'Unauthorized' });
         }
         const user = await User.findByPk(req.user.id, {
+            raw: true,
             attributes: { exclude: ['password'] },
         });
 
