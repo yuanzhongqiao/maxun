@@ -9,7 +9,7 @@ import {
   Tooltip,
   CircularProgress,
 } from '@mui/material';
-import { Visibility, VisibilityOff, ContentCopy } from '@mui/icons-material';
+import { ContentCopy } from '@mui/icons-material';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useGlobalInfoStore } from '../../context/globalInfo';
@@ -31,10 +31,9 @@ const HiddenText = styled(Typography)`
   font-style: italic;
 `;
 
-const ApiKey = () => {
+const ApiKeyManager = () => {
   const [apiKey, setApiKey] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [showKey, setShowKey] = useState<boolean>(false);
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
 
   const { notify } = useGlobalInfoStore();
@@ -44,7 +43,6 @@ const ApiKey = () => {
       try {
         const { data } = await axios.get('http://localhost:8080/auth/api-key');
         setApiKey(data.api_key);
-        notify('info', `Fetc API Key: ${data.api_key}`);
       } catch (error) {
         console.error('Error fetching API key', error);
       } finally {
@@ -60,7 +58,7 @@ const ApiKey = () => {
     try {
       const { data } = await axios.post('http://localhost:8080/auth/generate-api-key');
       setApiKey(data.api_key);
-      notify('info', `Genrate API Key: ${data.api_key}`);
+      notify('info', `Generated API Key: ${data.api_key}`);
     } catch (error) {
       console.error('Error generating API key', error);
     } finally {
@@ -76,10 +74,6 @@ const ApiKey = () => {
     }
   };
 
-  const toggleShowKey = () => {
-    setShowKey(!showKey);
-  };
-
   if (loading) return <CircularProgress />;
 
   return (
@@ -91,29 +85,22 @@ const ApiKey = () => {
           <ApiKeyField
             label="Your API Key"
             variant="outlined"
-            type={showKey ? 'text' : 'password'}
-            value={apiKey}
+            value="**** **** **** ****"
             InputProps={{
               readOnly: true,
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={toggleShowKey} edge="end">
-                    {showKey ? <VisibilityOff /> : <Visibility />}
+                  <IconButton onClick={copyToClipboard} edge="end">
+                    <ContentCopy />
                   </IconButton>
                 </InputAdornment>
               ),
             }}
           />
 
-          <Button onClick={copyToClipboard} variant="contained" color="primary">
-            Copy to Clipboard
-          </Button>
-
-          {copySuccess && (
-            <Tooltip title="Copied!" open={copySuccess}>
-              <span></span>
-            </Tooltip>
-          )}
+          {copySuccess && <Tooltip title="Copied!" open={copySuccess} placement="right">
+            <Typography variant="caption" color="primary">Copied to Clipboard</Typography>
+          </Tooltip>}
         </>
       ) : (
         <>
@@ -127,4 +114,4 @@ const ApiKey = () => {
   );
 };
 
-export default ApiKey;
+export default ApiKeyManager;
