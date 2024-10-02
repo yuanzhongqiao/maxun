@@ -1,10 +1,11 @@
 import { Router, Request, Response } from 'express';
 import User from '../models/User';
 import { hashPassword } from '../utils/auth';
+import { requireSignIn } from '../middlewares/auth';
 
 export const router = Router();
 
-router.post('/config', async (req: Request, res: Response) => {
+router.post('/config', requireSignIn, async (req: Request, res: Response) => {
     const { server_url, username, password } = req.body;
 
     try {
