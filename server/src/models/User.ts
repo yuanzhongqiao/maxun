@@ -47,6 +47,18 @@ User.init(
             type: DataTypes.STRING,
             allowNull: true, 
         },
+        proxy_url: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        proxy_username: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        proxy_password: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
     },
     {
         sequelize,
