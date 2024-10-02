@@ -18,13 +18,13 @@ const FormControl = styled(Box)({
 
 const ProxyForm: React.FC = () => {
     const [proxyConfig, setProxyConfig] = useState({
-        server: '',
+        server_url: '',
         username: '',
         password: '',
     });
     const [requiresAuth, setRequiresAuth] = useState<boolean>(false);
     const [errors, setErrors] = useState({
-        server: '',
+        server_url: '',
         username: '',
         password: '',
     });
@@ -33,10 +33,10 @@ const ProxyForm: React.FC = () => {
 
     const validateForm = () => {
         let valid = true;
-        let errorMessages = { server: '', username: '', password: '' };
+        let errorMessages = { server_url: '', username: '', password: '' };
 
-        if (!proxyConfig.server) {
-            errorMessages.server = 'Server URL is required';
+        if (!proxyConfig.server_url) {
+            errorMessages.server_url = 'Server URL is required';
             valid = false;
         }
 
@@ -92,13 +92,13 @@ const ProxyForm: React.FC = () => {
                 <FormControl>
                     <TextField
                         label="Proxy Server URL"
-                        name="server"
-                        value={proxyConfig.server}
+                        name="server_url"
+                        value={proxyConfig.server_url}
                         onChange={handleChange}
                         fullWidth
                         required
-                        error={!!errors.server}
-                        helperText={errors.server || 'e.g., http://proxy-server.com:8080'}
+                        error={!!errors.server_url}
+                        helperText={errors.server_url || 'e.g., http://proxy-server.com:8080'}
                     />
                 </FormControl>
                 <FormControl>
@@ -141,7 +141,7 @@ const ProxyForm: React.FC = () => {
                     color="primary"
                     type="submit"
                     fullWidth
-                    disabled={!proxyConfig.server || (requiresAuth && (!proxyConfig.username || !proxyConfig.password))}
+                    disabled={!proxyConfig.server_url || (requiresAuth && (!proxyConfig.username || !proxyConfig.password))}
                 >
                     Add Proxy
                 </Button>
