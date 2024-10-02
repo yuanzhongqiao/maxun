@@ -55,7 +55,7 @@ const ApiKeyManager = () => {
     try {
       const { data } = await axios.post('http://localhost:8080/auth/generate-api-key');
       setApiKey(data.api_key);
-      notify('info', `Generated API Key: ${data.api_key}`);
+      notify('success', `Generated API Key successfully`);
     } catch (error) {
       console.error('Error generating API key', error);
     } finally {
