@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import User from '../models/User';
-import { hashPassword, comparePassword } from '../utils/auth';
+import { hashPassword } from '../utils/auth';
 
 export const router = Router();
 
