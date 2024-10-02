@@ -69,7 +69,7 @@ const ProxyForm: React.FC = () => {
                 <FormControl>
                     <FormControlLabel
                         control={<Switch checked={requiresAuth} onChange={handleAuthToggle} />}
-                        label="Requires Authentication?"
+                        label="Does The Proxy Require Authentication?"
                     />
                 </FormControl>
                 {requiresAuth && (
