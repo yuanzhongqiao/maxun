@@ -6,6 +6,9 @@ interface UserAttributes {
     email: string;
     password: string;
     api_key?: string | null;
+    proxy_url?: string | null;
+    proxy_username?: string | null;
+    proxy_password?: string | null;
 }
 
 // Optional fields for creating a new user
