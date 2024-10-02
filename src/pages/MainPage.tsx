@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect } from 'react';
 import { MainMenu } from "../components/organisms/MainMenu";
-import { Grid, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import { Recordings } from "../components/organisms/Recordings";
 import { Runs } from "../components/organisms/Runs";
 import ProxyForm from '../components/organisms/ProxyForm';
+import ApiKey from '../components/organisms/ApiKey';
 import { useGlobalInfoStore } from "../context/globalInfo";
 import { createRunForStoredRecording, interpretStoredRecording, notifyAboutAbort, scheduleStoredRecording } from "../api/storage";
 import { handleUploadCredentials } from "../api/integration"
@@ -145,6 +146,8 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
         />;
       case 'proxy':
         return <ProxyForm />;
+      case 'apikey':
+        return <ApiKey />;
       default:
         return null;
     }

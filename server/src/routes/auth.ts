@@ -17,7 +17,7 @@ router.post('/register', async (req, res) => {
         if (!email) return res.status(400).send('Email is required')
         if (!password || password.length < 6) return res.status(400).send('Password is required and must be at least 6 characters')
 
-        let userExist = await User.findOne({ where: { email } });
+        let userExist = await User.findOne({ raw: true, where: { email } });
         if (userExist) return res.status(400).send('User already exists')
 
         const hashedPassword = await hashPassword(password)
@@ -107,11 +107,9 @@ router.post('/generate-api-key', requireSignIn, async (req: AuthenticatedRequest
         if (user.api_key) {
             return res.status(400).json({ message: 'API key already exists' });
         }
-
         const apiKey = genAPIKey();
 
-        user.api_key = apiKey;
-        await user.save();
+        await user.update({ api_key: apiKey });
 
         return res.status(200).json({
             message: 'API key generated successfully',
@@ -119,5 +117,49 @@ router.post('/generate-api-key', requireSignIn, async (req: AuthenticatedRequest
         });
     } catch (error) {
         return res.status(500).json({ message: 'Error generating API key', error });
+    }
+});
+
+router.get('/api-key', requireSignIn, async (req: AuthenticatedRequest, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ ok: false, error: 'Unauthorized' });
+        }
+
+        const user = await User.findByPk(req.user.id, {
+            raw: true,
+            attributes: ['api_key'],
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        return res.status(200).json({
+            message: 'API key fetched successfully',
+            api_key: user.api_key || null,
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error fetching API key', error });
+    }
+});
+
+router.delete('/delete-api-key', requireSignIn, async (req, res) => {
+    try {
+        const user = await User.findByPk(req.user.id, { raw: true });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (!user.api_key) {
+            return res.status(404).json({ message: 'API Key not found' });
+        }
+
+        await User.update({ api_key: null }, { where: { id: req.user.id } });
+
+        return res.status(200).json({ message: 'API Key deleted successfully' });
+    } catch (error: any) {
+        return res.status(500).json({ message: 'Error deleting API key', error: error.message });
     }
 });
