@@ -40,8 +40,8 @@ const ApiKeyManager = () => {
       try {
         const { data } = await axios.get('http://localhost:8080/auth/api-key');
         setApiKey(data.api_key);
-      } catch (error) {
-        console.error('Error fetching API key', error);
+      } catch (error: any) {
+        notify('error', `Failed to fetch API Key - ${error.message}`);
       } finally {
         setLoading(false);
       }
@@ -56,8 +56,8 @@ const ApiKeyManager = () => {
       const { data } = await axios.post('http://localhost:8080/auth/generate-api-key');
       setApiKey(data.api_key);
       notify('success', `Generated API Key successfully`);
-    } catch (error) {
-      console.error('Error generating API key', error);
+    } catch (error: any) {
+      notify('error', `Failed to generate API Key - ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -69,8 +69,8 @@ const ApiKeyManager = () => {
       await axios.delete('http://localhost:8080/auth/delete-api-key');
       setApiKey(null);
       notify('success', 'API Key deleted successfully');
-    } catch (error) {
-      console.error('Error deleting API key', error);
+    } catch (error: any) {
+      notify('error', `Failed to delete API Key - ${error.message}`);
     } finally {
       setLoading(false);
     }
