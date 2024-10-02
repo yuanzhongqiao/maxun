@@ -47,7 +47,7 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
             alignItems: 'baseline',
             fontSize: 'medium',
           }} value="proxy" label="Proxy" />
-           <Tab sx={{
+          <Tab sx={{
             alignItems: 'baseline',
             fontSize: 'medium',
           }} value="apikey" label="Generate API Key" />
