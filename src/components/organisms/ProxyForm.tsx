@@ -28,7 +28,7 @@ const ProxyForm: React.FC = () => {
         username: '',
         password: '',
     });
-    
+
     const { notify } = useGlobalInfoStore();
 
     const validateForm = () => {
@@ -73,7 +73,7 @@ const ProxyForm: React.FC = () => {
         if (!validateForm()) {
             return;
         }
-        
+
         await sendProxyConfig(proxyConfig).then((response) => {
             if (response) {
                 notify('success', 'Proxy configuration submitted successfully');
