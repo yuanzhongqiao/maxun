@@ -45,7 +45,6 @@ const ProxyForm: React.FC = () => {
         <FormContainer>
             <form onSubmit={handleSubmit}>
                 <Typography variant="subtitle1" gutterBottom style={{ marginBottom: '20px', marginTop: '20px' }}>Proxy Configuration</Typography>
-
                 <FormControl>
                     <TextField
                         label="Proxy Server URL"
@@ -57,7 +56,6 @@ const ProxyForm: React.FC = () => {
                         helperText="e.g., http://proxy-server.com:8080"
                     />
                 </FormControl>
-
                 <FormControl>
                     <TextField
                         label="Username (Optional)"
@@ -67,7 +65,6 @@ const ProxyForm: React.FC = () => {
                         fullWidth
                     />
                 </FormControl>
-
                 <FormControl>
                     <TextField
                         label="Password (Optional)"
@@ -78,7 +75,6 @@ const ProxyForm: React.FC = () => {
                         fullWidth
                     />
                 </FormControl>
-
                 <Button variant="contained" color="primary" type="submit" fullWidth>
                     Add Proxy
                 </Button>
