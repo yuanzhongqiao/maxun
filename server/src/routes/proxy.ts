@@ -13,15 +13,21 @@ router.post('/config', requireSignIn, async (req: AuthenticatedRequest, res: Res
     const { server_url, username, password } = req.body;
 
     try {
-        if (!server_url) {
-            return res.status(400).send('Proxy URL is required');
-        }
 
-        const userId = 1;
-        const user = await User.findByPk(userId);
+        if (!req.user) {
+            return res.status(401).json({ ok: false, error: 'Unauthorized' });
+        }
+        
+        const user = await User.findByPk(req.user.id, {
+            attributes: { exclude: ['password'] },
+        });
 
         if (!user) {
-            return res.status(404).send('User not found');
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (!server_url) {
+            return res.status(400).send('Proxy URL is required');
         }
 
         let hashedProxyUsername: string | null = null;
