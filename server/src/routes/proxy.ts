@@ -5,6 +5,10 @@ import { requireSignIn } from '../middlewares/auth';
 
 export const router = Router();
 
+interface AuthenticatedRequest extends Request {
+    user?: { id: string };
+}
+
 router.post('/config', requireSignIn, async (req: Request, res: Response) => {
     const { server_url, username, password } = req.body;
 
