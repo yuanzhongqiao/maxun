@@ -6,6 +6,9 @@ interface UserAttributes {
     email: string;
     password: string;
     api_key?: string | null;
+    proxy_url?: string | null;
+    proxy_username?: string | null;
+    proxy_password?: string | null;
 }
 
 // Optional fields for creating a new user
@@ -16,6 +19,9 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
     public email!: string;
     public password!: string;
     public api_key!: string | null;
+    public proxy_url!: string | null;
+    public proxy_username!: string | null;
+    public proxy_password!: string | null;
 }
 
 User.init(
@@ -39,7 +45,26 @@ User.init(
         },
         api_key: {
             type: DataTypes.STRING,
-            allowNull: true, 
+            allowNull: true,
+        },
+        proxy_url: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        proxy_username: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            validate: {
+                isProxyPasswordRequired(value: string | null) {
+                    if (value && !this.proxy_password) {
+                        throw new Error('Proxy password is required when proxy username is provided');
+                    }
+                },
+            },
+        },
+        proxy_password: {
+            type: DataTypes.STRING,
+            allowNull: true,
         },
     },
     {

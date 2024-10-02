@@ -3,7 +3,6 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { Paper } from "@mui/material";
-import styled from "styled-components";
 
 interface MainMenuProps {
   value: string;
@@ -38,13 +37,17 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
         >
           <Tab sx={{
             alignItems: 'baseline',
-            fontSize:'medium',
+            fontSize: 'medium',
           }} value="recordings" label="Recordings" />
           <Tab sx={{
             alignItems: 'baseline',
-            fontSize:'medium',
+            fontSize: 'medium',
           }} value="runs" label="Runs" />
-      </Tabs>
+          <Tab sx={{
+            alignItems: 'baseline',
+            fontSize: 'medium',
+          }} value="proxy" label="Proxy" />
+        </Tabs>
       </Box>
     </Paper>
   );
