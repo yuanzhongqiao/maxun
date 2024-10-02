@@ -18,7 +18,6 @@ const FormControl = styled(Box)({
 
 const ProxyForm: React.FC = () => {
     const [proxyConfig, setProxyConfig] = useState({
-        type: 'http',
         server: '',
         username: '',
         password: '',
@@ -45,20 +44,6 @@ const ProxyForm: React.FC = () => {
     return (
         <FormContainer>
             <form onSubmit={handleSubmit}>
-                <FormControl>
-                    <Typography variant="subtitle1" gutterBottom>Select Proxy Type</Typography>
-                    <RadioGroup
-                        name="type"
-                        value={proxyConfig.type}
-                        onChange={handleChange}
-                        row
-                    >
-                        <FormControlLabel value="http" control={<Radio />} label="HTTP" />
-                        <FormControlLabel value="https" control={<Radio />} label="HTTPS" />
-                        <FormControlLabel value="socks5" control={<Radio />} label="SOCKS5" />
-                    </RadioGroup>
-                </FormControl>
-
                 <Typography variant="subtitle1" gutterBottom style={{ marginBottom: '20px', marginTop: '20px' }}>Proxy Configuration</Typography>
 
                 <FormControl>
