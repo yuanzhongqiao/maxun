@@ -17,7 +17,7 @@ router.post('/register', async (req, res) => {
         if (!email) return res.status(400).send('Email is required')
         if (!password || password.length < 6) return res.status(400).send('Password is required and must be at least 6 characters')
 
-        let userExist = await User.findOne({ where: { email } });
+        let userExist = await User.findOne({ raw: true, where: { email } });
         if (userExist) return res.status(400).send('User already exists')
 
         const hashedPassword = await hashPassword(password)
