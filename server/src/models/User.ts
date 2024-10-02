@@ -19,6 +19,9 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
     public email!: string;
     public password!: string;
     public api_key!: string | null;
+    public proxy_url!: string | null;
+    public proxy_username!: string | null;
+    public proxy_password!: string | null;
 }
 
 User.init(
