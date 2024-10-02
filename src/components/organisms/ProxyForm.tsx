@@ -22,7 +22,6 @@ const ProxyForm: React.FC = () => {
         server: '',
         username: '',
         password: '',
-        apiKey: '',
     });
 
     const { notify } = useGlobalInfoStore();
