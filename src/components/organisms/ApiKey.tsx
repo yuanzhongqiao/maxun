@@ -14,7 +14,6 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { useGlobalInfoStore } from '../../context/globalInfo';
 
-// Styled components
 const Container = styled(Box)`
   display: flex;
   flex-direction: column;
@@ -40,7 +39,6 @@ const ApiKey = () => {
 
   const {notify} = useGlobalInfoStore();
 
-  // Fetch API Key on mount
   useEffect(() => {
     const fetchApiKey = async () => {
       try {
@@ -57,7 +55,6 @@ const ApiKey = () => {
     fetchApiKey();
   }, []);
 
-  // Handle API Key generation
   const generateApiKey = async () => {
     setLoading(true);
     try {
@@ -71,7 +68,6 @@ const ApiKey = () => {
     }
   };
 
-  // Copy to clipboard handler
   const copyToClipboard = () => {
     if (apiKey) {
       navigator.clipboard.writeText(apiKey);
@@ -80,7 +76,6 @@ const ApiKey = () => {
     }
   };
 
-  // Toggle key visibility
   const toggleShowKey = () => {
     setShowKey(!showKey);
   };
