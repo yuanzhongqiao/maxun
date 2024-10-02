@@ -107,11 +107,9 @@ router.post('/generate-api-key', requireSignIn, async (req: AuthenticatedRequest
         if (user.api_key) {
             return res.status(400).json({ message: 'API key already exists' });
         }
-
         const apiKey = genAPIKey();
 
-        user.api_key = apiKey;
-        await user.save();
+        await user.update({ api_key: apiKey });
 
         return res.status(200).json({
             message: 'API key generated successfully',
@@ -129,6 +127,7 @@ router.get('/api-key', requireSignIn, async (req: AuthenticatedRequest, res) => 
         }
 
         const user = await User.findByPk(req.user.id, {
+            raw: true,
             attributes: ['api_key'],
         });
 
