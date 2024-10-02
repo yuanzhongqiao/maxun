@@ -116,7 +116,7 @@ const ApiKeyManager = () => {
         </>
       ) : (
         <CenteredContent>
-          <HiddenText>You haven't generated an API key yet.</HiddenText>
+          <Typography>You haven't generated an API key yet.</Typography>
           <Button
             onClick={generateApiKey}
             variant="contained"
