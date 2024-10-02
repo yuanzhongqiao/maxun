@@ -121,3 +121,26 @@ router.post('/generate-api-key', requireSignIn, async (req: AuthenticatedRequest
         return res.status(500).json({ message: 'Error generating API key', error });
     }
 });
+
+router.get('/api-key', requireSignIn, async (req: AuthenticatedRequest, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ ok: false, error: 'Unauthorized' });
+        }
+
+        const user = await User.findByPk(req.user.id, {
+            attributes: ['api_key'],
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        return res.status(200).json({
+            message: 'API key fetched successfully',
+            api_key: user.api_key || null,
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error fetching API key', error });
+    }
+});
