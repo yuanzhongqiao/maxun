@@ -9,7 +9,7 @@ interface AuthenticatedRequest extends Request {
     user?: { id: string };
 }
 
-router.post('/config', requireSignIn, async (req: Request, res: Response) => {
+router.post('/config', requireSignIn, async (req: AuthenticatedRequest, res: Response) => {
     const { server_url, username, password } = req.body;
 
     try {
