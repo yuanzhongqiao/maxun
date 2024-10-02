@@ -81,6 +81,7 @@ const ApiKeyManager = () => {
       navigator.clipboard.writeText(apiKey);
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
+      notify('info', 'API Key copied to clipboard');
     }
   };
 
