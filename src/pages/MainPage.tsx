@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { MainMenu } from "../components/organisms/MainMenu";
-import { Grid, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import { Recordings } from "../components/organisms/Recordings";
 import { Runs } from "../components/organisms/Runs";
 import ProxyForm from '../components/organisms/ProxyForm';
