@@ -76,16 +76,6 @@ const ProxyForm: React.FC = () => {
 
                 <FormControl>
                     <TextField
-                        label="API Key (Optional)"
-                        name="apiKey"
-                        value={proxyConfig.apiKey}
-                        onChange={handleChange}
-                        fullWidth
-                    />
-                </FormControl>
-
-                <FormControl>
-                    <TextField
                         label="Username (Optional)"
                         name="username"
                         value={proxyConfig.username}
