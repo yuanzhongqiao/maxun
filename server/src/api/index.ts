@@ -1,1 +1,0 @@
-import { router as record } from './record';

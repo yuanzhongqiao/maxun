@@ -1,7 +1,7 @@
 import { readFile, readFiles } from "../workflow-management/storage";
 import { Router, Request, Response } from 'express';
 import { requireAPIKey } from "../middlewares/api";
-export const router = Router();
+const router = Router();
 
 const formatRecording = (recordingData: any) => {
     const recordingMeta = recordingData.recording_meta;
@@ -27,7 +27,7 @@ const formatRecording = (recordingData: any) => {
 };
 
 
-router.get("/api/robots", requireAPIKey, async (req: Request, res: Response) => {
+router.get("/robots", requireAPIKey, async (req: Request, res: Response) => {
     try {
         const fileContents = await readFiles('./../storage/recordings/');
 
@@ -80,7 +80,7 @@ const formatRecordingById = (recordingData: any) => {
     };
 };
 
-router.get("/api/robots/:fileName", requireAPIKey, async (req: Request, res: Response) => {
+router.get("/robots/:fileName", requireAPIKey, async (req: Request, res: Response) => {
     try {
         const fileContent = await readFile(`./../storage/recordings/${req.params.fileName}.waw.json`);
 
@@ -103,3 +103,5 @@ router.get("/api/robots/:fileName", requireAPIKey, async (req: Request, res: Res
         });
     }
 });
+
+export default router;
