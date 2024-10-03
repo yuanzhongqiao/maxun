@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 import http from 'http';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -12,6 +13,7 @@ import cookieParser from 'cookie-parser';
 import csrf from 'csurf';
 import { SERVER_PORT } from "./constants/config";
 import { Server } from "socket.io";
+import { readdirSync } from "fs"
 
 const csrfProtection = csrf({ cookie: true })
 
@@ -47,6 +49,16 @@ app.use('/storage', storage);
 app.use('/auth', auth);
 app.use('/integration', integration);
 app.use('/proxy', proxy);
+
+readdirSync(path.join(__dirname, 'api')).forEach((r) => {
+  const route = require(path.join(__dirname, 'api', r));
+  const router = route.default || route;  // Use .default if available, fallback to route
+  if (typeof router === 'function') {
+    app.use('/api', router);  // Use the default export or named router
+  } else {
+    console.error(`Error: ${r} does not export a valid router`);
+  }
+});
 
 app.get('/', function (req, res) {
   return res.send('Maxun server started 🚀');
