@@ -109,7 +109,7 @@ export const getElementInformation = async (
               element?.innerText?.length > 0;
             info.innerText = element?.innerText ?? '';
           }
-         
+
           info.innerHTML = element.innerHTML;
           info.outerHTML = element.outerHTML;
 
