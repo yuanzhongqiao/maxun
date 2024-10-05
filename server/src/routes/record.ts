@@ -14,6 +14,7 @@ import {
 import { chromium } from 'playwright-extra';
 import stealthPlugin from 'puppeteer-extra-plugin-stealth';
 import logger from "../logger";
+import { getDecryptedProxyConfig } from './proxy';
 
 export const router = Router();
 chromium.use(stealthPlugin());
@@ -30,16 +31,27 @@ router.all('/', (req, res, next) => {
  * GET endpoint for starting the remote browser recording session.
  * returns session's id
  */
-router.get('/start', (req, res) => {
+router.get('/start', async (req, res) => {
+    const proxyConfig = await getDecryptedProxyConfig(req.user.id);
+    // Prepare the proxy options dynamically based on the user's proxy configuration
+    let proxyOptions: any = {}; // Default to no proxy
+
+    if (proxyConfig.proxy_url) {
+        // Set the server, and if username & password exist, set those as well
+        proxyOptions = {
+            server: proxyConfig.proxy_url,
+            ...(proxyConfig.proxy_username && proxyConfig.proxy_password && {
+                username: proxyConfig.proxy_username,
+                password: proxyConfig.proxy_password,
+            }),
+        };
+    }
+    
     const id = initializeRemoteBrowserForRecording({
         browser: chromium,
         launchOptions: {
             headless: true,
-            proxy: {
-                server: '',
-                username: '',
-                password: '',
-            }
+            proxy: proxyOptions.server ? proxyOptions : undefined,
         }
     });
     return res.send(id);
