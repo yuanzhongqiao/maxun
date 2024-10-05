@@ -52,3 +52,23 @@ router.post('/config', requireSignIn, async (req: AuthenticatedRequest, res: Res
         res.status(500).send(`Could not save proxy configuration - ${error.message}`);
     }
 });
+
+const getDecryptedProxyConfig = async (userId: string) => {
+    const user = await User.findByPk(userId, {
+        attributes: ['proxy_url', 'proxy_username', 'proxy_password'],
+    });
+
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    const decryptedProxyUrl = user.proxy_url ? decrypt(user.proxy_url) : null;
+    const decryptedProxyUsername = user.proxy_username ? decrypt(user.proxy_username) : null;
+    const decryptedProxyPassword = user.proxy_password ? decrypt(user.proxy_password) : null;
+
+    return {
+        proxy_url: decryptedProxyUrl,
+        proxy_username: decryptedProxyUsername,
+        proxy_password: decryptedProxyPassword,
+    };
+};
