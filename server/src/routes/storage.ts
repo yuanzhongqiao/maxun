@@ -87,14 +87,14 @@ router.put('/runs/:fileName', async (req, res) => {
   try {
     const id = createRemoteBrowserForRun({
       browser: chromium,
-      launchOptions: { 
+      launchOptions: {
         headless: true,
         proxy: {
           server: '',
           username: '',
           password: '',
-      }
         }
+      }
     });
 
     const runId = uuid();
