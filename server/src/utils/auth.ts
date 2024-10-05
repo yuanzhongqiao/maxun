@@ -29,3 +29,11 @@ const encrypt = (text: string): string => {
     encrypted += cipher.final('hex');
     return `${iv.toString('hex')}:${encrypted}`;
 };
+
+const decrypt = (encryptedText: string): string => {
+    const [iv, encrypted] = encryptedText.split(':');
+    const decipher = crypto.createDecipheriv(ALGORITHM, Buffer.from(ENCRYPTION_KEY), Buffer.from(iv, 'hex'));
+    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+};
