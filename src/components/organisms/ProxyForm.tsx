@@ -98,7 +98,8 @@ const ProxyForm: React.FC = () => {
                         fullWidth
                         required
                         error={!!errors.server_url}
-                        helperText={errors.server_url || 'e.g., http://proxy-server.com:8080'}
+                        helperText={errors.server_url || `Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example http://myproxy.com:3128 or
+     socks5://myproxy.com:3128. Short form myproxy.com:3128 is considered an HTTP proxy.`}
                     />
                 </FormControl>
                 <FormControl>
