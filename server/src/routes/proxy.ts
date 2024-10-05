@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import User from '../models/User';
-import { hashPassword } from '../utils/auth';
+import { encrypt, decrypt } from '../utils/auth';
 import { requireSignIn } from '../middlewares/auth';
 
 export const router = Router();
@@ -30,19 +30,20 @@ router.post('/config', requireSignIn, async (req: AuthenticatedRequest, res: Res
             return res.status(400).send('Proxy URL is required');
         }
 
-        let hashedProxyUsername: string | null = null;
-        let hashedProxyPassword: string | null = null;
+        const encryptedProxyUrl = encrypt(server_url);
+        let encryptedProxyUsername: string | null = null;
+        let encryptedProxyPassword: string | null = null;
 
         if (username && password) {
-            hashedProxyUsername = await hashPassword(username);
-            hashedProxyPassword = await hashPassword(password);
+            encryptedProxyUsername = encrypt(username);
+            encryptedProxyPassword = encrypt(password);
         } else if (username && !password) {
             return res.status(400).send('Proxy password is required when proxy username is provided');
         }
 
-        user.proxy_url = server_url;
-        user.proxy_username = hashedProxyUsername;
-        user.proxy_password = hashedProxyPassword;
+        user.proxy_url = encryptedProxyUrl;
+        user.proxy_username = encryptedProxyUsername;
+        user.proxy_password = encryptedProxyPassword;
 
         await user.save();
 
@@ -51,3 +52,24 @@ router.post('/config', requireSignIn, async (req: AuthenticatedRequest, res: Res
         res.status(500).send(`Could not save proxy configuration - ${error.message}`);
     }
 });
+
+// TODO: Move this from here
+export const getDecryptedProxyConfig = async (userId: string) => {
+    const user = await User.findByPk(userId, {
+        attributes: ['proxy_url', 'proxy_username', 'proxy_password'],
+    });
+
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    const decryptedProxyUrl = user.proxy_url ? decrypt(user.proxy_url) : null;
+    const decryptedProxyUsername = user.proxy_username ? decrypt(user.proxy_username) : null;
+    const decryptedProxyPassword = user.proxy_password ? decrypt(user.proxy_password) : null;
+
+    return {
+        proxy_url: decryptedProxyUrl,
+        proxy_username: decryptedProxyUsername,
+        proxy_password: decryptedProxyPassword,
+    };
+};

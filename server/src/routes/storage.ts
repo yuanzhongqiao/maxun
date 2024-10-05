@@ -10,10 +10,11 @@ import { chromium } from "playwright";
 import { browserPool } from "../server";
 import fs from "fs";
 import { uuid } from "uuidv4";
-import { workflowQueue } from '../workflow-management/scheduler';
+// import { workflowQueue } from '../workflow-management/scheduler';
 import moment from 'moment-timezone';
 import cron from 'node-cron';
 import { googleSheetUpdateTasks, processGoogleSheetUpdates } from '../workflow-management/integrations/gsheet';
+import { getDecryptedProxyConfig } from './proxy';
 
 export const router = Router();
 
@@ -85,9 +86,25 @@ router.delete('/runs/:fileName', async (req, res) => {
  */
 router.put('/runs/:fileName', async (req, res) => {
   try {
+    const proxyConfig = await getDecryptedProxyConfig(req.user.id);
+    let proxyOptions: any = {};
+
+    if (proxyConfig.proxy_url) {
+      proxyOptions = {
+        server: proxyConfig.proxy_url,
+        ...(proxyConfig.proxy_username && proxyConfig.proxy_password && {
+          username: proxyConfig.proxy_username,
+          password: proxyConfig.proxy_password,
+        }),
+      };
+    }
+
     const id = createRemoteBrowserForRun({
       browser: chromium,
-      launchOptions: { headless: true }
+      launchOptions: {
+        headless: true,
+        proxy: proxyOptions.server ? proxyOptions : undefined,
+      }
     });
 
     const runId = uuid();
@@ -262,16 +279,16 @@ router.put('/schedule/:fileName/', async (req, res) => {
 
     const runId = uuid();
 
-    await workflowQueue.add(
-      'run workflow',
-      { fileName, runId },
-      {
-        repeat: {
-          pattern: cronExpression,
-          tz: timezone
-        }
-      }
-    );
+    // await workflowQueue.add(
+    //   'run workflow',
+    //   { fileName, runId },
+    //   {
+    //     repeat: {
+    //       pattern: cronExpression,
+    //       tz: timezone
+    //     }
+    //   }
+    // );
 
     res.status(200).json({
       message: 'success',
