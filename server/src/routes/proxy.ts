@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import User from '../models/User';
-import { hashPassword, encrypt, decrypt } from '../utils/auth';
+import { encrypt, decrypt } from '../utils/auth';
 import { requireSignIn } from '../middlewares/auth';
 
 export const router = Router();
