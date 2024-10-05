@@ -35,6 +35,11 @@ router.get('/start', (req, res) => {
         browser: chromium,
         launchOptions: {
             headless: true,
+            proxy: {
+                server: '',
+                username: '',
+                password: '',
+            }
         }
     });
     return res.send(id);
