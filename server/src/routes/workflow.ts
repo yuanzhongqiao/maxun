@@ -6,13 +6,14 @@ import { Router } from 'express';
 import logger from "../logger";
 import { browserPool } from "../server";
 import { readFile } from "../workflow-management/storage";
+import { requireSignIn } from '../middlewares/auth';
 
 export const router = Router();
 
 /**
  * Logs information about workflow API.
  */
-router.all('/', (req, res, next) => {
+router.all('/', requireSignIn, (req, res, next) => {
   logger.log('debug', `The workflow API was invoked: ${req.url}`)
   next() // pass control to the next handler
 })
@@ -21,7 +22,7 @@ router.all('/', (req, res, next) => {
  * GET endpoint for a recording linked to a remote browser instance.
  * returns session's id
  */
-router.get('/:browserId', (req, res) => {
+router.get('/:browserId', requireSignIn, (req, res) => {
   const activeBrowser = browserPool.getRemoteBrowser(req.params.browserId);
   let workflowFile = null;
   if (activeBrowser && activeBrowser.generator) {
@@ -33,7 +34,7 @@ router.get('/:browserId', (req, res) => {
 /**
  * Get endpoint returning the parameter array of the recording associated with the browserId browser instance.
  */
-router.get('/params/:browserId', (req, res) => {
+router.get('/params/:browserId', requireSignIn, (req, res) => {
   const activeBrowser = browserPool.getRemoteBrowser(req.params.browserId);
   let params = null;
   if (activeBrowser && activeBrowser.generator) {
@@ -45,7 +46,7 @@ router.get('/params/:browserId', (req, res) => {
 /**
  * DELETE endpoint for deleting a pair from the generated workflow.
  */
-router.delete('/pair/:index', (req, res) => {
+router.delete('/pair/:index', requireSignIn, (req, res) => {
   const id = browserPool.getActiveBrowserId();
   if (id) {
     const browser = browserPool.getRemoteBrowser(id);
@@ -61,7 +62,7 @@ router.delete('/pair/:index', (req, res) => {
 /**
  * POST endpoint for adding a pair to the generated workflow.
  */
-router.post('/pair/:index', (req, res) => {
+router.post('/pair/:index', requireSignIn, (req, res) => {
   const id = browserPool.getActiveBrowserId();
   if (id) {
     const browser = browserPool.getRemoteBrowser(id);
@@ -81,7 +82,7 @@ router.post('/pair/:index', (req, res) => {
 /**
  * PUT endpoint for updating a pair in the generated workflow.
  */
-router.put('/pair/:index', (req, res) => {
+router.put('/pair/:index', requireSignIn, (req, res) => {
   const id = browserPool.getActiveBrowserId();
   if (id) {
     const browser = browserPool.getRemoteBrowser(id);
@@ -101,7 +102,7 @@ router.put('/pair/:index', (req, res) => {
 /**
  * PUT endpoint for updating the currently generated workflow file from the one in the storage.
  */
-router.put('/:browserId/:fileName', async (req, res) => {
+router.put('/:browserId/:fileName', requireSignIn, async (req, res) => {
   try {
     const browser = browserPool.getRemoteBrowser(req.params.browserId);
     logger.log('debug', `Updating workflow file`);
