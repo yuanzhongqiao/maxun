@@ -53,7 +53,7 @@ router.post('/config', requireSignIn, async (req: AuthenticatedRequest, res: Res
     }
 });
 
-const getDecryptedProxyConfig = async (userId: string) => {
+export const getDecryptedProxyConfig = async (userId: string) => {
     const user = await User.findByPk(userId, {
         attributes: ['proxy_url', 'proxy_username', 'proxy_password'],
     });
