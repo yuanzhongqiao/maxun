@@ -90,13 +90,13 @@ router.put('/runs/:fileName', async (req, res) => {
     let proxyOptions: any = {};
 
     if (proxyConfig.proxy_url) {
-        proxyOptions = {
-            server: proxyConfig.proxy_url,
-            ...(proxyConfig.proxy_username && proxyConfig.proxy_password && {
-                username: proxyConfig.proxy_username,
-                password: proxyConfig.proxy_password,
-            }),
-        };
+      proxyOptions = {
+        server: proxyConfig.proxy_url,
+        ...(proxyConfig.proxy_username && proxyConfig.proxy_password && {
+          username: proxyConfig.proxy_username,
+          password: proxyConfig.proxy_password,
+        }),
+      };
     }
 
     const id = createRemoteBrowserForRun({
