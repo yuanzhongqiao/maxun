@@ -23,7 +23,7 @@ export const comparePassword = (password: string, hash: string): Promise<boolean
     return bcrypt.compare(password, hash)
 }
 
-const encrypt = (text: string): string => {
+export const encrypt = (text: string): string => {
     const ivLength = parseInt(getEnvVariable('IV_LENGTH'), 10);
     const iv = crypto.randomBytes(ivLength);
     const algorithm = getEnvVariable('ALGORITHM');
@@ -34,7 +34,7 @@ const encrypt = (text: string): string => {
     return `${iv.toString('hex')}:${encrypted}`;
 };
 
-const decrypt = (encryptedText: string): string => {
+export const decrypt = (encryptedText: string): string => {
     const [iv, encrypted] = encryptedText.split(':');
     const algorithm = getEnvVariable('ALGORITHM');
     const key = Buffer.from(getEnvVariable('ENCRYPTION_KEY'), 'hex');
