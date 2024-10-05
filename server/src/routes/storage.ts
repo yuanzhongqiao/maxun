@@ -15,13 +15,14 @@ import moment from 'moment-timezone';
 import cron from 'node-cron';
 import { googleSheetUpdateTasks, processGoogleSheetUpdates } from '../workflow-management/integrations/gsheet';
 import { getDecryptedProxyConfig } from './proxy';
+import { requireSignIn } from '../middlewares/auth';
 
 export const router = Router();
 
 /**
  * Logs information about recordings API.
  */
-router.all('/', (req, res, next) => {
+router.all('/', requireSignIn, (req, res, next) => {
   logger.log('debug', `The recordings API was invoked: ${req.url}`)
   next() // pass control to the next handler
 })
@@ -29,7 +30,7 @@ router.all('/', (req, res, next) => {
 /**
  * GET endpoint for getting an array of all stored recordings.
  */
-router.get('/recordings', async (req, res) => {
+router.get('/recordings', requireSignIn, async (req, res) => {
   try {
     const data = await readFiles('./../storage/recordings/');
     return res.send(data);
@@ -42,7 +43,7 @@ router.get('/recordings', async (req, res) => {
 /**
  * DELETE endpoint for deleting a recording from the storage.
  */
-router.delete('/recordings/:fileName', async (req, res) => {
+router.delete('/recordings/:fileName', requireSignIn, async (req, res) => {
   try {
     await deleteFile(`./../storage/recordings/${req.params.fileName}.waw.json`);
     return res.send(true);
@@ -56,7 +57,7 @@ router.delete('/recordings/:fileName', async (req, res) => {
 /**
  * GET endpoint for getting an array of runs from the storage.
  */
-router.get('/runs', async (req, res) => {
+router.get('/runs', requireSignIn, async (req, res) => {
   try {
     const data = await readFiles('./../storage/runs/');
     return res.send(data);
@@ -69,7 +70,7 @@ router.get('/runs', async (req, res) => {
 /**
  * DELETE endpoint for deleting a run from the storage.
  */
-router.delete('/runs/:fileName', async (req, res) => {
+router.delete('/runs/:fileName', requireSignIn, async (req, res) => {
   try {
     await deleteFile(`./../storage/runs/${req.params.fileName}.json`);
     return res.send(true);
@@ -84,7 +85,7 @@ router.delete('/runs/:fileName', async (req, res) => {
  * PUT endpoint for starting a remote browser instance and saving run metadata to the storage.
  * Making it ready for interpretation and returning a runId.
  */
-router.put('/runs/:fileName', async (req, res) => {
+router.put('/runs/:fileName', requireSignIn, async (req, res) => {
   try {
     const proxyConfig = await getDecryptedProxyConfig(req.user.id);
     let proxyOptions: any = {};
@@ -144,7 +145,7 @@ router.put('/runs/:fileName', async (req, res) => {
 /**
  * GET endpoint for getting a run from the storage.
  */
-router.get('/runs/run/:fileName/:runId', async (req, res) => {
+router.get('/runs/run/:fileName/:runId', requireSignIn, async (req, res) => {
   try {
     // read the run from storage
     const run = await readFile(`./../storage/runs/${req.params.fileName}_${req.params.runId}.json`)
@@ -160,7 +161,7 @@ router.get('/runs/run/:fileName/:runId', async (req, res) => {
 /**
  * PUT endpoint for finishing a run and saving it to the storage.
  */
-router.post('/runs/run/:fileName/:runId', async (req, res) => {
+router.post('/runs/run/:fileName/:runId', requireSignIn, async (req, res) => {
   try {
     const recording = await readFile(`./../storage/recordings/${req.params.fileName}.waw.json`)
     const parsedRecording = JSON.parse(recording);
@@ -218,7 +219,7 @@ router.post('/runs/run/:fileName/:runId', async (req, res) => {
   }
 });
 
-router.put('/schedule/:fileName/', async (req, res) => {
+router.put('/schedule/:fileName/', requireSignIn, async (req, res) => {
   console.log(req.body);
   try {
     const { fileName } = req.params;
@@ -313,7 +314,7 @@ router.put('/schedule/:fileName/', async (req, res) => {
 /**
  * POST endpoint for aborting a current interpretation of the run.
  */
-router.post('/runs/abort/:fileName/:runId', async (req, res) => {
+router.post('/runs/abort/:fileName/:runId', requireSignIn, async (req, res) => {
   try {
     const run = await readFile(`./../storage/runs/${req.params.fileName}_${req.params.runId}.json`)
     const parsedRun = JSON.parse(run);
