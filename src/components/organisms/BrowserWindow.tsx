@@ -14,6 +14,9 @@ interface ElementInfo {
     innerText?: string;
     url?: string;
     imageUrl?: string;
+    attributes?: Record<string, string>;
+    innerHTML?: string;
+    outerHTML?: string;
 }
 
 interface AttributeOption {

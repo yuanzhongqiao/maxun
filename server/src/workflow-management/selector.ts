@@ -81,10 +81,24 @@ export const getElementInformation = async (
             innerText?: string;
             url?: string;
             imageUrl?: string;
+            attributes?: Record<string, string>;
+            innerHTML?: string;
+            outerHTML?: string;
           } = {
             tagName: element?.tagName ?? '',
           };
 
+          if (element) {
+            info.attributes = Array.from(element.attributes).reduce(
+              (acc, attr) => {
+                acc[attr.name] = attr.value;
+                return acc;
+              },
+              {} as Record<string, string>
+            );
+          }
+
+          // Gather specific information based on the tag
           if (element?.tagName === 'A') {
             info.url = (element as HTMLAnchorElement).href;
             info.innerText = element.innerText ?? '';
@@ -95,6 +109,9 @@ export const getElementInformation = async (
               element?.innerText?.length > 0;
             info.innerText = element?.innerText ?? '';
           }
+
+          info.innerHTML = element.innerHTML;
+          info.outerHTML = element.outerHTML;
 
           return info;
         }
