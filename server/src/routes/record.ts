@@ -15,6 +15,7 @@ import { chromium } from 'playwright-extra';
 import stealthPlugin from 'puppeteer-extra-plugin-stealth';
 import logger from "../logger";
 import { getDecryptedProxyConfig } from './proxy';
+import { requireSignIn } from '../middlewares/auth';
 
 export const router = Router();
 chromium.use(stealthPlugin());
@@ -22,7 +23,7 @@ chromium.use(stealthPlugin());
 /**
  * Logs information about remote browser recording session.
  */
-router.all('/', (req, res, next) => {
+router.all('/', requireSignIn, (req, res, next) => {
     logger.log('debug', `The record API was invoked: ${req.url}`)
     next() // pass control to the next handler
 })
@@ -31,7 +32,7 @@ router.all('/', (req, res, next) => {
  * GET endpoint for starting the remote browser recording session.
  * returns session's id
  */
-router.get('/start', async (req, res) => {
+router.get('/start', requireSignIn, async (req, res) => {
     const proxyConfig = await getDecryptedProxyConfig(req.user.id);
     // Prepare the proxy options dynamically based on the user's proxy configuration
     let proxyOptions: any = {}; // Default to no proxy
@@ -61,7 +62,7 @@ router.get('/start', async (req, res) => {
  * POST endpoint for starting the remote browser recording session accepting browser launch options.
  * returns session's id
  */
-router.post('/start', (req, res) => {
+router.post('/start', requireSignIn, (req, res) => {
     const id = initializeRemoteBrowserForRecording({
         browser: chromium,
         launchOptions: req.body,
@@ -73,7 +74,7 @@ router.post('/start', (req, res) => {
  * GET endpoint for terminating the remote browser recording session.
  * returns whether the termination was successful
  */
-router.get('/stop/:browserId', async (req, res) => {
+router.get('/stop/:browserId', requireSignIn, async (req, res) => {
     const success = await destroyRemoteBrowser(req.params.browserId);
     return res.send(success);
 });
@@ -81,7 +82,7 @@ router.get('/stop/:browserId', async (req, res) => {
 /**
  * GET endpoint for getting the id of the active remote browser.
  */
-router.get('/active', (req, res) => {
+router.get('/active', requireSignIn, (req, res) => {
     const id = getActiveBrowserId();
     return res.send(id);
 });
@@ -89,7 +90,7 @@ router.get('/active', (req, res) => {
 /**
  * GET endpoint for getting the current url of the active remote browser.
  */
-router.get('/active/url', (req, res) => {
+router.get('/active/url', requireSignIn, (req, res) => {
     const id = getActiveBrowserId();
     if (id) {
         const url = getRemoteBrowserCurrentUrl(id);
@@ -101,7 +102,7 @@ router.get('/active/url', (req, res) => {
 /**
  * GET endpoint for getting the current tabs of the active remote browser.
  */
-router.get('/active/tabs', (req, res) => {
+router.get('/active/tabs', requireSignIn, (req, res) => {
     const id = getActiveBrowserId();
     if (id) {
         const hosts = getRemoteBrowserCurrentTabs(id);
@@ -113,7 +114,7 @@ router.get('/active/tabs', (req, res) => {
 /**
  * GET endpoint for starting an interpretation of the currently generated workflow.
  */
-router.get('/interpret', async (req, res) => {
+router.get('/interpret', requireSignIn, async (req, res) => {
     try {
         await interpretWholeWorkflow();
         return res.send('interpretation done');
@@ -125,7 +126,7 @@ router.get('/interpret', async (req, res) => {
 /**
  * GET endpoint for stopping an ongoing interpretation of the currently generated workflow.
  */
-router.get('/interpret/stop', async (req, res) => {
+router.get('/interpret/stop', requireSignIn, async (req, res) => {
     await stopRunningInterpretation();
     return res.send('interpretation stopped');
 });

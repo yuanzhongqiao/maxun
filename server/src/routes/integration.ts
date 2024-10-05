@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import logger from "../logger";
 import { loadIntegrations, saveIntegrations } from '../workflow-management/integrations/gsheet';
+import { requireSignIn } from '../middlewares/auth';
 
 export const router = Router();
 
-router.post('/upload-credentials', async (req, res) => {
+router.post('/upload-credentials', requireSignIn, async (req, res) => {
   try {
     const { fileName, credentials, spreadsheetId, range } = req.body;
     if (!fileName || !credentials || !spreadsheetId || !range) {
