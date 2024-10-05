@@ -23,8 +23,8 @@ export const comparePassword = (password: string, hash: string): Promise<boolean
 }
 
 const encrypt = (text: string): string => {
-    const iv = crypto.randomBytes(IV_LENGTH);
-    const cipher = crypto.createCipheriv(ALGORITHM, Buffer.from(ENCRYPTION_KEY), iv);
+    const iv = crypto.randomBytes(process.env.IV_LENGTH);
+    const cipher = crypto.createCipheriv(process.env.ALGORITHM, Buffer.from(process.env.ENCRYPTION_KEY), iv);
     let encrypted = cipher.update(text, 'utf8', 'hex');
     encrypted += cipher.final('hex');
     return `${iv.toString('hex')}:${encrypted}`;
@@ -32,7 +32,7 @@ const encrypt = (text: string): string => {
 
 const decrypt = (encryptedText: string): string => {
     const [iv, encrypted] = encryptedText.split(':');
-    const decipher = crypto.createDecipheriv(ALGORITHM, Buffer.from(ENCRYPTION_KEY), Buffer.from(iv, 'hex'));
+    const decipher = crypto.createDecipheriv(process.env.ALGORITHM, Buffer.from(process.env.ENCRYPTION_KEY), Buffer.from(iv, 'hex'));
     let decrypted = decipher.update(encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
     return decrypted;
