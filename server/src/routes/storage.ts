@@ -14,6 +14,7 @@ import { uuid } from "uuidv4";
 import moment from 'moment-timezone';
 import cron from 'node-cron';
 import { googleSheetUpdateTasks, processGoogleSheetUpdates } from '../workflow-management/integrations/gsheet';
+import { getDecryptedProxyConfig } from './proxy';
 
 export const router = Router();
 
@@ -85,15 +86,24 @@ router.delete('/runs/:fileName', async (req, res) => {
  */
 router.put('/runs/:fileName', async (req, res) => {
   try {
+    const proxyConfig = await getDecryptedProxyConfig(req.user.id);
+    let proxyOptions: any = {};
+
+    if (proxyConfig.proxy_url) {
+        proxyOptions = {
+            server: proxyConfig.proxy_url,
+            ...(proxyConfig.proxy_username && proxyConfig.proxy_password && {
+                username: proxyConfig.proxy_username,
+                password: proxyConfig.proxy_password,
+            }),
+        };
+    }
+
     const id = createRemoteBrowserForRun({
       browser: chromium,
       launchOptions: {
         headless: true,
-        proxy: {
-          server: '',
-          username: '',
-          password: '',
-        }
+        proxy: proxyOptions.server ? proxyOptions : undefined,
       }
     });
 
