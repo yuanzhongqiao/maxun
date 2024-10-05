@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import crypto from 'crypto';
+import { getEnvVariable } from './env';
 
 export const hashPassword = (password: string): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -23,8 +24,11 @@ export const comparePassword = (password: string, hash: string): Promise<boolean
 }
 
 const encrypt = (text: string): string => {
-    const iv = crypto.randomBytes(process.env.IV_LENGTH);
-    const cipher = crypto.createCipheriv(process.env.ALGORITHM, Buffer.from(process.env.ENCRYPTION_KEY), iv);
+    const ivLength = parseInt(getEnvVariable('IV_LENGTH'), 10);
+    const iv = crypto.randomBytes(ivLength);
+    const algorithm = getEnvVariable('ALGORITHM');
+    const key = Buffer.from(getEnvVariable('ENCRYPTION_KEY'), 'hex');
+    const cipher = crypto.createCipheriv(algorithm, key, iv);
     let encrypted = cipher.update(text, 'utf8', 'hex');
     encrypted += cipher.final('hex');
     return `${iv.toString('hex')}:${encrypted}`;
@@ -32,7 +36,9 @@ const encrypt = (text: string): string => {
 
 const decrypt = (encryptedText: string): string => {
     const [iv, encrypted] = encryptedText.split(':');
-    const decipher = crypto.createDecipheriv(process.env.ALGORITHM, Buffer.from(process.env.ENCRYPTION_KEY), Buffer.from(iv, 'hex'));
+    const algorithm = getEnvVariable('ALGORITHM');
+    const key = Buffer.from(getEnvVariable('ENCRYPTION_KEY'), 'hex');
+    const decipher = crypto.createDecipheriv(algorithm, key, Buffer.from(iv, 'hex'));
     let decrypted = decipher.update(encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
     return decrypted;
