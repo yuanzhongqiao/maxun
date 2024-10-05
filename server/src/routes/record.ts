@@ -46,7 +46,7 @@ router.get('/start', async (req, res) => {
             }),
         };
     }
-    
+
     const id = initializeRemoteBrowserForRecording({
         browser: chromium,
         launchOptions: {
