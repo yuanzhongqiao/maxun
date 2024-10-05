@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import User from '../models/User';
-import { hashPassword } from '../utils/auth';
+import { hashPassword, encrypt, decrypt } from '../utils/auth';
 import { requireSignIn } from '../middlewares/auth';
 
 export const router = Router();
@@ -30,19 +30,20 @@ router.post('/config', requireSignIn, async (req: AuthenticatedRequest, res: Res
             return res.status(400).send('Proxy URL is required');
         }
 
-        let hashedProxyUsername: string | null = null;
-        let hashedProxyPassword: string | null = null;
+        const encryptedProxyUrl = encrypt(server_url);
+        let encryptedProxyUsername: string | null = null;
+        let encryptedProxyPassword: string | null = null;
 
         if (username && password) {
-            hashedProxyUsername = await hashPassword(username);
-            hashedProxyPassword = await hashPassword(password);
+            encryptedProxyUsername = encrypt(username);
+            encryptedProxyPassword = encrypt(password);
         } else if (username && !password) {
             return res.status(400).send('Proxy password is required when proxy username is provided');
         }
 
-        user.proxy_url = server_url;
-        user.proxy_username = hashedProxyUsername;
-        user.proxy_password = hashedProxyPassword;
+        user.proxy_url = encryptedProxyUrl;
+        user.proxy_username = encryptedProxyUsername;
+        user.proxy_password = encryptedProxyPassword;
 
         await user.save();
 
