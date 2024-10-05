@@ -63,7 +63,7 @@ router.post('/login', async (req, res) => {
     }
 })
 
-router.get('/logout', async (req, res) => {
+router.get('/logout', requireSignIn, async (req, res) => {
     try {
         res.clearCookie('token')
         return res.json({ message: 'Logout successful' })
