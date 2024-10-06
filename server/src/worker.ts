@@ -26,7 +26,7 @@ connection.on('error', (err) => {
 
 const workflowQueue = new Queue('workflow', { connection });
 
-export const worker = new Worker('workflow', async job => {
+const worker = new Worker('workflow', async job => {
   const { fileName, runId } = job.data;
   try {
     const result = await handleRunRecording(fileName, runId);
@@ -60,4 +60,4 @@ async function jobCounts() {
 
 jobCounts();
 
-export { workflowQueue, runWorkflow };
+export { workflowQueue, worker };
