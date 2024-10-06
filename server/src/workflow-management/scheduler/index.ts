@@ -205,7 +205,7 @@ function resetRecordingState(browserId: string, fileName: string, runId: string)
   logger.log(`info`, `reset values for ${browserId}, ${fileName}, and ${runId}`);
 }
 
-async function handleRunRecording(fileName: string, runId: string) {
+export async function handleRunRecording(fileName: string, runId: string) {
   try {
     const result = await runWorkflow(fileName, runId);
     const { browserId, runId: newRunId } = result;
