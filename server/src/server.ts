@@ -85,3 +85,9 @@ server.listen(SERVER_PORT, async () => {
   await syncDB();
   logger.log('info', `Server listening on port ${SERVER_PORT}`);
 });
+
+process.on('SIGINT', () => {
+  console.log('Main app shutting down...');
+  workerProcess.kill();
+  process.exit();
+});
