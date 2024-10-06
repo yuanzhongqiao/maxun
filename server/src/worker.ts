@@ -9,6 +9,7 @@ import { createRemoteBrowserForRun, destroyRemoteBrowser } from './browser-manag
 import logger from './logger';
 import { browserPool } from "./server";
 import { googleSheetUpdateTasks, processGoogleSheetUpdates } from "./workflow-management/integrations/gsheet";
+import { handleRunRecording } from "./workflow-management/scheduler";
 
 const connection = new IORedis({
   host: 'localhost',
