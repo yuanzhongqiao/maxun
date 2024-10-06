@@ -4,11 +4,11 @@ import { chromium } from "playwright";
 import { io, Socket } from "socket.io-client";
 import { Queue, Worker } from 'bullmq';
 import IORedis from 'ioredis';
-import { readFile, saveFile } from "../storage";
-import { createRemoteBrowserForRun, destroyRemoteBrowser } from '../../browser-management/controller';
-import logger from '../../logger';
-import { browserPool } from "../../server";
-import { googleSheetUpdateTasks, processGoogleSheetUpdates } from "../integrations/gsheet";
+import { readFile, saveFile } from "./workflow-management/storage";
+import { createRemoteBrowserForRun, destroyRemoteBrowser } from './browser-management/controller';
+import logger from './logger';
+import { browserPool } from "./server";
+import { googleSheetUpdateTasks, processGoogleSheetUpdates } from "./workflow-management/integrations/gsheet";
 
 const connection = new IORedis({
   host: 'localhost',
