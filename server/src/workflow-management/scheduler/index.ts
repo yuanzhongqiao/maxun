@@ -187,4 +187,4 @@ function cleanupSocketListeners(socket: Socket, browserId: string, runId: string
   logger.log('info', `Cleaned up listeners for browserId: ${browserId}, runId: ${runId}`);
 }
 
-export { workflowQueue, runWorkflow };
+export { runWorkflow };
