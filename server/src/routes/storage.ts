@@ -10,12 +10,12 @@ import { chromium } from "playwright";
 import { browserPool } from "../server";
 import fs from "fs";
 import { uuid } from "uuidv4";
-import { workflowQueue } from '../workflow-management/scheduler';
 import moment from 'moment-timezone';
 import cron from 'node-cron';
 import { googleSheetUpdateTasks, processGoogleSheetUpdates } from '../workflow-management/integrations/gsheet';
 import { getDecryptedProxyConfig } from './proxy';
 import { requireSignIn } from '../middlewares/auth';
+import { workflowQueue } from '../worker';
 
 export const router = Router();
 
