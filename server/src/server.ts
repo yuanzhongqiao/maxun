@@ -14,6 +14,7 @@ import csrf from 'csurf';
 import { SERVER_PORT } from "./constants/config";
 import { Server } from "socket.io";
 import { readdirSync } from "fs"
+import { fork } from 'child_process';
 
 const csrfProtection = csrf({ cookie: true })
 
@@ -60,6 +61,17 @@ readdirSync(path.join(__dirname, 'api')).forEach((r) => {
   }
 });
 
+const workerProcess = fork(path.resolve(__dirname, './worker.ts'));
+workerProcess.on('message', (message) => {
+  console.log(`Message from worker: ${message}`);
+});
+workerProcess.on('error', (error) => {
+  console.error(`Error in worker: ${error}`);
+});
+workerProcess.on('exit', (code) => {
+  console.log(`Worker exited with code: ${code}`);
+});
+
 app.get('/', function (req, res) {
   return res.send('Maxun server started 🚀');
 });
@@ -72,4 +84,10 @@ server.listen(SERVER_PORT, async () => {
   await connectDB();
   await syncDB();
   logger.log('info', `Server listening on port ${SERVER_PORT}`);
+});
+
+process.on('SIGINT', () => {
+  console.log('Main app shutting down...');
+  workerProcess.kill();
+  process.exit();
 });

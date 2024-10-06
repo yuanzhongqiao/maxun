@@ -1,7 +1,3 @@
-/**
- * RESTful API endpoints handling the recording storage.
-*/
-
 import { Router } from 'express';
 import logger from "../logger";
 import { deleteFile, readFile, readFiles, saveFile } from "../workflow-management/storage";
@@ -10,12 +6,12 @@ import { chromium } from "playwright";
 import { browserPool } from "../server";
 import fs from "fs";
 import { uuid } from "uuidv4";
-// import { workflowQueue } from '../workflow-management/scheduler';
 import moment from 'moment-timezone';
 import cron from 'node-cron';
 import { googleSheetUpdateTasks, processGoogleSheetUpdates } from '../workflow-management/integrations/gsheet';
 import { getDecryptedProxyConfig } from './proxy';
 import { requireSignIn } from '../middlewares/auth';
+import { workflowQueue } from '../worker';
 
 export const router = Router();
 
@@ -280,16 +276,16 @@ router.put('/schedule/:fileName/', requireSignIn, async (req, res) => {
 
     const runId = uuid();
 
-    // await workflowQueue.add(
-    //   'run workflow',
-    //   { fileName, runId },
-    //   {
-    //     repeat: {
-    //       pattern: cronExpression,
-    //       tz: timezone
-    //     }
-    //   }
-    // );
+    await workflowQueue.add(
+       'run workflow',
+       { fileName, runId },
+       {
+         repeat: {
+           pattern: cronExpression,
+           tz: timezone
+         }
+       }
+     );
 
     res.status(200).json({
       message: 'success',
