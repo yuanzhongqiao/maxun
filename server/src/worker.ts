@@ -59,3 +59,5 @@ async function jobCounts() {
 }
 
 jobCounts();
+
+export { workflowQueue, runWorkflow };
