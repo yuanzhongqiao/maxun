@@ -38,6 +38,8 @@ worker.on('failed', async (job: any, err) => {
     logger.log(`error`, `Job ${job.id} failed for ${job.data.fileName}_${job.data.runId}:`, err);
 });
 
+console.log('Worker is running...');
+
 async function jobCounts() {
     const jobCounts = await workflowQueue.getJobCounts();
     console.log('Jobs:', jobCounts);
