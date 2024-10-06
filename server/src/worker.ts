@@ -32,18 +32,10 @@ const worker = new Worker('workflow', async job => {
 
 worker.on('completed', async (job: any) => {
     logger.log(`info`, `Job ${job.id} completed for ${job.data.fileName}_${job.data.runId}`);
-
-    await worker.close();
-    await workflowQueue.close();
-    logger.log(`info`, `Worker and queue have been closed.`);
 });
 
 worker.on('failed', async (job: any, err) => {
     logger.log(`error`, `Job ${job.id} failed for ${job.data.fileName}_${job.data.runId}:`, err);
-
-    await worker.close();
-    await workflowQueue.close();
-    logger.log(`info`, `Worker and queue have been closed after failure.`);
 });
 
 async function jobCounts() {
