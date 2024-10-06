@@ -1,7 +1,3 @@
-/**
- * RESTful API endpoints handling the recording storage.
-*/
-
 import { Router } from 'express';
 import logger from "../logger";
 import { deleteFile, readFile, readFiles, saveFile } from "../workflow-management/storage";
