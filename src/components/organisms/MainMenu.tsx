@@ -50,7 +50,7 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
           <Tab sx={{
             alignItems: 'baseline',
             fontSize: 'medium',
-          }} value="apikey" label="Generate API Key" />
+          }} value="apikey" label="API Key" />
         </Tabs>
       </Box>
     </Paper>

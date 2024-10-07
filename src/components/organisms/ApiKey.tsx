@@ -129,7 +129,7 @@ const ApiKeyManager = () => {
       ) : (
         <>
           <Typography>You haven't generated an API key yet.</Typography>
-          <Button onClick={generateApiKey} variant="contained" color="primary">
+          <Button onClick={generateApiKey} variant="contained" color="primary" sx={{ marginTop: '15px'}}>
             Generate API Key
           </Button>
         </>
