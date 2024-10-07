@@ -24,7 +24,7 @@ router.post('/register', async (req, res) => {
 
         const user = await User.create({ email, password: hashedPassword });
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, { expiresIn: '12h' });
         user.password = undefined as unknown as string
         res.cookie('token', token, {
             httpOnly: true
@@ -47,7 +47,7 @@ router.post('/login', async (req, res) => {
         const match = await comparePassword(password, user.password)
         if (!match) return res.status(400).send('Invalid email or password')
 
-        const token = jwt.sign({ id: user?.id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user?.id }, process.env.JWT_SECRET as string, { expiresIn: '12h' });
 
         // return user and token to client, exclude hashed password
         if (user) {
