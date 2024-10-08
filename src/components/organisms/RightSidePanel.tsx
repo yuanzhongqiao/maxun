@@ -20,6 +20,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { emptyWorkflow } from "../../shared/constants";
 import { getActiveWorkflow, getParamsOfActiveWorkflow } from "../../api/workflow";
+import { useSocketStore } from '../../context/socket';
 
 
 const fetchWorkflow = (id: string, callback: (response: WorkflowFile) => void) => {
@@ -54,7 +55,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const { lastAction, notify } = useGlobalInfoStore();
   const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitType, customLimit, updateLimitType, updateCustomLimit, stopLimitMode, startLimitMode } = useActionContext();
   const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep, updateListTextFieldLabel, removeListTextField } = useBrowserSteps();
-  const { socket } = useSocketStore();
+  const { id, socket } = useSocketStore();
 
   const workflowHandler = useCallback((data: WorkflowFile) => {
     setWorkflow(data);
