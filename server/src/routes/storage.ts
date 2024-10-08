@@ -11,7 +11,7 @@ import cron from 'node-cron';
 import { googleSheetUpdateTasks, processGoogleSheetUpdates } from '../workflow-management/integrations/gsheet';
 import { getDecryptedProxyConfig } from './proxy';
 import { requireSignIn } from '../middlewares/auth';
-import { workflowQueue } from '../worker';
+// import { workflowQueue } from '../worker';
 
 // todo: move from here
 const getRecordingByFileName = async (fileName: string): Promise<any | null> => {
@@ -96,7 +96,8 @@ router.delete('/runs/:fileName', requireSignIn, async (req, res) => {
 router.put('/runs/:fileName', requireSignIn, async (req, res) => {
   try {
     const recording = await getRecordingByFileName(req.params.fileName);
-    if (!recording || !recording.recordingId) {
+
+    if (!recording || !recording.recording_meta || !recording.recording_meta.id) {
       return res.status(404).send({ error: 'Recording not found' });
     }
 
@@ -126,7 +127,7 @@ router.put('/runs/:fileName', requireSignIn, async (req, res) => {
     const run_meta = {
       status: 'RUNNING',
       name: req.params.fileName,
-      recordingId: recording.id,
+      recordingId: recording.recording_meta.id,
       startedAt: new Date().toLocaleString(),
       finishedAt: '',
       browserId: id,
@@ -281,16 +282,16 @@ router.put('/schedule/:fileName/', requireSignIn, async (req, res) => {
 
     const runId = uuid();
 
-    await workflowQueue.add(
-      'run workflow',
-      { fileName, runId },
-      {
-        repeat: {
-          pattern: cronExpression,
-          tz: timezone
-        }
-      }
-    );
+    // await workflowQueue.add(
+    //   'run workflow',
+    //   { fileName, runId },
+    //   {
+    //     repeat: {
+    //       pattern: cronExpression,
+    //       tz: timezone
+    //     }
+    //   }
+    // );
 
     res.status(200).json({
       message: 'success',
