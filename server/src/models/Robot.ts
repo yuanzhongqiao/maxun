@@ -59,7 +59,7 @@ Robot.init(
   },
   {
     sequelize,
-    tableName: 'robots',
+    tableName: 'robot',
     timestamps: true,
   }
 );
