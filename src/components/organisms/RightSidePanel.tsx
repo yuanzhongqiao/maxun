@@ -74,6 +74,16 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     return () => clearInterval(interval)
   }, [id]);
 
+  useEffect(() => {
+    if (socket) {
+      socket.on("workflow", workflowHandler);
+    }
+
+    return () => {
+      socket?.off('workflow', workflowHandler);
+    }
+  }, [socket, workflowHandler]);
+
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
       // Prevent editing if the field is confirmed
