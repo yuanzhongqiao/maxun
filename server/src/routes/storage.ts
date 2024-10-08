@@ -13,6 +13,7 @@ import { getDecryptedProxyConfig } from './proxy';
 import { requireSignIn } from '../middlewares/auth';
 import { workflowQueue } from '../worker';
 
+// todo: move from here
 const getRecordingByFileName = async (fileName: string): Promise<any | null> => {
   try {
     const recording = await readFile(`./../storage/recordings/${fileName}.waw.json`)
