@@ -107,7 +107,7 @@ router.put('/:browserId/:fileName', requireSignIn, async (req, res) => {
     const browser = browserPool.getRemoteBrowser(req.params.browserId);
     logger.log('debug', `Updating workflow file`);
     if (browser && browser.generator) {
-      const recording = await readFile(`./../storage/recordings/${req.params.fileName}.waw.json`)
+      const recording = await readFile(`./../storage/recordings/${req.params.fileName}.json`)
       const parsedRecording = JSON.parse(recording);
       if (parsedRecording.recording) {
         browser.generator?.updateWorkflowFile(parsedRecording.recording, parsedRecording.recording_meta);
@@ -118,7 +118,7 @@ router.put('/:browserId/:fileName', requireSignIn, async (req, res) => {
     return res.send(null);
   } catch (e) {
     const { message } = e as Error;
-    logger.log('info', `Error while reading a recording with name: ${req.params.fileName}.waw.json`);
+    logger.log('info', `Error while reading a recording with name: ${req.params.fileName}.json`);
     return res.send(null);
   }
 });
