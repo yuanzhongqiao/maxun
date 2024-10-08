@@ -67,7 +67,7 @@ async function runWorkflow(fileName: string, runId: string) {
 
 async function executeRun(fileName: string, runId: string) {
   try {
-    const recording = await readFile(`./../storage/recordings/${fileName}.waw.json`);
+    const recording = await readFile(`./../storage/recordings/${fileName}.json`);
     const parsedRecording = JSON.parse(recording);
 
     const run = await readFile(`./../storage/runs/${fileName}_${runId}.json`);
