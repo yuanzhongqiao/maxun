@@ -2,67 +2,90 @@ import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../db/config';
 import Run from './Run';
 
+interface RecordingMeta {
+  name: string;
+  id: string;
+  createdAt: Date;
+  pairs: number;
+  updatedAt: Date;
+  params: object[]; 
+}
+
+interface Recording {
+  workflow: Array<{
+    where: {
+      url: string;
+    };
+    what: Array<{
+      action: string;
+      args: any[];
+    }>;
+  }>;
+}
+
 interface RobotAttributes {
-    id: string;
-    name: string;
-    createdAt: Date;
-    updatedAt: Date;
-    pairs: number;
-    params: object;
-    workflow: object;  // Store workflow details as JSONB
+  id: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+  pairs: number;
+  recording_meta: RecordingMeta;
+  recording: Recording;
 }
 
 interface RobotCreationAttributes extends Optional<RobotAttributes, 'id'> { }
 
 class Robot extends Model<RobotAttributes, RobotCreationAttributes> implements RobotAttributes {
-    public id!: string;
-    public name!: string;
-    public createdAt!: Date;
-    public updatedAt!: Date;
-    public pairs!: number;
-    public params!: object;
-    public workflow!: object;
+  public id!: string;
+  public name!: string;
+  public createdAt!: Date;
+  public updatedAt!: Date;
+  public pairs!: number;
+  public recording_meta!: RecordingMeta;
+  public recording!: Recording;
 }
 
 Robot.init(
-    {
-        id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
-            primaryKey: true,
-        },
-        name: {
-            type: DataTypes.STRING(255),
-            allowNull: false,
-        },
-        createdAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW,
-        },
-        updatedAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW,
-        },
-        pairs: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-        params: {
-            type: DataTypes.JSONB,
-            allowNull: true,
-        },
-        workflow: {
-            type: DataTypes.JSONB,
-            allowNull: true,
-        },
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
     },
-    {
-        sequelize,
-        tableName: 'robot',
-        timestamps: true,
-    }
+    name: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    pairs: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    // JSONB field for recording_meta (storing as a structured object)
+    recording_meta: {
+      type: DataTypes.JSONB,
+      allowNull: false,
+    },
+    // JSONB field for recording (storing as a structured object)
+    recording: {
+      type: DataTypes.JSONB,
+      allowNull: false,
+    },
+  },
+  {
+    sequelize,
+    tableName: 'robot',
+    timestamps: true, 
+  }
 );
 
 Robot.hasMany(Run, { foreignKey: 'robotId' });
