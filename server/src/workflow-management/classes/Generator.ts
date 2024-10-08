@@ -31,7 +31,7 @@ interface PersistedGeneratedData {
 interface MetaData {
   name: string;
   id: string;
-  create_date: string;
+  createdAt: string;
   pairs: number;
   update_date: string;
   params: string[],
@@ -87,7 +87,7 @@ export class WorkflowGenerator {
   private recordingMeta: MetaData = {
     name: '',
     id: '',
-    create_date: '',
+    createdAt: '',
     pairs: 0,
     update_date: '',
     params: [],
@@ -481,7 +481,7 @@ export class WorkflowGenerator {
       this.recordingMeta = {
         name: fileName,
         id: uuid(),
-        create_date: this.recordingMeta.create_date || new Date().toLocaleString(),
+        createdAt: this.recordingMeta.createdAt || new Date().toLocaleString(),
         pairs: recording.workflow.length,
         update_date: new Date().toLocaleString(),
         params: this.getParams() || [],
