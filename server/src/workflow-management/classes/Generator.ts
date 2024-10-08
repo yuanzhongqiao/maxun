@@ -18,6 +18,7 @@ import { saveFile } from "../storage";
 import fs from "fs";
 import { getBestSelectorForAction } from "../utils";
 import { browserPool } from "../../server";
+import { uuid } from "uuidv4";
 
 interface PersistedGeneratedData {
   lastUsedSelector: string;
@@ -479,6 +480,7 @@ export class WorkflowGenerator {
     try {
       this.recordingMeta = {
         name: fileName,
+        id: uuid(),
         create_date: this.recordingMeta.create_date || new Date().toLocaleString(),
         pairs: recording.workflow.length,
         update_date: new Date().toLocaleString(),
