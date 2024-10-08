@@ -58,7 +58,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
   const workflowHandler = useCallback((data: WorkflowFile) => {
     setWorkflow(data);
-    setRecordingLength(data.workflow.length);
+    //setRecordingLength(data.workflow.length);
   }, [workflow])
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
