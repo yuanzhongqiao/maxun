@@ -4,7 +4,7 @@ import Robot from './Robot';
 
 interface RunAttributes {
     id: string;
-    recordingId: string;
+    robotId: string;
     status: string;
     name: string;
     startedAt: Date;
@@ -20,7 +20,7 @@ interface RunCreationAttributes extends Optional<RunAttributes, 'id'> { }
 
 class Run extends Model<RunAttributes, RunCreationAttributes> implements RunAttributes {
     public id!: string;
-    public recordingId!: string;
+    public robotId!: string;
     public status!: string;
     public name!: string;
     public startedAt!: Date;
@@ -39,7 +39,7 @@ Run.init(
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true,
         },
-        recordingId: {
+        robotId: {
             type: DataTypes.UUID,
             allowNull: false,
             references: {
