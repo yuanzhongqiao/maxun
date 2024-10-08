@@ -20,8 +20,6 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { emptyWorkflow } from "../../shared/constants";
 import { getActiveWorkflow, getParamsOfActiveWorkflow } from "../../api/workflow";
-import { useSocketStore } from '../../context/socket';
-
 
 const fetchWorkflow = (id: string, callback: (response: WorkflowFile) => void) => {
   getActiveWorkflow(id).then(
