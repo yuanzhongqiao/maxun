@@ -29,6 +29,7 @@ interface PersistedGeneratedData {
 
 interface MetaData {
   name: string;
+  id: string;
   create_date: string;
   pairs: number;
   update_date: string;
@@ -84,6 +85,7 @@ export class WorkflowGenerator {
    */
   private recordingMeta: MetaData = {
     name: '',
+    id: '',
     create_date: '',
     pairs: 0,
     update_date: '',
