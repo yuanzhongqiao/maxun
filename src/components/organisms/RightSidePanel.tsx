@@ -77,15 +77,15 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     return () => {
       socket?.off("workflow", workflowHandler);
       clearInterval(interval);
-  };
+    };
   }, [id, socket, workflowHandler]);
-  
-  const hasScrapeListAction = workflow.workflow.some(pair => 
+
+  const hasScrapeListAction = workflow.workflow.some(pair =>
     pair.what.some(action => action.action === "scrapeList")
   );
-  
+
   console.log(`Has Scrape List Action?`, hasScrapeListAction); // true if any pair contains scrapeList action
-  
+
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
