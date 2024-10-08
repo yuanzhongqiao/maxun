@@ -95,6 +95,11 @@ router.delete('/runs/:fileName', requireSignIn, async (req, res) => {
  */
 router.put('/runs/:fileName', requireSignIn, async (req, res) => {
   try {
+    const recording = await getRecordingByFileName(req.params.fileName);
+    if (!recording || !recording.recordingId) {
+      return res.status(404).send({ error: 'Recording not found' });
+    }
+    
     const proxyConfig = await getDecryptedProxyConfig(req.user.id);
     let proxyOptions: any = {};
 
