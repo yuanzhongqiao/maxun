@@ -488,7 +488,7 @@ export class WorkflowGenerator {
       }
       fs.mkdirSync('../storage/recordings', { recursive: true })
       await saveFile(
-        `../storage/recordings/${fileName}.waw.json`,
+        `../storage/recordings/${fileName}.json`,
         JSON.stringify({ recording_meta: this.recordingMeta, recording }, null, 2)
       );
     }
