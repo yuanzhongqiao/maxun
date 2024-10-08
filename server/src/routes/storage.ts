@@ -16,7 +16,7 @@ import { requireSignIn } from '../middlewares/auth';
 // todo: move from here
 export const getRecordingByFileName = async (fileName: string): Promise<any | null> => {
   try {
-    const recording = await readFile(`./../storage/recordings/${fileName}.waw.json`)
+    const recording = await readFile(`./../storage/recordings/${fileName}.json`)
     const parsedRecording = JSON.parse(recording);
     return parsedRecording;
   } catch (error: any) {
@@ -53,11 +53,11 @@ router.get('/recordings', requireSignIn, async (req, res) => {
  */
 router.delete('/recordings/:fileName', requireSignIn, async (req, res) => {
   try {
-    await deleteFile(`./../storage/recordings/${req.params.fileName}.waw.json`);
+    await deleteFile(`./../storage/recordings/${req.params.fileName}.json`);
     return res.send(true);
   } catch (e) {
     const { message } = e as Error;
-    logger.log('info', `Error while deleting a recording with name: ${req.params.fileName}.waw.json`);
+    logger.log('info', `Error while deleting a recording with name: ${req.params.fileName}.json`);
     return res.send(false);
   }
 });
@@ -176,7 +176,7 @@ router.get('/runs/run/:fileName/:runId', requireSignIn, async (req, res) => {
  */
 router.post('/runs/run/:fileName/:runId', requireSignIn, async (req, res) => {
   try {
-    const recording = await readFile(`./../storage/recordings/${req.params.fileName}.waw.json`)
+    const recording = await readFile(`./../storage/recordings/${req.params.fileName}.json`)
     const parsedRecording = JSON.parse(recording);
 
     const run = await readFile(`./../storage/runs/${req.params.fileName}_${req.params.runId}.json`)
