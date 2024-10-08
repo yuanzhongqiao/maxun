@@ -92,6 +92,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       setShowCaptureText(true);
       return;
     }
+    
     const hasScrapeListAction = workflow.workflow.some(pair =>
       pair.what.some(action => action.action === "scrapeList")
     );
