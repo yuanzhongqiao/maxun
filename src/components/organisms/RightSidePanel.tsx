@@ -83,17 +83,19 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     };
   }, [id, socket, workflowHandler]);
 
-  const hasScrapeListAction = workflow.workflow.some(pair =>
-    pair.what.some(action => action.action === "scrapeList")
-  );
+  useEffect(() => {
+    const hasScrapeListAction = workflow.workflow.some(pair =>
+      pair.what.some(action => action.action === "scrapeList")
+    );
 
-  const hasScreenshotAction = workflow.workflow.some(pair =>
-    pair.what.some(action => action.action === "screenshot")
-  );
+    const hasScreenshotAction = workflow.workflow.some(pair =>
+      pair.what.some(action => action.action === "screenshot")
+    );
 
-  const hasScrapeSchemaAction = workflow.workflow.some(pair =>
-    pair.what.some(action => action.action === "scrapeSchema")
-  );
+    const hasScrapeSchemaAction = workflow.workflow.some(pair =>
+      pair.what.some(action => action.action === "scrapeSchema")
+    );
+  }, [workflow]);
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
