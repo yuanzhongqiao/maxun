@@ -79,17 +79,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       clearInterval(interval);
   };
   }, [id, socket, workflowHandler]);
-
-  useEffect(() => {
-    if (socket) {
-      socket.on("workflow", workflowHandler);
-    }
-
-    return () => {
-      socket?.off('workflow', workflowHandler);
-    }
-  }, [socket, workflowHandler]);
-
+  
   const hasScrapeListAction = workflow.workflow.some(pair => 
     pair.what.some(action => action.action === "scrapeList")
   );
