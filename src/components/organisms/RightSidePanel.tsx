@@ -61,6 +61,9 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   }, [workflow])
 
   useEffect(() => {
+    if (socket) {
+      socket.on("workflow", workflowHandler);
+    }
     // fetch the workflow every time the id changes
     if (id) {
       fetchWorkflow(id, workflowHandler);
@@ -71,7 +74,10 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
         fetchWorkflow(id, workflowHandler);
       }
     }, (1000 * 60 * 15));
-    return () => clearInterval(interval)
+    return () => {
+      socket?.off("workflow", workflowHandler);
+      clearInterval(interval);
+  };
   }, [id]);
 
   useEffect(() => {
@@ -83,6 +89,13 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       socket?.off('workflow', workflowHandler);
     }
   }, [socket, workflowHandler]);
+
+  const hasScrapeListAction = workflow.workflow.some(pair => 
+    pair.what.some(action => action.action === "scrapeList")
+  );
+  
+  console.log(`Has Scrape List Action?`, hasScrapeListAction); // true if any pair contains scrapeList action
+  
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
