@@ -80,16 +80,12 @@ async function executeRun(fileName: string, runId: string) {
     const interpretationInfo = await browser.interpreter.InterpretRecording(
       parsedRecording.recording, currentPage, parsedRun.interpreterSettings);
 
-    const duration = Math.round((new Date().getTime() - new Date(parsedRun.startedAt).getTime()) / 1000);
-    const durString = duration < 60 ? `${duration} s` : `${Math.floor(duration / 60)} m ${duration % 60} s`;
-
     await destroyRemoteBrowser(parsedRun.browserId);
 
     const updated_run_meta = {
       ...parsedRun,
       status: 'success',
       finishedAt: new Date().toLocaleString(),
-      duration: durString,
       browserId: parsedRun.browserId,
       log: interpretationInfo.log.join('\n'),
       serializableOutput: interpretationInfo.serializableOutput,
