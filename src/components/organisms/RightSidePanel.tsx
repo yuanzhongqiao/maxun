@@ -17,11 +17,13 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import { PairForEdit } from "../../pages/RecordingPage";
 
 // TODO: 
 // 1. Add description for each browser step
 // 2. Handle non custom action steps
 interface RightSidePanelProps {
+  pairForEdit: PairForEdit;
   onFinishCapture: () => void;
 }
 
