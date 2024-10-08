@@ -4,6 +4,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import { SimpleBox } from "../atoms/Box";
+import { WhereWhatPair, WorkflowFile } from "maxun-core";
 import Typography from "@mui/material/Typography";
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { PaginationType, useActionContext, LimitType } from '../../context/browserActions';
@@ -28,7 +29,7 @@ interface RightSidePanelProps {
 }
 
 export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture }) => {
-  const [workflow, setWorkflow] = useState(emptyWorkflow);
+  const [workflow, setWorkflow] = useState<WorkflowFile>(emptyWorkflow);
   const [textLabels, setTextLabels] = useState<{ [id: string]: string }>({});
   const [errors, setErrors] = useState<{ [id: string]: string }>({});
   const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: string]: boolean }>({});
