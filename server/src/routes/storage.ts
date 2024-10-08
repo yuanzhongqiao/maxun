@@ -184,7 +184,6 @@ router.post('/runs/run/:fileName/:runId', requireSignIn, async (req, res) => {
         ...parsedRun,
         status: 'success',
         finishedAt: new Date().toLocaleString(),
-        duration: durString,
         browserId: parsedRun.browserId,
         log: interpretationInfo.log.join('\n'),
         serializableOutput: interpretationInfo.serializableOutput,
