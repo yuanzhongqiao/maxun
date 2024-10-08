@@ -20,6 +20,17 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { emptyWorkflow } from "../../shared/constants";
 
+const fetchWorkflow = (id: string, callback: (response: WorkflowFile) => void) => {
+  getActiveWorkflow(id).then(
+    (response) => {
+      if (response) {
+        callback(response);
+      } else {
+        throw new Error("No workflow found");
+      }
+    }
+  ).catch((error) => { console.log(error.message) })
+};
 
 // TODO: 
 // 1. Add description for each browser step
