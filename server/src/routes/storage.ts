@@ -111,8 +111,6 @@ router.put('/runs/:fileName', requireSignIn, async (req, res) => {
       name: req.params.fileName,
       startedAt: new Date().toLocaleString(),
       finishedAt: '',
-      duration: '',
-      task: req.body.params ? 'task' : '',
       browserId: id,
       interpreterSettings: req.body,
       log: '',
