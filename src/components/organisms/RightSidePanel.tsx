@@ -17,6 +17,8 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import { emptyWorkflow } from "../../shared/constants";
+
 
 // TODO: 
 // 1. Add description for each browser step
@@ -26,6 +28,7 @@ interface RightSidePanelProps {
 }
 
 export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture }) => {
+  const [workflow, setWorkflow] = useState(emptyWorkflow);
   const [textLabels, setTextLabels] = useState<{ [id: string]: string }>({});
   const [errors, setErrors] = useState<{ [id: string]: string }>({});
   const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: string]: boolean }>({});
