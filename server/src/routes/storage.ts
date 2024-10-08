@@ -320,7 +320,6 @@ router.post('/runs/abort/:fileName/:runId', requireSignIn, async (req, res) => {
       ...parsedRun,
       status: 'ABORTED',
       finishedAt: null,
-      duration: '',
       browserId: null,
       log: currentLog,
     };
