@@ -95,6 +95,10 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     const hasScrapeSchemaAction = workflow.workflow.some(pair =>
       pair.what.some(action => action.action === "scrapeSchema")
     );
+
+    setShowCaptureList(!(hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction));
+    setShowCaptureScreenshot(!(hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction));
+    setShowCaptureText(!(hasScrapeListAction || hasScreenshotAction));
   }, [workflow]);
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
