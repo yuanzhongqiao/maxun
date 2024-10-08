@@ -99,7 +99,7 @@ router.put('/runs/:fileName', requireSignIn, async (req, res) => {
     if (!recording || !recording.recordingId) {
       return res.status(404).send({ error: 'Recording not found' });
     }
-    
+
     const proxyConfig = await getDecryptedProxyConfig(req.user.id);
     let proxyOptions: any = {};
 
@@ -126,6 +126,7 @@ router.put('/runs/:fileName', requireSignIn, async (req, res) => {
     const run_meta = {
       status: 'RUNNING',
       name: req.params.fileName,
+      recordingId: recording.id,
       startedAt: new Date().toLocaleString(),
       finishedAt: '',
       browserId: id,
