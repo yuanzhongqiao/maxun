@@ -21,7 +21,7 @@ const formatRecording = (recordingData: any) => {
     return {
         id: recordingMeta.id,
         name: recordingMeta.name,
-        createdAt: new Date(recordingMeta.create_date).getTime(),
+        createdAt: new Date(recordingMeta.createdAt).getTime(),
         inputParameters,
     };
 };
@@ -75,7 +75,7 @@ const formatRecordingById = (recordingData: any) => {
     return {
         id: recordingMeta.id,
         name: recordingMeta.name,
-        createdAt: new Date(recordingMeta.create_date).getTime(),
+        createdAt: new Date(recordingMeta.createdAt).getTime(),
         inputParameters,
     };
 };

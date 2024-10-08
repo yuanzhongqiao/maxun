@@ -7,11 +7,22 @@ import { createRemoteBrowserForRun, destroyRemoteBrowser } from '../../browser-m
 import logger from '../../logger';
 import { browserPool } from "../../server";
 import { googleSheetUpdateTasks, processGoogleSheetUpdates } from "../integrations/gsheet";
+import { getRecordingByFileName } from "../../routes/storage";
 
 async function runWorkflow(fileName: string, runId: string) {
   if (!runId) {
     runId = uuid();
   }
+
+  const recording = await getRecordingByFileName(fileName);
+
+    if (!recording || !recording.recording_meta || !recording.recording_meta.id) {
+      logger.log('info', `Recording with name: ${fileName} not found`);
+      return {
+        success: false,
+        error: `Recording with name: ${fileName} not found`,
+      };
+    }
 
   try {
     const browserId = createRemoteBrowserForRun({
@@ -19,12 +30,11 @@ async function runWorkflow(fileName: string, runId: string) {
       launchOptions: { headless: true }
     });
     const run_meta = {
-      status: 'SCHEDULED',
+      status: 'Scheduled',
       name: fileName,
+      recordingId: recording.recording_meta.id,
       startedAt: new Date().toLocaleString(),
       finishedAt: '',
-      duration: '',
-      task: '', // Optionally set based on workflow
       browserId: browserId,
       interpreterSettings: { maxConcurrency: 1, maxRepeats: 1, debug: true },
       log: '',
@@ -63,7 +73,7 @@ async function executeRun(fileName: string, runId: string) {
     const run = await readFile(`./../storage/runs/${fileName}_${runId}.json`);
     const parsedRun = JSON.parse(run);
 
-    parsedRun.status = 'RUNNING';
+    parsedRun.status = 'running';
     await saveFile(
       `../storage/runs/${fileName}_${runId}.json`,
       JSON.stringify(parsedRun, null, 2)
@@ -82,16 +92,12 @@ async function executeRun(fileName: string, runId: string) {
     const interpretationInfo = await browser.interpreter.InterpretRecording(
       parsedRecording.recording, currentPage, parsedRun.interpreterSettings);
 
-    const duration = Math.round((new Date().getTime() - new Date(parsedRun.startedAt).getTime()) / 1000);
-    const durString = duration < 60 ? `${duration} s` : `${Math.floor(duration / 60)} m ${duration % 60} s`;
-
     await destroyRemoteBrowser(parsedRun.browserId);
 
     const updated_run_meta = {
       ...parsedRun,
       status: 'success',
       finishedAt: new Date().toLocaleString(),
-      duration: durString,
       browserId: parsedRun.browserId,
       log: interpretationInfo.log.join('\n'),
       serializableOutput: interpretationInfo.serializableOutput,

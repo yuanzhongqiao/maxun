@@ -11,7 +11,19 @@ import cron from 'node-cron';
 import { googleSheetUpdateTasks, processGoogleSheetUpdates } from '../workflow-management/integrations/gsheet';
 import { getDecryptedProxyConfig } from './proxy';
 import { requireSignIn } from '../middlewares/auth';
-import { workflowQueue } from '../worker';
+// import { workflowQueue } from '../worker';
+
+// todo: move from here
+export const getRecordingByFileName = async (fileName: string): Promise<any | null> => {
+  try {
+    const recording = await readFile(`./../storage/recordings/${fileName}.waw.json`)
+    const parsedRecording = JSON.parse(recording);
+    return parsedRecording;
+  } catch (error: any) {
+    console.error(`Error while getting recording for fileName ${fileName}:`, error.message);
+    return null;
+  }
+};
 
 export const router = Router();
 
@@ -83,6 +95,12 @@ router.delete('/runs/:fileName', requireSignIn, async (req, res) => {
  */
 router.put('/runs/:fileName', requireSignIn, async (req, res) => {
   try {
+    const recording = await getRecordingByFileName(req.params.fileName);
+
+    if (!recording || !recording.recording_meta || !recording.recording_meta.id) {
+      return res.status(404).send({ error: 'Recording not found' });
+    }
+
     const proxyConfig = await getDecryptedProxyConfig(req.user.id);
     let proxyOptions: any = {};
 
@@ -109,10 +127,9 @@ router.put('/runs/:fileName', requireSignIn, async (req, res) => {
     const run_meta = {
       status: 'RUNNING',
       name: req.params.fileName,
+      recordingId: recording.recording_meta.id,
       startedAt: new Date().toLocaleString(),
       finishedAt: '',
-      duration: '',
-      task: req.body.params ? 'task' : '',
       browserId: id,
       interpreterSettings: req.body,
       log: '',
@@ -171,22 +188,11 @@ router.post('/runs/run/:fileName/:runId', requireSignIn, async (req, res) => {
     if (browser && currentPage) {
       const interpretationInfo = await browser.interpreter.InterpretRecording(
         parsedRecording.recording, currentPage, parsedRun.interpreterSettings);
-      const duration = Math.round((new Date().getTime() - new Date(parsedRun.startedAt).getTime()) / 1000);
-      const durString = (() => {
-        if (duration < 60) {
-          return `${duration} s`;
-        }
-        else {
-          const minAndS = (duration / 60).toString().split('.');
-          return `${minAndS[0]} m ${minAndS[1]} s`;
-        }
-      })();
       await destroyRemoteBrowser(parsedRun.browserId);
       const run_meta = {
         ...parsedRun,
         status: 'success',
         finishedAt: new Date().toLocaleString(),
-        duration: durString,
         browserId: parsedRun.browserId,
         log: interpretationInfo.log.join('\n'),
         serializableOutput: interpretationInfo.serializableOutput,
@@ -276,16 +282,16 @@ router.put('/schedule/:fileName/', requireSignIn, async (req, res) => {
 
     const runId = uuid();
 
-    await workflowQueue.add(
-       'run workflow',
-       { fileName, runId },
-       {
-         repeat: {
-           pattern: cronExpression,
-           tz: timezone
-         }
-       }
-     );
+    // await workflowQueue.add(
+    //   'run workflow',
+    //   { fileName, runId },
+    //   {
+    //     repeat: {
+    //       pattern: cronExpression,
+    //       tz: timezone
+    //     }
+    //   }
+    // );
 
     res.status(200).json({
       message: 'success',
@@ -331,9 +337,8 @@ router.post('/runs/abort/:fileName/:runId', requireSignIn, async (req, res) => {
     }, {});
     const run_meta = {
       ...parsedRun,
-      status: 'ABORTED',
+      status: 'aborted',
       finishedAt: null,
-      duration: '',
       browserId: null,
       log: currentLog,
     };

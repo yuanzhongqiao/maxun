@@ -16,7 +16,7 @@ import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
 
 interface Column {
-  id: 'interpret' | 'name' | 'create_date' | 'edit' | 'update_date' | 'delete' | 'schedule' | 'integrate';
+  id: 'interpret' | 'name' | 'createdAt' | 'edit' | 'updatedAt' | 'delete' | 'schedule' | 'integrate';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -27,7 +27,7 @@ const columns: readonly Column[] = [
   { id: 'interpret', label: 'Run', minWidth: 80 },
   { id: 'name', label: 'Name', minWidth: 80 },
   {
-    id: 'create_date',
+    id: 'createdAt',
     label: 'Created at',
     minWidth: 80,
     //format: (value: string) => value.toLocaleString('en-US'),
@@ -48,7 +48,7 @@ const columns: readonly Column[] = [
     minWidth: 80,
   },
   {
-    id: 'update_date',
+    id: 'updatedAt',
     label: 'Updated at',
     minWidth: 80,
     //format: (value: string) => value.toLocaleString('en-US'),
@@ -63,8 +63,8 @@ const columns: readonly Column[] = [
 interface Data {
   id: number;
   name: string;
-  create_date: string;
-  update_date: string;
+  createdAt: string;
+  updatedAt: string;
   content: WorkflowFile;
   params: string[];
 }

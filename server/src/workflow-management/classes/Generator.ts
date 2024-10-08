@@ -18,6 +18,7 @@ import { saveFile } from "../storage";
 import fs from "fs";
 import { getBestSelectorForAction } from "../utils";
 import { browserPool } from "../../server";
+import { uuid } from "uuidv4";
 
 interface PersistedGeneratedData {
   lastUsedSelector: string;
@@ -29,9 +30,10 @@ interface PersistedGeneratedData {
 
 interface MetaData {
   name: string;
-  create_date: string;
+  id: string;
+  createdAt: string;
   pairs: number;
-  update_date: string;
+  updatedAt: string;
   params: string[],
 }
 
@@ -84,9 +86,10 @@ export class WorkflowGenerator {
    */
   private recordingMeta: MetaData = {
     name: '',
-    create_date: '',
+    id: '',
+    createdAt: '',
     pairs: 0,
-    update_date: '',
+    updatedAt: '',
     params: [],
   }
 
@@ -477,9 +480,10 @@ export class WorkflowGenerator {
     try {
       this.recordingMeta = {
         name: fileName,
-        create_date: this.recordingMeta.create_date || new Date().toLocaleString(),
+        id: uuid(),
+        createdAt: this.recordingMeta.createdAt || new Date().toLocaleString(),
         pairs: recording.workflow.length,
-        update_date: new Date().toLocaleString(),
+        updatedAt: new Date().toLocaleString(),
         params: this.getParams() || [],
       }
       fs.mkdirSync('../storage/recordings', { recursive: true })
