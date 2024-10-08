@@ -318,7 +318,7 @@ router.post('/runs/abort/:fileName/:runId', requireSignIn, async (req, res) => {
     }, {});
     const run_meta = {
       ...parsedRun,
-      status: 'ABORTED',
+      status: 'aborted',
       finishedAt: null,
       browserId: null,
       log: currentLog,
