@@ -336,7 +336,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       </SimpleBox>
       <SidePanelHeader />
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
-        {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetList}>Capture List</Button>}
+        {!getText && !getScreenshot && !getList && !hasScrapeListAction && <Button variant="contained" onClick={startGetList}>Capture List</Button>}
         {getList && (
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
