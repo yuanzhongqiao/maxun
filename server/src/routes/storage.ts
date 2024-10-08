@@ -277,15 +277,15 @@ router.put('/schedule/:fileName/', requireSignIn, async (req, res) => {
     const runId = uuid();
 
     await workflowQueue.add(
-       'run workflow',
-       { fileName, runId },
-       {
-         repeat: {
-           pattern: cronExpression,
-           tz: timezone
-         }
-       }
-     );
+      'run workflow',
+      { fileName, runId },
+      {
+        repeat: {
+          pattern: cronExpression,
+          tz: timezone
+        }
+      }
+    );
 
     res.status(200).json({
       message: 'success',
