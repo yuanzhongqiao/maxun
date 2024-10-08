@@ -19,7 +19,7 @@ const getRecordingByFileName = async (fileName: string): Promise<any | null> => 
     const recording = await readFile(`./../storage/recordings/${fileName}.waw.json`)
     const parsedRecording = JSON.parse(recording);
     return parsedRecording;
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error while getting recording for fileName ${fileName}:`, error.message);
     return null;
   }
