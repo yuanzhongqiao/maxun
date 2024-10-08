@@ -48,6 +48,9 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const [confirmedListTextFields, setConfirmedListTextFields] = useState<{ [listId: string]: { [fieldKey: string]: boolean } }>({});
   const [showPaginationOptions, setShowPaginationOptions] = useState(false);
   const [showLimitOptions, setShowLimitOptions] = useState(false);
+  const [showCaptureList, setShowCaptureList] = useState(true);
+  const [showCaptureScreenshot, setShowCaptureScreenshot] = useState(true);
+  const [showCaptureText, setShowCaptureText] = useState(true);
   const [captureStage, setCaptureStage] = useState<'initial' | 'pagination' | 'limit' | 'complete'>('initial');
 
   const { lastAction, notify } = useGlobalInfoStore();
