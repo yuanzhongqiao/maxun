@@ -1,5 +1,6 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../db/config';
+import Run from './Run';
 
 interface RobotAttributes {
     id: string;
@@ -63,5 +64,7 @@ Robot.init(
         timestamps: true,
     }
 );
+
+Robot.hasMany(Run, { foreignKey: 'robotId' });
 
 export default Robot;
