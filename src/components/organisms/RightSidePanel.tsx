@@ -4,7 +4,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import { SimpleBox } from "../atoms/Box";
-import { WhereWhatPair, WorkflowFile } from "maxun-core";
+import { WorkflowFile } from "maxun-core";
 import Typography from "@mui/material/Typography";
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { PaginationType, useActionContext, LimitType } from '../../context/browserActions';
@@ -19,7 +19,7 @@ import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { emptyWorkflow } from "../../shared/constants";
-import { getActiveWorkflow, getParamsOfActiveWorkflow } from "../../api/workflow";
+import { getActiveWorkflow } from "../../api/workflow";
 
 const fetchWorkflow = (id: string, callback: (response: WorkflowFile) => void) => {
   getActiveWorkflow(id).then(
