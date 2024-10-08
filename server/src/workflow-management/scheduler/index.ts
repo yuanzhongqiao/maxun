@@ -73,7 +73,7 @@ async function executeRun(fileName: string, runId: string) {
     const run = await readFile(`./../storage/runs/${fileName}_${runId}.json`);
     const parsedRun = JSON.parse(run);
 
-    parsedRun.status = 'RUNNING';
+    parsedRun.status = 'running';
     await saveFile(
       `../storage/runs/${fileName}_${runId}.json`,
       JSON.stringify(parsedRun, null, 2)
