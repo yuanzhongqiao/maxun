@@ -19,6 +19,8 @@ import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { emptyWorkflow } from "../../shared/constants";
+import { getActiveWorkflow, getParamsOfActiveWorkflow } from "../../api/workflow";
+
 
 const fetchWorkflow = (id: string, callback: (response: WorkflowFile) => void) => {
   getActiveWorkflow(id).then(
