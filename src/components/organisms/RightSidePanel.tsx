@@ -78,7 +78,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       socket?.off("workflow", workflowHandler);
       clearInterval(interval);
   };
-  }, [id]);
+  }, [id, socket, workflowHandler]);
 
   useEffect(() => {
     if (socket) {
