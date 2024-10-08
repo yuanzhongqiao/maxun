@@ -56,6 +56,11 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep, updateListTextFieldLabel, removeListTextField } = useBrowserSteps();
   const { socket } = useSocketStore();
 
+  const workflowHandler = useCallback((data: WorkflowFile) => {
+    setWorkflow(data);
+    setRecordingLength(data.workflow.length);
+  }, [workflow])
+
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
       // Prevent editing if the field is confirmed
