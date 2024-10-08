@@ -2,7 +2,7 @@ import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../db/config';
 import Run from './Run';
 
-interface RecordingMeta {
+interface RobotMeta {
   name: string;
   id: string;
   createdAt: Date;
@@ -11,7 +11,7 @@ interface RecordingMeta {
   params: object[]; 
 }
 
-interface Recording {
+interface Robot {
   workflow: Array<{
     where: {
       url: string;
@@ -29,8 +29,8 @@ interface RobotAttributes {
   createdAt: Date;
   updatedAt: Date;
   pairs: number;
-  recording_meta: RecordingMeta;
-  recording: Recording;
+  recording_meta: RobotMeta;
+  recording: Robot;
 }
 
 interface RobotCreationAttributes extends Optional<RobotAttributes, 'id'> { }
@@ -41,8 +41,8 @@ class Robot extends Model<RobotAttributes, RobotCreationAttributes> implements R
   public createdAt!: Date;
   public updatedAt!: Date;
   public pairs!: number;
-  public recording_meta!: RecordingMeta;
-  public recording!: Recording;
+  public recording_meta!: RobotMeta;
+  public recording!: Robot;
 }
 
 Robot.init(
