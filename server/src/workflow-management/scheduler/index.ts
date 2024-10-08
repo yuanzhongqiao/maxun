@@ -7,11 +7,22 @@ import { createRemoteBrowserForRun, destroyRemoteBrowser } from '../../browser-m
 import logger from '../../logger';
 import { browserPool } from "../../server";
 import { googleSheetUpdateTasks, processGoogleSheetUpdates } from "../integrations/gsheet";
+import { getRecordingByFileName } from "../../routes/storage";
 
 async function runWorkflow(fileName: string, runId: string) {
   if (!runId) {
     runId = uuid();
   }
+
+  const recording = await getRecordingByFileName(fileName);
+
+    if (!recording || !recording.recording_meta || !recording.recording_meta.id) {
+      logger.log('info', `Recording with name: ${fileName} not found`);
+      return {
+        success: false,
+        error: `Recording with name: ${fileName} not found`,
+      };
+    }
 
   try {
     const browserId = createRemoteBrowserForRun({
@@ -21,6 +32,7 @@ async function runWorkflow(fileName: string, runId: string) {
     const run_meta = {
       status: 'Scheduled',
       name: fileName,
+      recordingId: recording.recording_meta.id,
       startedAt: new Date().toLocaleString(),
       finishedAt: '',
       browserId: browserId,
