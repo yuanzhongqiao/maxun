@@ -61,6 +61,20 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     //setRecordingLength(data.workflow.length);
   }, [workflow])
 
+  useEffect(() => {
+    // fetch the workflow every time the id changes
+    if (id) {
+      fetchWorkflow(id, workflowHandler);
+    }
+    // fetch workflow in 15min intervals
+    let interval = setInterval(() => {
+      if (id) {
+        fetchWorkflow(id, workflowHandler);
+      }
+    }, (1000 * 60 * 15));
+    return () => clearInterval(interval)
+  }, [id]);
+
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
       // Prevent editing if the field is confirmed
