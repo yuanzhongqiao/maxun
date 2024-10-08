@@ -88,6 +88,10 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     pair.what.some(action => action.action === "screenshot")
   );
 
+  const hasScrapeSchemaAction = workflow.workflow.some(pair =>
+    pair.what.some(action => action.action === "scrapeSchema")
+  );
+
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
       // Prevent editing if the field is confirmed
