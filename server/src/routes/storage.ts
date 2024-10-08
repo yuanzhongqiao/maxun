@@ -170,15 +170,6 @@ router.post('/runs/run/:fileName/:runId', requireSignIn, async (req, res) => {
       const interpretationInfo = await browser.interpreter.InterpretRecording(
         parsedRecording.recording, currentPage, parsedRun.interpreterSettings);
       const duration = Math.round((new Date().getTime() - new Date(parsedRun.startedAt).getTime()) / 1000);
-      const durString = (() => {
-        if (duration < 60) {
-          return `${duration} s`;
-        }
-        else {
-          const minAndS = (duration / 60).toString().split('.');
-          return `${minAndS[0]} m ${minAndS[1]} s`;
-        }
-      })();
       await destroyRemoteBrowser(parsedRun.browserId);
       const run_meta = {
         ...parsedRun,
