@@ -1,9 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Button, Paper, Box, TextField } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import { SimpleBox } from "../atoms/Box";
+import { WorkflowFile } from "maxun-core";
 import Typography from "@mui/material/Typography";
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { PaginationType, useActionContext, LimitType } from '../../context/browserActions';
@@ -17,6 +18,20 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import { emptyWorkflow } from "../../shared/constants";
+import { getActiveWorkflow } from "../../api/workflow";
+
+const fetchWorkflow = (id: string, callback: (response: WorkflowFile) => void) => {
+  getActiveWorkflow(id).then(
+    (response) => {
+      if (response) {
+        callback(response);
+      } else {
+        throw new Error("No workflow found");
+      }
+    }
+  ).catch((error) => { console.log(error.message) })
+};
 
 // TODO: 
 // 1. Add description for each browser step
@@ -26,18 +41,74 @@ interface RightSidePanelProps {
 }
 
 export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture }) => {
+  const [workflow, setWorkflow] = useState<WorkflowFile>(emptyWorkflow);
   const [textLabels, setTextLabels] = useState<{ [id: string]: string }>({});
   const [errors, setErrors] = useState<{ [id: string]: string }>({});
   const [confirmedTextSteps, setConfirmedTextSteps] = useState<{ [id: string]: boolean }>({});
   const [confirmedListTextFields, setConfirmedListTextFields] = useState<{ [listId: string]: { [fieldKey: string]: boolean } }>({});
   const [showPaginationOptions, setShowPaginationOptions] = useState(false);
   const [showLimitOptions, setShowLimitOptions] = useState(false);
+  const [showCaptureList, setShowCaptureList] = useState(true);
+  const [showCaptureScreenshot, setShowCaptureScreenshot] = useState(true);
+  const [showCaptureText, setShowCaptureText] = useState(true);
   const [captureStage, setCaptureStage] = useState<'initial' | 'pagination' | 'limit' | 'complete'>('initial');
 
   const { lastAction, notify } = useGlobalInfoStore();
   const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitType, customLimit, updateLimitType, updateCustomLimit, stopLimitMode, startLimitMode } = useActionContext();
   const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep, updateListTextFieldLabel, removeListTextField } = useBrowserSteps();
-  const { socket } = useSocketStore();
+  const { id, socket } = useSocketStore();
+
+  const workflowHandler = useCallback((data: WorkflowFile) => {
+    setWorkflow(data);
+    //setRecordingLength(data.workflow.length);
+  }, [workflow])
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("workflow", workflowHandler);
+    }
+    // fetch the workflow every time the id changes
+    if (id) {
+      fetchWorkflow(id, workflowHandler);
+    }
+    // fetch workflow in 15min intervals
+    let interval = setInterval(() => {
+      if (id) {
+        fetchWorkflow(id, workflowHandler);
+      }
+    }, (1000 * 60 * 15));
+    return () => {
+      socket?.off("workflow", workflowHandler);
+      clearInterval(interval);
+    };
+  }, [id, socket, workflowHandler]);
+
+  useEffect(() => {
+    const hasPairs = workflow.workflow.length > 0;
+
+    if (!hasPairs) {
+      setShowCaptureList(true);
+      setShowCaptureScreenshot(true);
+      setShowCaptureText(true);
+      return;
+    }
+
+    const hasScrapeListAction = workflow.workflow.some(pair =>
+      pair.what.some(action => action.action === "scrapeList")
+    );
+
+    const hasScreenshotAction = workflow.workflow.some(pair =>
+      pair.what.some(action => action.action === "screenshot")
+    );
+
+    const hasScrapeSchemaAction = workflow.workflow.some(pair =>
+      pair.what.some(action => action.action === "scrapeSchema")
+    );
+
+    setShowCaptureList(!(hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction));
+    setShowCaptureScreenshot(!(hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction));
+    setShowCaptureText(!(hasScrapeListAction || hasScreenshotAction));
+  }, [workflow]);
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
@@ -291,7 +362,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       </SimpleBox>
       <SidePanelHeader />
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
-        {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetList}>Capture List</Button>}
+        {!getText && !getScreenshot && !getList && showCaptureList && <Button variant="contained" onClick={startGetList}>Capture List</Button>}
         {getList && (
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
@@ -350,7 +421,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
             </RadioGroup>
           </FormControl>
         )}
-        {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
+        {!getText && !getScreenshot && !getList && showCaptureText && <Button variant="contained" onClick={startGetText}>Capture Text</Button>}
         {getText &&
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
@@ -359,7 +430,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
             </Box>
           </>
         }
-        {!getText && !getScreenshot && !getList && <Button variant="contained" onClick={startGetScreenshot}>Capture Screenshot</Button>}
+        {!getText && !getScreenshot && !getList && showCaptureScreenshot && <Button variant="contained" onClick={startGetScreenshot}>Capture Screenshot</Button>}
         {getScreenshot && (
           <Box display="flex" flexDirection="column" gap={2}>
             <Button variant="contained" onClick={() => captureScreenshot(true)}>Capture Fullpage</Button>
