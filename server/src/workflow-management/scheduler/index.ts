@@ -19,7 +19,7 @@ async function runWorkflow(fileName: string, runId: string) {
       launchOptions: { headless: true }
     });
     const run_meta = {
-      status: 'SCHEDULED',
+      status: 'Scheduled',
       name: fileName,
       startedAt: new Date().toLocaleString(),
       finishedAt: '',
