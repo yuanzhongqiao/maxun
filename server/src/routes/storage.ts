@@ -151,6 +151,10 @@ router.put('/runs/:id', requireSignIn, async (req, res) => {
       binaryOutput: {},
     });
 
+    const plainRun = run.toJSON();
+
+console.log(`Created run (plain object):`, plainRun);
+
     // // we need to handle this via DB
     // fs.mkdirSync('../storage/runs', { recursive: true })
     // await saveFile(
@@ -160,12 +164,9 @@ router.put('/runs/:id', requireSignIn, async (req, res) => {
     // logger.log('debug', `Created run with name: ${req.params.fileName}.json`);
 
     // console.log('Run meta:', run_meta);
-
-    logger.log('debug', `Created run with id: ${run.runId}`);
-
     return res.send({
       browserId: id,
-      runId: run.runId,
+      runId: plainRun.runId,
     });
   } catch (e) {
     const { message } = e as Error;
@@ -189,7 +190,7 @@ router.get('/runs/run/:id', requireSignIn, async (req, res) => {
     return res.send(run);
   } catch (e) {
     const { message } = e as Error;
-    logger.log('error', `Error ${message} while reading a run with name: ${req.params.fileName}_${req.params.runId}.json`);
+    logger.log('error', `Error ${message} while reading a run with id: ${req.params.id}.json`);
     return res.send(null);
   }
 });
@@ -206,7 +207,7 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
     // const parsedRun = JSON.parse(run);
     console.log(`Params for POST /runs/run/:id`, req.params.id)
 
-    const run = await Run.findOne({ where: { runId: req.params.runId }, raw: true });
+    const run = await Run.findOne({ where: { runId: req.params.id }, raw: true });
     if (!run) {
       return res.status(404).send(false);
     }
@@ -348,7 +349,7 @@ router.put('/schedule/:fileName/', requireSignIn, async (req, res) => {
 router.post('/runs/abort/:id', requireSignIn, async (req, res) => {
   try {
     console.log(`Params for POST /runs/abort/:id`, req.params.id)
-    const run = await Run.findOne({ where: { runId: req.params.runId }, raw: true });
+    const run = await Run.findOne({ where: { runId: req.params.id }, raw: true });
     if (!run) {
       return res.status(404).send(false);
     }
