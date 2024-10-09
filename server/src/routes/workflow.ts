@@ -125,16 +125,21 @@ router.put('/pair/:index', requireSignIn, (req, res) => {
 // });
 
 
-router.put('/:browserId/:robotId', requireSignIn, async (req, res) => {
+router.put('/:browserId/:id', requireSignIn, async (req, res) => {
   try {
     const browser = browserPool.getRemoteBrowser(req.params.browserId);
-    logger.log('debug', `Updating workflow for Robot ID: ${req.params.robotId}`);
+    logger.log('debug', `Updating workflow for Robot: ${req.params.id}`);
 
     if (browser && browser.generator) {
-      const robot = await Robot.findByPk(req.params.robotId);
+      const robot = await Robot.findOne({
+        where: {
+          'recording_meta.id': req.params.id
+        },
+        raw: true
+      });
 
       if (!robot) {
-        logger.log('info', `Robot not found with ID: ${req.params.robotId}`);
+        logger.log('info', `Robot not found with ID: ${req.params.id}`);
         return res.status(404).send({ error: 'Robot not found' });
       }
 
@@ -145,16 +150,16 @@ router.put('/:browserId/:robotId', requireSignIn, async (req, res) => {
         const workflowFile = browser.generator.getWorkflowFile();
         return res.send(workflowFile);
       } else {
-        logger.log('info', `Invalid recording data for Robot ID: ${req.params.robotId}`);
+        logger.log('info', `Invalid recording data for Robot ID: ${req.params.id}`);
         return res.status(400).send({ error: 'Invalid recording data' });
       }
     }
 
-    logger.log('info', `Browser or generator not available for ID: ${req.params.browserId}`);
+    logger.log('info', `Browser or generator not available for ID: ${req.params.id}`);
     return res.status(400).send({ error: 'Browser or generator not available' });
   } catch (e) {
     const { message } = e as Error;
-    logger.log('error', `Error while updating workflow for Robot ID: ${req.params.robotId}. Error: ${message}`);
+    logger.log('error', `Error while updating workflow for Robot ID: ${req.params.id}. Error: ${message}`);
     return res.status(500).send({ error: 'Internal server error' });
   }
 });
