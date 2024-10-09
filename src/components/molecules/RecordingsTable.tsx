@@ -16,7 +16,7 @@ import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
 
 interface Column {
-  id: 'interpret' | 'name' | 'createdAt' | 'edit' | 'updatedAt' | 'delete' | 'schedule' | 'integrate';
+  id: 'id' | 'interpret' | 'name' | 'createdAt' | 'edit' | 'updatedAt' | 'delete' | 'schedule' | 'integrate';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -24,6 +24,7 @@ interface Column {
 }
 
 const columns: readonly Column[] = [
+  { id: 'id', label: 'ID', minWidth: 80 },
   { id: 'interpret', label: 'Run', minWidth: 80 },
   { id: 'name', label: 'Name', minWidth: 80 },
   {
@@ -61,7 +62,7 @@ const columns: readonly Column[] = [
 ];
 
 interface Data {
-  id: number;
+  id: string;
   name: string;
   createdAt: string;
   updatedAt: string;
@@ -70,10 +71,10 @@ interface Data {
 }
 
 interface RecordingsTableProps {
-  handleEditRecording: (fileName: string) => void;
-  handleRunRecording: (fileName: string, params: string[]) => void;
-  handleScheduleRecording: (fileName: string, params: string[]) => void;
-  handleIntegrateRecording: (fileName: string, params: string[]) => void;
+  handleEditRecording: (id: string, fileName: string) => void;
+  handleRunRecording: (id: string,fileName: string, params: string[]) => void;
+  handleScheduleRecording: (id: string,fileName: string, params: string[]) => void;
+  handleIntegrateRecording: (id: string,fileName: string, params: string[]) => void;
 }
 
 export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handleScheduleRecording, handleIntegrateRecording }: RecordingsTableProps) => {
@@ -156,14 +157,14 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
                           case 'interpret':
                             return (
                               <TableCell key={column.id} align={column.align}>
-                                <InterpretButton handleInterpret={() => handleRunRecording(row.name, row.params || [])} />
+                                <InterpretButton handleInterpret={() => handleRunRecording(row.id, row.name, row.params || [])} />
                               </TableCell>
                             );
                           case 'edit':
                             return (
                               <TableCell key={column.id} align={column.align}>
                                 <IconButton aria-label="add" size="small" onClick={() => {
-                                  handleEditRecording(row.name);
+                                  handleEditRecording(row.id, row.name);
                                 }} sx={{ '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
                                   <Edit />
                                 </IconButton>
@@ -172,20 +173,20 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
                           case 'schedule':
                             return (
                               <TableCell key={column.id} align={column.align}>
-                                <ScheduleButton handleSchedule={() => handleScheduleRecording(row.name, row.params || [])} />
+                                <ScheduleButton handleSchedule={() => handleScheduleRecording(row.id, row.name, row.params || [])} />
                               </TableCell>
                             );
                           case 'integrate':
                             return (
                               <TableCell key={column.id} align={column.align}>
-                                <IntegrateButton handleIntegrate={() => handleIntegrateRecording(row.name, row.params || [])} />
+                                <IntegrateButton handleIntegrate={() => handleIntegrateRecording(row.id, row.name, row.params || [])} />
                               </TableCell>
                             );
                           case 'delete':
                             return (
                               <TableCell key={column.id} align={column.align}>
                                 <IconButton aria-label="add" size="small" onClick={() => {
-                                  deleteRecordingFromStorage(row.name).then((result: boolean) => {
+                                  deleteRecordingFromStorage(row.id).then((result: boolean) => {
                                     if (result) {
                                       setRows([]);
                                       notify('success', 'Recording deleted successfully');
