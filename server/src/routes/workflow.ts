@@ -103,9 +103,6 @@ router.put('/pair/:index', requireSignIn, (req, res) => {
 /**
  * PUT endpoint for updating the currently generated workflow file from the one in the storage.
  */
-
-
-
 router.put('/:browserId/:id', requireSignIn, async (req, res) => {
   try {
     const browser = browserPool.getRemoteBrowser(req.params.browserId);
