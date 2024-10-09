@@ -77,11 +77,11 @@ export const RunsTable = (
     const runs = await getStoredRuns();
     if (runs) {
       const parsedRows: Data[] = [];
-      runs.map((run, index) => {
-        const parsedRun = JSON.parse(run);
+      runs.map((run: any, index) => {
+        // const run = JSON.parse(run);
           parsedRows.push({
               id: index,
-              ...parsedRun,
+              ...run,
             });
       });
       setRows(parsedRows);
