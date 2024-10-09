@@ -99,10 +99,10 @@ router.delete('/runs/:id', requireSignIn, async (req, res) => {
  */
 router.put('/runs/:id', requireSignIn, async (req, res) => {
   try {
-    console.log(`Params recieved:`,req.params	)
+    console.log(`Params recieved:`, req.params)
     const recording = await Robot.findOne({
-      where: { 
-        'recording_meta.id': req.params.id 
+      where: {
+        'recording_meta.id': req.params.id
       },
       raw: true
     });
@@ -206,12 +206,12 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
     // const parsedRun = JSON.parse(run);
     console.log(`Params for POST /runs/run/:id`, req.params.id)
 
-    const run = await Run.findOne({ where: { runId: req.params.runId }, raw: true });    
+    const run = await Run.findOne({ where: { runId: req.params.runId }, raw: true });
     if (!run) {
       return res.status(404).send(false);
     }
 
-    const recording = await Robot.findOne({ where: { 'recording_meta.id': run.robotMetaId },  raw: true });
+    const recording = await Robot.findOne({ where: { 'recording_meta.id': run.robotMetaId }, raw: true });
     if (!recording) {
       return res.status(404).send(false);
     }
@@ -348,7 +348,7 @@ router.put('/schedule/:fileName/', requireSignIn, async (req, res) => {
 router.post('/runs/abort/:id', requireSignIn, async (req, res) => {
   try {
     console.log(`Params for POST /runs/abort/:id`, req.params.id)
-    const run = await Run.findOne({ where: { runId: req.params.runId }, raw: true });    
+    const run = await Run.findOne({ where: { runId: req.params.runId }, raw: true });
     if (!run) {
       return res.status(404).send(false);
     }
