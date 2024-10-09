@@ -87,15 +87,12 @@ router.delete('/runs/:id', requireSignIn, async (req, res) => {
  */
 router.put('/runs/:id', requireSignIn, async (req, res) => {
   try {
-    console.log(`Params recieved:`, req.params)
     const recording = await Robot.findOne({
       where: {
         'recording_meta.id': req.params.id
       },
       raw: true
     });
-
-    console.log(`Recording found:`, recording)
 
     if (!recording || !recording.recording_meta || !recording.recording_meta.id) {
       return res.status(404).send({ error: 'Recording not found' });
@@ -141,8 +138,6 @@ router.put('/runs/:id', requireSignIn, async (req, res) => {
 
     const plainRun = run.toJSON();
 
-    console.log(`Created run (plain object):`, plainRun);
-   
     return res.send({
       browserId: id,
       runId: plainRun.runId,
@@ -159,7 +154,6 @@ router.put('/runs/:id', requireSignIn, async (req, res) => {
  */
 router.get('/runs/run/:id', requireSignIn, async (req, res) => {
   try {
-    console.log(`Params for GET /runs/run/:id`, req.params.id)
     const run = await Run.findOne({ where: { runId: req.params.runId }, raw: true });
     if (!run) {
       return res.status(404).send(null);
@@ -183,8 +177,6 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
     if (!run) {
       return res.status(404).send(false);
     }
-
-    console.log(`found run: ${run}`)
 
     const plainRun = run.toJSON();
 
@@ -325,7 +317,6 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
  */
 router.post('/runs/abort/:id', requireSignIn, async (req, res) => {
   try {
-    console.log(`Params for POST /runs/abort/:id`, req.params.id)
     const run = await Run.findOne({ where: { runId: req.params.id } });
     if (!run) {
       return res.status(404).send(false);
