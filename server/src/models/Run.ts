@@ -17,6 +17,7 @@ interface RunAttributes {
   status: string;
   name: string;
   robotId: string;
+  robotMetaId: string;
   startedAt: string;
   finishedAt: string;
   browserId: string;
@@ -34,6 +35,7 @@ class Run extends Model<RunAttributes, RunCreationAttributes> implements RunAttr
   public status!: string;
   public name!: string;
   public robotId!: string;
+  public robotMetaId!: string;
   public startedAt!: string;
   public finishedAt!: string;
   public browserId!: string;
@@ -66,6 +68,10 @@ Run.init(
         model: Robot,
         key: 'id',
       },
+    },
+    robotMetaId: {
+      type: DataTypes.UUID,
+      allowNull: false,
     },
     startedAt: {
       type: DataTypes.STRING(255),
