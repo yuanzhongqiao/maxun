@@ -60,13 +60,13 @@ export const deleteRunFromStorage = async (id: string): Promise<boolean> => {
   }
 };
 
-export const editRecordingFromStorage = async (browserId: string, robotId: string): Promise<WorkflowFile | null> => {
+export const editRecordingFromStorage = async (browserId: string, id: string): Promise<WorkflowFile | null> => {
   try {
-    const response = await axios.put(`http://localhost:8080/workflow/${browserId}/${robotId}`);
+    const response = await axios.put(`http://localhost:8080/workflow/${browserId}/${id}`);
     if (response.status === 200) {
       return response.data;
     } else {
-      throw new Error(`Couldn't edit stored recording ${robotId}`);
+      throw new Error(`Couldn't edit stored recording ${id}`);
     }
   } catch(error: any) {
     console.log(error);
