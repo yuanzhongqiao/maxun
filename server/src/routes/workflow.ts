@@ -5,7 +5,6 @@
 import { Router } from 'express';
 import logger from "../logger";
 import { browserPool } from "../server";
-import { readFile } from "../workflow-management/storage";
 import { requireSignIn } from '../middlewares/auth';
 import Robot from '../models/Robot';
 
@@ -103,38 +102,21 @@ router.put('/pair/:index', requireSignIn, (req, res) => {
 /**
  * PUT endpoint for updating the currently generated workflow file from the one in the storage.
  */
-// router.put('/:browserId/:fileName', requireSignIn, async (req, res) => {
-//   try {
-//     const browser = browserPool.getRemoteBrowser(req.params.browserId);
-//     logger.log('debug', `Updating workflow file`);
-//     if (browser && browser.generator) {
-//       const recording = await readFile(`./../storage/recordings/${req.params.fileName}.json`)
-//       const parsedRecording = JSON.parse(recording);
-//       if (parsedRecording.recording) {
-//         browser.generator?.updateWorkflowFile(parsedRecording.recording, parsedRecording.recording_meta);
-//         const workflowFile = browser.generator?.getWorkflowFile();
-//         return res.send(workflowFile);
-//       }
-//     }
-//     return res.send(null);
-//   } catch (e) {
-//     const { message } = e as Error;
-//     logger.log('info', `Error while reading a recording with name: ${req.params.fileName}.json`);
-//     return res.send(null);
-//   }
-// });
-
-
-router.put('/:browserId/:robotId', requireSignIn, async (req, res) => {
+router.put('/:browserId/:id', requireSignIn, async (req, res) => {
   try {
     const browser = browserPool.getRemoteBrowser(req.params.browserId);
-    logger.log('debug', `Updating workflow for Robot ID: ${req.params.robotId}`);
+    logger.log('debug', `Updating workflow for Robot: ${req.params.id}`);
 
     if (browser && browser.generator) {
-      const robot = await Robot.findByPk(req.params.robotId);
+      const robot = await Robot.findOne({
+        where: {
+          'recording_meta.id': req.params.id
+        },
+        raw: true
+      });
 
       if (!robot) {
-        logger.log('info', `Robot not found with ID: ${req.params.robotId}`);
+        logger.log('info', `Robot not found with ID: ${req.params.id}`);
         return res.status(404).send({ error: 'Robot not found' });
       }
 
@@ -145,16 +127,16 @@ router.put('/:browserId/:robotId', requireSignIn, async (req, res) => {
         const workflowFile = browser.generator.getWorkflowFile();
         return res.send(workflowFile);
       } else {
-        logger.log('info', `Invalid recording data for Robot ID: ${req.params.robotId}`);
+        logger.log('info', `Invalid recording data for Robot ID: ${req.params.id}`);
         return res.status(400).send({ error: 'Invalid recording data' });
       }
     }
 
-    logger.log('info', `Browser or generator not available for ID: ${req.params.browserId}`);
+    logger.log('info', `Browser or generator not available for ID: ${req.params.id}`);
     return res.status(400).send({ error: 'Browser or generator not available' });
   } catch (e) {
     const { message } = e as Error;
-    logger.log('error', `Error while updating workflow for Robot ID: ${req.params.robotId}. Error: ${message}`);
+    logger.log('error', `Error while updating workflow for Robot ID: ${req.params.id}. Error: ${message}`);
     return res.status(500).send({ error: 'Internal server error' });
   }
 });
