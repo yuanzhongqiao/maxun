@@ -160,7 +160,6 @@ router.put('/runs/:id', requireSignIn, async (req, res) => {
 router.get('/runs/run/:id', requireSignIn, async (req, res) => {
   try {
     console.log(`Params for GET /runs/run/:id`, req.params.id)
-    // read the run from storage
     const run = await Run.findOne({ where: { runId: req.params.runId }, raw: true });
     if (!run) {
       return res.status(404).send(null);
