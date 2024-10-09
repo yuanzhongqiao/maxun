@@ -35,15 +35,15 @@ async function runWorkflow(id: string) {
   const proxyConfig = await getDecryptedProxyConfig(req.user.id);
   let proxyOptions: any = {};
 
-    if (proxyConfig.proxy_url) {
-      proxyOptions = {
-        server: proxyConfig.proxy_url,
-        ...(proxyConfig.proxy_username && proxyConfig.proxy_password && {
-          username: proxyConfig.proxy_username,
-          password: proxyConfig.proxy_password,
-        }),
-      };
-    }
+  if (proxyConfig.proxy_url) {
+    proxyOptions = {
+      server: proxyConfig.proxy_url,
+      ...(proxyConfig.proxy_username && proxyConfig.proxy_password && {
+        username: proxyConfig.proxy_username,
+        password: proxyConfig.proxy_password,
+      }),
+    };
+  }
 
   try {
     const browserId = createRemoteBrowserForRun({
