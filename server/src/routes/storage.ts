@@ -142,16 +142,7 @@ router.put('/runs/:id', requireSignIn, async (req, res) => {
     const plainRun = run.toJSON();
 
     console.log(`Created run (plain object):`, plainRun);
-
-    // // we need to handle this via DB
-    // fs.mkdirSync('../storage/runs', { recursive: true })
-    // await saveFile(
-    //   `../storage/runs/${req.params.fileName}_${runId}.json`,
-    //   JSON.stringify({ ...run_meta }, null, 2)
-    // );
-    // logger.log('debug', `Created run with name: ${req.params.fileName}.json`);
-
-    // console.log('Run meta:', run_meta);
+   
     return res.send({
       browserId: id,
       runId: plainRun.runId,
@@ -171,7 +162,6 @@ router.get('/runs/run/:id', requireSignIn, async (req, res) => {
     console.log(`Params for GET /runs/run/:id`, req.params.id)
     // read the run from storage
     const run = await Run.findOne({ where: { runId: req.params.runId }, raw: true });
-    //const parsedRun = JSON.parse(run);
     if (!run) {
       return res.status(404).send(null);
     }
@@ -188,11 +178,6 @@ router.get('/runs/run/:id', requireSignIn, async (req, res) => {
  */
 router.post('/runs/run/:id', requireSignIn, async (req, res) => {
   try {
-    // const recording = await readFile(`./../storage/recordings/${req.params.fileName}.json`)
-    // const parsedRecording = JSON.parse(recording);
-
-    // const run = await readFile(`./../storage/runs/${req.params.fileName}_${req.params.runId}.json`)
-    // const parsedRun = JSON.parse(run);
     console.log(`Params for POST /runs/run/:id`, req.params.id)
 
     const run = await Run.findOne({ where: { runId: req.params.id } });
@@ -371,12 +356,6 @@ router.post('/runs/abort/:id', requireSignIn, async (req, res) => {
       serializableOutput,
       binaryOutput,
     });
-
-    // fs.mkdirSync('../storage/runs', { recursive: true })
-    // await saveFile(
-    //   `../storage/runs/${run.name}_${req.params.runId}.json`,
-    //   JSON.stringify({ ...run_meta, serializableOutput, binaryOutput }, null, 2)
-    // );
     return res.send(true);
   } catch (e) {
     const { message } = e as Error;
