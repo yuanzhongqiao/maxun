@@ -207,37 +207,39 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
     // const parsedRun = JSON.parse(run);
     console.log(`Params for POST /runs/run/:id`, req.params.id)
 
-    const run = await Run.findOne({ where: { runId: req.params.id }, raw: true });
+    const run = await Run.findOne({ where: { runId: req.params.id } });
     if (!run) {
       return res.status(404).send(false);
     }
 
     console.log(`found run: ${run}`)
 
-    const recording = await Robot.findOne({ where: { 'recording_meta.id': run.robotMetaId }, raw: true });
+    const plainRun = run.toJSON();
+
+    const recording = await Robot.findOne({ where: { 'recording_meta.id': plainRun.robotMetaId }, raw: true });
     if (!recording) {
       return res.status(404).send(false);
     }
 
     // interpret the run in active browser
-    const browser = browserPool.getRemoteBrowser(run.browserId);
+    const browser = browserPool.getRemoteBrowser(plainRun.browserId);
     const currentPage = browser?.getCurrentPage();
     if (browser && currentPage) {
       const interpretationInfo = await browser.interpreter.InterpretRecording(
-        recording.recording, currentPage, run.interpreterSettings);
-      await destroyRemoteBrowser(run.browserId);
+        recording.recording, currentPage, plainRun.interpreterSettings);
+      await destroyRemoteBrowser(plainRun.browserId);
       await run.update({
         ...run,
         status: 'success',
         finishedAt: new Date().toLocaleString(),
-        browserId: run.browserId,
+        browserId: plainRun.browserId,
         log: interpretationInfo.log.join('\n'),
         serializableOutput: interpretationInfo.serializableOutput,
         binaryOutput: interpretationInfo.binaryOutput,
       });
       googleSheetUpdateTasks[req.params.id] = {
-        name: run.name,
-        runId: run.runId,
+        name: plainRun.name,
+        runId: plainRun.runId,
         status: 'pending',
         retries: 5,
       };
@@ -351,7 +353,7 @@ router.put('/schedule/:fileName/', requireSignIn, async (req, res) => {
 router.post('/runs/abort/:id', requireSignIn, async (req, res) => {
   try {
     console.log(`Params for POST /runs/abort/:id`, req.params.id)
-    const run = await Run.findOne({ where: { runId: req.params.id }, raw: true });
+    const run = await Run.findOne({ where: { runId: req.params.id }});
     if (!run) {
       return res.status(404).send(false);
     }
