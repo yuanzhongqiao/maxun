@@ -11,14 +11,14 @@ interface RobotMeta {
   params: any[];
 }
 
-interface Robot {
+interface RobotWorkflow {
   workflow: WhereWhatPair[];
 }
 
 interface RobotAttributes {
   id: string;
   recording_meta: RobotMeta;
-  recording: Robot;
+  recording: RobotWorkflow;
 }
 
 interface RobotCreationAttributes extends Optional<RobotAttributes, 'id'> { }
@@ -26,7 +26,7 @@ interface RobotCreationAttributes extends Optional<RobotAttributes, 'id'> { }
 class Robot extends Model<RobotAttributes, RobotCreationAttributes> implements RobotAttributes {
   public id!: string;
   public recording_meta!: RobotMeta;
-  public recording!: Robot;
+  public recording!: RobotWorkflow;
 }
 
 Robot.init(
