@@ -255,10 +255,10 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
   }
 });
 
-router.put('/schedule/:fileName/', requireSignIn, async (req, res) => {
+router.put('/schedule/:id/', requireSignIn, async (req, res) => {
   console.log(req.body);
   try {
-    const { fileName } = req.params;
+    const { id } = req.params;
     const {
       runEvery,
       runEveryUnit,
@@ -267,7 +267,7 @@ router.put('/schedule/:fileName/', requireSignIn, async (req, res) => {
       timezone
     } = req.body;
 
-    if (!fileName || !runEvery || !runEveryUnit || !startFrom || !atTime || !timezone) {
+    if (!id || !runEvery || !runEveryUnit || !startFrom || !atTime || !timezone) {
       return res.status(400).json({ error: 'Missing required parameters' });
     }
 
@@ -318,7 +318,7 @@ router.put('/schedule/:fileName/', requireSignIn, async (req, res) => {
 
     // await workflowQueue.add(
     //   'run workflow',
-    //   { fileName, runId },
+    //   { id, runId },
     //   {
     //     repeat: {
     //       pattern: cronExpression,
