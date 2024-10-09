@@ -25,7 +25,6 @@ export const PageWrapper = () => {
     setRecordingName('');
     setRecordingId('');
     navigate('/recording');
-
   }
 
   const handleEditRecording = (recordingId: string, fileName: string) => {
@@ -33,7 +32,6 @@ export const PageWrapper = () => {
     setRecordingId(recordingId);
     setBrowserId('new-recording');
     navigate('/recording');
-
   }
 
   const isNotification = (): boolean => {
