@@ -7,6 +7,7 @@ import logger from "../logger";
 import { browserPool } from "../server";
 import { readFile } from "../workflow-management/storage";
 import { requireSignIn } from '../middlewares/auth';
+import Robot from '../models/Robot';
 
 export const router = Router();
 
@@ -122,3 +123,40 @@ router.put('/:browserId/:fileName', requireSignIn, async (req, res) => {
     return res.send(null);
   }
 });
+
+
+router.put('/:browserId/:robotId', requireSignIn, async (req, res) => {
+  try {
+    const browser = browserPool.getRemoteBrowser(req.params.browserId);
+    logger.log('debug', `Updating workflow for Robot ID: ${req.params.robotId}`);
+
+    if (browser && browser.generator) {
+      const robot = await Robot.findByPk(req.params.robotId);
+
+      if (!robot) {
+        logger.log('info', `Robot not found with ID: ${req.params.robotId}`);
+        return res.status(404).send({ error: 'Robot not found' });
+      }
+
+      const { recording, recording_meta } = robot;
+
+      if (recording && recording.workflow) {
+        browser.generator.updateWorkflowFile(recording, recording_meta);
+        const workflowFile = browser.generator.getWorkflowFile();
+        return res.send(workflowFile);
+      } else {
+        logger.log('info', `Invalid recording data for Robot ID: ${req.params.robotId}`);
+        return res.status(400).send({ error: 'Invalid recording data' });
+      }
+    }
+
+    logger.log('info', `Browser or generator not available for ID: ${req.params.browserId}`);
+    return res.status(400).send({ error: 'Browser or generator not available' });
+  } catch (e) {
+    const { message } = e as Error;
+    logger.log('error', `Error while updating workflow for Robot ID: ${req.params.robotId}. Error: ${message}`);
+    return res.status(500).send({ error: 'Internal server error' });
+  }
+});
+
+export default router;
