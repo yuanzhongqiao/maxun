@@ -8,19 +8,40 @@ import logger from '../../logger';
 import { browserPool } from "../../server";
 import { googleSheetUpdateTasks, processGoogleSheetUpdates } from "../integrations/gsheet";
 import { getRecordingByFileName } from "../../routes/storage";
+import Robot from "../../models/Robot";
+import Run from "../../models/Run";
+import { getDecryptedProxyConfig } from "../../routes/proxy";
 
-async function runWorkflow(fileName: string, runId: string) {
-  if (!runId) {
-    runId = uuid();
+async function runWorkflow(id: string) {
+  if (!id) {
+    id = uuid();
   }
 
-  const recording = await getRecordingByFileName(fileName);
+  const recording = await Robot.findOne({
+    where: {
+      'recording_meta.id': id
+    },
+    raw: true
+  });
 
-    if (!recording || !recording.recording_meta || !recording.recording_meta.id) {
-      logger.log('info', `Recording with name: ${fileName} not found`);
-      return {
-        success: false,
-        error: `Recording with name: ${fileName} not found`,
+  if (!recording || !recording.recording_meta || !recording.recording_meta.id) {
+    return {
+      success: false,
+      error: 'Recording not found'
+    };
+  }
+
+  // req.user.id will not be available here :)
+  const proxyConfig = await getDecryptedProxyConfig(req.user.id);
+  let proxyOptions: any = {};
+
+    if (proxyConfig.proxy_url) {
+      proxyOptions = {
+        server: proxyConfig.proxy_url,
+        ...(proxyConfig.proxy_username && proxyConfig.proxy_password && {
+          username: proxyConfig.proxy_username,
+          password: proxyConfig.proxy_password,
+        }),
       };
     }
 
@@ -29,34 +50,32 @@ async function runWorkflow(fileName: string, runId: string) {
       browser: chromium,
       launchOptions: { headless: true }
     });
-    const run_meta = {
+
+    const run = await Run.create({
       status: 'Scheduled',
-      name: fileName,
-      recordingId: recording.recording_meta.id,
+      name: recording.recording_meta.name,
+      robotId: recording.id,
+      robotMetaId: recording.recording_meta.id,
       startedAt: new Date().toLocaleString(),
       finishedAt: '',
-      browserId: browserId,
+      browserId: id,
       interpreterSettings: { maxConcurrency: 1, maxRepeats: 1, debug: true },
       log: '',
-      runId: runId,
-    };
+      runId: id,
+      serializableOutput: {},
+      binaryOutput: {},
+    });
 
-    fs.mkdirSync('../storage/runs', { recursive: true });
-    await saveFile(
-      `../storage/runs/${fileName}_${runId}.json`,
-      JSON.stringify(run_meta, null, 2)
-    );
-
-    logger.log('debug', `Scheduled run with name: ${fileName}_${runId}.json`);
+    const plainRun = run.toJSON();
 
     return {
       browserId,
-      runId
+      runId: plainRun.runId,
     }
 
   } catch (e) {
     const { message } = e as Error;
-    logger.log('info', `Error while scheduling a run with name: ${fileName}_${runId}.json`);
+    logger.log('info', `Error while scheduling a run with id: ${id}`);
     console.log(message);
     return {
       success: false,
