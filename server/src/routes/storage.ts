@@ -15,7 +15,6 @@ import Robot from '../models/Robot';
 import Run from '../models/Run';
 import { workflowQueue } from '../worker';
 
-// todo: move from here
 export const getRecordingByFileName = async (fileName: string): Promise<any | null> => {
   try {
     const recording = await readFile(`./../storage/recordings/${fileName}.json`)
