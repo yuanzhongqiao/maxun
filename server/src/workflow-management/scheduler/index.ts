@@ -12,7 +12,7 @@ import Robot from "../../models/Robot";
 import Run from "../../models/Run";
 import { getDecryptedProxyConfig } from "../../routes/proxy";
 
-async function runWorkflow(id: string) {
+async function runWorkflow(id: string, userId: string) {
   if (!id) {
     id = uuid();
   }
@@ -32,7 +32,7 @@ async function runWorkflow(id: string) {
   }
 
   // req.user.id will not be available here :)
-  const proxyConfig = await getDecryptedProxyConfig(req.user.id);
+  const proxyConfig = await getDecryptedProxyConfig(userId);
   let proxyOptions: any = {};
 
   if (proxyConfig.proxy_url) {
@@ -175,8 +175,8 @@ export async function handleRunRecording(id: string, userId: string) {
     const result = await runWorkflow(id);
     const { browserId, runId: newRunId } = result;
 
-    if (!browserId || !newRunId) {
-      throw new Error('browserId or runId is undefined');
+    if (!browserId || !newRunId || !userId) {
+      throw new Error('browserId or runId or userId is undefined');
     }
 
     const socket = io(`http://localhost:8080/${browserId}`, {
