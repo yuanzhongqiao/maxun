@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
+import setupAssociations from '../models/associations';
 
 dotenv.config();
 const sequelize = new Sequelize(
@@ -22,6 +23,7 @@ export const connectDB = async () => {
 
 export const syncDB = async () => {
     try {
+        //setupAssociations();
         await sequelize.sync({ force: false });  // force: true will drop and recreate tables on every run
         console.log('Database synced successfully!');
     } catch (error) {
