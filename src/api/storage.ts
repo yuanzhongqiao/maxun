@@ -118,15 +118,15 @@ export const notifyAboutAbort = async (id:string): Promise<boolean> => {
   }
 }
 
-export const scheduleStoredRecording = async (fileName: string, settings: ScheduleSettings): Promise<ScheduleRunResponse> => {
+export const scheduleStoredRecording = async (id: string, settings: ScheduleSettings): Promise<ScheduleRunResponse> => {
   try {
     const response = await axios.put(
-      `http://localhost:8080/storage/schedule/${fileName}`,
+      `http://localhost:8080/storage/schedule/${id}`,
       {...settings});
     if (response.status === 200) {
       return response.data;
     } else {
-      throw new Error(`Couldn't schedule recording ${fileName}. Please try again later.`);
+      throw new Error(`Couldn't schedule recording ${id}. Please try again later.`);
     }
   } catch(error: any) {
     console.log(error);
