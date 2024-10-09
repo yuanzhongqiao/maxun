@@ -14,6 +14,8 @@ import {
 } from "../selector";
 import { CustomActions } from "../../../../src/shared/types";
 import { workflow } from "../../routes";
+import Robot from "../../models/Robot";
+import Run from "../../models/Run";
 import { saveFile } from "../storage";
 import fs from "fs";
 import { getBestSelectorForAction } from "../utils";
@@ -486,11 +488,12 @@ export class WorkflowGenerator {
         updatedAt: new Date().toLocaleString(),
         params: this.getParams() || [],
       }
-      fs.mkdirSync('../storage/recordings', { recursive: true })
-      await saveFile(
-        `../storage/recordings/${fileName}.waw.json`,
-        JSON.stringify({ recording_meta: this.recordingMeta, recording }, null, 2)
-      );
+      const robot = await Robot.create({
+        recording_meta: this.recordingMeta,
+        recording: recording,
+      });
+
+      logger.log('info', `Robot saved with id: ${robot.id}`);
     }
     catch (e) {
       const { message } = e as Error;

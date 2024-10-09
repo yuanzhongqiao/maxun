@@ -32,13 +32,13 @@ export const getStoredRuns = async (): Promise<string[] | null> => {
   }
 };
 
-export const deleteRecordingFromStorage = async (fileName: string): Promise<boolean> => {
+export const deleteRecordingFromStorage = async (id: string): Promise<boolean> => {
   try {
-    const response = await axios.delete(`http://localhost:8080/storage/recordings/${fileName}`);
+    const response = await axios.delete(`http://localhost:8080/storage/recordings/${id}`);
     if (response.status === 200) {
       return response.data;
     } else {
-      throw new Error(`Couldn't delete stored recording ${fileName}`);
+      throw new Error(`Couldn't delete stored recording ${id}`);
     }
   } catch(error: any) {
     console.log(error);
@@ -46,13 +46,13 @@ export const deleteRecordingFromStorage = async (fileName: string): Promise<bool
   }
 };
 
-export const deleteRunFromStorage = async (fileName: string): Promise<boolean> => {
+export const deleteRunFromStorage = async (id: string): Promise<boolean> => {
   try {
-    const response = await axios.delete(`http://localhost:8080/storage/runs/${fileName}`);
+    const response = await axios.delete(`http://localhost:8080/storage/runs/${id}`);
     if (response.status === 200) {
       return response.data;
     } else {
-      throw new Error(`Couldn't delete stored recording ${fileName}`);
+      throw new Error(`Couldn't delete stored recording ${id}`);
     }
   } catch(error: any) {
     console.log(error);
@@ -60,13 +60,13 @@ export const deleteRunFromStorage = async (fileName: string): Promise<boolean> =
   }
 };
 
-export const editRecordingFromStorage = async (browserId: string, fileName: string): Promise<WorkflowFile | null> => {
+export const editRecordingFromStorage = async (browserId: string, robotId: string): Promise<WorkflowFile | null> => {
   try {
-    const response = await axios.put(`http://localhost:8080/workflow/${browserId}/${fileName}`);
+    const response = await axios.put(`http://localhost:8080/workflow/${browserId}/${robotId}`);
     if (response.status === 200) {
       return response.data;
     } else {
-      throw new Error(`Couldn't edit stored recording ${fileName}`);
+      throw new Error(`Couldn't edit stored recording ${robotId}`);
     }
   } catch(error: any) {
     console.log(error);
@@ -74,15 +74,15 @@ export const editRecordingFromStorage = async (browserId: string, fileName: stri
   }
 };
 
-export const createRunForStoredRecording = async (fileName: string, settings: RunSettings): Promise<CreateRunResponse> => {
+export const createRunForStoredRecording = async (id: string, settings: RunSettings): Promise<CreateRunResponse> => {
   try {
     const response = await axios.put(
-      `http://localhost:8080/storage/runs/${fileName}`,
+      `http://localhost:8080/storage/runs/${id}`,
       {...settings});
     if (response.status === 200) {
       return response.data;
     } else {
-      throw new Error(`Couldn't create a run for a recording ${fileName}`);
+      throw new Error(`Couldn't create a run for a recording ${id}`);
     }
   } catch(error: any) {
     console.log(error);
@@ -90,13 +90,13 @@ export const createRunForStoredRecording = async (fileName: string, settings: Ru
   }
 }
 
-export const interpretStoredRecording = async (fileName: string, runId: string): Promise<boolean> => {
+export const interpretStoredRecording = async (id: string): Promise<boolean> => {
   try {
-    const response = await axios.post(`http://localhost:8080/storage/runs/run/${fileName}/${runId}`);
+    const response = await axios.post(`http://localhost:8080/storage/runs/run/${id}`);
     if (response.status === 200) {
       return response.data;
     } else {
-      throw new Error(`Couldn't run a recording ${fileName}`);
+      throw new Error(`Couldn't run a recording ${id}`);
     }
   } catch(error: any) {
     console.log(error);
@@ -104,13 +104,13 @@ export const interpretStoredRecording = async (fileName: string, runId: string):
   }
 }
 
-export const notifyAboutAbort = async (fileName: string, runId:string): Promise<boolean> => {
+export const notifyAboutAbort = async (id:string): Promise<boolean> => {
   try {
-    const response = await axios.post(`http://localhost:8080/storage/runs/abort/${fileName}/${runId}`);
+    const response = await axios.post(`http://localhost:8080/storage/runs/abort/${id}`);
     if (response.status === 200) {
       return response.data;
     } else {
-      throw new Error(`Couldn't abort a running recording ${fileName} with id ${runId}`);
+      throw new Error(`Couldn't abort a running recording with id ${id}`);
     }
   } catch(error: any) {
     console.log(error);

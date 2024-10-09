@@ -8,55 +8,76 @@ import logger from '../../logger';
 import { browserPool } from "../../server";
 import { googleSheetUpdateTasks, processGoogleSheetUpdates } from "../integrations/gsheet";
 import { getRecordingByFileName } from "../../routes/storage";
+import Robot from "../../models/Robot";
+import Run from "../../models/Run";
+import { getDecryptedProxyConfig } from "../../routes/proxy";
 
-async function runWorkflow(fileName: string, runId: string) {
-  if (!runId) {
-    runId = uuid();
+async function runWorkflow(id: string, userId: string) {
+  if (!id) {
+    id = uuid();
   }
 
-  const recording = await getRecordingByFileName(fileName);
+  const recording = await Robot.findOne({
+    where: {
+      'recording_meta.id': id
+    },
+    raw: true
+  });
 
-    if (!recording || !recording.recording_meta || !recording.recording_meta.id) {
-      logger.log('info', `Recording with name: ${fileName} not found`);
-      return {
-        success: false,
-        error: `Recording with name: ${fileName} not found`,
-      };
-    }
+  if (!recording || !recording.recording_meta || !recording.recording_meta.id) {
+    return {
+      success: false,
+      error: 'Recording not found'
+    };
+  }
+
+  const proxyConfig = await getDecryptedProxyConfig(userId);
+  let proxyOptions: any = {};
+
+  if (proxyConfig.proxy_url) {
+    proxyOptions = {
+      server: proxyConfig.proxy_url,
+      ...(proxyConfig.proxy_username && proxyConfig.proxy_password && {
+        username: proxyConfig.proxy_username,
+        password: proxyConfig.proxy_password,
+      }),
+    };
+  }
 
   try {
     const browserId = createRemoteBrowserForRun({
       browser: chromium,
-      launchOptions: { headless: true }
+      launchOptions: {
+        headless: true,
+        proxy: proxyOptions.server ? proxyOptions : undefined,
+      }
     });
-    const run_meta = {
+
+    const run = await Run.create({
       status: 'Scheduled',
-      name: fileName,
-      recordingId: recording.recording_meta.id,
+      name: recording.recording_meta.name,
+      robotId: recording.id,
+      robotMetaId: recording.recording_meta.id,
       startedAt: new Date().toLocaleString(),
       finishedAt: '',
-      browserId: browserId,
+      browserId: id,
       interpreterSettings: { maxConcurrency: 1, maxRepeats: 1, debug: true },
       log: '',
-      runId: runId,
-    };
+      runId: id,
+      serializableOutput: {},
+      binaryOutput: {},
+    });
 
-    fs.mkdirSync('../storage/runs', { recursive: true });
-    await saveFile(
-      `../storage/runs/${fileName}_${runId}.json`,
-      JSON.stringify(run_meta, null, 2)
-    );
-
-    logger.log('debug', `Scheduled run with name: ${fileName}_${runId}.json`);
+    const plainRun = run.toJSON();
 
     return {
       browserId,
-      runId
+      runId: plainRun.runId,
     }
 
   } catch (e) {
     const { message } = e as Error;
-    logger.log('info', `Error while scheduling a run with name: ${fileName}_${runId}.json`);
+    logger.log('info', `Error while scheduling a run with id: ${id}`);
     console.log(message);
     return {
       success: false,
@@ -65,21 +86,29 @@ async function runWorkflow(fileName: string, runId: string) {
   }
 }
 
-async function executeRun(fileName: string, runId: string) {
+async function executeRun(id: string) {
   try {
-    const recording = await readFile(`./../storage/recordings/${fileName}.waw.json`);
-    const parsedRecording = JSON.parse(recording);
+    const run = await Run.findOne({ where: { runId: id } });
+    if (!run) {
+      return {
+        success: false,
+        error: 'Run not found'
+      }
+    }
 
-    const run = await readFile(`./../storage/runs/${fileName}_${runId}.json`);
-    const parsedRun = JSON.parse(run);
+    const plainRun = run.toJSON();
 
-    parsedRun.status = 'running';
-    await saveFile(
-      `../storage/runs/${fileName}_${runId}.json`,
-      JSON.stringify(parsedRun, null, 2)
-    );
+    const recording = await Robot.findOne({ where: { 'recording_meta.id': plainRun.robotMetaId }, raw: true });
+    if (!recording) {
+      return {
+        success: false,
+        error: 'Recording not found'
+      }
+    }
 
-    const browser = browserPool.getRemoteBrowser(parsedRun.browserId);
+    plainRun.status = 'running';
+
+    const browser = browserPool.getRemoteBrowser(plainRun.browserId);
     if (!browser) {
       throw new Error('Could not access browser');
     }
@@ -90,61 +119,47 @@ async function executeRun(fileName: string, runId: string) {
     }
 
     const interpretationInfo = await browser.interpreter.InterpretRecording(
-      parsedRecording.recording, currentPage, parsedRun.interpreterSettings);
+      recording.recording, currentPage, plainRun.interpreterSettings);
 
-    await destroyRemoteBrowser(parsedRun.browserId);
+    await destroyRemoteBrowser(plainRun.browserId);
 
-    const updated_run_meta = {
-      ...parsedRun,
+    await run.update({
+      ...run,
       status: 'success',
       finishedAt: new Date().toLocaleString(),
-      browserId: parsedRun.browserId,
+      browserId: plainRun.browserId,
       log: interpretationInfo.log.join('\n'),
       serializableOutput: interpretationInfo.serializableOutput,
       binaryOutput: interpretationInfo.binaryOutput,
-    };
+    });
 
-    await saveFile(
-      `../storage/runs/${fileName}_${runId}.json`,
-      JSON.stringify(updated_run_meta, null, 2)
-    );
-    googleSheetUpdateTasks[runId] = {
-      name: parsedRun.name,
-      runId: runId,
+    googleSheetUpdateTasks[id] = {
+      name: plainRun.name,
+      runId: id,
       status: 'pending',
       retries: 5,
     };
     processGoogleSheetUpdates();
     return true;
   } catch (error: any) {
-    logger.log('info', `Error while running a recording with name: ${fileName}_${runId}.json`);
+    logger.log('info', `Error while running a recording with id: ${id} - ${error.message}`);
     console.log(error.message);
-
-    const errorRun = await readFile(`./../storage/runs/${fileName}_${runId}.json`);
-    const parsedErrorRun = JSON.parse(errorRun);
-    parsedErrorRun.status = 'ERROR';
-    parsedErrorRun.log += `\nError: ${error.message}`;
-    await saveFile(
-      `../storage/runs/${fileName}_${runId}.json`,
-      JSON.stringify(parsedErrorRun, null, 2)
-    );
-
     return false;
   }
 }
 
-async function readyForRunHandler(browserId: string, fileName: string, runId: string) {
+async function readyForRunHandler(browserId: string, id: string) {
   try {
-    const interpretation = await executeRun(fileName, runId);
+    const interpretation = await executeRun(id);
 
     if (interpretation) {
-      logger.log('info', `Interpretation of ${fileName} succeeded`);
+      logger.log('info', `Interpretation of ${id} succeeded`);
     } else {
-      logger.log('error', `Interpretation of ${fileName} failed`);
+      logger.log('error', `Interpretation of ${id} failed`);
       await destroyRemoteBrowser(browserId);
     }
 
-    resetRecordingState(browserId, fileName, runId);
+    resetRecordingState(browserId, id);
 
   } catch (error: any) {
     logger.error(`Error during readyForRunHandler: ${error.message}`);
@@ -152,20 +167,18 @@ async function readyForRunHandler(browserId: string, fileName: string, runId: st
   }
 }
 
-function resetRecordingState(browserId: string, fileName: string, runId: string) {
+function resetRecordingState(browserId: string, id: string) {
   browserId = '';
-  fileName = '';
-  runId = '';
-  logger.log(`info`, `reset values for ${browserId}, ${fileName}, and ${runId}`);
+  id = '';
 }
 
-export async function handleRunRecording(fileName: string, runId: string) {
+export async function handleRunRecording(id: string, userId: string) {
   try {
-    const result = await runWorkflow(fileName, runId);
+    const result = await runWorkflow(id, userId);
     const { browserId, runId: newRunId } = result;
 
-    if (!browserId || !newRunId) {
-      throw new Error('browserId or runId is undefined');
+    if (!browserId || !newRunId || !userId) {
+      throw new Error('browserId or runId or userId is undefined');
     }
 
     const socket = io(`http://localhost:8080/${browserId}`, {
@@ -173,9 +186,9 @@ export async function handleRunRecording(fileName: string, runId: string) {
       rejectUnauthorized: false
     });
 
-    socket.on('ready-for-run', () => readyForRunHandler(browserId, fileName, newRunId));
+    socket.on('ready-for-run', () => readyForRunHandler(browserId, newRunId));
 
-    logger.log('info', `Running recording: ${fileName}`);
+    logger.log('info', `Running recording: ${id}`);
 
     socket.on('disconnect', () => {
       cleanupSocketListeners(socket, browserId, newRunId);
@@ -186,9 +199,9 @@ export async function handleRunRecording(fileName: string, runId: string) {
   }
 }
 
-function cleanupSocketListeners(socket: Socket, browserId: string, runId: string) {
-  socket.off('ready-for-run', () => readyForRunHandler(browserId, '', runId));
-  logger.log('info', `Cleaned up listeners for browserId: ${browserId}, runId: ${runId}`);
+function cleanupSocketListeners(socket: Socket, browserId: string, id: string) {
+  socket.off('ready-for-run', () => readyForRunHandler(browserId, id));
+  logger.log('info', `Cleaned up listeners for browserId: ${browserId}, runId: ${id}`);
 }
 
 export { runWorkflow };
