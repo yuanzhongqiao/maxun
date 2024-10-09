@@ -97,13 +97,12 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
     const recordings = await getStoredRecordings();
     if (recordings) {
       const parsedRows: Data[] = [];
-      recordings.map((recording, index) => {
-        const parsedRecording = JSON.parse(recording);
-        if (parsedRecording.recording_meta) {
+      recordings.map((recording: any, index: number) => {
+        if (recording && recording.recording_meta) {
           parsedRows.push({
             id: index,
-            ...parsedRecording.recording_meta,
-            content: parsedRecording.recording
+            ...recording.recording_meta,
+            content: recording.recording
           });
         }
       });
