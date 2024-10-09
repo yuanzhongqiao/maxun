@@ -146,18 +146,18 @@ async function executeRun(id: string) {
   }
 }
 
-async function readyForRunHandler(browserId: string, fileName: string, runId: string) {
+async function readyForRunHandler(browserId: string, id: string) {
   try {
-    const interpretation = await executeRun(fileName, runId);
+    const interpretation = await executeRun(id);
 
     if (interpretation) {
-      logger.log('info', `Interpretation of ${fileName} succeeded`);
+      logger.log('info', `Interpretation of ${id} succeeded`);
     } else {
-      logger.log('error', `Interpretation of ${fileName} failed`);
+      logger.log('error', `Interpretation of ${id} failed`);
       await destroyRemoteBrowser(browserId);
     }
 
-    resetRecordingState(browserId, fileName, runId);
+    resetRecordingState(browserId, id);
 
   } catch (error: any) {
     logger.error(`Error during readyForRunHandler: ${error.message}`);
@@ -165,11 +165,9 @@ async function readyForRunHandler(browserId: string, fileName: string, runId: st
   }
 }
 
-function resetRecordingState(browserId: string, fileName: string, runId: string) {
+function resetRecordingState(browserId: string, id: string) {
   browserId = '';
-  fileName = '';
-  runId = '';
-  logger.log(`info`, `reset values for ${browserId}, ${fileName}, and ${runId}`);
+  id = '';
 }
 
 export async function handleRunRecording(fileName: string, runId: string) {
