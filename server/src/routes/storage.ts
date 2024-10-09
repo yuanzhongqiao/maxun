@@ -357,9 +357,9 @@ router.post('/runs/abort/:id', requireSignIn, async (req, res) => {
     if (!run) {
       return res.status(404).send(false);
     }
-    //const parsedRun = JSON.parse(run);
+    const plainRun = run.toJSON();
 
-    const browser = browserPool.getRemoteBrowser(run.browserId);
+    const browser = browserPool.getRemoteBrowser(plainRun.browserId);
     const currentLog = browser?.interpreter.debugMessages.join('/n');
     const serializableOutput = browser?.interpreter.serializableData.reduce((reducedObject, item, index) => {
       return {
@@ -377,7 +377,7 @@ router.post('/runs/abort/:id', requireSignIn, async (req, res) => {
       ...run,
       status: 'aborted',
       finishedAt: new Date().toLocaleString(),
-      browserId: run.browserId,
+      browserId: plainRun.browserId,
       log: currentLog,
       serializableOutput,
       binaryOutput,
