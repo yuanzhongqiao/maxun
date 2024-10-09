@@ -20,9 +20,9 @@ connection.on('error', (err) => {
 const workflowQueue = new Queue('workflow', { connection });
 
 const worker = new Worker('workflow', async job => {
-    const { fileName, runId } = job.data;
+    const { runId } = job.data;
     try {
-        const result = await handleRunRecording(fileName, runId);
+        const result = await handleRunRecording(runId);
         return result;
     } catch (error) {
         logger.error('Error running workflow:', error);
@@ -31,11 +31,11 @@ const worker = new Worker('workflow', async job => {
 }, { connection });
 
 worker.on('completed', async (job: any) => {
-    logger.log(`info`, `Job ${job.id} completed for ${job.data.fileName}_${job.data.runId}`);
+    logger.log(`info`, `Job ${job.id} completed for ${job.data.runId}`);
 });
 
 worker.on('failed', async (job: any, err) => {
-    logger.log(`error`, `Job ${job.id} failed for ${job.data.fileName}_${job.data.runId}:`, err);
+    logger.log(`error`, `Job ${job.id} failed for ${job.data.runId}:`, err);
 });
 
 console.log('Worker is running...');
