@@ -55,7 +55,9 @@ router.get('/recordings', requireSignIn, async (req, res) => {
  */
 router.delete('/recordings/:id', requireSignIn, async (req, res) => {
   try {
-    await Robot.destroy({ where: { id: req.params.id } });
+    await Robot.destroy({
+      where: { 'recording_meta.id': req.params.id }
+    });
     return res.send(true);
   } catch (e) {
     const { message } = e as Error;
