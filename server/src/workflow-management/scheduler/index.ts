@@ -170,9 +170,9 @@ function resetRecordingState(browserId: string, id: string) {
   id = '';
 }
 
-export async function handleRunRecording(fileName: string, runId: string) {
+export async function handleRunRecording(id: string) {
   try {
-    const result = await runWorkflow(fileName, runId);
+    const result = await runWorkflow(id);
     const { browserId, runId: newRunId } = result;
 
     if (!browserId || !newRunId) {
@@ -184,9 +184,9 @@ export async function handleRunRecording(fileName: string, runId: string) {
       rejectUnauthorized: false
     });
 
-    socket.on('ready-for-run', () => readyForRunHandler(browserId, fileName, newRunId));
+    socket.on('ready-for-run', () => readyForRunHandler(browserId, newRunId));
 
-    logger.log('info', `Running recording: ${fileName}`);
+    logger.log('info', `Running recording: ${id}`);
 
     socket.on('disconnect', () => {
       cleanupSocketListeners(socket, browserId, newRunId);
@@ -197,9 +197,9 @@ export async function handleRunRecording(fileName: string, runId: string) {
   }
 }
 
-function cleanupSocketListeners(socket: Socket, browserId: string, runId: string) {
-  socket.off('ready-for-run', () => readyForRunHandler(browserId, '', runId));
-  logger.log('info', `Cleaned up listeners for browserId: ${browserId}, runId: ${runId}`);
+function cleanupSocketListeners(socket: Socket, browserId: string, id: string) {
+  socket.off('ready-for-run', () => readyForRunHandler(browserId, id));
+  logger.log('info', `Cleaned up listeners for browserId: ${browserId}, runId: ${id}`);
 }
 
 export { runWorkflow };
