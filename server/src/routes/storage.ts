@@ -13,7 +13,7 @@ import { getDecryptedProxyConfig } from './proxy';
 import { requireSignIn } from '../middlewares/auth';
 import Robot from '../models/Robot';
 import Run from '../models/Run';
-// import { workflowQueue } from '../worker';
+import { workflowQueue } from '../worker';
 
 // todo: move from here
 export const getRecordingByFileName = async (fileName: string): Promise<any | null> => {
@@ -315,17 +315,18 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
     }
 
     const runId = uuid();
+    const userId = req.user.id;
 
-    // await workflowQueue.add(
-    //   'run workflow',
-    //   { id, runId, req.user.id },
-    //   {
-    //     repeat: {
-    //       pattern: cronExpression,
-    //       tz: timezone
-    //     }
-    //   }
-    // );
+     await workflowQueue.add(
+       'run workflow',
+       { id, runId, userId },
+       {
+         repeat: {
+           pattern: cronExpression,
+          tz: timezone
+     }
+       }
+     );
 
     res.status(200).json({
       message: 'success',
