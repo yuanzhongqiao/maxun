@@ -39,7 +39,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
 
   const { setId, socket } = useSocketStore();
   const { setWidth } = useBrowserDimensionsStore();
-  const { browserId, setBrowserId } = useGlobalInfoStore();
+  const { browserId, setBrowserId, recordingId } = useGlobalInfoStore();
 
   const handleShowOutputData = useCallback(() => {
     setShowOutputData(true);
@@ -93,15 +93,15 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
   }, [socket]);
 
   const handleLoaded = useCallback(() => {
-    if (recordingName && browserId) {
-      editRecordingFromStorage(browserId, recordingName).then(() => setIsLoaded(true));
+    if (recordingName && browserId && recordingId) {
+      editRecordingFromStorage(browserId, recordingId).then(() => setIsLoaded(true));
     } else {
       if (browserId === 'new-recording') {
         socket?.emit('new-recording');
       }
       setIsLoaded(true);
     }
-  }, [socket, browserId, recordingName, isLoaded])
+  }, [socket, browserId, recordingName, recordingId, isLoaded])
 
   useEffect(() => {
     socket?.on('loaded', handleLoaded);
