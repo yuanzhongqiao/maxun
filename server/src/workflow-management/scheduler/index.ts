@@ -172,7 +172,7 @@ function resetRecordingState(browserId: string, id: string) {
 
 export async function handleRunRecording(id: string, userId: string) {
   try {
-    const result = await runWorkflow(id);
+    const result = await runWorkflow(id, userId);
     const { browserId, runId: newRunId } = result;
 
     if (!browserId || !newRunId || !userId) {
