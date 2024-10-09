@@ -107,6 +107,4 @@ Run.init(
   }
 );
 
-Run.belongsTo(Robot, { foreignKey: 'robotId' });
-
 export default Run;

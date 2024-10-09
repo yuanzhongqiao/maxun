@@ -1,6 +1,5 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../db/config';
-import Run from './Run';
 import { WorkflowFile, Where, What, WhereWhatPair } from 'maxun-core';
 
 interface RobotMeta {
@@ -52,7 +51,5 @@ Robot.init(
     timestamps: false,
   }
 );
-
-Robot.hasMany(Run, { foreignKey: 'robotId' });
 
 export default Robot;
