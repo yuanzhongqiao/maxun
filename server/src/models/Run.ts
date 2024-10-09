@@ -2,6 +2,10 @@ import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../db/config';
 import Robot from './Robot';
 
+// TODO:
+// 1. rename variables 
+// 2. we might not need interpreter settings?
+// 3. store binaryOutput in MinIO
 interface InterpreterSettings {
   maxConcurrency: number;
   maxRepeats: number;
