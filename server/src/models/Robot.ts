@@ -1,6 +1,7 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../db/config';
 import Run from './Run';
+import { WorkflowFile, Where, What, WhereWhatPair } from 'maxun-core';
 
 interface RobotMeta {
   name: string;
@@ -11,18 +12,8 @@ interface RobotMeta {
   params: any[];
 }
 
-interface Workflow {
-  where: {
-    url: string;
-  };
-  what: Array<{
-    action: string;
-    args: any[];
-  }>;
-}
-
 interface Robot {
-  workflow: Workflow[];
+  workflow: WhereWhatPair[];
 }
 
 interface RobotAttributes {
@@ -58,7 +49,7 @@ Robot.init(
   {
     sequelize,
     tableName: 'robot',
-    timestamps: false, // We'll manage timestamps manually in recording_meta
+    timestamps: false, 
   }
 );
 
