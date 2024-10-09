@@ -153,7 +153,7 @@ router.put('/runs/:id', requireSignIn, async (req, res) => {
 
     const plainRun = run.toJSON();
 
-console.log(`Created run (plain object):`, plainRun);
+    console.log(`Created run (plain object):`, plainRun);
 
     // // we need to handle this via DB
     // fs.mkdirSync('../storage/runs', { recursive: true })
@@ -353,7 +353,7 @@ router.put('/schedule/:fileName/', requireSignIn, async (req, res) => {
 router.post('/runs/abort/:id', requireSignIn, async (req, res) => {
   try {
     console.log(`Params for POST /runs/abort/:id`, req.params.id)
-    const run = await Run.findOne({ where: { runId: req.params.id }});
+    const run = await Run.findOne({ where: { runId: req.params.id } });
     if (!run) {
       return res.status(404).send(false);
     }
