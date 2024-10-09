@@ -84,7 +84,7 @@ router.get('/runs', requireSignIn, async (req, res) => {
  */
 router.delete('/runs/:id', requireSignIn, async (req, res) => {
   try {
-    await Run.destroy({ where: { id: req.params.id } });
+    await Run.destroy({ where: { runId: req.params.id } });
     return res.send(true);
   } catch (e) {
     const { message } = e as Error;
@@ -212,6 +212,8 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
       return res.status(404).send(false);
     }
 
+    console.log(`found run: ${run}`)
+
     const recording = await Robot.findOne({ where: { 'recording_meta.id': run.robotMetaId }, raw: true });
     if (!recording) {
       return res.status(404).send(false);
@@ -233,7 +235,7 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
         serializableOutput: interpretationInfo.serializableOutput,
         binaryOutput: interpretationInfo.binaryOutput,
       });
-      googleSheetUpdateTasks[req.params.runId] = {
+      googleSheetUpdateTasks[req.params.id] = {
         name: run.name,
         runId: run.runId,
         status: 'pending',
@@ -246,7 +248,7 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
     }
   } catch (e) {
     const { message } = e as Error;
-    logger.log('info', `Error while running a recording with name: ${req.params.fileName}_${req.params.runId}.json`);
+    logger.log('info', `Error while running a recording with id: ${req.params.id} - ${message}`);
     return res.send(false);
   }
 });
