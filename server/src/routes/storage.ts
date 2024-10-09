@@ -15,17 +15,6 @@ import Robot from '../models/Robot';
 import Run from '../models/Run';
 import { workflowQueue } from '../worker';
 
-export const getRecordingByFileName = async (fileName: string): Promise<any | null> => {
-  try {
-    const recording = await readFile(`./../storage/recordings/${fileName}.json`)
-    const parsedRecording = JSON.parse(recording);
-    return parsedRecording;
-  } catch (error: any) {
-    console.error(`Error while getting recording for fileName ${fileName}:`, error.message);
-    return null;
-  }
-};
-
 export const router = Router();
 
 /**
