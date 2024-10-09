@@ -22,7 +22,7 @@ interface RobotAttributes {
   recording: Robot;
 }
 
-interface RobotCreationAttributes extends Optional<RobotAttributes, 'id'> {}
+interface RobotCreationAttributes extends Optional<RobotAttributes, 'id'> { }
 
 class Robot extends Model<RobotAttributes, RobotCreationAttributes> implements RobotAttributes {
   public id!: string;
@@ -49,7 +49,7 @@ Robot.init(
   {
     sequelize,
     tableName: 'robot',
-    timestamps: false, 
+    timestamps: false,
   }
 );
 
