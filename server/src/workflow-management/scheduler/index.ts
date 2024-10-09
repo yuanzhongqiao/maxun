@@ -31,7 +31,6 @@ async function runWorkflow(id: string, userId: string) {
     };
   }
 
-  // req.user.id will not be available here :)
   const proxyConfig = await getDecryptedProxyConfig(userId);
   let proxyOptions: any = {};
 
