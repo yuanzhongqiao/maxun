@@ -103,8 +103,11 @@ router.put('/runs/:id', requireSignIn, async (req, res) => {
     const recording = await Robot.findOne({
       where: { 
         'recording_meta.id': req.params.id 
-      }
+      },
+      raw: true
     });
+
+    console.log(`Recording found:`, recording)
 
     if (!recording || !recording.recording_meta || !recording.recording_meta.id) {
       return res.status(404).send({ error: 'Recording not found' });
@@ -135,8 +138,9 @@ router.put('/runs/:id', requireSignIn, async (req, res) => {
 
     const run = await Run.create({
       status: 'RUNNING',
-      name: req.params.fileName,
-      robotId: recording.recording_meta.id,
+      name: recording.recording_meta.name,
+      robotId: recording.id,
+      robotMetaId: recording.recording_meta.id,
       startedAt: new Date().toLocaleString(),
       finishedAt: '',
       browserId: id,
@@ -157,15 +161,15 @@ router.put('/runs/:id', requireSignIn, async (req, res) => {
 
     // console.log('Run meta:', run_meta);
 
-    logger.log('debug', `Created run with id: ${run.id}`);
+    logger.log('debug', `Created run with id: ${run.runId}`);
 
     return res.send({
       browserId: id,
-      runId: run.id,
+      runId: run.runId,
     });
   } catch (e) {
     const { message } = e as Error;
-    logger.log('info', `Error while creating a run with name: ${req.params.fileName}.json`);
+    logger.log('info', `Error while creating a run with recording id: ${req.params.id} - ${message}`);
     return res.send('');
   }
 });
@@ -177,7 +181,7 @@ router.get('/runs/run/:id', requireSignIn, async (req, res) => {
   try {
     console.log(`Params for GET /runs/run/:id`, req.params.id)
     // read the run from storage
-    const run = await Run.findByPk(req.params.id);
+    const run = await Run.findOne({ where: { runId: req.params.runId }, raw: true });
     //const parsedRun = JSON.parse(run);
     if (!run) {
       return res.status(404).send(null);
@@ -202,12 +206,12 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
     // const parsedRun = JSON.parse(run);
     console.log(`Params for POST /runs/run/:id`, req.params.id)
 
-    const run = await Run.findByPk(req.params.id);
+    const run = await Run.findOne({ where: { runId: req.params.runId }, raw: true });    
     if (!run) {
       return res.status(404).send(false);
     }
 
-    const recording = await Robot.findByPk(run.robotId);
+    const recording = await Robot.findOne({ where: { 'recording_meta.id': run.robotMetaId },  raw: true });
     if (!recording) {
       return res.status(404).send(false);
     }
@@ -230,7 +234,7 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
       });
       googleSheetUpdateTasks[req.params.runId] = {
         name: run.name,
-        runId: run.id,
+        runId: run.runId,
         status: 'pending',
         retries: 5,
       };
@@ -344,7 +348,7 @@ router.put('/schedule/:fileName/', requireSignIn, async (req, res) => {
 router.post('/runs/abort/:id', requireSignIn, async (req, res) => {
   try {
     console.log(`Params for POST /runs/abort/:id`, req.params.id)
-    const run = await Run.findByPk(req.params.id);
+    const run = await Run.findOne({ where: { runId: req.params.runId }, raw: true });    
     if (!run) {
       return res.status(404).send(false);
     }
@@ -370,6 +374,8 @@ router.post('/runs/abort/:id', requireSignIn, async (req, res) => {
       finishedAt: new Date().toLocaleString(),
       browserId: run.browserId,
       log: currentLog,
+      serializableOutput,
+      binaryOutput,
     });
 
     // fs.mkdirSync('../storage/runs', { recursive: true })
