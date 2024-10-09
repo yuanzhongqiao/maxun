@@ -42,7 +42,7 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
 
   let aborted = false;
 
-  const { notify, setRerenderRuns } = useGlobalInfoStore();
+  const { notify, setRerenderRuns, setRecordingId } = useGlobalInfoStore();
 
   const abortRunHandler = (runId: string) => {
     aborted = true;
@@ -58,6 +58,7 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
 
   const setRecordingInfo = (id: string, name: string) => {
     setRunningRecordingId(id);
+    setRecordingId(id);
     setRunningRecordingName(name);
   }
 
