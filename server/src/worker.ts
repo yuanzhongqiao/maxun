@@ -20,9 +20,9 @@ connection.on('error', (err) => {
 const workflowQueue = new Queue('workflow', { connection });
 
 const worker = new Worker('workflow', async job => {
-    const { runId } = job.data;
+    const { runId, userId  } = job.data;
     try {
-        const result = await handleRunRecording(runId);
+        const result = await handleRunRecording(runId, userId);
         return result;
     } catch (error) {
         logger.error('Error running workflow:', error);
