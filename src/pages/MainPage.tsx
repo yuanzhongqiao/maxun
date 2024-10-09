@@ -15,7 +15,7 @@ import { ScheduleSettings } from "../components/molecules/ScheduleSettings";
 import { IntegrationSettings } from "../components/molecules/IntegrationSettings";
 
 interface MainPageProps {
-  handleEditRecording: (fileName: string) => void;
+  handleEditRecording: (id: string, fileName: string) => void;
 }
 
 export interface CreateRunResponse {
@@ -32,6 +32,7 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
 
   const [content, setContent] = React.useState('recordings');
   const [sockets, setSockets] = React.useState<Socket[]>([]);
+  const [runningRecordingId, setRunningRecordingId] = React.useState('');
   const [runningRecordingName, setRunningRecordingName] = React.useState('');
   const [currentInterpretationLog, setCurrentInterpretationLog] = React.useState('');
   const [ids, setIds] = React.useState<CreateRunResponse>({
@@ -45,7 +46,7 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
 
   const abortRunHandler = (runId: string) => {
     aborted = true;
-    notifyAboutAbort(runningRecordingName, runId).then(async (response) => {
+    notifyAboutAbort(runId).then(async (response) => {
       if (response) {
         notify('success', `Interpretation of ${runningRecordingName} aborted successfully`);
         await stopRecording(ids.browserId);
@@ -55,12 +56,13 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
     })
   }
 
-  const setFileName = (fileName: string) => {
-    setRunningRecordingName(fileName);
+  const setRecordingInfo = (id: string, name: string) => {
+    setRunningRecordingId(id);
+    setRunningRecordingName(name);
   }
 
   const readyForRunHandler = useCallback((browserId: string, runId: string) => {
-    interpretStoredRecording(runningRecordingName, runId).then(async (interpretation: boolean) => {
+    interpretStoredRecording(runId).then(async (interpretation: boolean) => {
       if (!aborted) {
         if (interpretation) {
           notify('success', `Interpretation of ${runningRecordingName} succeeded`);
@@ -82,7 +84,7 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
   }, [currentInterpretationLog])
 
   const handleRunRecording = useCallback((settings: RunSettings) => {
-    createRunForStoredRecording(runningRecordingName, settings).then(({ browserId, runId }: CreateRunResponse) => {
+    createRunForStoredRecording(runningRecordingId, settings).then(({ browserId, runId }: CreateRunResponse) => {
       setIds({ browserId, runId });
       const socket =
         io(`http://localhost:8080/${browserId}`, {
@@ -98,7 +100,7 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
       } else {
         notify('error', `Failed to run recording: ${runningRecordingName}`);
       }
-    });
+    })
     return (socket: Socket, browserId: string, runId: string) => {
       socket.off('ready-for-run', () => readyForRunHandler(browserId, runId));
       socket.off('debugMessage', debugMessageHandler);
@@ -133,7 +135,7 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
         return <Recordings
           handleEditRecording={handleEditRecording}
           handleRunRecording={handleRunRecording}
-          setFileName={setFileName}
+          setRecordingInfo={setRecordingInfo}
           handleScheduleRecording={handleScheduleRecording}
           handleIntegrateRecording={handleIntegrateRecording}
         />;
