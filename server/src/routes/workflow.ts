@@ -103,26 +103,26 @@ router.put('/pair/:index', requireSignIn, (req, res) => {
 /**
  * PUT endpoint for updating the currently generated workflow file from the one in the storage.
  */
-router.put('/:browserId/:fileName', requireSignIn, async (req, res) => {
-  try {
-    const browser = browserPool.getRemoteBrowser(req.params.browserId);
-    logger.log('debug', `Updating workflow file`);
-    if (browser && browser.generator) {
-      const recording = await readFile(`./../storage/recordings/${req.params.fileName}.json`)
-      const parsedRecording = JSON.parse(recording);
-      if (parsedRecording.recording) {
-        browser.generator?.updateWorkflowFile(parsedRecording.recording, parsedRecording.recording_meta);
-        const workflowFile = browser.generator?.getWorkflowFile();
-        return res.send(workflowFile);
-      }
-    }
-    return res.send(null);
-  } catch (e) {
-    const { message } = e as Error;
-    logger.log('info', `Error while reading a recording with name: ${req.params.fileName}.json`);
-    return res.send(null);
-  }
-});
+// router.put('/:browserId/:fileName', requireSignIn, async (req, res) => {
+//   try {
+//     const browser = browserPool.getRemoteBrowser(req.params.browserId);
+//     logger.log('debug', `Updating workflow file`);
+//     if (browser && browser.generator) {
+//       const recording = await readFile(`./../storage/recordings/${req.params.fileName}.json`)
+//       const parsedRecording = JSON.parse(recording);
+//       if (parsedRecording.recording) {
+//         browser.generator?.updateWorkflowFile(parsedRecording.recording, parsedRecording.recording_meta);
+//         const workflowFile = browser.generator?.getWorkflowFile();
+//         return res.send(workflowFile);
+//       }
+//     }
+//     return res.send(null);
+//   } catch (e) {
+//     const { message } = e as Error;
+//     logger.log('info', `Error while reading a recording with name: ${req.params.fileName}.json`);
+//     return res.send(null);
+//   }
+// });
 
 
 router.put('/:browserId/:robotId', requireSignIn, async (req, res) => {
