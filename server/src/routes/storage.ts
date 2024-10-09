@@ -318,7 +318,7 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
 
     // await workflowQueue.add(
     //   'run workflow',
-    //   { id, runId },
+    //   { id, runId, req.user.id },
     //   {
     //     repeat: {
     //       pattern: cronExpression,
