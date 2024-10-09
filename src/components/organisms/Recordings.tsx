@@ -6,7 +6,7 @@ import { ScheduleSettings, ScheduleSettingsModal } from "../molecules/ScheduleSe
 import { IntegrationSettings, IntegrationSettingsModal } from "../molecules/IntegrationSettings";
 
 interface RecordingsProps {
-  handleEditRecording: (id: string) => void;
+  handleEditRecording: (id: string, fileName: string) => void;
   handleRunRecording: (settings: RunSettings) => void;
   handleScheduleRecording: (settings: ScheduleSettings) => void;
   handleIntegrateRecording: (settings: IntegrationSettings) => void;
