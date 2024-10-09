@@ -5,7 +5,6 @@
 import { Router } from 'express';
 import logger from "../logger";
 import { browserPool } from "../server";
-import { readFile } from "../workflow-management/storage";
 import { requireSignIn } from '../middlewares/auth';
 import Robot from '../models/Robot';
 
