@@ -84,21 +84,29 @@ async function runWorkflow(id: string) {
   }
 }
 
-async function executeRun(fileName: string, runId: string) {
+async function executeRun(id: string) {
   try {
-    const recording = await readFile(`./../storage/recordings/${fileName}.json`);
-    const parsedRecording = JSON.parse(recording);
+    const run = await Run.findOne({ where: { runId: id } });
+    if (!run) {
+      return {
+        success: false,
+        error: 'Run not found'
+      }
+    }
 
-    const run = await readFile(`./../storage/runs/${fileName}_${runId}.json`);
-    const parsedRun = JSON.parse(run);
+    const plainRun = run.toJSON();
 
-    parsedRun.status = 'running';
-    await saveFile(
-      `../storage/runs/${fileName}_${runId}.json`,
-      JSON.stringify(parsedRun, null, 2)
-    );
+    const recording = await Robot.findOne({ where: { 'recording_meta.id': plainRun.robotMetaId }, raw: true });
+    if (!recording) {
+      return {
+        success: false,
+        error: 'Recording not found'
+      }
+    }
 
-    const browser = browserPool.getRemoteBrowser(parsedRun.browserId);
+    plainRun.status = 'running';
+
+    const browser = browserPool.getRemoteBrowser(plainRun.browserId);
     if (!browser) {
       throw new Error('Could not access browser');
     }
@@ -109,45 +117,31 @@ async function executeRun(fileName: string, runId: string) {
     }
 
     const interpretationInfo = await browser.interpreter.InterpretRecording(
-      parsedRecording.recording, currentPage, parsedRun.interpreterSettings);
+      recording.recording, currentPage, plainRun.interpreterSettings);
 
-    await destroyRemoteBrowser(parsedRun.browserId);
+    await destroyRemoteBrowser(plainRun.browserId);
 
-    const updated_run_meta = {
-      ...parsedRun,
+    await run.update({
+      ...run,
       status: 'success',
       finishedAt: new Date().toLocaleString(),
-      browserId: parsedRun.browserId,
+      browserId: plainRun.browserId,
       log: interpretationInfo.log.join('\n'),
       serializableOutput: interpretationInfo.serializableOutput,
       binaryOutput: interpretationInfo.binaryOutput,
-    };
+    });
 
-    await saveFile(
-      `../storage/runs/${fileName}_${runId}.json`,
-      JSON.stringify(updated_run_meta, null, 2)
-    );
-    googleSheetUpdateTasks[runId] = {
-      name: parsedRun.name,
-      runId: runId,
+    googleSheetUpdateTasks[id] = {
+      name: plainRun.name,
+      runId: id,
       status: 'pending',
       retries: 5,
     };
     processGoogleSheetUpdates();
     return true;
   } catch (error: any) {
-    logger.log('info', `Error while running a recording with name: ${fileName}_${runId}.json`);
+    logger.log('info', `Error while running a recording with id: ${id} - ${error.message}`);
     console.log(error.message);
-
-    const errorRun = await readFile(`./../storage/runs/${fileName}_${runId}.json`);
-    const parsedErrorRun = JSON.parse(errorRun);
-    parsedErrorRun.status = 'ERROR';
-    parsedErrorRun.log += `\nError: ${error.message}`;
-    await saveFile(
-      `../storage/runs/${fileName}_${runId}.json`,
-      JSON.stringify(parsedErrorRun, null, 2)
-    );
-
     return false;
   }
 }
