@@ -101,7 +101,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
       }
       setIsLoaded(true);
     }
-  }, [socket, browserId, recordingName,  isLoaded])
+  }, [socket, browserId, recordingName, recordingId, isLoaded])
 
   useEffect(() => {
     socket?.on('loaded', handleLoaded);
