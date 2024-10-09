@@ -48,7 +48,10 @@ async function runWorkflow(id: string, userId: string) {
   try {
     const browserId = createRemoteBrowserForRun({
       browser: chromium,
-      launchOptions: { headless: true }
+      launchOptions: {
+        headless: true,
+        proxy: proxyOptions.server ? proxyOptions : undefined,
+      }
     });
 
     const run = await Run.create({
