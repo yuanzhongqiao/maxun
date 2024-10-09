@@ -72,9 +72,9 @@ interface Data {
 
 interface RecordingsTableProps {
   handleEditRecording: (id: string, fileName: string) => void;
-  handleRunRecording: (id: string,fileName: string, params: string[]) => void;
-  handleScheduleRecording: (id: string,fileName: string, params: string[]) => void;
-  handleIntegrateRecording: (id: string,fileName: string, params: string[]) => void;
+  handleRunRecording: (id: string, fileName: string, params: string[]) => void;
+  handleScheduleRecording: (id: string, fileName: string, params: string[]) => void;
+  handleIntegrateRecording: (id: string, fileName: string, params: string[]) => void;
 }
 
 export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handleScheduleRecording, handleIntegrateRecording }: RecordingsTableProps) => {

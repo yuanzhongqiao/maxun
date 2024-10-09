@@ -108,7 +108,7 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
   }, [runningRecordingName, sockets, ids, readyForRunHandler, debugMessageHandler])
 
   const handleScheduleRecording = (settings: ScheduleSettings) => {
-    scheduleStoredRecording(runningRecordingName, settings)
+    scheduleStoredRecording(runningRecordingId, settings)
       .then(({ message, runId }: ScheduleRunResponse) => {
         if (message === 'success') {
           notify('success', `Recording ${runningRecordingName} scheduled successfully`);
@@ -118,6 +118,7 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
       });
   }
 
+  // todo: use runningRecordingId here (first change in backend)
   const handleIntegrateRecording = (settings: IntegrationSettings) => {
     handleUploadCredentials(runningRecordingName, settings.credentials, settings.spreadsheetId, settings.range)
       .then((response) => {
