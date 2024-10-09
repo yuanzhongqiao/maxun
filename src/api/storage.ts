@@ -90,13 +90,13 @@ export const createRunForStoredRecording = async (id: string, settings: RunSetti
   }
 }
 
-export const interpretStoredRecording = async (runId: string): Promise<boolean> => {
+export const interpretStoredRecording = async (id: string): Promise<boolean> => {
   try {
-    const response = await axios.post(`http://localhost:8080/storage/runs/run/${runId}`);
+    const response = await axios.post(`http://localhost:8080/storage/runs/run/${id}`);
     if (response.status === 200) {
       return response.data;
     } else {
-      throw new Error(`Couldn't run a recording ${runId}`);
+      throw new Error(`Couldn't run a recording ${id}`);
     }
   } catch(error: any) {
     console.log(error);
@@ -104,13 +104,13 @@ export const interpretStoredRecording = async (runId: string): Promise<boolean> 
   }
 }
 
-export const notifyAboutAbort = async (runId:string): Promise<boolean> => {
+export const notifyAboutAbort = async (id:string): Promise<boolean> => {
   try {
-    const response = await axios.post(`http://localhost:8080/storage/runs/abort/${runId}`);
+    const response = await axios.post(`http://localhost:8080/storage/runs/abort/${id}`);
     if (response.status === 200) {
       return response.data;
     } else {
-      throw new Error(`Couldn't abort a running recording with id ${runId}`);
+      throw new Error(`Couldn't abort a running recording with id ${id}`);
     }
   } catch(error: any) {
     console.log(error);
