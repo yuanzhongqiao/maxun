@@ -18,17 +18,19 @@ export const PageWrapper = () => {
 
   const navigate = useNavigate();
 
-  const { browserId, setBrowserId, notification, recordingName, setRecordingName } = useGlobalInfoStore();
+  const { browserId, setBrowserId, notification, recordingName, setRecordingName, recordingId, setRecordingId } = useGlobalInfoStore();
 
   const handleNewRecording = () => {
     setBrowserId('new-recording');
     setRecordingName('');
+    setRecordingId('');
     navigate('/recording');
 
   }
 
-  const handleEditRecording = (fileName: string) => {
+  const handleEditRecording = (recordingId: string, fileName: string) => {
     setRecordingName(fileName);
+    setRecordingId(recordingId);
     setBrowserId('new-recording');
     navigate('/recording');
 
