@@ -63,7 +63,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
   const workflowHandler = useCallback((data: WorkflowFile) => {
     setWorkflow(data);
-    //setRecordingLength(data.workflow.length);
   }, [workflow])
 
   useEffect(() => {
