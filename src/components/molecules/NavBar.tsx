@@ -101,7 +101,7 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                       }
                       }
                     >
-                    <Add sx={{ marginRight: '5px' }} /> Create Robot
+                      <Add sx={{ marginRight: '5px' }} /> Create Robot
                     </IconButton>
                     <IconButton sx={{
                       width: '140px',
@@ -144,26 +144,26 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
               }
             </div>
             <GenericModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
-        <div style={{ padding: '20px' }}>
-          <h2>Enter URL</h2>
-          <TextField
-            label="URL"
-            variant="outlined"
-            fullWidth
-            value={url}
-            onChange={(e: any) => setUrl(e.target.value)}
-            style={{ marginBottom: '20px' }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={startRecording}
-            disabled={!url} 
-          >
-            Submit & Start Recording
-          </Button>
-        </div>
-      </GenericModal>
+              <div style={{ padding: '20px' }}>
+                <h2>Enter URL</h2>
+                <TextField
+                  label="URL"
+                  variant="outlined"
+                  fullWidth
+                  value={url}
+                  onChange={(e: any) => setUrl(e.target.value)}
+                  style={{ marginBottom: '20px' }}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={startRecording}
+                  disabled={!url}
+                >
+                  Submit & Start Recording
+                </Button>
+              </div>
+            </GenericModal>
           </>
         ) : ""
       }
