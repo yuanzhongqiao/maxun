@@ -120,7 +120,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     setHoverStates(prev => ({ ...prev, [id]: false }));
   };
 
-  const handlePairDelete = () => {}
+  const handlePairDelete = () => { }
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
@@ -271,15 +271,11 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     onFinishCapture();
   }, [stopGetList, getListSettingsObject, socket, notify, handleStopGetList]);
 
+  const hasUnconfirmedListTextFields = browserSteps.some(step => step.type === 'list' && Object.values(step.fields).some(field => !confirmedListTextFields[step.id]?.[field.id]));
+
   const handleConfirmListCapture = useCallback(() => {
     switch (captureStage) {
       case 'initial':
-        startPaginationMode();
-        const hasUnconfirmedListTextFields = browserSteps.some(step => step.type === 'list' && Object.values(step.fields).some(field => !confirmedListTextFields[step.id]?.[field.id]));
-        if (hasUnconfirmedListTextFields) {
-          notify('error', 'Please confirm all field labels.');
-          return;
-        }
         setShowPaginationOptions(true);
         setCaptureStage('pagination');
         break;
@@ -378,7 +374,11 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
         {getList && (
           <>
             <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
-              <Button variant="outlined" onClick={handleConfirmListCapture}>
+              <Button
+                variant="outlined"
+                onClick={handleConfirmListCapture}
+                disabled={hasUnconfirmedListTextFields}
+              >
                 {captureStage === 'initial' ? 'Confirm Capture' :
                   captureStage === 'pagination' ? 'Confirm Pagination' :
                     captureStage === 'limit' ? 'Confirm Limit' : 'Finish Capture'}
