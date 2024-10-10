@@ -25,7 +25,7 @@ interface Column {
 
 export const columns: readonly Column[] = [
   { id: 'status', label: 'Status', minWidth: 80 },
-  { id: 'name', label: 'Name', minWidth: 80 },
+  { id: 'name', label: 'Robot Name', minWidth: 80 },
   { id: 'startedAt', label: 'Started at', minWidth: 80 },
   { id: 'finishedAt', label: 'Finished at', minWidth: 80 },
   { id: 'duration', label: 'Duration', minWidth: 80 },
