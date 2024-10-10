@@ -88,7 +88,7 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                 }
                 }
               >
-                <Circle sx={{ marginRight: '5px' }} /> {isRecording ? 'NEW' : 'RECORD'}
+                <Circle sx={{ marginRight: '5px' }} /> {isRecording ? 'New' : 'Create a Robot'}
               </IconButton>
               {
                 recordingLength > 0
