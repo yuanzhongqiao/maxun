@@ -1,6 +1,8 @@
 import { readFile, readFiles } from "../workflow-management/storage";
 import { Router, Request, Response } from 'express';
 import { requireAPIKey } from "../middlewares/api";
+import Robot from "../models/Robot";
+import Run from "../models/Run";
 const router = Router();
 
 const formatRecording = (recordingData: any) => {
@@ -29,12 +31,8 @@ const formatRecording = (recordingData: any) => {
 
 router.get("/robots", requireAPIKey, async (req: Request, res: Response) => {
     try {
-        const fileContents = await readFiles('./../storage/recordings/');
-
-        const formattedRecordings = fileContents.map((fileContent: string) => {
-            const recordingData = JSON.parse(fileContent);
-            return formatRecording(recordingData);
-        });
+        const robots = await Robot.findAll({ raw: true });
+        const formattedRecordings = robots.map(formatRecording);
 
         const response = {
             statusCode: 200,
@@ -80,12 +78,16 @@ const formatRecordingById = (recordingData: any) => {
     };
 };
 
-router.get("/robots/:fileName", requireAPIKey, async (req: Request, res: Response) => {
+router.get("/robots/:id", requireAPIKey, async (req: Request, res: Response) => {
     try {
-        const fileContent = await readFile(`./../storage/recordings/${req.params.fileName}.waw.json`);
+        const robot = await Robot.findOne({
+            where: {
+                'recording_meta.id': req.params.id
+            },
+            raw: true
+        });
 
-        const recordingData = JSON.parse(fileContent);
-        const formattedRecording = formatRecordingById(recordingData);
+        const formattedRecording = formatRecordingById(robot);
 
         const response = {
             statusCode: 200,
@@ -100,6 +102,64 @@ router.get("/robots/:fileName", requireAPIKey, async (req: Request, res: Respons
             statusCode: 404,
             messageCode: "not_found",
             message: `Recording with name "${req.params.fileName}" not found.`,
+        });
+    }
+});
+
+// TODO: Format runs to send more data formatted 
+router.get("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response) => {
+    try {
+        const runs = await Run.findAll({
+            where: {
+                robotMetaId: req.params.id
+            },
+            raw: true
+        });
+
+        const response = {
+            statusCode: 200,
+            messageCode: "success",
+            runs: {
+                totalCount: runs.length,
+                items: runs,
+            },
+        };
+
+        res.status(200).json(response);
+    } catch (error) {
+        console.error("Error fetching runs:", error);
+        res.status(500).json({
+            statusCode: 500,
+            messageCode: "error",
+            message: "Failed to retrieve runs",
+        });
+    }
+}
+);
+
+router.get("/robots/:id/runs/:runId", requireAPIKey, async (req: Request, res: Response) => {
+    try {
+        const run = await Run.findOne({
+            where: {
+                runId: req.params.runId,
+                robotMetaId: req.params.id,
+            },
+            raw: true
+        });
+       
+        const response = {
+            statusCode: 200,
+            messageCode: "success",
+            run: run,
+        };
+
+        res.status(200).json(response);
+    } catch (error) {
+        console.error("Error fetching run:", error);
+        res.status(404).json({
+            statusCode: 404,
+            messageCode: "not_found",
+            message: `Run with id "${req.params.runId}" for robot with id "${req.params.id}" not found.`,
         });
     }
 });
