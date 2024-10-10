@@ -6,7 +6,7 @@ import { useGlobalInfoStore } from "../../context/globalInfo";
 import { Button, IconButton } from "@mui/material";
 import { RecordingIcon } from "../atoms/RecorderIcon";
 import { SaveRecording } from "./SaveRecording";
-import { Circle } from "@mui/icons-material";
+import { Circle, Add } from "@mui/icons-material";
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/auth';
@@ -73,22 +73,22 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                 size={"small"}
                 onClick={handleNewRecording}
                 sx={{
-                  width: isRecording ? '100px' : '130px',
+                  width: isRecording ? '130px' : '140px',
                   borderRadius: '5px',
                   padding: '8px',
-                  background: 'white',
-                  color: 'rgba(255,0,0,0.7)',
+                  background: '#ff00c3',
+                  color: 'white',
                   marginRight: '10px',
                   fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
                   fontWeight: '500',
                   fontSize: '0.875rem',
                   lineHeight: '1.75',
                   letterSpacing: '0.02857em',
-                  '&:hover': { color: 'red', backgroundColor: 'white' }
+                  '&:hover': { color: 'white', backgroundColor: '#ff00c3' }
                 }
                 }
               >
-                <Circle sx={{ marginRight: '5px' }} /> {isRecording ? 'New' : 'Create a Robot'}
+                <Add sx={{ marginRight: '5px' }} /> {isRecording ? 'New Robot' : 'Create Robot'}
               </IconButton>
               {
                 recordingLength > 0
