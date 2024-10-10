@@ -8,6 +8,7 @@ const FormContainer = styled(Box)({
     display: 'flex',
     flexDirection: 'column',
     gap: '16px',
+    marginLeft: '30px'
 });
 
 const FormControl = styled(Box)({
