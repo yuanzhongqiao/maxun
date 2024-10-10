@@ -50,18 +50,18 @@ const Register = () => {
     };
 
     return (
-        <Container maxWidth="sm" sx={{ mt: 8 }}>
             <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                mt: 5,
+            }}
             >
                 <Typography variant="h4" gutterBottom>
                     Create an account
                 </Typography>
-                <Box component="form" onSubmit={submitForm} sx={{ mt: 1 }}>
+                <Box component="form" onSubmit={submitForm} sx={{ maxWidth: 400, width: '100%' }}>
                     <TextField
                         margin="normal"
                         required
@@ -94,7 +94,10 @@ const Register = () => {
                         disabled={loading || !email || !password}
                     >
                         {loading ? (
-                            <CircularProgress size={24} sx={{ color: '#fff' }} />
+                            <>
+                            <CircularProgress size={20} sx={{ mr: 2 }} />
+                            Loading
+                            </>
                         ) : (
                             'Register'
                         )}
@@ -107,7 +110,6 @@ const Register = () => {
                     </Typography>
                 </Box>
             </Box>
-        </Container>
     );
 };
 

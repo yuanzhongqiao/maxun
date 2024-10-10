@@ -104,7 +104,6 @@ const Login = () => {
                     )}
                 </Button>
 
-                {/* Redirect to Register */}
                 <Typography variant="body2" align="center">
                     Don’t have an account?{' '}
                     <Link to="/register" style={{ textDecoration: 'none', color: '#1976d2' }}>
