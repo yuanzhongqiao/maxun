@@ -130,6 +130,17 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
                 <ArticleIcon sx={{ marginRight: '15px' }} />
                 Serializable output
               </Typography>
+              {Object.keys(row.serializableOutput).map((key) => {
+                return (
+                  <div key={`number-of-serializable-output-${key}`}>
+                    <Typography>
+                      {key}:
+                      <a href={`data:application/json;utf8,${JSON.stringify(row.serializableOutput[key], null, 2)}`}
+                        download={key} style={{ margin: '10px' }}>Download</a>
+                    </Typography>
+                  </div>
+                )
+              })}
               {tableData.length > 0 ? (
                 <TableContainer component={Paper} sx={{ maxHeight: 440, marginTop: 2 }}>
                   <Table stickyHeader aria-label="sticky table">
