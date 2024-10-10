@@ -136,7 +136,7 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
                     <Typography>
                       {key}:
                       <a href={`data:application/json;utf8,${JSON.stringify(row.serializableOutput[key], null, 2)}`}
-                        download={key} style={{ margin: '10px' }}>Download</a>
+                        download={key} style={{ margin: '10px' }}>Download as JSON</a>
                     </Typography>
                   </div>
                 )
