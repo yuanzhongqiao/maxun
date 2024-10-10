@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Button, Paper, Box, TextField } from "@mui/material";
+import { Button, Paper, Box, TextField, IconButton } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
@@ -20,6 +20,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { emptyWorkflow } from "../../shared/constants";
 import { getActiveWorkflow } from "../../api/workflow";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const fetchWorkflow = (id: string, callback: (response: WorkflowFile) => void) => {
   getActiveWorkflow(id).then(
@@ -52,6 +53,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const [showCaptureScreenshot, setShowCaptureScreenshot] = useState(true);
   const [showCaptureText, setShowCaptureText] = useState(true);
   const [captureStage, setCaptureStage] = useState<'initial' | 'pagination' | 'limit' | 'complete'>('initial');
+  const [hoverStates, setHoverStates] = useState<{ [id: string]: boolean }>({});
 
   const { lastAction, notify } = useGlobalInfoStore();
   const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitType, customLimit, updateLimitType, updateCustomLimit, stopLimitMode, startLimitMode } = useActionContext();
@@ -109,6 +111,16 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     setShowCaptureScreenshot(!(hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction));
     setShowCaptureText(!(hasScrapeListAction || hasScreenshotAction));
   }, [workflow]);
+
+  const handleMouseEnter = (id: number) => {
+    setHoverStates(prev => ({ ...prev, [id]: true }));
+  };
+
+  const handleMouseLeave = (id: number) => {
+    setHoverStates(prev => ({ ...prev, [id]: false }));
+  };
+
+  const handlePairDelete = () => {}
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
@@ -441,10 +453,28 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       </Box>
       <Box>
         {browserSteps.map(step => (
-          <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }}>
+          <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '13px', borderRadius: '4px', position: 'relative', }} onMouseEnter={() => handleMouseEnter(step.id)} onMouseLeave={() => handleMouseLeave(step.id)}>
             {
               step.type === 'text' && (
                 <>
+                  {confirmedTextSteps[step.id] && hoverStates[step.id] && (
+                    <IconButton
+                      onClick={() => handlePairDelete()}
+                      sx={{
+                        position: 'absolute',
+                        top: -15,
+                        right: -15,
+                        color: 'red',
+                        p: 0,
+                        zIndex: 1,
+                        boxShadow: '5px',
+                        backgroundColor: 'white',
+                        borderRadius: '50%',
+                      }}
+                    >
+                      <DeleteIcon sx={{ fontSize: 40 }} />
+                    </IconButton>
+                  )}
                   <TextField
                     label="Label"
                     value={textLabels[step.id] || step.label || ''}
