@@ -89,7 +89,7 @@ const ApiKeyManager = () => {
 
   return (
     <Container>
-      <Typography variant="h5" sx={{ marginBottom: '20px'}}>Manage Your API Key</Typography>
+      <Typography variant="h5" sx={{ marginBottom: '20px' }}>Manage Your API Key</Typography>
 
       {apiKey ? (
         <TableContainer component={Paper} sx={{ width: '100%', overflow: 'hidden' }}>
@@ -129,7 +129,7 @@ const ApiKeyManager = () => {
       ) : (
         <>
           <Typography>You haven't generated an API key yet.</Typography>
-          <Button onClick={generateApiKey} variant="contained" color="primary" sx={{ marginTop: '15px'}}>
+          <Button onClick={generateApiKey} variant="contained" color="primary" sx={{ marginTop: '15px' }}>
             Generate API Key
           </Button>
         </>
