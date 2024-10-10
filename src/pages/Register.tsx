@@ -58,7 +58,7 @@ const Register = () => {
                     alignItems: 'center',
                 }}
             >
-                <Typography component="h1" variant="h5">
+                <Typography variant="h4" gutterBottom>
                     Create an account
                 </Typography>
                 <Box component="form" onSubmit={submitForm} sx={{ mt: 1 }}>
