@@ -91,7 +91,7 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                       }
                       }
                     >
-                      <Add sx={{ marginRight: '5px' }} /> Create Robot
+                    <Add sx={{ marginRight: '5px' }} /> Create Robot
                     </IconButton>
                     <IconButton sx={{
                       width: '140px',
