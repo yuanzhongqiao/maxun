@@ -16,7 +16,7 @@ import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface Column {
-  id: 'status' | 'name' | 'startedAt' | 'finishedAt' | 'task' | 'runId' | 'delete';
+  id: 'status' | 'name' | 'startedAt' | 'finishedAt' | 'runId' | 'delete';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -39,7 +39,7 @@ export interface Data {
   name: string;
   startedAt: string;
   finishedAt: string;
-  task: string;
+  // task: string;
   log: string;
   runId: string;
   interpreterSettings: RunSettings;
