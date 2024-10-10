@@ -120,15 +120,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     setHoverStates(prev => ({ ...prev, [id]: false }));
   };
 
-  const handlePairDelete = () => {
-    //   deletePair(index - 1).then((updatedWorkflow) => {
-    //     updateWorkflow(updatedWorkflow);
-    //   }).catch((error) => {
-    //     console.error(error);
-    //   });
-    // };
-    console.log("handlePairDelete")
-  }
+  const handlePairDelete = () => {}
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
@@ -459,135 +451,161 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           </Box>
         )}
       </Box>
-      <Box>
-        {browserSteps.map(step => (
-          <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '13px', borderRadius: '4px', position: 'relative', }} onMouseEnter={() => handleMouseEnter(step.id)} onMouseLeave={() => handleMouseLeave(step.id)}>
-            {
-              step.type === 'text' && (
-                <>
-                  {confirmedTextSteps[step.id] && hoverStates[step.id] && (
-                    <IconButton
-                      onClick={() => handlePairDelete()}
-                      sx={{
-                        position: 'absolute',
-                        top: -15,
-                        right: -15,
-                        color: 'red',
-                        p: 0,
-                        zIndex: 1,
-                        boxShadow: '5px', 
-                        backgroundColor: 'white', 
-                        borderRadius: '50%', 
-                      }}
-                    >
-                      <DeleteIcon sx={{ fontSize: 40 }} />
-                    </IconButton>
-                  )}
+      {workflow.workflow && workflow.workflow.map((pair, i, workflow) => (
+    <Box key={workflow.length - i} sx={{ mb: 2 }}>
+      {browserSteps.map((step) => (
+        <Box
+          key={step.id}
+          sx={{
+            boxShadow: 5,
+            padding: '10px',
+            margin: '13px',
+            borderRadius: '4px',
+            position: 'relative',
+          }}
+          onMouseEnter={() => handleMouseEnter(step.id)}
+          onMouseLeave={() => handleMouseLeave(step.id)}
+        >
+          {step.type === 'text' && (
+            <>
+              {confirmedTextSteps[step.id] && hoverStates[step.id] && (
+                <IconButton
+                  onClick={() => handlePairDelete()}
+                  sx={{
+                    position: 'absolute',
+                    top: -15,
+                    right: -15,
+                    color: 'red',
+                    p: 0,
+                    zIndex: 1,
+                    boxShadow: '5px',
+                    backgroundColor: 'white',
+                    borderRadius: '50%',
+                  }}
+                >
+                  <DeleteIcon sx={{ fontSize: 40 }} />
+                </IconButton>
+              )}
+              <TextField
+                label="Label"
+                value={textLabels[step.id] || step.label || ''}
+                onChange={(e) => handleTextLabelChange(step.id, e.target.value)}
+                fullWidth
+                margin="normal"
+                error={!!errors[step.id]}
+                helperText={errors[step.id]}
+                InputProps={{
+                  readOnly: confirmedTextSteps[step.id],
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <EditIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <TextField
+                label="Data"
+                value={step.data}
+                fullWidth
+                margin="normal"
+                InputProps={{
+                  readOnly: confirmedTextSteps[step.id],
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <TextFieldsIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              {!confirmedTextSteps[step.id] && (
+                <Box display="flex" justifyContent="space-between" gap={2}>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleTextStepConfirm(step.id)}
+                    disabled={!textLabels[step.id]?.trim()}
+                  >
+                    Confirm
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleTextStepDiscard(step.id)}
+                  >
+                    Discard
+                  </Button>
+                </Box>
+              )}
+            </>
+          )}
+          {step.type === 'screenshot' && (
+            <Box display="flex" alignItems="center">
+              <DocumentScannerIcon sx={{ mr: 1 }} />
+              <Typography>
+                {`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}
+              </Typography>
+            </Box>
+          )}
+          {step.type === 'list' && (
+            <>
+              <Typography>List Selected Successfully</Typography>
+              {Object.entries(step.fields).map(([key, field]) => (
+                <Box key={key}>
                   <TextField
-                    label="Label"
-                    value={textLabels[step.id] || step.label || ''}
-                    onChange={(e) => handleTextLabelChange(step.id, e.target.value)}
+                    label="Field Label"
+                    value={field.label || ''}
+                    onChange={(e) =>
+                      handleTextLabelChange(field.id, e.target.value, step.id, key)
+                    }
                     fullWidth
                     margin="normal"
-                    error={!!errors[step.id]}
-                    helperText={errors[step.id]}
                     InputProps={{
-                      readOnly: confirmedTextSteps[step.id],
+                      readOnly: confirmedListTextFields[field.id]?.[key],
                       startAdornment: (
                         <InputAdornment position="start">
                           <EditIcon />
                         </InputAdornment>
-                      )
+                      ),
                     }}
                   />
                   <TextField
-                    label="Data"
-                    value={step.data}
+                    label="Field Data"
+                    value={field.data || ''}
                     fullWidth
                     margin="normal"
                     InputProps={{
-                      readOnly: confirmedTextSteps[step.id],
+                      readOnly: true,
                       startAdornment: (
                         <InputAdornment position="start">
                           <TextFieldsIcon />
                         </InputAdornment>
-                      )
+                      ),
                     }}
                   />
-                  {!confirmedTextSteps[step.id] && (
+                  {!confirmedListTextFields[step.id]?.[key] && (
                     <Box display="flex" justifyContent="space-between" gap={2}>
-                      <Button variant="contained" onClick={() => handleTextStepConfirm(step.id)} disabled={!textLabels[step.id]?.trim()}>Confirm</Button>
-                      <Button variant="contained" onClick={() => handleTextStepDiscard(step.id)}>Discard</Button>
+                      <Button
+                        variant="contained"
+                        onClick={() => handleListTextFieldConfirm(step.id, key)}
+                        disabled={!field.label?.trim()}
+                      >
+                        Confirm
+                      </Button>
+                      <Button
+                        variant="contained"
+                        onClick={() => handleListTextFieldDiscard(step.id, key)}
+                      >
+                        Discard
+                      </Button>
                     </Box>
                   )}
-                </>
-              )}
-            {step.type === 'screenshot' && (
-              <Box display="flex" alignItems="center">
-                <DocumentScannerIcon sx={{ mr: 1 }} />
-                <Typography>
-                  {`Take ${step.fullPage ? 'Fullpage' : 'Visible Part'} Screenshot`}
-                </Typography>
-              </Box>
-            )}
-            {step.type === 'list' && (
-              <>
-                <Typography>List Selected Successfully</Typography>
-                {Object.entries(step.fields).map(([key, field]) => (
-                  <Box key={key}>
-                    <TextField
-                      label="Field Label"
-                      value={field.label || ''}
-                      onChange={(e) => handleTextLabelChange(field.id, e.target.value, step.id, key)}
-                      fullWidth
-                      margin="normal"
-                      InputProps={{
-                        readOnly: confirmedListTextFields[field.id]?.[key],
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <EditIcon />
-                          </InputAdornment>
-                        )
-                      }}
-                    />
-                    <TextField
-                      label="Field Data"
-                      value={field.data || ''}
-                      fullWidth
-                      margin="normal"
-                      InputProps={{
-                        readOnly: true,
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <TextFieldsIcon />
-                          </InputAdornment>
-                        )
-                      }}
-                    />
-                    {!confirmedListTextFields[step.id]?.[key] && (
-                      <Box display="flex" justifyContent="space-between" gap={2}>
-                        <Button
-                          variant="contained"
-                          onClick={() => handleListTextFieldConfirm(step.id, key)}
-                          disabled={!field.label?.trim()}
-                        >
-                          Confirm
-                        </Button>
-                        <Button
-                          variant="contained"
-                          onClick={() => handleListTextFieldDiscard(step.id, key)}
-                        >
-                          Discard
-                        </Button>
-                      </Box>
-                    )}
-                  </Box>
-                ))}
-              </>
-            )}
-          </Box>
-        ))}
-      </Box>
+                </Box>
+              ))}
+            </>
+          )}
+        </Box>
+      ))}
+    </Box>
+  ))}
+
     </Paper>
   );
 };
