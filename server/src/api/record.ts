@@ -2,6 +2,7 @@ import { readFile, readFiles } from "../workflow-management/storage";
 import { Router, Request, Response } from 'express';
 import { requireAPIKey } from "../middlewares/api";
 import Robot from "../models/Robot";
+import Run from "../models/Run";
 const router = Router();
 
 const formatRecording = (recordingData: any) => {
@@ -104,5 +105,35 @@ router.get("/robots/:id", requireAPIKey, async (req: Request, res: Response) => 
         });
     }
 });
+
+router.get("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response) => {
+    try {
+        const runs = await Run.findAll({
+            where: {
+                robotId: req.params.id
+            },
+            raw: true
+        });
+
+        const response = {
+            statusCode: 200,
+            messageCode: "success",
+            runs: {
+                totalCount: runs.length,
+                items: runs,
+            },
+        };
+
+        res.status(200).json(response);
+    } catch (error) {
+        console.error("Error fetching runs:", error);
+        res.status(500).json({
+            statusCode: 500,
+            messageCode: "error",
+            message: "Failed to retrieve runs",
+        });
+    }
+}
+);
 
 export default router;
