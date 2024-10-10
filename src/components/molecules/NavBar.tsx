@@ -110,27 +110,25 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                       <Logout sx={{ marginRight: '5px' }} />
                       Logout</IconButton>
                   </>
-                ) : ""
+                ) : <Button sx={{
+                  width: '100px',
+                  background: '#fff',
+                  color: 'rgba(25, 118, 210, 0.7)',
+                  padding: '9px',
+                  marginRight: '19px',
+                  '&:hover': {
+                    background: 'white',
+                    color: 'rgb(25, 118, 210)',
+                  }
+                }} onClick={goToMainMenu}>
+                  <MeetingRoomIcon sx={{ marginRight: '5px' }} />
+                  exit</Button>
               }
               {
                 recordingLength > 0
                   ? <SaveRecording fileName={recordingName} />
                   : null
               }
-              {isRecording ? <Button sx={{
-                width: '100px',
-                background: '#fff',
-                color: 'rgba(25, 118, 210, 0.7)',
-                padding: '9px',
-                marginRight: '19px',
-                '&:hover': {
-                  background: 'white',
-                  color: 'rgb(25, 118, 210)',
-                }
-              }} onClick={goToMainMenu}>
-                <MeetingRoomIcon sx={{ marginRight: '5px' }} />
-                exit</Button>
-                : null}
             </div>
           </>
         ) : ""
