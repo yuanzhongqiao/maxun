@@ -470,8 +470,8 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                       onClick={() => handlePairDelete()}
                       sx={{
                         position: 'absolute',
-                        top: -10,
-                        right: -10,
+                        top: -15,
+                        right: -15,
                         color: 'red',
                         p: 0,
                         zIndex: 1,
