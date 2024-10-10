@@ -19,5 +19,5 @@ code {
 }
 
 html {
-  overflow: hidden;
+  overflow-y:scroll;
 }
