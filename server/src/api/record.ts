@@ -140,7 +140,8 @@ router.get("/robots/:id/runs/:runId", requireAPIKey, async (req: Request, res: R
     try {
         const run = await Run.findOne({
             where: {
-                runId: req.params.runId
+                runId: req.params.runId,
+                robotMetaId: req.params.id,
             },
             raw: true
         });
