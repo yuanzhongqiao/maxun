@@ -16,7 +16,7 @@ import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface Column {
-  id: 'status' | 'name' | 'startedAt' | 'finishedAt' | 'duration' | 'task' | 'runId' | 'delete';
+  id: 'status' | 'name' | 'startedAt' | 'finishedAt' | 'task' | 'runId' | 'delete';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -28,9 +28,8 @@ export const columns: readonly Column[] = [
   { id: 'name', label: 'Robot Name', minWidth: 80 },
   { id: 'startedAt', label: 'Started at', minWidth: 80 },
   { id: 'finishedAt', label: 'Finished at', minWidth: 80 },
-  { id: 'duration', label: 'Duration', minWidth: 80 },
   { id: 'runId', label: 'Run id', minWidth: 80 },
-  { id: 'task', label: 'Task', minWidth: 80 },
+  // { id: 'task', label: 'Task', minWidth: 80 },
   { id: 'delete', label: 'Delete', minWidth: 80 },
 ];
 
@@ -40,7 +39,6 @@ export interface Data {
   name: string;
   startedAt: string;
   finishedAt: string;
-  duration: string;
   task: string;
   log: string;
   runId: string;
