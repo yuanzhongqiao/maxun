@@ -14,6 +14,7 @@ import { Schedule, DeleteForever, Edit, PlayCircle } from "@mui/icons-material";
 import LinkIcon from '@mui/icons-material/Link';
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
+import { Typography } from '@mui/material';
 
 /** TODO:
  *  1. allow editing existing robot after persisting browser steps
@@ -125,6 +126,9 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
 
   return (
     <React.Fragment>
+      <Typography variant="h6" gutterBottom component="div">
+        My Robots
+      </Typography>
       <TableContainer component={Paper} sx={{ width: '100%', overflow: 'hidden' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
