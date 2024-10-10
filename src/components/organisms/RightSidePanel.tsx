@@ -121,14 +121,14 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   };
 
   const handlePairDelete = () => {
-  //   deletePair(index - 1).then((updatedWorkflow) => {
-  //     updateWorkflow(updatedWorkflow);
-  //   }).catch((error) => {
-  //     console.error(error);
-  //   });
-  // };
-  console.log("handlePairDelete")	
-  }	
+    //   deletePair(index - 1).then((updatedWorkflow) => {
+    //     updateWorkflow(updatedWorkflow);
+    //   }).catch((error) => {
+    //     console.error(error);
+    //   });
+    // };
+    console.log("handlePairDelete")
+  }
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
@@ -465,20 +465,20 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
             {
               step.type === 'text' && (
                 <>
-                {confirmedTextSteps[step.id] && hoverStates[step.id] && (
-                  <IconButton
-                    onClick={() => handlePairDelete()}
-                    sx={{
-                      position: 'absolute',
-                      top: 5,
-                      right: 5,
-                      color: 'red',
-                      p: 0
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                )}
+                  {confirmedTextSteps[step.id] && hoverStates[step.id] && (
+                    <IconButton
+                      onClick={() => handlePairDelete()}
+                      sx={{
+                        position: 'absolute',
+                        top: 5,
+                        right: 5,
+                        color: 'red',
+                        p: 0
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  )}
                   <TextField
                     label="Label"
                     value={textLabels[step.id] || step.label || ''}
@@ -498,7 +498,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                       ),
                       endAdornment: confirmedTextSteps[step.id] && hoverStates[step.id] && (
                         <InputAdornment position="end">
-                          <DeleteIcon 
+                          <DeleteIcon
                             onClick={() => handlePairDelete()}
                             sx={{ cursor: 'pointer', color: 'red' }}
                           />
