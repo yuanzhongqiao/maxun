@@ -7,7 +7,6 @@ import { useGlobalInfoStore } from '../../context/globalInfo';
 const FormContainer = styled(Box)({
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
     gap: '16px',
 });
 
@@ -84,10 +83,10 @@ const ProxyForm: React.FC = () => {
 
     return (
         <FormContainer>
-            <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, width: '100%' }}>
-                <Typography variant="subtitle1" gutterBottom style={{ marginBottom: '20px', marginTop: '20px' }}>
+             <Typography variant="h6" gutterBottom component="div" style={{ marginTop: '20px' }}>
                     Proxy Configuration
                 </Typography>
+            <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, width: '100%' }}>
                 <FormControl>
                     <TextField
                         label="Proxy Server URL"
