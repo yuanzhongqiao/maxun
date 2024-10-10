@@ -77,12 +77,16 @@ const formatRecordingById = (recordingData: any) => {
     };
 };
 
-router.get("/robots/:fileName", requireAPIKey, async (req: Request, res: Response) => {
+router.get("/robots/:id", requireAPIKey, async (req: Request, res: Response) => {
     try {
-        const fileContent = await readFile(`./../storage/recordings/${req.params.fileName}.waw.json`);
+        const robot = await Robot.findOne({
+            where: {
+              'recording_meta.id': req.params.id
+            },
+            raw: true
+          });
 
-        const recordingData = JSON.parse(fileContent);
-        const formattedRecording = formatRecordingById(recordingData);
+        const formattedRecording = formatRecordingById(robot);
 
         const response = {
             statusCode: 200,
