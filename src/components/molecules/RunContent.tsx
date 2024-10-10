@@ -123,7 +123,7 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
             || (Object.keys(row.serializableOutput).length === 0 && Object.keys(row.binaryOutput).length === 0)
             ? <Typography>The output is empty.</Typography> : null}
 
-{!row || !row.serializableOutput || !row.binaryOutput
+          {!row || !row.serializableOutput || !row.binaryOutput
             || (Object.keys(row.serializableOutput).length === 0 && Object.keys(row.binaryOutput).length === 0)
             ? <Typography>The output is empty.</Typography> : null}
 
