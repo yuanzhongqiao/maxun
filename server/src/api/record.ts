@@ -145,7 +145,7 @@ router.get("/robots/:id/runs/:runId", requireAPIKey, async (req: Request, res: R
             },
             raw: true
         });
-
+       
         const response = {
             statusCode: 200,
             messageCode: "success",
@@ -158,7 +158,7 @@ router.get("/robots/:id/runs/:runId", requireAPIKey, async (req: Request, res: R
         res.status(404).json({
             statusCode: 404,
             messageCode: "not_found",
-            message: `Run with id "${req.params.runId}" not found.`,
+            message: `Run with id "${req.params.runId}" for robot with id "${req.params.id}" not found.`,
         });
     }
 });
