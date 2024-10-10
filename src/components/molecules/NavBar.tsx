@@ -6,7 +6,7 @@ import { useGlobalInfoStore } from "../../context/globalInfo";
 import { Button, IconButton } from "@mui/material";
 import { RecordingIcon } from "../atoms/RecorderIcon";
 import { SaveRecording } from "./SaveRecording";
-import { Circle, Add, Logout } from "@mui/icons-material";
+import { Circle, Add, Logout, Clear } from "@mui/icons-material";
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/auth';
@@ -124,7 +124,7 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                   letterSpacing: '0.02857em',
                   '&:hover': { color: 'white', backgroundColor: '#ff00c3' }
                 }} onClick={goToMainMenu}>
-                  <MeetingRoomIcon sx={{ marginRight: '5px' }} />
+                  <Clear sx={{ marginRight: '5px' }} />
                   Discard</IconButton>
               }
               {
