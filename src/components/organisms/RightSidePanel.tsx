@@ -477,7 +477,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                         zIndex: 1,
                       }}
                     >
-                      <DeleteIcon />
+                      <DeleteIcon sx={{ fontSize: 40 }} />
                     </IconButton>
                   )}
                   <TextField
