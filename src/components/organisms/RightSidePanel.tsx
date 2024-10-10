@@ -120,9 +120,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     setHoverStates(prev => ({ ...prev, [id]: false }));
   };
 
-  const handlePairDelete = () => {
-   
-  }
+  const handlePairDelete = () => {}
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
@@ -469,9 +467,9 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                         color: 'red',
                         p: 0,
                         zIndex: 1,
-                        boxShadow: '5px', 
-                        backgroundColor: 'white', 
-                        borderRadius: '50%', 
+                        boxShadow: '5px',
+                        backgroundColor: 'white',
+                        borderRadius: '50%',
                       }}
                     >
                       <DeleteIcon sx={{ fontSize: 40 }} />
