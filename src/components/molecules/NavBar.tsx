@@ -68,28 +68,32 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
               display: 'flex',
               justifyContent: 'flex-end',
             }}>
-              <IconButton
-                aria-label="new"
-                size={"small"}
-                onClick={handleNewRecording}
-                sx={{
-                  width: isRecording ? '130px' : '140px',
-                  borderRadius: '5px',
-                  padding: '8px',
-                  background: '#ff00c3',
-                  color: 'white',
-                  marginRight: '10px',
-                  fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
-                  fontWeight: '500',
-                  fontSize: '0.875rem',
-                  lineHeight: '1.75',
-                  letterSpacing: '0.02857em',
-                  '&:hover': { color: 'white', backgroundColor: '#ff00c3' }
-                }
-                }
-              >
-                <Add sx={{ marginRight: '5px' }} /> {isRecording ? 'New Robot' : 'Create Robot'}
-              </IconButton>
+              {
+                !isRecording ? (
+                  <IconButton
+                    aria-label="new"
+                    size={"small"}
+                    onClick={handleNewRecording}
+                    sx={{
+                      width: '140px',
+                      borderRadius: '5px',
+                      padding: '8px',
+                      background: '#ff00c3',
+                      color: 'white',
+                      marginRight: '10px',
+                      fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
+                      fontWeight: '500',
+                      fontSize: '0.875rem',
+                      lineHeight: '1.75',
+                      letterSpacing: '0.02857em',
+                      '&:hover': { color: 'white', backgroundColor: '#ff00c3' }
+                    }
+                    }
+                  >
+                    <Add sx={{ marginRight: '5px' }} /> Create Robot
+                  </IconButton>
+                ) : ""
+              }
               {
                 recordingLength > 0
                   ? <SaveRecording fileName={recordingName} />
