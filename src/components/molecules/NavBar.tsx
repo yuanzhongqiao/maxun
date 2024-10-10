@@ -109,7 +109,7 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                 <MeetingRoomIcon sx={{ marginRight: '5px' }} />
                 exit</Button>
                 : null}
-              <Button sx={{
+              <IconButton sx={{
                 width: '140px',
                 borderRadius: '5px',
                 padding: '8px',
@@ -124,7 +124,7 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                 '&:hover': { color: 'white', backgroundColor: '#ff00c3' }
               }} onClick={logout}>
                 <Logout sx={{ marginRight: '5px' }} />
-                Logout</Button>
+                Logout</IconButton>
             </div>
           </>
         ) : ""
