@@ -106,17 +106,17 @@ const ApiKeyManager = () => {
                 <TableCell>{apiKeyName}</TableCell>
                 <TableCell>{showKey ? `${apiKey?.substring(0, 10)}...` : '***************'}</TableCell>
                 <TableCell>
-                  <Tooltip title="Copy API Key">
+                  <Tooltip title="Copy">
                     <IconButton onClick={copyToClipboard}>
                       <ContentCopy />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title={showKey ? 'Hide API Key' : 'Show API Key'}>
+                  <Tooltip title={showKey ? 'Hide' : 'Show'}>
                     <IconButton onClick={() => setShowKey(!showKey)}>
                       <Visibility />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Delete API Key">
+                  <Tooltip title="Delete">
                     <IconButton onClick={deleteApiKey}>
                       <Delete />
                     </IconButton>
