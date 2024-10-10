@@ -30,7 +30,7 @@ const formatRecording = (recordingData: any) => {
 
 router.get("/robots", requireAPIKey, async (req: Request, res: Response) => {
     try {
-        const robots = await Robot.findAll();
+        const robots = await Robot.findAll({ raw: true});
         const formattedRecordings = robots.map(formatRecording);
 
         const response = {
