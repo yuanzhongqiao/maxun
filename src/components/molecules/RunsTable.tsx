@@ -76,7 +76,6 @@ export const RunsTable = (
     if (runs) {
       const parsedRows: Data[] = [];
       runs.map((run: any, index) => {
-        // const run = JSON.parse(run);
           parsedRows.push({
               id: index,
               ...run,
