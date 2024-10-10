@@ -1,6 +1,7 @@
 import { readFile, readFiles } from "../workflow-management/storage";
 import { Router, Request, Response } from 'express';
 import { requireAPIKey } from "../middlewares/api";
+import Robot from "../models/Robot";
 const router = Router();
 
 const formatRecording = (recordingData: any) => {
@@ -29,11 +30,10 @@ const formatRecording = (recordingData: any) => {
 
 router.get("/robots", requireAPIKey, async (req: Request, res: Response) => {
     try {
-        const fileContents = await readFiles('./../storage/recordings/');
+        const recordings = await Robot.findAll();
 
-        const formattedRecordings = fileContents.map((fileContent: string) => {
-            const recordingData = JSON.parse(fileContent);
-            return formatRecording(recordingData);
+        const formattedRecordings = recordings.map((recording: any) => {
+            return formatRecording(recording);
         });
 
         const response = {
