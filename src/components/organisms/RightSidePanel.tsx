@@ -57,6 +57,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const [hoverStates, setHoverStates] = useState<{ [id: string]: boolean }>({});
   const [pendingEvents, setPendingEvents] = useState<Array<{ action: string; settings: any }>>([]);
   const [isEmittingEvents, setIsEmittingEvents] = useState(false);
+  const [emissionStatus, setEmissionStatus] = useState<'idle' | 'emitting' | 'done'>('idle');
 
   const { lastAction, notify } = useGlobalInfoStore();
   const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitType, customLimit, updateLimitType, updateCustomLimit, stopLimitMode, startLimitMode } = useActionContext();
@@ -135,6 +136,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     }
 
     setIsEmittingEvents(true);
+    setEmissionStatus('emitting');
 
     const emitEvents = async () => {
       for (const event of pendingEvents) {
@@ -146,6 +148,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       }
       setPendingEvents([]);
       setIsEmittingEvents(false);
+      setEmissionStatus('done');
       onFinishCapture();
     };
 
@@ -238,10 +241,14 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     stopGetText();
     const settings = getTextSettingsObject();
     const hasTextSteps = browserSteps.some(step => step.type === 'text');
-    if (hasTextSteps) {
-      // socket?.emit('action', { action: 'scrapeSchema', settings });
+    // if (hasTextSteps) {
+    //   // socket?.emit('action', { action: 'scrapeSchema', settings });
+    //   addPendingEvent('scrapeSchema', settings);
+    // }
+    const textSteps = browserSteps.filter(step => step.type === 'text' && confirmedTextSteps[step.id]);
+    textSteps.forEach(step => {
       addPendingEvent('scrapeSchema', settings);
-    }   
+    }); 
     //onFinishCapture();
   }, [stopGetText, getTextSettingsObject, browserSteps, confirmedTextSteps, addPendingEvent]);
 
@@ -278,6 +285,15 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
     return settings;
   }, [browserSteps, paginationType, limitType, customLimit]);
+
+  useEffect(() => {
+    if (emissionStatus === 'done') {
+      const timer = setTimeout(() => {
+        setEmissionStatus('idle');
+      }, 3000); // Reset status after 3 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [emissionStatus]);
 
   const resetListState = useCallback(() => {
     setShowPaginationOptions(false);
@@ -620,7 +636,9 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
             onClick={emitPendingEvents}
             disabled={isEmittingEvents}
           >
-            {isEmittingEvents ? 'Emitting Events...' : 'Emit Socket Events'}
+            {emissionStatus === 'idle' && 'Emit Socket Events'}
+            {emissionStatus === 'emitting' && 'Emitting Events...'}
+            {emissionStatus === 'done' && 'Emission Complete'}
           </Button>
         )}
       </Box>
