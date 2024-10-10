@@ -54,9 +54,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const [showCaptureText, setShowCaptureText] = useState(true);
   const [captureStage, setCaptureStage] = useState<'initial' | 'pagination' | 'limit' | 'complete'>('initial');
   const [hoverStates, setHoverStates] = useState<{ [id: string]: boolean }>({});
-  const [pendingEvents, setPendingEvents] = useState<Array<{ action: string; settings: any }>>([]);
-  const [isEmittingEvents, setIsEmittingEvents] = useState(false);
-  const [emissionStatus, setEmissionStatus] = useState<'idle' | 'emitting' | 'done'>('idle');
 
   const { lastAction, notify } = useGlobalInfoStore();
   const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitType, customLimit, updateLimitType, updateCustomLimit, stopLimitMode, startLimitMode } = useActionContext();
@@ -65,6 +62,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
   const workflowHandler = useCallback((data: WorkflowFile) => {
     setWorkflow(data);
+    //setRecordingLength(data.workflow.length);
   }, [workflow])
 
   useEffect(() => {
@@ -122,38 +120,9 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     setHoverStates(prev => ({ ...prev, [id]: false }));
   };
 
-  const handlePairDelete = () => {}
-
-  const addPendingEvent = (action: string, settings: any) => {
-    setPendingEvents(prev => [...prev, { action, settings }]);
-  };
-
-  const emitPendingEvents = useCallback(() => {
-    if (pendingEvents.length === 0) {
-      notify('info', 'No pending events to emit');
-      return;
-    }
-
-    setIsEmittingEvents(true);
-    setEmissionStatus('emitting');
-
-    const emitEvents = async () => {
-      for (const event of pendingEvents) {
-        await new Promise<void>((resolve) => {
-          socket?.emit('action', event, () => {
-            resolve();
-          });
-        });
-      }
-      setPendingEvents([]);
-      setIsEmittingEvents(false);
-      setEmissionStatus('done');
-      onFinishCapture();
-    };
-
-    emitEvents();
-  }, [pendingEvents, socket, onFinishCapture]);
-
+  const handlePairDelete = () => {
+   
+  }
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
@@ -240,16 +209,11 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     stopGetText();
     const settings = getTextSettingsObject();
     const hasTextSteps = browserSteps.some(step => step.type === 'text');
-    // if (hasTextSteps) {
-    //   // socket?.emit('action', { action: 'scrapeSchema', settings });
-    //   addPendingEvent('scrapeSchema', settings);
-    // }
-    const textSteps = browserSteps.filter(step => step.type === 'text' && confirmedTextSteps[step.id]);
-    textSteps.forEach(step => {
-      addPendingEvent('scrapeSchema', settings);
-    }); 
-    //onFinishCapture();
-  }, [stopGetText, getTextSettingsObject, browserSteps, confirmedTextSteps, addPendingEvent]);
+    if (hasTextSteps) {
+      socket?.emit('action', { action: 'scrapeSchema', settings });
+    }
+    onFinishCapture();
+  }, [stopGetText, getTextSettingsObject, socket, browserSteps, confirmedTextSteps]);
 
   const getListSettingsObject = useCallback(() => {
     let settings: {
@@ -285,15 +249,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     return settings;
   }, [browserSteps, paginationType, limitType, customLimit]);
 
-  useEffect(() => {
-    if (emissionStatus === 'done') {
-      const timer = setTimeout(() => {
-        setEmissionStatus('idle');
-      }, 3000); // Reset status after 3 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [emissionStatus]);
-
   const resetListState = useCallback(() => {
     setShowPaginationOptions(false);
     updatePaginationType('');
@@ -310,14 +265,13 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const stopCaptureAndEmitGetListSettings = useCallback(() => {
     const settings = getListSettingsObject();
     if (settings) {
-      // socket?.emit('action', { action: 'scrapeList', settings });
-      addPendingEvent('scrapeList', settings)
+      socket?.emit('action', { action: 'scrapeList', settings });
     } else {
       notify('error', 'Unable to create list settings. Make sure you have defined a field for the list.');
     }
     handleStopGetList();
-    //onFinishCapture();
-  }, [stopGetList, getListSettingsObject, addPendingEvent, notify, handleStopGetList]);
+    onFinishCapture();
+  }, [stopGetList, getListSettingsObject, socket, notify, handleStopGetList]);
 
   const handleConfirmListCapture = useCallback(() => {
     switch (captureStage) {
@@ -410,8 +364,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       caret: 'hide',
       scale: 'device',
     };
-    // socket?.emit('action', { action: 'screenshot', settings: screenshotSettings });
-    addPendingEvent('screenshot', screenshotSettings)
+    socket?.emit('action', { action: 'screenshot', settings: screenshotSettings });
     addScreenshotStep(fullPage);
     stopGetScreenshot();
   };
@@ -628,18 +581,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
             )}
           </Box>
         ))}
-        {pendingEvents.length > 0 && (
-          <Button 
-            variant="contained" 
-            color="primary" 
-            onClick={emitPendingEvents}
-            disabled={isEmittingEvents}
-          >
-            {emissionStatus === 'idle' && 'Emit Socket Events'}
-            {emissionStatus === 'emitting' && 'Emitting Events...'}
-            {emissionStatus === 'done' && 'Emission Complete'}
-          </Button>
-        )}
       </Box>
     </Paper>
   );
