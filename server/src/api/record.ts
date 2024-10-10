@@ -136,4 +136,30 @@ router.get("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response
 }
 );
 
+router.get("/robots/:id/runs/:runId", requireAPIKey, async (req: Request, res: Response) => {
+    try {
+        const run = await Run.findOne({
+            where: {
+                runId: req.params.runId
+            },
+            raw: true
+        });
+
+        const response = {
+            statusCode: 200,
+            messageCode: "success",
+            run: run,
+        };
+
+        res.status(200).json(response);
+    } catch (error) {
+        console.error("Error fetching run:", error);
+        res.status(404).json({
+            statusCode: 404,
+            messageCode: "not_found",
+            message: `Run with id "${req.params.runId}" not found.`,
+        });
+    }
+});
+
 export default router;
