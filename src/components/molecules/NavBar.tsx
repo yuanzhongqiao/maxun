@@ -10,6 +10,8 @@ import { Circle, Add, Logout, Clear } from "@mui/icons-material";
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/auth';
+import { GenericModal } from '../atoms/GenericModal';
+import TextField from '@mui/material/TextField';
 
 interface NavBarProps {
   newRecording: () => void;
@@ -22,6 +24,9 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
   const { notify, browserId, setBrowserId, recordingLength } = useGlobalInfoStore();
   const { state, dispatch } = useContext(AuthContext);
   const { user } = state;
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [url, setUrl] = useState('');
+
   const navigate = useNavigate();
 
   const logout = async () => {
@@ -48,9 +53,14 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
       setBrowserId(null);
       await stopRecording(browserId);
     }
+    setModalOpen(true);
+  };
+
+  const startRecording = () => {
+    setModalOpen(false);
     newRecording();
-    notify('info', 'New Recording started');
-  }
+    notify('info', 'New Recording started for ' + url);
+  };
 
   return (
     <NavBarWrapper>
@@ -133,6 +143,27 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                   : null
               }
             </div>
+            <GenericModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+        <div style={{ padding: '20px' }}>
+          <h2>Enter URL</h2>
+          <TextField
+            label="URL"
+            variant="outlined"
+            fullWidth
+            value={url}
+            onChange={(e: any) => setUrl(e.target.value)}
+            style={{ marginBottom: '20px' }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={startRecording}
+            disabled={!url} 
+          >
+            Submit & Start Recording
+          </Button>
+        </div>
+      </GenericModal>
           </>
         ) : ""
       }
