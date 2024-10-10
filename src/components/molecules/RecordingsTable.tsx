@@ -16,7 +16,7 @@ import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
 
 interface Column {
-  id: 'interpret' | 'name' | 'createdAt' | 'edit' | 'updatedAt' | 'delete' | 'schedule' | 'integrate';
+  id: 'interpret' | 'name' | 'createdAt' | 'updatedAt' | 'delete' | 'schedule' | 'integrate';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -31,11 +31,6 @@ const columns: readonly Column[] = [
     label: 'Created at',
     minWidth: 80,
     //format: (value: string) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'edit',
-    label: 'Edit',
-    minWidth: 80,
   },
   {
     id: 'schedule',
@@ -158,16 +153,16 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
                                 <InterpretButton handleInterpret={() => handleRunRecording(row.id, row.name, row.params || [])} />
                               </TableCell>
                             );
-                          case 'edit':
-                            return (
-                              <TableCell key={column.id} align={column.align}>
-                                <IconButton aria-label="add" size="small" onClick={() => {
-                                  handleEditRecording(row.id, row.name);
-                                }} sx={{ '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
-                                  <Edit />
-                                </IconButton>
-                              </TableCell>
-                            );
+                          // case 'edit':
+                          //   return (
+                          //     <TableCell key={column.id} align={column.align}>
+                          //       <IconButton aria-label="add" size="small" onClick={() => {
+                          //         handleEditRecording(row.id, row.name);
+                          //       }} sx={{ '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
+                          //         <Edit />
+                          //       </IconButton>
+                          //     </TableCell>
+                          //   );
                           case 'schedule':
                             return (
                               <TableCell key={column.id} align={column.align}>
