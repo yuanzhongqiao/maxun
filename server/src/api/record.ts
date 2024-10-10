@@ -110,7 +110,7 @@ router.get("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response
     try {
         const runs = await Run.findAll({
             where: {
-                robotId: req.params.id
+                robotMetaId: req.params.id
             },
             raw: true
         });
