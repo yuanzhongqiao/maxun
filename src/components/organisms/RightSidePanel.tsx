@@ -20,6 +20,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { emptyWorkflow } from "../../shared/constants";
 import { getActiveWorkflow } from "../../api/workflow";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const fetchWorkflow = (id: string, callback: (response: WorkflowFile) => void) => {
   getActiveWorkflow(id).then(
@@ -52,6 +53,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const [showCaptureScreenshot, setShowCaptureScreenshot] = useState(true);
   const [showCaptureText, setShowCaptureText] = useState(true);
   const [captureStage, setCaptureStage] = useState<'initial' | 'pagination' | 'limit' | 'complete'>('initial');
+  const [hoverStates, setHoverStates] = useState<{ [id: string]: boolean }>({});
 
   const { lastAction, notify } = useGlobalInfoStore();
   const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitType, customLimit, updateLimitType, updateCustomLimit, stopLimitMode, startLimitMode } = useActionContext();
@@ -109,6 +111,24 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     setShowCaptureScreenshot(!(hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction));
     setShowCaptureText(!(hasScrapeListAction || hasScreenshotAction));
   }, [workflow]);
+
+  const handleMouseEnter = (id: number) => {
+    setHoverStates(prev => ({ ...prev, [id]: true }));
+  };
+
+  const handleMouseLeave = (id: number) => {
+    setHoverStates(prev => ({ ...prev, [id]: false }));
+  };
+
+  const handlePairDelete = () => {
+  //   deletePair(index - 1).then((updatedWorkflow) => {
+  //     updateWorkflow(updatedWorkflow);
+  //   }).catch((error) => {
+  //     console.error(error);
+  //   });
+  // };
+  console.log("handlePairDelete")	
+  }	
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
@@ -453,11 +473,21 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                     margin="normal"
                     error={!!errors[step.id]}
                     helperText={errors[step.id]}
+                    onMouseEnter={() => handleMouseEnter(step.id)}
+                    onMouseLeave={() => handleMouseLeave(step.id)}
                     InputProps={{
                       readOnly: confirmedTextSteps[step.id],
                       startAdornment: (
                         <InputAdornment position="start">
                           <EditIcon />
+                        </InputAdornment>
+                      ),
+                      endAdornment: confirmedTextSteps[step.id] && hoverStates[step.id] && (
+                        <InputAdornment position="end">
+                          <DeleteIcon 
+                            onClick={() => handlePairDelete()}
+                            sx={{ cursor: 'pointer', color: 'red' }}
+                          />
                         </InputAdornment>
                       )
                     }}
