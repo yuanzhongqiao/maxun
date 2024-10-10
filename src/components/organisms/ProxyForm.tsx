@@ -8,8 +8,6 @@ const FormContainer = styled(Box)({
     display: 'flex',
     flexDirection: 'column',
     gap: '16px',
-    padding: '20px',
-    borderRadius: '8px',
 });
 
 const FormControl = styled(Box)({
@@ -85,7 +83,7 @@ const ProxyForm: React.FC = () => {
 
     return (
         <FormContainer>
-            <form onSubmit={handleSubmit}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, width: '100%' }}>
                 <Typography variant="subtitle1" gutterBottom style={{ marginBottom: '20px', marginTop: '20px' }}>
                     Proxy Configuration
                 </Typography>
@@ -147,7 +145,7 @@ const ProxyForm: React.FC = () => {
                 >
                     Add Proxy
                 </Button>
-            </form>
+            </Box>
         </FormContainer>
     );
 };
