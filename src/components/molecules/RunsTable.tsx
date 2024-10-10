@@ -28,7 +28,7 @@ export const columns: readonly Column[] = [
   { id: 'name', label: 'Robot Name', minWidth: 80 },
   { id: 'startedAt', label: 'Started at', minWidth: 80 },
   { id: 'finishedAt', label: 'Finished at', minWidth: 80 },
-  { id: 'runId', label: 'Run id', minWidth: 80 },
+  { id: 'runId', label: 'Run ID', minWidth: 80 },
   // { id: 'task', label: 'Task', minWidth: 80 },
   { id: 'delete', label: 'Delete', minWidth: 80 },
 ];
