@@ -20,9 +20,10 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
       sx={{
         height: 'auto',
         maxWidth: 'fit-content',
-        backgroundColor: 'lightgray',
+        backgroundColor: 'white',
         paddingTop: '2rem',
       }}
+      variant="outlined"
     >
       <Box sx={{
         width: '100%',
