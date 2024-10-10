@@ -1,4 +1,4 @@
-import { Box, Tabs, Typography, Tab } from "@mui/material";
+import { Box, Tabs, Typography, Tab, Paper } from "@mui/material";
 import Highlight from "react-highlight";
 import Button from "@mui/material/Button";
 import * as React from "react";
@@ -8,8 +8,14 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ImageIcon from '@mui/icons-material/Image';
 import ArticleIcon from '@mui/icons-material/Article';
 import { Buffer } from 'buffer';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
 interface RunContentProps {
   row: Data,
@@ -21,10 +27,25 @@ interface RunContentProps {
 
 export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRef, abortRunHandler }: RunContentProps) => {
   const [tab, setTab] = React.useState<string>('log');
+  const [tableData, setTableData] = useState<any[]>([]);
+  const [columns, setColumns] = useState<string[]>([]);
 
   useEffect(() => {
     setTab(tab);
   }, [interpretationInProgress])
+
+  useEffect(() => {
+    if (row.serializableOutput && Object.keys(row.serializableOutput).length > 0) {
+      const firstKey = Object.keys(row.serializableOutput)[0];
+      const data = row.serializableOutput[firstKey];
+      if (Array.isArray(data)) {
+        setTableData(data);
+        if (data.length > 0) {
+          setColumns(Object.keys(data[0]));
+        }
+      }
+    }
+  }, [row.serializableOutput]);
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -102,34 +123,50 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
             || (Object.keys(row.serializableOutput).length === 0 && Object.keys(row.binaryOutput).length === 0)
             ? <Typography>The output is empty.</Typography> : null}
 
+{!row || !row.serializableOutput || !row.binaryOutput
+            || (Object.keys(row.serializableOutput).length === 0 && Object.keys(row.binaryOutput).length === 0)
+            ? <Typography>The output is empty.</Typography> : null}
+
           {row.serializableOutput &&
             Object.keys(row.serializableOutput).length !== 0 &&
             <div>
               <Typography variant='h6' sx={{ display: 'flex', alignItems: 'center' }}>
                 <ArticleIcon sx={{ marginRight: '15px' }} />
-                Serializable output</Typography>
-              {Object.keys(row.serializableOutput).map((key) => {
-                return (
-                  <div key={`number-of-serializable-output-${key}`}>
-                    <Typography>
-                      {key}:
-                      <a href={`data:application/json;utf8,${JSON.stringify(row.serializableOutput[key], null, 2)}`}
-                        download={key} style={{ margin: '10px' }}>Download</a>
-                    </Typography>
-                    <Box sx={{
-                      width: 'fit-content',
-                      background: 'rgba(0,0,0,0.06)',
-                      maxHeight: '300px',
-                      overflow: 'scroll',
-                    }}>
-                      <pre key={`serializable-output-${key}`}>
-                        {row.serializableOutput[key] ? JSON.stringify(row.serializableOutput[key], null, 2)
-                          : 'The output is empty.'}
-                      </pre>
-                    </Box>
-                  </div>
-                )
-              })}
+                Serializable output
+              </Typography>
+              {tableData.length > 0 ? (
+                <TableContainer component={Paper} sx={{ maxHeight: 440, marginTop: 2 }}>
+                  <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                      <TableRow>
+                        {columns.map((column) => (
+                          <TableCell key={column}>{column}</TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {tableData.map((row, index) => (
+                        <TableRow key={index}>
+                          {columns.map((column) => (
+                            <TableCell key={column}>{row[column]}</TableCell>
+                          ))}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                <Box sx={{
+                  width: 'fit-content',
+                  background: 'rgba(0,0,0,0.06)',
+                  maxHeight: '300px',
+                  overflow: 'scroll',
+                }}>
+                  <pre>
+                    {JSON.stringify(row.serializableOutput, null, 2)}
+                  </pre>
+                </Box>
+              )}
             </div>
           }
           {row.binaryOutput
