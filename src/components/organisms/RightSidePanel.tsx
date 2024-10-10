@@ -475,7 +475,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                         color: 'red',
                         p: 0,
                         zIndex: 1,
-                        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)', 
+                        boxShadow: '5px', 
                         backgroundColor: 'white', 
                         borderRadius: '50%', 
                       }}
