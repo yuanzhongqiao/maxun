@@ -81,10 +81,10 @@ router.get("/robots/:id", requireAPIKey, async (req: Request, res: Response) => 
     try {
         const robot = await Robot.findOne({
             where: {
-              'recording_meta.id': req.params.id
+                'recording_meta.id': req.params.id
             },
             raw: true
-          });
+        });
 
         const formattedRecording = formatRecordingById(robot);
 
