@@ -21,6 +21,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import { emptyWorkflow } from "../../shared/constants";
 import { getActiveWorkflow } from "../../api/workflow";
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Pair } from '../molecules/Pair';
 
 const fetchWorkflow = (id: string, callback: (response: WorkflowFile) => void) => {
   getActiveWorkflow(id).then(
@@ -452,6 +453,23 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
         )}
       </Box>
       <Box>
+      {
+        workflow.workflow.map((pair, i) => {
+          const activeId = workflow.workflow.length - i;
+          return (
+            <Pair
+              handleBreakpoint={() => {}}
+              isActive={activeId === i + 1}
+              key={workflow.workflow.length - i}
+              index={workflow.workflow.length - i}
+              pair={pair}
+              updateWorkflow={setWorkflow}
+              numberOfPairs={workflow.workflow.length}
+              handleSelectPairForEdit={() => {}}
+            />
+          );
+        })
+      }
         {browserSteps.map(step => (
           <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '13px', borderRadius: '4px', position: 'relative', }} onMouseEnter={() => handleMouseEnter(step.id)} onMouseLeave={() => handleMouseLeave(step.id)}>
             {
