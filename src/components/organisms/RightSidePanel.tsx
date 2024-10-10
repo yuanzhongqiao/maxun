@@ -55,6 +55,8 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const [showCaptureText, setShowCaptureText] = useState(true);
   const [captureStage, setCaptureStage] = useState<'initial' | 'pagination' | 'limit' | 'complete'>('initial');
   const [hoverStates, setHoverStates] = useState<{ [id: string]: boolean }>({});
+  const [pendingEvents, setPendingEvents] = useState<Array<{ action: string; settings: any }>>([]);
+  const [isEmittingEvents, setIsEmittingEvents] = useState(false);
 
   const { lastAction, notify } = useGlobalInfoStore();
   const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitType, customLimit, updateLimitType, updateCustomLimit, stopLimitMode, startLimitMode } = useActionContext();
@@ -121,6 +123,35 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   };
 
   const handlePairDelete = () => {}
+
+  const addPendingEvent = (action: string, settings: any) => {
+    setPendingEvents(prev => [...prev, { action, settings }]);
+  };
+
+  const emitPendingEvents = useCallback(() => {
+    if (pendingEvents.length === 0) {
+      notify('info', 'No pending events to emit');
+      return;
+    }
+
+    setIsEmittingEvents(true);
+
+    const emitEvents = async () => {
+      for (const event of pendingEvents) {
+        await new Promise<void>((resolve) => {
+          socket?.emit('action', event, () => {
+            resolve();
+          });
+        });
+      }
+      setPendingEvents([]);
+      setIsEmittingEvents(false);
+      onFinishCapture();
+    };
+
+    emitEvents();
+  }, [pendingEvents, socket, onFinishCapture]);
+
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
@@ -208,10 +239,11 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     const settings = getTextSettingsObject();
     const hasTextSteps = browserSteps.some(step => step.type === 'text');
     if (hasTextSteps) {
-      socket?.emit('action', { action: 'scrapeSchema', settings });
-    }
-    onFinishCapture();
-  }, [stopGetText, getTextSettingsObject, socket, browserSteps, confirmedTextSteps]);
+      // socket?.emit('action', { action: 'scrapeSchema', settings });
+      addPendingEvent('scrapeSchema', settings);
+    }   
+    //onFinishCapture();
+  }, [stopGetText, getTextSettingsObject, browserSteps, confirmedTextSteps, addPendingEvent]);
 
   const getListSettingsObject = useCallback(() => {
     let settings: {
@@ -263,13 +295,14 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const stopCaptureAndEmitGetListSettings = useCallback(() => {
     const settings = getListSettingsObject();
     if (settings) {
-      socket?.emit('action', { action: 'scrapeList', settings });
+      // socket?.emit('action', { action: 'scrapeList', settings });
+      addPendingEvent('scrapeList', settings)
     } else {
       notify('error', 'Unable to create list settings. Make sure you have defined a field for the list.');
     }
     handleStopGetList();
-    onFinishCapture();
-  }, [stopGetList, getListSettingsObject, socket, notify, handleStopGetList]);
+    //onFinishCapture();
+  }, [stopGetList, getListSettingsObject, addPendingEvent, notify, handleStopGetList]);
 
   const handleConfirmListCapture = useCallback(() => {
     switch (captureStage) {
@@ -362,7 +395,8 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       caret: 'hide',
       scale: 'device',
     };
-    socket?.emit('action', { action: 'screenshot', settings: screenshotSettings });
+    // socket?.emit('action', { action: 'screenshot', settings: screenshotSettings });
+    addPendingEvent('screenshot', screenshotSettings)
     addScreenshotStep(fullPage);
     stopGetScreenshot();
   };
@@ -452,23 +486,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
         )}
       </Box>
       <Box>
-      {
-        workflow.workflow.map((pair, i) => {
-          const activeId = workflow.workflow.length - i;
-          return (
-            <Pair
-              handleBreakpoint={() => {}}
-              isActive={activeId === i + 1}
-              key={workflow.workflow.length - i}
-              index={workflow.workflow.length - i}
-              pair={pair}
-              updateWorkflow={setWorkflow}
-              numberOfPairs={workflow.workflow.length}
-              handleSelectPairForEdit={() => {}}
-            />
-          );
-        })
-      }
         {browserSteps.map(step => (
           <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '13px', borderRadius: '4px', position: 'relative', }} onMouseEnter={() => handleMouseEnter(step.id)} onMouseLeave={() => handleMouseLeave(step.id)}>
             {
@@ -596,6 +613,16 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
             )}
           </Box>
         ))}
+        {pendingEvents.length > 0 && (
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={emitPendingEvents}
+            disabled={isEmittingEvents}
+          >
+            {isEmittingEvents ? 'Emitting Events...' : 'Emit Socket Events'}
+          </Button>
+        )}
       </Box>
     </Paper>
   );
