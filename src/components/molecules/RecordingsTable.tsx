@@ -16,7 +16,7 @@ import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
 
 interface Column {
-  id: 'interpret' | 'name' | 'createdAt' | 'updatedAt' | 'delete' | 'schedule' | 'integrate';
+  id: 'interpret' | 'name' | 'delete' | 'schedule' | 'integrate';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -26,12 +26,12 @@ interface Column {
 const columns: readonly Column[] = [
   { id: 'interpret', label: 'Run', minWidth: 80 },
   { id: 'name', label: 'Name', minWidth: 80 },
-  {
-    id: 'createdAt',
-    label: 'Created at',
-    minWidth: 80,
-    //format: (value: string) => value.toLocaleString('en-US'),
-  },
+  // {
+  //   id: 'createdAt',
+  //   label: 'Created at',
+  //   minWidth: 80,
+  //   //format: (value: string) => value.toLocaleString('en-US'),
+  // },
   // {
   //   id: 'edit',
   //   label: 'Edit',
@@ -47,12 +47,12 @@ const columns: readonly Column[] = [
     label: 'Integrate',
     minWidth: 80,
   },
-  {
-    id: 'updatedAt',
-    label: 'Updated at',
-    minWidth: 80,
-    //format: (value: string) => value.toLocaleString('en-US'),
-  },
+  // {
+  //   id: 'updatedAt',
+  //   label: 'Updated at',
+  //   minWidth: 80,
+  //   //format: (value: string) => value.toLocaleString('en-US'),
+  // },
   {
     id: 'delete',
     label: 'Delete',
