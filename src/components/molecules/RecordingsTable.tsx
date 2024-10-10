@@ -15,6 +15,11 @@ import LinkIcon from '@mui/icons-material/Link';
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
 
+/** TODO:
+ *  1. allow editing existing robot after persisting browser steps
+ *  2. show robot settings: id, url, etc. 
+*/
+
 interface Column {
   id: 'interpret' | 'name' | 'delete' | 'schedule' | 'integrate';
   label: string;
