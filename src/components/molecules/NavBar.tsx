@@ -21,11 +21,12 @@ interface NavBarProps {
 
 export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isRecording }) => {
 
-  const { notify, browserId, setBrowserId, recordingLength } = useGlobalInfoStore();
+  const { notify, browserId, setBrowserId, recordingLength, recordingUrl, setRecordingUrl } = useGlobalInfoStore();
   const { state, dispatch } = useContext(AuthContext);
   const { user } = state;
   const [isModalOpen, setModalOpen] = useState(false);
-  const [url, setUrl] = useState('');
+
+  console.log(`Recording URL: ${recordingUrl}`)
 
   const navigate = useNavigate();
 
@@ -59,7 +60,7 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
   const startRecording = () => {
     setModalOpen(false);
     newRecording();
-    notify('info', 'New Recording started for ' + url);
+    notify('info', 'New Recording started for ' + recordingUrl);
   };
 
   return (
@@ -150,15 +151,15 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                   label="URL"
                   variant="outlined"
                   fullWidth
-                  value={url}
-                  onChange={(e: any) => setUrl(e.target.value)}
+                  value={recordingUrl}
+                  onChange={(e: any) => setRecordingUrl(e.target.value)}
                   style={{ marginBottom: '20px' }}
                 />
                 <Button
                   variant="contained"
                   color="primary"
                   onClick={startRecording}
-                  disabled={!url}
+                  disabled={!recordingUrl}
                 >
                   Submit & Start Recording
                 </Button>
