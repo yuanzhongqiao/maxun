@@ -461,7 +461,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       </Box>
       <Box>
         {browserSteps.map(step => (
-          <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px', position: 'relative', }} onMouseEnter={() => handleMouseEnter(step.id)} onMouseLeave={() => handleMouseLeave(step.id)}>
+          <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '13px', borderRadius: '4px', position: 'relative', }} onMouseEnter={() => handleMouseEnter(step.id)} onMouseLeave={() => handleMouseLeave(step.id)}>
             {
               step.type === 'text' && (
                 <>
