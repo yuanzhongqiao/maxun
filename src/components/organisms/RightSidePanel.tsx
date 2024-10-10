@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Button, Paper, Box, TextField } from "@mui/material";
+import { Button, Paper, Box, TextField, IconButton } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
@@ -461,10 +461,24 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       </Box>
       <Box>
         {browserSteps.map(step => (
-          <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }}>
+          <Box key={step.id} sx={{ boxShadow: 5, padding: '10px', margin: '10px', borderRadius: '4px' }} onMouseEnter={() => handleMouseEnter(step.id)} onMouseLeave={() => handleMouseLeave(step.id)}>
             {
               step.type === 'text' && (
                 <>
+                {confirmedTextSteps[step.id] && hoverStates[step.id] && (
+                  <IconButton
+                    onClick={() => handlePairDelete()}
+                    sx={{
+                      position: 'absolute',
+                      top: 5,
+                      right: 5,
+                      color: 'red',
+                      p: 0
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                )}
                   <TextField
                     label="Label"
                     value={textLabels[step.id] || step.label || ''}
