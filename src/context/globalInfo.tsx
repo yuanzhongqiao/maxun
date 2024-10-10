@@ -37,7 +37,7 @@ class GlobalInfoStore implements Partial<GlobalInfo> {
   recordings: string[] = [];
   rerenderRuns = false;
   recordingName = '';
-  recordingUrl = '';
+  recordingUrl = 'https://';
 };
 
 const globalInfoStore = new GlobalInfoStore();
