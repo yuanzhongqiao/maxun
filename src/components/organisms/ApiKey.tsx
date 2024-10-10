@@ -92,7 +92,6 @@ const ApiKeyManager = () => {
       <Typography variant="h6" gutterBottom component="div" style={{ marginBottom: '20px', alignSelf: 'flex-start' }}>
         Manage Your API Key
       </Typography>
-
       {apiKey ? (
         <TableContainer component={Paper} sx={{ width: '100%', overflow: 'hidden' }}>
           <Table>
