@@ -19,7 +19,8 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
     <Paper
       sx={{
         height: 'auto',
-        maxWidth: 'fit-content',
+        width: '250px',
+        maxWidth: '100%',
         backgroundColor: 'white',
         paddingTop: '2rem',
       }}
