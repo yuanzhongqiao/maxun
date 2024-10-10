@@ -120,7 +120,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     setHoverStates(prev => ({ ...prev, [id]: false }));
   };
 
-  const handlePairDelete = () => {}
+  const handlePairDelete = () => { }
 
   const handleTextLabelChange = (id: number, label: string, listId?: number, fieldKey?: string) => {
     if (listId !== undefined && fieldKey !== undefined) {
@@ -372,22 +372,21 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
         {!getText && !getScreenshot && !getList && showCaptureList && <Button variant="contained" onClick={startGetList}>Capture List</Button>}
         {getList && (
-  <>
-    <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
-      <Button
-        variant="outlined"
-        onClick={handleConfirmListCapture}
-        disabled={hasUnconfirmedListTextFields}
-      >
-        {captureStage === 'initial' ? 'Confirm Capture' :
-          captureStage === 'pagination' ? 'Confirm Pagination' :
-            captureStage === 'limit' ? 'Confirm Limit' : 'Finish Capture'}
-      </Button>
-      <Button variant="outlined" color="error" onClick={discardGetList}>Discard</Button>
-    </Box>
-  </>
-)}
-
+          <>
+            <Box display="flex" justifyContent="space-between" gap={2} style={{ margin: '15px' }}>
+              <Button
+                variant="outlined"
+                onClick={handleConfirmListCapture}
+                disabled={hasUnconfirmedListTextFields}
+              >
+                {captureStage === 'initial' ? 'Confirm Capture' :
+                  captureStage === 'pagination' ? 'Confirm Pagination' :
+                    captureStage === 'limit' ? 'Confirm Limit' : 'Finish Capture'}
+              </Button>
+              <Button variant="outlined" color="error" onClick={discardGetList}>Discard</Button>
+            </Box>
+          </>
+        )}
         {showPaginationOptions && (
           <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
             <Typography>How can we find the next list item on the page?</Typography>
