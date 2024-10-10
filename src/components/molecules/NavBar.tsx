@@ -17,7 +17,7 @@ interface NavBarProps {
   isRecording: boolean;
 }
 
-export const NavBar = ({ newRecording, recordingName, isRecording }: NavBarProps) => {
+export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isRecording }) => {
 
   const { notify, browserId, setBrowserId, recordingLength } = useGlobalInfoStore();
   const { state, dispatch } = useContext(AuthContext);
