@@ -488,21 +488,11 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                     margin="normal"
                     error={!!errors[step.id]}
                     helperText={errors[step.id]}
-                    onMouseEnter={() => handleMouseEnter(step.id)}
-                    onMouseLeave={() => handleMouseLeave(step.id)}
                     InputProps={{
                       readOnly: confirmedTextSteps[step.id],
                       startAdornment: (
                         <InputAdornment position="start">
                           <EditIcon />
-                        </InputAdornment>
-                      ),
-                      endAdornment: confirmedTextSteps[step.id] && hoverStates[step.id] && (
-                        <InputAdornment position="end">
-                          <DeleteIcon
-                            onClick={() => handlePairDelete()}
-                            sx={{ cursor: 'pointer', color: 'red' }}
-                          />
                         </InputAdornment>
                       )
                     }}
