@@ -129,7 +129,7 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
       <Typography variant="h6" gutterBottom component="div">
         My Robots
       </Typography>
-      <TableContainer component={Paper} sx={{ width: '100%', overflow: 'hidden' }}>
+      <TableContainer component={Paper} sx={{ width: '100%', overflow: 'hidden', marginTop: '15px' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
