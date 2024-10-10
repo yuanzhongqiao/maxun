@@ -32,6 +32,11 @@ const columns: readonly Column[] = [
     minWidth: 80,
     //format: (value: string) => value.toLocaleString('en-US'),
   },
+  // {
+  //   id: 'edit',
+  //   label: 'Edit',
+  //   minWidth: 80,
+  // },
   {
     id: 'schedule',
     label: 'Schedule',
