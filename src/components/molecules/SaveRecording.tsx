@@ -87,14 +87,14 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
       </IconButton>
 
       <GenericModal isOpen={openModal} onClose={() => setOpenModal(false)} modalStyle={modalStyle}>
-        <form onSubmit={handleSaveRecording} style={{ paddingTop: '50px', display: 'flex', flexDirection: 'column' }} >
-          <Typography>Save the recording as:</Typography>
+        <form onSubmit={handleSaveRecording} style={{ paddingTop: '20px', display: 'flex', flexDirection: 'column' }} >
+          <Typography variant="h5">Save the robot as</Typography>
           <TextField
             required
             sx={{ width: '250px', paddingBottom: '10px', margin: '15px 0px' }}
             onChange={handleChangeOfTitle}
             id="title"
-            label="Recording title"
+            label="Robot Name"
             variant="outlined"
             defaultValue={recordingName ? recordingName : null}
           />
@@ -104,7 +104,7 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
               <Button color="error" variant="contained" onClick={saveRecording}>Confirm</Button>
               <WarningText>
                 <NotificationImportantIcon color="warning" />
-                Recording already exists, please confirm the recording's overwrite.
+                Robot with this name already exists, please confirm the Robot's overwrite.
               </WarningText>
             </React.Fragment>)
             : <Button type="submit" variant="contained">Save</Button>
