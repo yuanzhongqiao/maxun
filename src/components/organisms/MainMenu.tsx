@@ -20,7 +20,6 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
       sx={{
         height: 'auto',
         width: '250px',
-        maxWidth: '100%',
         backgroundColor: 'white',
         paddingTop: '2rem',
       }}
