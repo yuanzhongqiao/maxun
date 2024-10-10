@@ -16,7 +16,7 @@ import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
 
 interface Column {
-  id: 'id' | 'interpret' | 'name' | 'createdAt' | 'edit' | 'updatedAt' | 'delete' | 'schedule' | 'integrate';
+  id: 'interpret' | 'name' | 'createdAt' | 'edit' | 'updatedAt' | 'delete' | 'schedule' | 'integrate';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -24,7 +24,6 @@ interface Column {
 }
 
 const columns: readonly Column[] = [
-  { id: 'id', label: 'ID', minWidth: 80 },
   { id: 'interpret', label: 'Run', minWidth: 80 },
   { id: 'name', label: 'Name', minWidth: 80 },
   {
