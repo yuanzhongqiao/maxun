@@ -8,6 +8,7 @@ import { TextField, Typography } from "@mui/material";
 import { WarningText } from "../atoms/texts";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
 import FlagIcon from '@mui/icons-material/Flag';
+import { DoneAll } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom';
 
 interface SaveRecordingProps {
@@ -68,16 +69,22 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
 
   return (
     <div>
-      <Button sx={{
-        width: '100px',
-        background: 'white',
-        color: 'rgba(0,128,0,0.7)',
-        '&:hover': { background: 'white', color: 'green' },
-        padding: '11px',
+      <IconButton sx={{
+        width: '140px',
+        background: 'green',
+        color: 'white',
+        '&:hover': { background: 'green', color: 'white' },
+        padding: '13px',
         marginRight: '10px',
+        borderRadius: '5px',
+        fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
+        fontWeight: '500',
+        fontSize: '0.875rem',
+        lineHeight: '1.75',
+        letterSpacing: '0.02857em',
       }} onClick={() => setOpenModal(true)}>
-        <FlagIcon sx={{ marginRight: '3px' }} /> FINISH
-      </Button>
+        <DoneAll sx={{ marginRight: '5px' }} /> Finish
+      </IconButton>
 
       <GenericModal isOpen={openModal} onClose={() => setOpenModal(false)} modalStyle={modalStyle}>
         <form onSubmit={handleSaveRecording} style={{ paddingTop: '50px', display: 'flex', flexDirection: 'column' }} >
