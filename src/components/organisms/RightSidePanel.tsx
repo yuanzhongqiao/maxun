@@ -451,9 +451,19 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           </Box>
         )}
       </Box>
-      {workflow.workflow && workflow.workflow.map((pair, i, workflow) => (
+      {
+  workflow.workflow.map((pair, i, workflow) => (
     <Box key={workflow.length - i} sx={{ mb: 2 }}>
-      {browserSteps.map((step) => (
+      {browserSteps.filter(step => {
+        if (step.type === 'text') {
+          return confirmedTextSteps[step.id]; // Check if text step is confirmed
+        } else if (step.type === 'list') {
+          return Object.values(confirmedListTextFields[step.id] || {}).some(Boolean); // Check if any list fields are confirmed
+        } else if (step.type === 'screenshot') {
+          return true; // Assuming all screenshot steps are considered confirmed by default
+        }
+        return false; // Default case
+      }).map((step) => (
         <Box
           key={step.id}
           sx={{
@@ -468,7 +478,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
         >
           {step.type === 'text' && (
             <>
-              {confirmedTextSteps[step.id] && hoverStates[step.id] && (
+              {hoverStates[step.id] && (
                 <IconButton
                   onClick={() => handlePairDelete()}
                   sx={{
@@ -517,23 +527,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                   ),
                 }}
               />
-              {!confirmedTextSteps[step.id] && (
-                <Box display="flex" justifyContent="space-between" gap={2}>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleTextStepConfirm(step.id)}
-                    disabled={!textLabels[step.id]?.trim()}
-                  >
-                    Confirm
-                  </Button>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleTextStepDiscard(step.id)}
-                  >
-                    Discard
-                  </Button>
-                </Box>
-              )}
             </>
           )}
           {step.type === 'screenshot' && (
@@ -580,23 +573,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                       ),
                     }}
                   />
-                  {!confirmedListTextFields[step.id]?.[key] && (
-                    <Box display="flex" justifyContent="space-between" gap={2}>
-                      <Button
-                        variant="contained"
-                        onClick={() => handleListTextFieldConfirm(step.id, key)}
-                        disabled={!field.label?.trim()}
-                      >
-                        Confirm
-                      </Button>
-                      <Button
-                        variant="contained"
-                        onClick={() => handleListTextFieldDiscard(step.id, key)}
-                      >
-                        Discard
-                      </Button>
-                    </Box>
-                  )}
                 </Box>
               ))}
             </>
