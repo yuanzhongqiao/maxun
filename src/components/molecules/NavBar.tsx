@@ -112,16 +112,16 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
               <Button sx={{
                 width: '140px',
                 borderRadius: '5px',
-                  padding: '8px',
-                  background: '#ff00c3',
-                  color: 'white',
-                  marginRight: '10px',
-                  fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
-                  fontWeight: '500',
-                  fontSize: '0.875rem',
-                  lineHeight: '1.75',
-                  letterSpacing: '0.02857em',
-                  '&:hover': { color: 'white', backgroundColor: '#ff00c3' }
+                padding: '8px',
+                background: '#ff00c3',
+                color: 'white',
+                marginRight: '10px',
+                fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
+                fontWeight: '500',
+                fontSize: '0.875rem',
+                lineHeight: '1.75',
+                letterSpacing: '0.02857em',
+                '&:hover': { color: 'white', backgroundColor: '#ff00c3' }
               }} onClick={logout}>
                 <Logout sx={{ marginRight: '5px' }} />
                 Logout</Button>
