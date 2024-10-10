@@ -271,58 +271,79 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     onFinishCapture();
   }, [stopGetList, getListSettingsObject, socket, notify, handleStopGetList]);
 
-  const handleConfirmListCapture = useCallback(() => {
-    switch (captureStage) {
-      case 'initial':
-        const hasUnconfirmedListTextFields = browserSteps.some(step => step.type === 'list' && Object.values(step.fields).some(field => !confirmedListTextFields[step.id]?.[field.id]));
-        if (hasUnconfirmedListTextFields) {
-          notify('error', 'Please confirm all field labels.');
-          return;
-        }
-        startPaginationMode();
-        setShowPaginationOptions(true);
-        setCaptureStage('pagination');
-        break;
 
-      case 'pagination':
-        if (!paginationType) {
-          notify('error', 'Please select a pagination type.');
-          return;
-        }
-        const settings = getListSettingsObject();
-        const paginationSelector = settings.pagination?.selector;
-        if (['clickNext', 'clickLoadMore'].includes(paginationType) && !paginationSelector) {
-          notify('error', 'Please select the pagination element first.');
-          return;
-        }
-        stopPaginationMode();
-        setShowPaginationOptions(false);
-        startLimitMode();
-        setShowLimitOptions(true);
-        setCaptureStage('limit');
-        break;
+useEffect(() => {
+  if (captureStage === 'initial') {
+    const hasUnconfirmedListTextFields = browserSteps.some(step =>
+      step.type === 'list' && Object.values(step.fields).some(field => !confirmedListTextFields[step.id]?.[field.id])
+    );
 
-      case 'limit':
-        if (!limitType || (limitType === 'custom' && !customLimit)) {
-          notify('error', 'Please select a limit or enter a custom limit.');
-          return;
-        }
-        const limit = limitType === 'custom' ? parseInt(customLimit) : parseInt(limitType);
-        if (isNaN(limit) || limit <= 0) {
-          notify('error', 'Please enter a valid limit.');
-          return;
-        }
-        stopLimitMode();
-        setShowLimitOptions(false);
-        stopCaptureAndEmitGetListSettings();
-        setCaptureStage('complete');
-        break;
-
-      case 'complete':
-        setCaptureStage('initial');
-        break;
+    if (hasUnconfirmedListTextFields) {
+      notify('error', 'Please confirm all field labels.');
     }
-  }, [captureStage, paginationType, limitType, customLimit, startPaginationMode, stopPaginationMode, startLimitMode, stopLimitMode, notify, stopCaptureAndEmitGetListSettings, getListSettingsObject]);
+  }
+}, [captureStage, confirmedListTextFields, browserSteps, notify]);
+
+const handleConfirmListCapture = useCallback(() => {
+  switch (captureStage) {
+    case 'initial':
+      startPaginationMode();
+      setShowPaginationOptions(true);
+      setCaptureStage('pagination');
+      break;
+
+    case 'pagination':
+      if (!paginationType) {
+        notify('error', 'Please select a pagination type.');
+        return;
+      }
+      const settings = getListSettingsObject();
+      const paginationSelector = settings.pagination?.selector;
+      if (['clickNext', 'clickLoadMore'].includes(paginationType) && !paginationSelector) {
+        notify('error', 'Please select the pagination element first.');
+        return;
+      }
+      stopPaginationMode();
+      setShowPaginationOptions(false);
+      startLimitMode();
+      setShowLimitOptions(true);
+      setCaptureStage('limit');
+      break;
+
+    case 'limit':
+      if (!limitType || (limitType === 'custom' && !customLimit)) {
+        notify('error', 'Please select a limit or enter a custom limit.');
+        return;
+      }
+      const limit = limitType === 'custom' ? parseInt(customLimit) : parseInt(limitType);
+      if (isNaN(limit) || limit <= 0) {
+        notify('error', 'Please enter a valid limit.');
+        return;
+      }
+      stopLimitMode();
+      setShowLimitOptions(false);
+      stopCaptureAndEmitGetListSettings();
+      setCaptureStage('complete');
+      break;
+
+    case 'complete':
+      setCaptureStage('initial');
+      break;
+  }
+}, [
+  captureStage, 
+  paginationType, 
+  limitType, 
+  customLimit, 
+  startPaginationMode, 
+  stopPaginationMode, 
+  startLimitMode, 
+  stopLimitMode, 
+  notify, 
+  stopCaptureAndEmitGetListSettings, 
+  getListSettingsObject
+]);
+
 
   const handlePaginationSettingSelect = (option: PaginationType) => {
     updatePaginationType(option);
