@@ -133,13 +133,13 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
 
 const NavBarWrapper = styled.div`
   grid-area: navbar;
-  background-color: #3f4853;
+  background-color: white;
   padding:5px;
   display: flex;
   justify-content: space-between;
 `;
 
 const ProjectName = styled.b`
-  color: white;
+  color: #3f4853;
   font-size: 1.3em;
 `;
