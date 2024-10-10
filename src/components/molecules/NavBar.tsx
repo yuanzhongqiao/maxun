@@ -6,7 +6,7 @@ import { useGlobalInfoStore } from "../../context/globalInfo";
 import { Button, IconButton } from "@mui/material";
 import { RecordingIcon } from "../atoms/RecorderIcon";
 import { SaveRecording } from "./SaveRecording";
-import { Circle, Add } from "@mui/icons-material";
+import { Circle, Add, Logout } from "@mui/icons-material";
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/auth';
@@ -110,18 +110,21 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                 exit</Button>
                 : null}
               <Button sx={{
-                width: '100px',
-                background: '#fff',
-                color: 'rgba(25, 118, 210, 0.7)',
-                padding: '9px',
-                marginRight: '19px',
-                '&:hover': {
-                  background: 'white',
-                  color: 'rgb(25, 118, 210)',
-                }
+                width: '140px',
+                borderRadius: '5px',
+                  padding: '8px',
+                  background: '#ff00c3',
+                  color: 'white',
+                  marginRight: '10px',
+                  fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
+                  fontWeight: '500',
+                  fontSize: '0.875rem',
+                  lineHeight: '1.75',
+                  letterSpacing: '0.02857em',
+                  '&:hover': { color: 'white', backgroundColor: '#ff00c3' }
               }} onClick={logout}>
-                <MeetingRoomIcon sx={{ marginRight: '5px' }} />
-                logout</Button>
+                <Logout sx={{ marginRight: '5px' }} />
+                Logout</Button>
             </div>
           </>
         ) : ""
