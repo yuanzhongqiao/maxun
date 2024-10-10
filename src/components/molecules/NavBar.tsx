@@ -114,7 +114,7 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                   width: '140px',
                   borderRadius: '5px',
                   padding: '8px',
-                  background: '#ff00c3',
+                  background: 'red',
                   color: 'white',
                   marginRight: '10px',
                   fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
@@ -122,7 +122,7 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                   fontSize: '0.875rem',
                   lineHeight: '1.75',
                   letterSpacing: '0.02857em',
-                  '&:hover': { color: 'white', backgroundColor: '#ff00c3' }
+                  '&:hover': { color: 'white', backgroundColor: 'red' }
                 }} onClick={goToMainMenu}>
                   <Clear sx={{ marginRight: '5px' }} />
                   Discard</IconButton>
