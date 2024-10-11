@@ -78,7 +78,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       if (id) {
         fetchWorkflow(id, workflowHandler);
       }
-    }, (900 * 60 * 15));
+    }, (1000 * 60 * 15));
     return () => {
       socket?.off("workflow", workflowHandler);
       clearInterval(interval);
@@ -408,7 +408,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                width: '300px'
+                width: '500px'
               }}
             >
               <FormControlLabel value="10" control={<Radio />} label="10" />
