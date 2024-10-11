@@ -61,7 +61,7 @@ const Register = () => {
             <Typography variant="h4" gutterBottom>
                 Create an account
             </Typography>
-            <Box component="form" onSubmit={submitForm} sx={{ maxWidth: 300, width: '100%' }}>
+            <Box component="form" onSubmit={submitForm} sx={{ maxWidth: 400, width: '100%' }}>
                 <TextField
                     margin="normal"
                     required

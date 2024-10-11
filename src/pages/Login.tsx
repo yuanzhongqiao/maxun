@@ -63,7 +63,7 @@ const Login = () => {
             <Typography variant="h4" gutterBottom>
                 Welcome Back!
             </Typography>
-            <Box component="form" onSubmit={submitForm} sx={{ maxWidth: 300, width: '100%' }}>
+            <Box component="form" onSubmit={submitForm} sx={{ maxWidth: 400, width: '100%' }}>
                 <TextField
                     fullWidth
                     label="Email"
