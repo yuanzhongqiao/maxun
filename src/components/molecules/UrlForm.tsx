@@ -1,12 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import type { SyntheticEvent } from 'react';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { NavBarForm, NavBarInput } from "../atoms/form";
 import { UrlFormButton } from "../atoms/buttons/buttons";
 import { useSocketStore } from '../../context/socket';
 import { Socket } from "socket.io-client";
-
-// TODO: Bring back REFRESH
 
 type Props = {
     currentAddress: string;
@@ -19,7 +17,6 @@ export const UrlForm = ({
     handleRefresh,
     setCurrentAddress,
 }: Props) => {
-    // Internal address state, initially set to currentAddress. We need this else the input field will not update with recordingUrl 
     const [address, setAddress] = useState<string>(currentAddress);
     const { socket } = useSocketStore();
 
@@ -27,15 +24,7 @@ export const UrlForm = ({
         setAddress((event.target as HTMLInputElement).value);
     }, []);
 
-    const onSubmit = (event: SyntheticEvent): void => {
-        event.preventDefault();
-        let url = address;
-
-        // If no manual change, use the currentAddress prop
-        if (address === currentAddress) {
-            url = currentAddress;
-        }
-
+    const submitForm = useCallback((url: string): void => {
         // Add protocol if missing
         if (!/^(?:f|ht)tps?\:\/\//.test(url)) {
             url = "https://" + url;
@@ -49,12 +38,20 @@ export const UrlForm = ({
         } catch (e) {
             alert(`ERROR: ${url} is not a valid url!`);
         }
+    }, [setCurrentAddress]);
+
+    const onSubmit = (event: SyntheticEvent): void => {
+        event.preventDefault();
+        submitForm(address);
     };
 
-    // Sync internal state with currentAddress prop when it changes
+    // Sync internal state with currentAddress prop when it changes and auto-submit
     useEffect(() => {
         setAddress(currentAddress);
-    }, [currentAddress]);
+        if (currentAddress !== '') {
+            submitForm(currentAddress);
+        }
+    }, [currentAddress, submitForm]);
 
     return (
         <NavBarForm onSubmit={onSubmit}>
