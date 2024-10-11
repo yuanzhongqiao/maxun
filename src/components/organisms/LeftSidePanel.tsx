@@ -63,7 +63,7 @@ export const LeftSidePanel = (
       if (id) {
         fetchWorkflow(id, workflowHandler);
       }
-    }, (1000 * 60 * 15));
+    }, (900 * 60 * 15));
     return () => clearInterval(interval)
   }, [id]);
 

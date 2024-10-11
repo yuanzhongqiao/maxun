@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Box } from '@mui/material';
 import { BrowserContent } from "../components/organisms/BrowserContent";
 import { InterpretationLog } from "../components/molecules/InterpretationLog";
 import { startRecording, getActiveBrowserId } from "../api/recording";
-import { LeftSidePanel } from "../components/organisms/LeftSidePanel";
 import { RightSidePanel } from "../components/organisms/RightSidePanel";
 import { Loader } from "../components/atoms/Loader";
 import { useSocketStore } from "../context/socket";
@@ -35,7 +34,6 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
   const [showOutputData, setShowOutputData] = useState(false);
 
   const browserContentRef = React.useRef<HTMLDivElement>(null);
-  const workflowListRef = React.useRef<HTMLDivElement>(null);
 
   const { setId, socket } = useSocketStore();
   const { setWidth } = useBrowserDimensionsStore();
@@ -52,7 +50,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
     });
   };
 
-  useEffect(() => changeBrowserDimensions(), [isLoaded])
+  // useEffect(() => changeBrowserDimensions(), [isLoaded])
 
   useEffect(() => {
     let isCancelled = false;
@@ -113,27 +111,19 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
   return (
     <ActionProvider>
       <BrowserStepsProvider>
-        <div>
-          {isLoaded ?
-            <Grid container direction="row" spacing={0}>
-              <Grid item xs={2} ref={workflowListRef} style={{ display: "flex", flexDirection: "row" }}>
-                <LeftSidePanel
-                  sidePanelRef={workflowListRef.current}
-                  alreadyHasScrollbar={hasScrollbar}
-                  recordingName={recordingName ? recordingName : ''}
-                  handleSelectPairForEdit={handleSelectPairForEdit}
-                />
-              </Grid>
-              <Grid id="browser-content" ref={browserContentRef} item xs>
+        <Box sx={{ flexGrow: 1 }}>
+          {isLoaded ? (
+            <Grid container spacing={1}>
+              <Grid id="browser-content" ref={browserContentRef} item xs={9}>
                 <BrowserContent />
                 <InterpretationLog isOpen={showOutputData} setIsOpen={setShowOutputData} />
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={3}>
                 <RightSidePanel onFinishCapture={handleShowOutputData} />
               </Grid>
             </Grid>
-            : <Loader />}
-        </div>
+          ) : <Loader />}
+        </Box>
       </BrowserStepsProvider>
     </ActionProvider>
   );
@@ -144,4 +134,24 @@ const RecordingPageWrapper = styled.div`
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+`;
+
+// Fixed grid container to ensure elements stay next to each other
+const FixedGridContainer = styled(Grid)`
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  flex-direction: row;
+  align-items: stretch;
+
+  #browser-content {
+    flex: 1;
+    position: relative;
+    height: 100%;
+  }
+
+  .MuiGrid-item {
+    position: relative;
+    height: 100%;
+  }
 `;

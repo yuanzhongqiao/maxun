@@ -6,6 +6,7 @@ import { useBrowserDimensionsStore } from "../../context/browserDimensions";
 import { BrowserTabs } from "../molecules/BrowserTabs";
 import { useSocketStore } from "../../context/socket";
 import { getCurrentTabs, getCurrentUrl, interpretCurrentRecording } from "../../api/recording";
+import { Box } from '@mui/material';
 
 // TODO: Tab !show currentUrl after recordingUrl global state
 export const BrowserContent = () => {
@@ -114,7 +115,7 @@ export const BrowserContent = () => {
   }, [])
 
   return (
-    <BrowserContentWrapper>
+    <>
       <BrowserTabs
         tabs={tabs}
         handleTabChange={handleTabChange}
@@ -125,14 +126,13 @@ export const BrowserContent = () => {
       />
       <BrowserNavBar
         // todo: use width from browser dimension once fixed
-        browserWidth={1270}
+        browserWidth={900}
         handleUrlChanged={handleUrlChanged}
       />
       <BrowserWindow/>
-    </BrowserContentWrapper>
+    </>
   );
 }
 
 const BrowserContentWrapper = styled.div`
-  grid-area: browser;
 `;

@@ -114,7 +114,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
           background: '#3f4853',
           border: 'none',
           padding: '10px 20px',
-          width: 1280,
+          width: 900,
           textAlign: 'left'
         }}>
         Interpretation Log
@@ -129,7 +129,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
             background: 'white',
             color: 'black',
             padding: '10px',
-            height: 720,
+            height: 300,
             width: width - 10,
             display: 'flex'
           }
@@ -173,7 +173,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
               <FormLabel>
                 <h4>What is the maximum number of rows you want to extract?</h4>
               </FormLabel>
-              <RadioGroup row value={selectedOption} onChange={handleRadioChange} sx={{ width: '500px' }}>
+              <RadioGroup row value={selectedOption} onChange={handleRadioChange} sx={{ width: '300px' }}>
                 <FormControlLabel value="10" control={<Radio />} label="10" />
                 <FormControlLabel value="100" control={<Radio />} label="100" />
                 <FormControlLabel value="custom" control={<Radio />} label="Custom" />

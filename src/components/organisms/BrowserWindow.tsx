@@ -360,15 +360,15 @@ export const BrowserWindow = () => {
                 <Highlighter
                     unmodifiedRect={highlighterData?.rect}
                     displayedSelector={highlighterData?.selector}
-                    width={width}
-                    height={height}
+                    width={900}
+                    height={300}
                     canvasRect={canvasRef.current.getBoundingClientRect()}
                 />
                 : null}
             <Canvas
                 onCreateRef={setCanvasReference}
-                width={width}
-                height={height}
+                width={900}
+                height={300}
             />
         </div>
     );
@@ -383,7 +383,7 @@ const drawImage = (image: string, canvas: HTMLCanvasElement): void => {
     img.src = image;
     img.onload = () => {
         URL.revokeObjectURL(img.src);
-        ctx?.drawImage(img, 0, 0, 1280, 720);
+        ctx?.drawImage(img, 0, 0, 900, 300);
     };
 
 };

@@ -87,7 +87,7 @@ const ProxyForm: React.FC = () => {
             <Typography variant="h6" gutterBottom component="div" style={{ marginTop: '20px' }}>
                 Proxy Configuration
             </Typography>
-            <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, width: '100%' }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 300, width: '100%' }}>
                 <FormControl>
                     <TextField
                         label="Proxy Server URL"

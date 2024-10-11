@@ -31,7 +31,7 @@ export const AlertSnackbar = ({ severity, message, isOpen }: AlertSnackbarProps)
   };
 
   return (
-    <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={open} autoHideDuration={5000} onClose={handleClose}>
+    <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={open} autoHideDuration={3000} onClose={handleClose}>
       <Alert onClose={handleClose} severity={severity} sx={{ width: '100%' }}>
         {message}
       </Alert>
