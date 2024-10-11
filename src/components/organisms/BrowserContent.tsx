@@ -7,6 +7,7 @@ import { BrowserTabs } from "../molecules/BrowserTabs";
 import { useSocketStore } from "../../context/socket";
 import { getCurrentTabs, getCurrentUrl, interpretCurrentRecording } from "../../api/recording";
 
+// TODO: Tab !show currentUrl after recordingUrl global state
 export const BrowserContent = () => {
  const { width } = useBrowserDimensionsStore();
  const { socket } = useSocketStore();
