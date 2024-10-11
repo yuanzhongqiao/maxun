@@ -35,7 +35,7 @@ export const PairDisplayDiv: FC<PairDisplayDivProps> = ({ index, pair }) => {
 const DescriptionWrapper = styled.div`
   margin: 0;
   font-family: "Roboto","Helvetica","Arial",sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   font-size: 1rem;
   line-height: 1.5;
   letter-spacing: 0.00938em;
