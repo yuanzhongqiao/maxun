@@ -160,7 +160,7 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 300,
+          width: 500,
           background: 'white',
           border: '2px solid #000',
           boxShadow: '24',
