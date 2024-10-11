@@ -6,6 +6,8 @@ import { UrlFormButton } from "../atoms/buttons/buttons";
 import { useSocketStore } from '../../context/socket';
 import { Socket } from "socket.io-client";
 
+// TODO: Bring back REFRESH
+
 type Props = {
     currentAddress: string;
     handleRefresh: (socket: Socket) => void;
