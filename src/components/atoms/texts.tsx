@@ -9,7 +9,7 @@ export const WarningText = styled.p`
   background: rgba(255,165,0,0.15);
   padding: 5px;
   font-family: "Roboto","Helvetica","Arial",sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.5;
   letter-spacing: 0.00938em;
 `
