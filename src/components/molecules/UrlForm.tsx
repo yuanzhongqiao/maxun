@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import type { SyntheticEvent } from 'react';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { NavBarForm, NavBarInput } from "../atoms/form";
@@ -19,6 +19,7 @@ export const UrlForm = ({
 }: Props) => {
     const [address, setAddress] = useState<string>(currentAddress);
     const { socket } = useSocketStore();
+    const lastSubmittedRef = useRef<string>('');
 
     const onChange = useCallback((event: SyntheticEvent): void => {
         setAddress((event.target as HTMLInputElement).value);
@@ -34,7 +35,8 @@ export const UrlForm = ({
         try {
             // Validate the URL
             new URL(url);
-            setCurrentAddress(url); 
+            setCurrentAddress(url);
+            lastSubmittedRef.current = url;  // Update the last submitted URL
         } catch (e) {
             alert(`ERROR: ${url} is not a valid url!`);
         }
@@ -45,10 +47,10 @@ export const UrlForm = ({
         submitForm(address);
     };
 
-    // Sync internal state with currentAddress prop when it changes and auto-submit
+    // Sync internal state with currentAddress prop when it changes and auto-submit once
     useEffect(() => {
         setAddress(currentAddress);
-        if (currentAddress !== '') {
+        if (currentAddress !== '' && currentAddress !== lastSubmittedRef.current) {
             submitForm(currentAddress);
         }
     }, [currentAddress, submitForm]);
