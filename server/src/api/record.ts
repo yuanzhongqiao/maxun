@@ -171,6 +171,80 @@ router.get("/robots/:id/runs/:runId", requireAPIKey, async (req: Request, res: R
     }
 });
 
+async function createWorkflowAndStoreMetadata(id: string, userId: string) {
+    if (!id) {
+        id = uuid();
+    }
+
+    const recording = await Robot.findOne({
+        where: {
+            'recording_meta.id': id
+        },
+        raw: true
+    });
+
+    if (!recording || !recording.recording_meta || !recording.recording_meta.id) {
+        return {
+            success: false,
+            error: 'Recording not found'
+        };
+    }
+
+    const proxyConfig = await getDecryptedProxyConfig(userId);
+    let proxyOptions: any = {};
+
+    if (proxyConfig.proxy_url) {
+        proxyOptions = {
+            server: proxyConfig.proxy_url,
+            ...(proxyConfig.proxy_username && proxyConfig.proxy_password && {
+                username: proxyConfig.proxy_username,
+                password: proxyConfig.proxy_password,
+            }),
+        };
+    }
+
+    try {
+        const browserId = createRemoteBrowserForRun({
+            browser: chromium,
+            launchOptions: {
+                headless: true,
+                proxy: proxyOptions.server ? proxyOptions : undefined,
+            }
+        });
+
+        const run = await Run.create({
+            status: 'Running',
+            name: recording.recording_meta.name,
+            robotId: recording.id,
+            robotMetaId: recording.recording_meta.id,
+            startedAt: new Date().toLocaleString(),
+            finishedAt: '',
+            browserId: id,
+            interpreterSettings: { maxConcurrency: 1, maxRepeats: 1, debug: true },
+            log: '',
+            runId: id,
+            serializableOutput: {},
+            binaryOutput: {},
+        });
+
+        const plainRun = run.toJSON();
+
+        return {
+            browserId,
+            runId: plainRun.runId,
+        }
+
+    } catch (e) {
+        const { message } = e as Error;
+        logger.log('info', `Error while scheduling a run with id: ${id}`);
+        console.log(message);
+        return {
+            success: false,
+            error: message,
+        };
+    }
+}
+
 async function readyForRunHandler(browserId: string, id: string) {
     try {
         const interpretation = await executeRun(id);
@@ -246,80 +320,6 @@ async function executeRun(id: string) {
         logger.log('info', `Error while running a recording with id: ${id} - ${error.message}`);
         console.log(error.message);
         return false;
-    }
-}
-
-async function createWorkflowAndStoreMetadata(id: string, userId: string) {
-    if (!id) {
-        id = uuid();
-    }
-
-    const recording = await Robot.findOne({
-        where: {
-            'recording_meta.id': id
-        },
-        raw: true
-    });
-
-    if (!recording || !recording.recording_meta || !recording.recording_meta.id) {
-        return {
-            success: false,
-            error: 'Recording not found'
-        };
-    }
-
-    const proxyConfig = await getDecryptedProxyConfig(userId);
-    let proxyOptions: any = {};
-
-    if (proxyConfig.proxy_url) {
-        proxyOptions = {
-            server: proxyConfig.proxy_url,
-            ...(proxyConfig.proxy_username && proxyConfig.proxy_password && {
-                username: proxyConfig.proxy_username,
-                password: proxyConfig.proxy_password,
-            }),
-        };
-    }
-
-    try {
-        const browserId = createRemoteBrowserForRun({
-            browser: chromium,
-            launchOptions: {
-                headless: true,
-                proxy: proxyOptions.server ? proxyOptions : undefined,
-            }
-        });
-
-        const run = await Run.create({
-            status: 'Running',
-            name: recording.recording_meta.name,
-            robotId: recording.id,
-            robotMetaId: recording.recording_meta.id,
-            startedAt: new Date().toLocaleString(),
-            finishedAt: '',
-            browserId: id,
-            interpreterSettings: { maxConcurrency: 1, maxRepeats: 1, debug: true },
-            log: '',
-            runId: id,
-            serializableOutput: {},
-            binaryOutput: {},
-        });
-
-        const plainRun = run.toJSON();
-
-        return {
-            browserId,
-            runId: plainRun.runId,
-        }
-
-    } catch (e) {
-        const { message } = e as Error;
-        logger.log('info', `Error while scheduling a run with id: ${id}`);
-        console.log(message);
-        return {
-            success: false,
-            error: message,
-        };
     }
 }
 
