@@ -1,8 +1,6 @@
-import fs from "fs";
 import { uuid } from "uuidv4";
 import { chromium } from "playwright";
 import { io, Socket } from "socket.io-client";
-import { readFile, saveFile } from "../storage";
 import { createRemoteBrowserForRun, destroyRemoteBrowser } from '../../browser-management/controller';
 import logger from '../../logger';
 import { browserPool } from "../../server";
