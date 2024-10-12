@@ -10,9 +10,6 @@ import Run from "../../models/Run";
 import { getDecryptedProxyConfig } from "../../routes/proxy";
 
 async function createWorkflowAndStoreMetadata(id: string, userId: string) {
-  if (!id) {
-    id = uuid();
-  }
 
   const recording = await Robot.findOne({
     where: {
