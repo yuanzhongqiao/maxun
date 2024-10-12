@@ -158,7 +158,7 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
   }
 
   return (
-    <Stack direction='row' spacing={0} sx={{ minHeight: '800px' }}>
+    <Stack direction='row' spacing={0} sx={{ minHeight: '900px' }}>
       <MainMenu value={content} handleChangeContent={setContent} />
       {DisplayContent()}
     </Stack>

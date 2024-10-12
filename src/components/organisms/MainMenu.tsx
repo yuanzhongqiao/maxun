@@ -19,10 +19,11 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
     <Paper
       sx={{
         height: 'auto',
-        maxWidth: 'fit-content',
-        backgroundColor: 'lightgray',
+        width: '250px',
+        backgroundColor: 'white',
         paddingTop: '2rem',
       }}
+      variant="outlined"
     >
       <Box sx={{
         width: '100%',
@@ -38,7 +39,7 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
           <Tab sx={{
             alignItems: 'baseline',
             fontSize: 'medium',
-          }} value="recordings" label="Recordings" />
+          }} value="recordings" label="Robots" />
           <Tab sx={{
             alignItems: 'baseline',
             fontSize: 'medium',

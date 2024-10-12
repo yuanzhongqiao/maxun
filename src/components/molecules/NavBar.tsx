@@ -6,10 +6,12 @@ import { useGlobalInfoStore } from "../../context/globalInfo";
 import { Button, IconButton } from "@mui/material";
 import { RecordingIcon } from "../atoms/RecorderIcon";
 import { SaveRecording } from "./SaveRecording";
-import { Circle } from "@mui/icons-material";
+import { Circle, Add, Logout, Clear } from "@mui/icons-material";
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/auth';
+import { GenericModal } from '../atoms/GenericModal';
+import TextField from '@mui/material/TextField';
 
 interface NavBarProps {
   newRecording: () => void;
@@ -17,11 +19,15 @@ interface NavBarProps {
   isRecording: boolean;
 }
 
-export const NavBar = ({ newRecording, recordingName, isRecording }: NavBarProps) => {
+export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isRecording }) => {
 
-  const { notify, browserId, setBrowserId, recordingLength } = useGlobalInfoStore();
+  const { notify, browserId, setBrowserId, recordingLength, recordingUrl, setRecordingUrl } = useGlobalInfoStore();
   const { state, dispatch } = useContext(AuthContext);
   const { user } = state;
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  console.log(`Recording URL: ${recordingUrl}`)
+
   const navigate = useNavigate();
 
   const logout = async () => {
@@ -48,9 +54,14 @@ export const NavBar = ({ newRecording, recordingName, isRecording }: NavBarProps
       setBrowserId(null);
       await stopRecording(browserId);
     }
+    setModalOpen(true);
+  };
+
+  const startRecording = () => {
+    setModalOpen(false);
     newRecording();
-    notify('info', 'New Recording started');
-  }
+    notify('info', 'New Recording started for ' + recordingUrl);
+  };
 
   return (
     <NavBarWrapper>
@@ -68,61 +79,92 @@ export const NavBar = ({ newRecording, recordingName, isRecording }: NavBarProps
               display: 'flex',
               justifyContent: 'flex-end',
             }}>
-              <IconButton
-                aria-label="new"
-                size={"small"}
-                onClick={handleNewRecording}
-                sx={{
-                  width: isRecording ? '100px' : '130px',
+              {
+                !isRecording ? (
+                  <>
+                    <IconButton
+                      aria-label="new"
+                      size={"small"}
+                      onClick={handleNewRecording}
+                      sx={{
+                        width: '140px',
+                        borderRadius: '5px',
+                        padding: '8px',
+                        background: '#ff00c3',
+                        color: 'white',
+                        marginRight: '10px',
+                        fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
+                        fontWeight: '500',
+                        fontSize: '0.875rem',
+                        lineHeight: '1.75',
+                        letterSpacing: '0.02857em',
+                        '&:hover': { color: 'white', backgroundColor: '#ff00c3' }
+                      }
+                      }
+                    >
+                      <Add sx={{ marginRight: '5px' }} /> Create Robot
+                    </IconButton>
+                    <IconButton sx={{
+                      width: '140px',
+                      borderRadius: '5px',
+                      padding: '8px',
+                      background: '#ff00c3',
+                      color: 'white',
+                      marginRight: '10px',
+                      fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
+                      fontWeight: '500',
+                      fontSize: '0.875rem',
+                      lineHeight: '1.75',
+                      letterSpacing: '0.02857em',
+                      '&:hover': { color: 'white', backgroundColor: '#ff00c3' }
+                    }} onClick={logout}>
+                      <Logout sx={{ marginRight: '5px' }} />
+                      Logout</IconButton>
+                  </>
+                ) : <IconButton sx={{
+                  width: '140px',
                   borderRadius: '5px',
                   padding: '8px',
-                  background: 'white',
-                  color: 'rgba(255,0,0,0.7)',
+                  background: 'red',
+                  color: 'white',
                   marginRight: '10px',
                   fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
                   fontWeight: '500',
                   fontSize: '0.875rem',
                   lineHeight: '1.75',
                   letterSpacing: '0.02857em',
-                  '&:hover': { color: 'red', backgroundColor: 'white' }
-                }
-                }
-              >
-                <Circle sx={{ marginRight: '5px' }} /> {isRecording ? 'NEW' : 'RECORD'}
-              </IconButton>
+                  '&:hover': { color: 'white', backgroundColor: 'red' }
+                }} onClick={goToMainMenu}>
+                  <Clear sx={{ marginRight: '5px' }} />
+                  Discard</IconButton>
+              }
               {
                 recordingLength > 0
                   ? <SaveRecording fileName={recordingName} />
                   : null
               }
-              {isRecording ? <Button sx={{
-                width: '100px',
-                background: '#fff',
-                color: 'rgba(25, 118, 210, 0.7)',
-                padding: '9px',
-                marginRight: '19px',
-                '&:hover': {
-                  background: 'white',
-                  color: 'rgb(25, 118, 210)',
-                }
-              }} onClick={goToMainMenu}>
-                <MeetingRoomIcon sx={{ marginRight: '5px' }} />
-                exit</Button>
-                : null}
-              <Button sx={{
-                width: '100px',
-                background: '#fff',
-                color: 'rgba(25, 118, 210, 0.7)',
-                padding: '9px',
-                marginRight: '19px',
-                '&:hover': {
-                  background: 'white',
-                  color: 'rgb(25, 118, 210)',
-                }
-              }} onClick={logout}>
-                <MeetingRoomIcon sx={{ marginRight: '5px' }} />
-                logout</Button>
             </div>
+            <GenericModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+              <div style={{ padding: '20px' }}>
+                <h2>Enter URL</h2>
+                <TextField
+                  label="URL"
+                  variant="outlined"
+                  fullWidth
+                  value={recordingUrl}
+                  onChange={(e: any) => setRecordingUrl(e.target.value)}
+                  style={{ marginBottom: '20px' }}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={startRecording}
+                  disabled={!recordingUrl}
+                >
+                  Submit & Start Recording
+                </Button>
+              </div>
+            </GenericModal>
           </>
         ) : ""
       }
@@ -133,13 +175,13 @@ export const NavBar = ({ newRecording, recordingName, isRecording }: NavBarProps
 
 const NavBarWrapper = styled.div`
   grid-area: navbar;
-  background-color: #3f4853;
+  background-color: white;
   padding:5px;
   display: flex;
   justify-content: space-between;
 `;
 
 const ProjectName = styled.b`
-  color: white;
+  color: #3f4853;
   font-size: 1.3em;
 `;

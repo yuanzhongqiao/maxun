@@ -8,8 +8,7 @@ const FormContainer = styled(Box)({
     display: 'flex',
     flexDirection: 'column',
     gap: '16px',
-    padding: '20px',
-    borderRadius: '8px',
+    marginLeft: '30px'
 });
 
 const FormControl = styled(Box)({
@@ -85,10 +84,10 @@ const ProxyForm: React.FC = () => {
 
     return (
         <FormContainer>
-            <form onSubmit={handleSubmit}>
-                <Typography variant="subtitle1" gutterBottom style={{ marginBottom: '20px', marginTop: '20px' }}>
-                    Proxy Configuration
-                </Typography>
+            <Typography variant="h6" gutterBottom component="div" style={{ marginTop: '20px' }}>
+                Proxy Configuration
+            </Typography>
+            <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, width: '100%' }}>
                 <FormControl>
                     <TextField
                         label="Proxy Server URL"
@@ -98,9 +97,9 @@ const ProxyForm: React.FC = () => {
                         fullWidth
                         required
                         error={!!errors.server_url}
-                        helperText={errors.server_url || `Proxy to be used for all requests. 
-                        HTTP and SOCKS proxies are supported, for example http://myproxy.com:3128 or 
-                        socks5://myproxy.com:3128. Short form myproxy.com:3128 is considered an HTTP proxy.`}
+                        helperText={errors.server_url || `Proxy to be used for all robots. HTTP and SOCKS proxies are supported. 
+                        Example http://myproxy.com:3128 or socks5://myproxy.com:3128. 
+                        Short form myproxy.com:3128 is considered an HTTP proxy.`}
                     />
                 </FormControl>
                 <FormControl>
@@ -147,7 +146,7 @@ const ProxyForm: React.FC = () => {
                 >
                     Add Proxy
                 </Button>
-            </form>
+            </Box>
         </FormContainer>
     );
 };

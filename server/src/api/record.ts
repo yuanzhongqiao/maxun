@@ -106,7 +106,7 @@ router.get("/robots/:id", requireAPIKey, async (req: Request, res: Response) => 
     }
 });
 
-// TODO: Format runs to send more data formatted 
+// TODO: Format runs to send more data formatted
 router.get("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response) => {
     try {
         const runs = await Run.findAll({

@@ -12,6 +12,7 @@ import { UrlForm } from './UrlForm';
 import { useCallback, useEffect, useState } from "react";
 import { useSocketStore } from "../../context/socket";
 import { getCurrentUrl } from "../../api/recording";
+import { useGlobalInfoStore } from '../../context/globalInfo';
 
 const StyledNavBar = styled.div<{ browserWidth: number }>`
     display: flex;
@@ -31,8 +32,7 @@ const BrowserNavBar: FC<NavBarProps> = ({
 }) => {
 
   const { socket } = useSocketStore();
-
-  const [currentUrl, setCurrentUrl] = useState<string>('https://');
+  const { recordingUrl, setRecordingUrl } = useGlobalInfoStore();
 
   const handleRefresh = useCallback((): void => {
     socket?.emit('input:refresh');
@@ -44,14 +44,13 @@ const BrowserNavBar: FC<NavBarProps> = ({
 
   const handleCurrentUrlChange = useCallback((url: string) => {
     handleUrlChanged(url);
-    setCurrentUrl(url);
-  }, [handleUrlChanged, currentUrl]);
+    setRecordingUrl(url);
+  }, [handleUrlChanged, recordingUrl]);
 
   useEffect(() => {
     getCurrentUrl().then((response) => {
       if (response) {
         handleUrlChanged(response);
-        setCurrentUrl(response);
       }
     }).catch((error) => {
       console.log("Fetching current url failed");
@@ -72,12 +71,13 @@ const BrowserNavBar: FC<NavBarProps> = ({
   const addAddress = (address: string) => {
     if (socket) {
       handleUrlChanged(address);
+      setRecordingUrl(address);
       handleGoTo(address);
     }
   };
 
   return (
-    <StyledNavBar browserWidth={browserWidth}>
+    <StyledNavBar browserWidth={900}>
       <NavBarButton
         type="button"
         onClick={() => {
@@ -111,7 +111,7 @@ const BrowserNavBar: FC<NavBarProps> = ({
       </NavBarButton>
 
       <UrlForm
-        currentAddress={currentUrl}
+        currentAddress={recordingUrl}
         handleRefresh={handleRefresh}
         setCurrentAddress={addAddress}
       />

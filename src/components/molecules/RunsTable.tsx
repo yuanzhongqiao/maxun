@@ -16,7 +16,7 @@ import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface Column {
-  id: 'status' | 'name' | 'startedAt' | 'finishedAt' | 'duration' | 'task' | 'runId' | 'delete';
+  id: 'status' | 'name' | 'startedAt' | 'finishedAt' | 'runId' | 'delete';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -25,12 +25,11 @@ interface Column {
 
 export const columns: readonly Column[] = [
   { id: 'status', label: 'Status', minWidth: 80 },
-  { id: 'name', label: 'Name', minWidth: 80 },
+  { id: 'name', label: 'Robot Name', minWidth: 80 },
   { id: 'startedAt', label: 'Started at', minWidth: 80 },
   { id: 'finishedAt', label: 'Finished at', minWidth: 80 },
-  { id: 'duration', label: 'Duration', minWidth: 80 },
-  { id: 'runId', label: 'Run id', minWidth: 80 },
-  { id: 'task', label: 'Task', minWidth: 80 },
+  { id: 'runId', label: 'Run ID', minWidth: 80 },
+  // { id: 'task', label: 'Task', minWidth: 80 },
   { id: 'delete', label: 'Delete', minWidth: 80 },
 ];
 
@@ -40,8 +39,7 @@ export interface Data {
   name: string;
   startedAt: string;
   finishedAt: string;
-  duration: string;
-  task: string;
+  // task: string;
   log: string;
   runId: string;
   interpreterSettings: RunSettings;
@@ -78,7 +76,6 @@ export const RunsTable = (
     if (runs) {
       const parsedRows: Data[] = [];
       runs.map((run: any, index) => {
-        // const run = JSON.parse(run);
           parsedRows.push({
               id: index,
               ...run,

@@ -89,8 +89,9 @@ const ApiKeyManager = () => {
 
   return (
     <Container>
-      <Typography variant="h5" sx={{ marginBottom: '20px'}}>Manage Your API Key</Typography>
-
+      <Typography variant="h6" gutterBottom component="div" style={{ marginBottom: '20px', alignSelf: 'flex-start' }}>
+        Manage Your API Key
+      </Typography>
       {apiKey ? (
         <TableContainer component={Paper} sx={{ width: '100%', overflow: 'hidden' }}>
           <Table>
@@ -106,18 +107,18 @@ const ApiKeyManager = () => {
                 <TableCell>{apiKeyName}</TableCell>
                 <TableCell>{showKey ? `${apiKey?.substring(0, 10)}...` : '***************'}</TableCell>
                 <TableCell>
-                  <Tooltip title="Copy API Key">
+                  <Tooltip title="Copy">
                     <IconButton onClick={copyToClipboard}>
                       <ContentCopy />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title={showKey ? 'Hide API Key' : 'Show API Key'}>
+                  <Tooltip title={showKey ? 'Hide' : 'Show'}>
                     <IconButton onClick={() => setShowKey(!showKey)}>
                       <Visibility />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Delete API Key">
-                    <IconButton onClick={deleteApiKey} color="error">
+                  <Tooltip title="Delete">
+                    <IconButton onClick={deleteApiKey}>
                       <Delete />
                     </IconButton>
                   </Tooltip>
@@ -129,7 +130,7 @@ const ApiKeyManager = () => {
       ) : (
         <>
           <Typography>You haven't generated an API key yet.</Typography>
-          <Button onClick={generateApiKey} variant="contained" color="primary" sx={{ marginTop: '15px'}}>
+          <Button onClick={generateApiKey} variant="contained" color="primary" sx={{ marginTop: '15px' }}>
             Generate API Key
           </Button>
         </>

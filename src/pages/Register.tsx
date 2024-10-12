@@ -50,64 +50,66 @@ const Register = () => {
     };
 
     return (
-        <Container maxWidth="sm" sx={{ mt: 8 }}>
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
-            >
-                <Typography component="h1" variant="h5">
-                    Create an account
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                mt: 5,
+            }}
+        >
+            <Typography variant="h4" gutterBottom>
+                Create an account
+            </Typography>
+            <Box component="form" onSubmit={submitForm} sx={{ maxWidth: 400, width: '100%' }}>
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    value={email}
+                    onChange={handleChange}
+                    autoComplete="email"
+                />
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={handleChange}
+                    autoComplete="current-password"
+                />
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    sx={{ mt: 3, mb: 2 }}
+                    disabled={loading || !email || !password}
+                >
+                    {loading ? (
+                        <>
+                            <CircularProgress size={20} sx={{ mr: 2 }} />
+                            Loading
+                        </>
+                    ) : (
+                        'Register'
+                    )}
+                </Button>
+                <Typography variant="body2" align="center">
+                    Already have an account?{' '}
+                    <Link to="/login" style={{ textDecoration: 'none', color: '#1976d2' }}>
+                        Login
+                    </Link>
                 </Typography>
-                <Box component="form" onSubmit={submitForm} sx={{ mt: 1 }}>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        value={email}
-                        onChange={handleChange}
-                        autoComplete="email"
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={handleChange}
-                        autoComplete="current-password"
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        sx={{ mt: 3, mb: 2 }}
-                        disabled={loading || !email || !password}
-                    >
-                        {loading ? (
-                            <CircularProgress size={24} sx={{ color: '#fff' }} />
-                        ) : (
-                            'Register'
-                        )}
-                    </Button>
-                    <Typography variant="body2" align="center">
-                        Already have an account?{' '}
-                        <Link to="/login" style={{ textDecoration: 'none', color: '#1976d2' }}>
-                            Login
-                        </Link>
-                    </Typography>
-                </Box>
             </Box>
-        </Container>
+        </Box>
     );
 };
 
