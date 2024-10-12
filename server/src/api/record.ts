@@ -322,6 +322,38 @@ async function createWorkflowAndStoreMetadata(id: string, userId: string) {
     }
   }
 
+  export async function handleRunRecording(id: string, userId: string) {
+    try {
+      const result = await createWorkflowAndStoreMetadata(id, userId);
+      const { browserId, runId: newRunId } = result;
+  
+      if (!browserId || !newRunId || !userId) {
+        throw new Error('browserId or runId or userId is undefined');
+      }
+  
+      const socket = io(`http://localhost:8080/${browserId}`, {
+        transports: ['websocket'],
+        rejectUnauthorized: false
+      });
+  
+      socket.on('ready-for-run', () => readyForRunHandler(browserId, newRunId));
+  
+      logger.log('info', `Running recording: ${id}`);
+  
+      socket.on('disconnect', () => {
+        cleanupSocketListeners(socket, browserId, newRunId);
+      });
+  
+    } catch (error: any) {
+      logger.error('Error running recording:', error);
+    }
+  }
+  
+  function cleanupSocketListeners(socket: Socket, browserId: string, id: string) {
+    socket.off('ready-for-run', () => readyForRunHandler(browserId, id));
+    logger.log('info', `Cleaned up listeners for browserId: ${browserId}, runId: ${id}`);
+  }
+
 
 router.post("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response) => {
     try {
