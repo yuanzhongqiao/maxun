@@ -249,14 +249,14 @@ async function readyForRunHandler(browserId: string, id: string) {
 
         if (result && result.success) {
             logger.log('info', `Interpretation of ${id} succeeded`);
+            resetRecordingState(browserId, id);
             return result.interpretationInfo;
         } else {
             logger.log('error', `Interpretation of ${id} failed`);
             await destroyRemoteBrowser(browserId);
+            resetRecordingState(browserId, id);
             return null;
         }
-
-        resetRecordingState(browserId, id);
 
     } catch (error: any) {
         logger.error(`Error during readyForRunHandler: ${error.message}`);
