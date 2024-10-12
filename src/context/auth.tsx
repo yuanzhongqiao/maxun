@@ -81,9 +81,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             return Promise.reject(error);
         }
     );
-
-
-
+    
     return (
         <AuthContext.Provider value={{ state, dispatch }}>
             {children}
