@@ -170,6 +170,25 @@ router.get("/robots/:id/runs/:runId", requireAPIKey, async (req: Request, res: R
     }
 });
 
+async function readyForRunHandler(browserId: string, id: string) {
+    try {
+      const interpretation = await executeRun(id);
+  
+      if (interpretation) {
+        logger.log('info', `Interpretation of ${id} succeeded`);
+      } else {
+        logger.log('error', `Interpretation of ${id} failed`);
+        await destroyRemoteBrowser(browserId);
+      }
+  
+      resetRecordingState(browserId, id);
+  
+    } catch (error: any) {
+      logger.error(`Error during readyForRunHandler: ${error.message}`);
+      await destroyRemoteBrowser(browserId);
+    }
+  }
+
 async function executeRun(id: string) {
     try {
       const run = await Run.findOne({ where: { runId: id } });
