@@ -169,6 +169,60 @@ router.get("/robots/:id/runs/:runId", requireAPIKey, async (req: Request, res: R
     }
 });
 
+async function executeRun(id: string) {
+    try {
+      const run = await Run.findOne({ where: { runId: id } });
+      if (!run) {
+        return {
+          success: false,
+          error: 'Run not found'
+        }
+      }
+  
+      const plainRun = run.toJSON();
+  
+      const recording = await Robot.findOne({ where: { 'recording_meta.id': plainRun.robotMetaId }, raw: true });
+      if (!recording) {
+        return {
+          success: false,
+          error: 'Recording not found'
+        }
+      }
+  
+      plainRun.status = 'running';
+  
+      const browser = browserPool.getRemoteBrowser(plainRun.browserId);
+      if (!browser) {
+        throw new Error('Could not access browser');
+      }
+  
+      const currentPage = await browser.getCurrentPage();
+      if (!currentPage) {
+        throw new Error('Could not create a new page');
+      }
+  
+      const interpretationInfo = await browser.interpreter.InterpretRecording(
+        recording.recording, currentPage, plainRun.interpreterSettings);
+  
+      await destroyRemoteBrowser(plainRun.browserId);
+  
+      await run.update({
+        ...run,
+        status: 'success',
+        finishedAt: new Date().toLocaleString(),
+        browserId: plainRun.browserId,
+        log: interpretationInfo.log.join('\n'),
+        serializableOutput: interpretationInfo.serializableOutput,
+        binaryOutput: interpretationInfo.binaryOutput,
+      });
+      return true;
+    } catch (error: any) {
+      logger.log('info', `Error while running a recording with id: ${id} - ${error.message}`);
+      console.log(error.message);
+      return false;
+    }
+  }
+
 async function createWorkflowAndStoreMetadata(id: string, userId: string) {
     if (!id) {
       id = uuid();
