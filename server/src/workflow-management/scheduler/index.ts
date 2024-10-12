@@ -57,10 +57,10 @@ const runId = uuid();
       robotMetaId: recording.recording_meta.id,
       startedAt: new Date().toLocaleString(),
       finishedAt: '',
-      browserId: id,
+      browserId,
       interpreterSettings: { maxConcurrency: 1, maxRepeats: 1, debug: true },
       log: '',
-      runId: id,
+      runId,
       serializableOutput: {},
       binaryOutput: {},
     });
