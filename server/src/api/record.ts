@@ -256,6 +256,8 @@ async function readyForRunHandler(browserId: string, id: string) {
             return null;
         }
 
+        resetRecordingState(browserId, id);
+
     } catch (error: any) {
         logger.error(`Error during readyForRunHandler: ${error.message}`);
         await destroyRemoteBrowser(browserId);
