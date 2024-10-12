@@ -189,6 +189,11 @@ async function readyForRunHandler(browserId: string, id: string) {
     }
   }
 
+  function resetRecordingState(browserId: string, id: string) {
+    browserId = '';
+    id = '';
+  }
+
 async function executeRun(id: string) {
     try {
       const run = await Run.findOne({ where: { runId: id } });
