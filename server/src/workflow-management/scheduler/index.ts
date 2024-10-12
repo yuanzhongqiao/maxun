@@ -10,38 +10,34 @@ import Run from "../../models/Run";
 import { getDecryptedProxyConfig } from "../../routes/proxy";
 
 async function createWorkflowAndStoreMetadata(id: string, userId: string) {
-  if (!id) {
-    id = uuid();
-  }
-
-  const recording = await Robot.findOne({
-    where: {
-      'recording_meta.id': id
-    },
-    raw: true
-  });
-
-  if (!recording || !recording.recording_meta || !recording.recording_meta.id) {
-    return {
-      success: false,
-      error: 'Recording not found'
-    };
-  }
-
-  const proxyConfig = await getDecryptedProxyConfig(userId);
-  let proxyOptions: any = {};
-
-  if (proxyConfig.proxy_url) {
-    proxyOptions = {
-      server: proxyConfig.proxy_url,
-      ...(proxyConfig.proxy_username && proxyConfig.proxy_password && {
-        username: proxyConfig.proxy_username,
-        password: proxyConfig.proxy_password,
-      }),
-    };
-  }
-
   try {
+    const recording = await Robot.findOne({
+      where: {
+        'recording_meta.id': id
+      },
+      raw: true
+    });
+
+    if (!recording || !recording.recording_meta || !recording.recording_meta.id) {
+      return {
+        success: false,
+        error: 'Recording not found'
+      };
+    }
+
+    const proxyConfig = await getDecryptedProxyConfig(userId);
+    let proxyOptions: any = {};
+
+    if (proxyConfig.proxy_url) {
+      proxyOptions = {
+        server: proxyConfig.proxy_url,
+        ...(proxyConfig.proxy_username && proxyConfig.proxy_password && {
+          username: proxyConfig.proxy_username,
+          password: proxyConfig.proxy_password,
+        }),
+      };
+    }
+
     const browserId = createRemoteBrowserForRun({
       browser: chromium,
       launchOptions: {
@@ -49,6 +45,7 @@ async function createWorkflowAndStoreMetadata(id: string, userId: string) {
         proxy: proxyOptions.server ? proxyOptions : undefined,
       }
     });
+    const runId = uuid();
 
     const run = await Run.create({
       status: 'Scheduled',
@@ -57,10 +54,10 @@ async function createWorkflowAndStoreMetadata(id: string, userId: string) {
       robotMetaId: recording.recording_meta.id,
       startedAt: new Date().toLocaleString(),
       finishedAt: '',
-      browserId: id,
+      browserId,
       interpreterSettings: { maxConcurrency: 1, maxRepeats: 1, debug: true },
       log: '',
-      runId: id,
+      runId,
       serializableOutput: {},
       binaryOutput: {},
     });
