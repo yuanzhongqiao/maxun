@@ -41,14 +41,13 @@ async function createWorkflowAndStoreMetadata(id: string, userId: string) {
     };
   }
 
-  try {
-    const browserId = createRemoteBrowserForRun({
-      browser: chromium,
-      launchOptions: {
+  const browserId = createRemoteBrowserForRun({
+    browser: chromium,
+    launchOptions: {
         headless: true,
         proxy: proxyOptions.server ? proxyOptions : undefined,
-      }
-    });
+    }
+});
 
     const run = await Run.create({
       status: 'Scheduled',
