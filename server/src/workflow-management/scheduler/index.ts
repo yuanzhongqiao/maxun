@@ -7,7 +7,6 @@ import { createRemoteBrowserForRun, destroyRemoteBrowser } from '../../browser-m
 import logger from '../../logger';
 import { browserPool } from "../../server";
 import { googleSheetUpdateTasks, processGoogleSheetUpdates } from "../integrations/gsheet";
-import { getRecordingByFileName } from "../../routes/storage";
 import Robot from "../../models/Robot";
 import Run from "../../models/Run";
 import { getDecryptedProxyConfig } from "../../routes/proxy";
