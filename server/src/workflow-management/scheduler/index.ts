@@ -1,18 +1,15 @@
-import fs from "fs";
 import { uuid } from "uuidv4";
 import { chromium } from "playwright";
 import { io, Socket } from "socket.io-client";
-import { readFile, saveFile } from "../storage";
 import { createRemoteBrowserForRun, destroyRemoteBrowser } from '../../browser-management/controller';
 import logger from '../../logger';
 import { browserPool } from "../../server";
 import { googleSheetUpdateTasks, processGoogleSheetUpdates } from "../integrations/gsheet";
-import { getRecordingByFileName } from "../../routes/storage";
 import Robot from "../../models/Robot";
 import Run from "../../models/Run";
 import { getDecryptedProxyConfig } from "../../routes/proxy";
 
-async function runWorkflow(id: string, userId: string) {
+async function createWorkflowAndStoreMetadata(id: string, userId: string) {
   if (!id) {
     id = uuid();
   }
@@ -174,7 +171,7 @@ function resetRecordingState(browserId: string, id: string) {
 
 export async function handleRunRecording(id: string, userId: string) {
   try {
-    const result = await runWorkflow(id, userId);
+    const result = await createWorkflowAndStoreMetadata(id, userId);
     const { browserId, runId: newRunId } = result;
 
     if (!browserId || !newRunId || !userId) {
@@ -204,4 +201,4 @@ function cleanupSocketListeners(socket: Socket, browserId: string, id: string) {
   logger.log('info', `Cleaned up listeners for browserId: ${browserId}, runId: ${id}`);
 }
 
-export { runWorkflow };
+export { createWorkflowAndStoreMetadata };
