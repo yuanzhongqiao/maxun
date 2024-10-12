@@ -9,6 +9,7 @@ import { getDecryptedProxyConfig } from "../routes/proxy";
 import { uuid } from "uuidv4";
 import { createRemoteBrowserForRun, destroyRemoteBrowser } from "../browser-management/controller";
 import logger from "../logger";
+import { browserPool } from "../server";
 
 const formatRecording = (recordingData: any) => {
     const recordingMeta = recordingData.recording_meta;
