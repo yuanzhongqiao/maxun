@@ -16,8 +16,6 @@ import { Server } from "socket.io";
 import { readdirSync } from "fs"
 import { fork } from 'child_process';
 
-const csrfProtection = csrf({ cookie: true })
-
 const app = express();
 app.use(cors({
   origin: 'http://localhost:3000',
@@ -39,10 +37,9 @@ export const io = new Server(server);
 export const browserPool = new BrowserPool();
 
 app.use(bodyParser.json({ limit: '10mb' }))
-app.use(bodyParser.urlencoded({ extended: true, limit: '10mb', parameterLimit: 10000 }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb', parameterLimit: 9000 }));
 // parse cookies - "cookie" is true in csrfProtection
 app.use(cookieParser())
-app.use(csrfProtection)
 
 app.use('/record', record);
 app.use('/workflow', workflow);
@@ -62,23 +59,19 @@ readdirSync(path.join(__dirname, 'api')).forEach((r) => {
 });
 
 const workerProcess = fork(path.resolve(__dirname, './worker.ts'));
-workerProcess.on('message', (message) => {
-  console.log(`Message from worker: ${message}`);
-});
-workerProcess.on('error', (error) => {
-  console.error(`Error in worker: ${error}`);
-});
-workerProcess.on('exit', (code) => {
+ workerProcess.on('message', (message) => {
+   console.log(`Message from worker: ${message}`);
+ });
+ workerProcess.on('error', (error) => {
+   console.error(`Error in worker: ${error}`);
+ });
+ workerProcess.on('exit', (code) => {
   console.log(`Worker exited with code: ${code}`);
-});
+ });
 
 app.get('/', function (req, res) {
   return res.send('Maxun server started 🚀');
 });
-
-app.get('/csrf-token', (req, res) => {
-  res.json({ csrfToken: req.csrfToken() })
-})
 
 server.listen(SERVER_PORT, async () => {
   await connectDB();
