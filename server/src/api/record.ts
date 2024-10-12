@@ -358,7 +358,8 @@ function cleanupSocketListeners(socket: Socket, browserId: string, id: string) {
 
 router.post("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response) => {
     try {
-    const result = await handleRunRecording(req.params.id, req.user.id);
+    const result = await handleRunRecording(req.params.id, req.user.dataValues.id);
+    console.log(`Result`, result);
 
         const response = {
             statusCode: 200,
