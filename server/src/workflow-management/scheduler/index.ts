@@ -48,6 +48,7 @@ async function createWorkflowAndStoreMetadata(id: string, userId: string) {
         proxy: proxyOptions.server ? proxyOptions : undefined,
     }
 });
+const runId = uuid();
 
     const run = await Run.create({
       status: 'Scheduled',
