@@ -384,9 +384,6 @@ async function waitForRunCompletion(runId: string, interval: number = 2000) {
     }
 }
 
-
-
-
 router.post("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response) => {
     try {
         const runId = await handleRunRecording(req.params.id, req.user.dataValues.id);
