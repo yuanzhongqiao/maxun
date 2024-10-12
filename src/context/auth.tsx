@@ -82,19 +82,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         }
     );
 
-    useEffect(() => {
-        const getCsrfToken = async () => {
-            try {
-                const { data } = await axios.get('http://localhost:8080/csrf-token');
-                if (data.csrfToken) {
-                    (axios.defaults.headers as any)['X-CSRF-TOKEN'] = data.csrfToken;
-                }
-            } catch (error) {
-                console.error('Error fetching CSRF token:', error);
-            }
-        };
-        getCsrfToken();
-    }, []);
+
 
     return (
         <AuthContext.Provider value={{ state, dispatch }}>
