@@ -355,6 +355,9 @@ export async function handleRunRecording(id: string, userId: string) {
             cleanupSocketListeners(socket, browserId, newRunId);
         });
 
+        // Return the runId immediately, so the client knows the run is started
+        return newRunId;
+
     } catch (error: any) {
         logger.error('Error running recording:', error);
     }
@@ -365,16 +368,39 @@ function cleanupSocketListeners(socket: Socket, browserId: string, id: string) {
     logger.log('info', `Cleaned up listeners for browserId: ${browserId}, runId: ${id}`);
 }
 
+async function waitForRunCompletion(runId: string, interval: number = 2000) {
+    while (true) {
+        const run = await Run.findOne({ where: { runId }, raw: true });
+        if (!run) throw new Error('Run not found');
+
+        if (run.status === 'success') {
+            return run;
+        } else if (run.status === 'error') {
+            throw new Error('Run failed');
+        }
+
+        // Wait for the next polling interval
+        await new Promise(resolve => setTimeout(resolve, interval));
+    }
+}
+
+
+
 
 router.post("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response) => {
     try {
-        const interpretationInfo = await handleRunRecording(req.params.id, req.user.dataValues.id);
-        console.log(`Result`, interpretationInfo);
+        const runId = await handleRunRecording(req.params.id, req.user.dataValues.id);
+        console.log(`Result`, runId);
+
+        if (!runId) {
+            throw new Error('Run ID is undefined');
+        }
+        const completedRun = await waitForRunCompletion(runId);
 
         const response = {
             statusCode: 200,
             messageCode: "success",
-            run: interpretationInfo,
+            run: completedRun,
         };
 
         res.status(200).json(response);
