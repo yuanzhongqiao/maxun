@@ -307,7 +307,7 @@ async function executeRun(id: string) {
 
         await destroyRemoteBrowser(plainRun.browserId);
 
-        await run.update({
+        const updatedRun = await run.update({
             ...run,
             status: 'success',
             finishedAt: new Date().toLocaleString(),
@@ -319,7 +319,7 @@ async function executeRun(id: string) {
 
         return {
             success: true,
-            interpretationInfo,
+            interpretationInfo: updatedRun.toJSON()
         };
 
     } catch (error: any) {
