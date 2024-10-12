@@ -274,7 +274,7 @@ async function executeRun(id: string) {
             return {
                 success: false,
                 error: 'Run not found'
-            }
+            };
         }
 
         const plainRun = run.toJSON();
@@ -284,7 +284,7 @@ async function executeRun(id: string) {
             return {
                 success: false,
                 error: 'Recording not found'
-            }
+            };
         }
 
         plainRun.status = 'running';
@@ -300,7 +300,8 @@ async function executeRun(id: string) {
         }
 
         const interpretationInfo = await browser.interpreter.InterpretRecording(
-            recording.recording, currentPage, plainRun.interpreterSettings);
+            recording.recording, currentPage, plainRun.interpreterSettings
+        );
 
         await destroyRemoteBrowser(plainRun.browserId);
 
@@ -313,11 +314,18 @@ async function executeRun(id: string) {
             serializableOutput: interpretationInfo.serializableOutput,
             binaryOutput: interpretationInfo.binaryOutput,
         });
-        return true;
+
+        return {
+            success: true,
+            interpretationInfo,
+        };
+
     } catch (error: any) {
         logger.log('info', `Error while running a recording with id: ${id} - ${error.message}`);
-        console.log(error.message);
-        return false;
+        return {
+            success: false,
+            error: error.message,
+        };
     }
 }
 
