@@ -276,6 +276,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const handleConfirmListCapture = useCallback(() => {
     switch (captureStage) {
       case 'initial':
+        startPaginationMode();
         setShowPaginationOptions(true);
         setCaptureStage('pagination');
         break;
