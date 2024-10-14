@@ -4,9 +4,8 @@ import Robot from './Robot';
 import minioClient from '../storage/mino';
 
 // TODO:
-// 1. rename variables 
-// 2. we might not need interpreter settings?
-// 3. store binaryOutput in MinIO
+// 1. we might not need interpreter settings?
+
 interface InterpreterSettings {
   maxConcurrency: number;
   maxRepeats: number;
