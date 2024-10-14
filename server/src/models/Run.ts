@@ -1,5 +1,5 @@
 import { Model, DataTypes, Optional } from 'sequelize';
-import sequelize from '../db/config';
+import sequelize from '../storage/config';
 import Robot from './Robot';
 
 // TODO:
