@@ -25,7 +25,7 @@ interface RunAttributes {
   log: string;
   runId: string;
   serializableOutput: Record<string, any[]>;
-  binaryOutput: Record<string, any>;
+  binaryOutput: Record<string, string>;
 }
 
 interface RunCreationAttributes extends Optional<RunAttributes, 'id'> { }
