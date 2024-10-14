@@ -8,5 +8,4 @@ const minioClient = new Client({
   secretKey: process.env.MINIO_SECRET_KEY || 'minio-secret-key',
 });
 
-
 export default minioClient;
