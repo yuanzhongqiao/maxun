@@ -51,6 +51,17 @@ class Run extends Model<RunAttributes, RunCreationAttributes> implements RunAttr
     await minioClient.putObject(bucketName, key, data);
     this.binaryOutput[key] = `minio://${bucketName}/${key}`;
   }
+
+  public async getBinaryOutputFromMinioBucket(key: string): Promise<Buffer> {
+    const bucketName = '';
+    const stream = await minioClient.getObject(bucketName, key);
+    return new Promise((resolve, reject) => {
+      const chunks: Buffer[] = [];
+      stream.on('data', (chunk) => chunks.push(chunk));
+      stream.on('end', () => resolve(Buffer.concat(chunks)));
+      stream.on('error', reject);
+    });
+  }
 }
 
 Run.init(
