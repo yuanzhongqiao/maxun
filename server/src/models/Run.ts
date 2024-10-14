@@ -104,6 +104,7 @@ Run.init(
     binaryOutput: {
       type: DataTypes.JSONB,
       allowNull: true,
+      defaultValue: {},
     },
   },
   {
