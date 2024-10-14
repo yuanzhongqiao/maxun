@@ -1,6 +1,7 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../storage/db';
 import Robot from './Robot';
+import minioClient from '../storage/mino';
 
 // TODO:
 // 1. rename variables 
@@ -44,6 +45,12 @@ class Run extends Model<RunAttributes, RunCreationAttributes> implements RunAttr
   public runId!: string;
   public serializableOutput!: Record<string, any[]>;
   public binaryOutput!: Record<string, any>;
+
+  public async uploadBinaryOutput(key: string, data: Buffer): Promise<void> {
+    const bucketName = '';
+    await minioClient.putObject(bucketName, key, data);
+    this.binaryOutput[key] = `minio://${bucketName}/${key}`;
+  }
 }
 
 Run.init(
