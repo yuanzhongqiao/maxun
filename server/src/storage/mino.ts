@@ -7,3 +7,6 @@ const minioClient = new Client({
   accessKey: process.env.MINIO_ACCESS_KEY || 'minio-access-key',
   secretKey: process.env.MINIO_SECRET_KEY || 'minio-secret-key',
 });
+
+
+export default minioClient;
