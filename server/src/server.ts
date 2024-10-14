@@ -7,7 +7,7 @@ dotenv.config();
 import { record, workflow, storage, auth, integration, proxy } from './routes';
 import { BrowserPool } from "./browser-management/classes/BrowserPool";
 import logger from './logger';
-import { connectDB, syncDB } from './db/config';
+import { connectDB, syncDB } from './storage/db'
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import csrf from 'csurf';
@@ -62,7 +62,7 @@ const workerProcess = fork(path.resolve(__dirname, './worker.ts'));
  workerProcess.on('message', (message) => {
    console.log(`Message from worker: ${message}`);
  });
- workerProcess.on('error', (error) => {
+workerProcess.on('error', (error) => {
    console.error(`Error in worker: ${error}`);
  });
  workerProcess.on('exit', (code) => {
@@ -81,6 +81,6 @@ server.listen(SERVER_PORT, async () => {
 
 process.on('SIGINT', () => {
   console.log('Main app shutting down...');
-  workerProcess.kill();
+  //workerProcess.kill();
   process.exit();
 });
