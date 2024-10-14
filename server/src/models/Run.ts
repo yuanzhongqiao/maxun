@@ -46,7 +46,7 @@ class Run extends Model<RunAttributes, RunCreationAttributes> implements RunAttr
   public serializableOutput!: Record<string, any[]>;
   public binaryOutput!: Record<string, any>;
 
-  public async uploadBinaryOutput(key: string, data: Buffer): Promise<void> {
+  public async uploadBinaryOutputToMinioBucket(key: string, data: Buffer): Promise<void> {
     const bucketName = '';
     await minioClient.putObject(bucketName, key, data);
     this.binaryOutput[key] = `minio://${bucketName}/${key}`;
