@@ -11,6 +11,7 @@ import { getDecryptedProxyConfig } from './proxy';
 import { requireSignIn } from '../middlewares/auth';
 import Robot from '../models/Robot';
 import Run from '../models/Run';
+import { BinaryOutputService } from '../storage/mino';
 import { workflowQueue } from '../worker';
 
 export const router = Router();
@@ -189,6 +190,8 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
     if (browser && currentPage) {
       const interpretationInfo = await browser.interpreter.InterpretRecording(
         recording.recording, currentPage, plainRun.interpreterSettings);
+        const binaryOutputService = new BinaryOutputService('maxun-run-screenshots');
+        const uploadedBinaryOutput = await binaryOutputService.uploadAndStoreBinaryOutput(run, interpretationInfo.binaryOutput);
       await destroyRemoteBrowser(plainRun.browserId);
       await run.update({
         ...run,
@@ -197,7 +200,7 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
         browserId: plainRun.browserId,
         log: interpretationInfo.log.join('\n'),
         serializableOutput: interpretationInfo.serializableOutput,
-        binaryOutput: interpretationInfo.binaryOutput,
+        binaryOutput: uploadedBinaryOutput,
       });
       googleSheetUpdateTasks[req.params.id] = {
         name: plainRun.name,
@@ -279,16 +282,16 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
     const runId = uuid();
     const userId = req.user.id;
 
-     await workflowQueue.add(
-       'run workflow',
+      await workflowQueue.add(
+        'run workflow',
        { id, runId, userId },
-       {
+        {
          repeat: {
            pattern: cronExpression,
           tz: timezone
-     }
+      }
        }
-     );
+      );
 
     res.status(200).json({
       message: 'success',
