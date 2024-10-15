@@ -44,19 +44,36 @@ class Run extends Model<RunAttributes, RunCreationAttributes> implements RunAttr
 
   public async uploadBinaryOutputToMinioBucket(key: string, data: Buffer): Promise<void> {
     const bucketName = 'maxun-run-screenshots';
-    await minioClient.putObject(bucketName, key, data);
-    this.binaryOutput[key] = `minio://${bucketName}/${key}`;
+
+    try {
+      console.log(`Uploading to bucket ${bucketName} with key ${key}`);
+      await minioClient.putObject(bucketName, key, data);
+      this.binaryOutput[key] = `minio://${bucketName}/${key}`;
+      console.log(`Successfully uploaded to MinIO: minio://${bucketName}/${key}`);
+    } catch (error) {
+      console.error(`Error uploading to MinIO bucket: ${bucketName} with key: ${key}`, error);
+    }
   }
 
   public async getBinaryOutputFromMinioBucket(key: string): Promise<Buffer> {
     const bucketName = 'maxun-run-screenshots';
-    const stream = await minioClient.getObject(bucketName, key);
-    return new Promise((resolve, reject) => {
-      const chunks: Buffer[] = [];
-      stream.on('data', (chunk) => chunks.push(chunk));
-      stream.on('end', () => resolve(Buffer.concat(chunks)));
-      stream.on('error', reject);
-    });
+
+    try {
+      console.log(`Fetching from bucket ${bucketName} with key ${key}`);
+      const stream = await minioClient.getObject(bucketName, key);
+      return new Promise((resolve, reject) => {
+        const chunks: Buffer[] = [];
+        stream.on('data', (chunk) => chunks.push(chunk));
+        stream.on('end', () => resolve(Buffer.concat(chunks)));
+        stream.on('error', (error) => {
+          console.error('Error while reading the stream from MinIO:', error);
+          reject(error);
+        });
+      });
+    } catch (error) {
+      console.error(`Error fetching from MinIO bucket: ${bucketName} with key: ${key}`, error);
+      throw error;
+    }
   }
 }
 
