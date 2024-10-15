@@ -320,7 +320,7 @@ async function executeRun(id: string) {
             browserId: plainRun.browserId,
             log: interpretationInfo.log.join('\n'),
             serializableOutput: interpretationInfo.serializableOutput,
-            binaryOutput: interpretationInfo.binaryOutput,
+            binaryOutput: uploadedBinaryOutput,
         });
 
         return {
