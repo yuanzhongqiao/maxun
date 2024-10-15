@@ -9,6 +9,18 @@ const minioClient = new Client({
   secretKey: process.env.MINIO_SECRET_KEY || 'minio-secret-key',
 });
 
+minioClient.bucketExists('maxun-test')
+  .then((exists) => {
+    if (exists) {
+      console.log('MinIO was connected successfully.');
+    } else {
+      console.log('Bucket does not exist, but MinIO was connected.');
+    }
+  })
+  .catch((err) => {
+    console.error('Error connecting to MinIO:', err);
+  })
+
 class BinaryOutputService {
   private bucketName: string;
 
