@@ -45,7 +45,4 @@ class BinaryOutputService {
   }
 }
 
-
-
-
 export { minioClient, BinaryOutputService };
