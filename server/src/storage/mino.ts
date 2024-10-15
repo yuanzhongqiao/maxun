@@ -38,23 +38,43 @@ class BinaryOutputService {
     const uploadedBinaryOutput: Record<string, string> = {};
 
     for (const key of Object.keys(binaryOutput)) {
-      const binaryData = binaryOutput[key];
+      let binaryData = binaryOutput[key];
 
       console.log(`Processing binary output key: ${key}`);
-      console.log(`Binary data: ${binaryData}`);
+      console.log(`Binary data:`, binaryData);
 
-      if (!binaryData) {
-        console.error(`No data found for key: ${key}`);
+      // If the binary data is a string, try parsing it as JSON
+      if (typeof binaryData === 'string') {
+        try {
+          const parsedData = JSON.parse(binaryData);
+
+          // Check if the parsed data has the "type" and "data" fields
+          if (parsedData && parsedData.type === 'Buffer' && Array.isArray(parsedData.data)) {
+            // Convert the parsed array into a Buffer
+            binaryData = Buffer.from(parsedData.data);
+            console.log(`Successfully parsed and converted binary data to Buffer for key: ${key}`);
+          } else {
+            console.error(`Invalid Buffer format for key: ${key}`);
+            continue; // Skip invalid data
+          }
+        } catch (jsonError) {
+          console.error(`Failed to parse JSON for key: ${key}`, jsonError);
+          continue; // Skip if parsing fails
+        }
+      }
+
+      // Handle cases where data might still be invalid
+      if (!Buffer.isBuffer(binaryData)) {
+        console.error(`Binary data for key ${key} is not a valid Buffer.`);
         continue;
       }
 
       try {
-        const bufferData = Buffer.from(binaryData, 'binary');
         const minioKey = `${run.runId}/${key}`;
 
         console.log(`Uploading data to MinIO with key: ${minioKey}`);
 
-        await run.uploadBinaryOutputToMinioBucket(minioKey, bufferData);
+        await run.uploadBinaryOutputToMinioBucket(minioKey, binaryData);
 
         // Save the Minio URL in the result object
         uploadedBinaryOutput[key] = `minio://${this.bucketName}/${minioKey}`;
@@ -67,6 +87,7 @@ class BinaryOutputService {
 
     console.log('Uploaded Binary Output:', uploadedBinaryOutput);
 
+    // Update the run with the Minio URLs for binary output
     try {
       await run.update({
         binaryOutput: uploadedBinaryOutput
