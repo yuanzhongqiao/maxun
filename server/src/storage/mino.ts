@@ -39,19 +39,42 @@ class BinaryOutputService {
 
     for (const key of Object.keys(binaryOutput)) {
       const binaryData = binaryOutput[key];
-      const bufferData = Buffer.from(binaryData, 'binary');
-      const minioKey = `${run.runId}/${key}`;
 
-      await run.uploadBinaryOutputToMinioBucket(minioKey, bufferData);
+      console.log(`Processing binary output key: ${key}`);
+      console.log(`Binary data: ${binaryData}`);
 
-      // Save the Minio URL in the result object
-      uploadedBinaryOutput[key] = `minio://${this.bucketName}/${minioKey}`;
+      if (!binaryData) {
+        console.error(`No data found for key: ${key}`);
+        continue;
+      }
+
+      try {
+        const bufferData = Buffer.from(binaryData, 'binary');
+        const minioKey = `${run.runId}/${key}`;
+
+        console.log(`Uploading data to MinIO with key: ${minioKey}`);
+
+        await run.uploadBinaryOutputToMinioBucket(minioKey, bufferData);
+
+        // Save the Minio URL in the result object
+        uploadedBinaryOutput[key] = `minio://${this.bucketName}/${minioKey}`;
+
+        console.log(`Successfully uploaded ${key} to MinIO`);
+      } catch (error) {
+        console.error(`Error uploading key ${key} to MinIO:`, error);
+      }
     }
 
-    // Update the run with the Minio URLs for binary output
-    await run.update({
-      binaryOutput: uploadedBinaryOutput
-    });
+    console.log('Uploaded Binary Output:', uploadedBinaryOutput);
+
+    try {
+      await run.update({
+        binaryOutput: uploadedBinaryOutput
+      });
+      console.log('Run successfully updated with binary output');
+    } catch (updateError) {
+      console.error('Error updating run with binary output:', updateError);
+    }
 
     return uploadedBinaryOutput;
   }
