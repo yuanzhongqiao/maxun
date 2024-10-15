@@ -34,66 +34,58 @@ class BinaryOutputService {
    * @param binaryOutput - The binary output object containing data to upload.
    * @returns A map of Minio URLs pointing to the uploaded binary data.
    */
-  async uploadAndStoreBinaryOutput(run: Run, binaryOutput: Record<string, any>): Promise<Record<string, string>> {
+  async uploadAndStoreBinaryOutput(run: Run, binaryOutput: Record<string, any>, runId: string): Promise<Record<string, string>> {
     const uploadedBinaryOutput: Record<string, string> = {};
 
     for (const key of Object.keys(binaryOutput)) {
       let binaryData = binaryOutput[key];
 
-      // Log the key and data
+      if (!runId) {
+        console.error('Run ID is undefined. Cannot upload binary data.');
+        continue;
+      }
+
       console.log(`Processing binary output key: ${key}`);
       console.log(`Binary data:`, binaryData);
 
-      // Check if binaryData is an object with a "data" field (containing the Buffer string)
+      // Check if binaryData has a valid Buffer structure and parse it
       if (binaryData && typeof binaryData.data === 'string') {
         try {
           const parsedData = JSON.parse(binaryData.data);
-
-          // Check if the parsed data has the "type" and "data" fields
           if (parsedData && parsedData.type === 'Buffer' && Array.isArray(parsedData.data)) {
-            // Convert the parsed array into a Buffer
             binaryData = Buffer.from(parsedData.data);
-            console.log(`Successfully parsed and converted binary data to Buffer for key: ${key}`);
           } else {
             console.error(`Invalid Buffer format for key: ${key}`);
-            continue; // Skip invalid data
+            continue;
           }
-        } catch (jsonError) {
-          console.error(`Failed to parse JSON for key: ${key}`, jsonError);
-          continue; // Skip if parsing fails
+        } catch (error) {
+          console.error(`Failed to parse JSON for key: ${key}`, error);
+          continue;
         }
       }
 
-      // Handle cases where data might still be invalid
+      // Handle cases where binaryData might not be a Buffer
       if (!Buffer.isBuffer(binaryData)) {
         console.error(`Binary data for key ${key} is not a valid Buffer.`);
         continue;
       }
 
       try {
-        const minioKey = run.runId ? `${run.runId}/${key}`: key;
-
-        console.log(`Uploading data to MinIO with key: ${minioKey}`);
+        const minioKey = `${run.id}/${key}`;
 
         await run.uploadBinaryOutputToMinioBucket(minioKey, binaryData);
 
         // Save the Minio URL in the result object
         uploadedBinaryOutput[key] = `minio://${this.bucketName}/${minioKey}`;
-
-        console.log(`Successfully uploaded ${key} to MinIO`);
       } catch (error) {
         console.error(`Error uploading key ${key} to MinIO:`, error);
       }
     }
 
-    // Log the binary output after processing
     console.log('Uploaded Binary Output:', uploadedBinaryOutput);
 
-    // Update the run with the Minio URLs for binary output
     try {
-      await run.update({
-        binaryOutput: uploadedBinaryOutput
-      });
+      await run.update({ binaryOutput: uploadedBinaryOutput });
       console.log('Run successfully updated with binary output');
     } catch (updateError) {
       console.error('Error updating run with binary output:', updateError);
