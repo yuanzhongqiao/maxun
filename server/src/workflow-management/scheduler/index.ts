@@ -8,6 +8,7 @@ import { googleSheetUpdateTasks, processGoogleSheetUpdates } from "../integratio
 import Robot from "../../models/Robot";
 import Run from "../../models/Run";
 import { getDecryptedProxyConfig } from "../../routes/proxy";
+import { BinaryOutputService } from "../../storage/mino";
 
 async function createWorkflowAndStoreMetadata(id: string, userId: string) {
   try {
@@ -114,6 +115,9 @@ async function executeRun(id: string) {
 
     const interpretationInfo = await browser.interpreter.InterpretRecording(
       recording.recording, currentPage, plainRun.interpreterSettings);
+    
+      const binaryOutputService = new BinaryOutputService('maxun-run-screenshots');
+      const uploadedBinaryOutput = await binaryOutputService.uploadAndStoreBinaryOutput(run, interpretationInfo.binaryOutput);
 
     await destroyRemoteBrowser(plainRun.browserId);
 
@@ -124,7 +128,7 @@ async function executeRun(id: string) {
       browserId: plainRun.browserId,
       log: interpretationInfo.log.join('\n'),
       serializableOutput: interpretationInfo.serializableOutput,
-      binaryOutput: interpretationInfo.binaryOutput,
+      binaryOutput: uploadedBinaryOutput,
     });
 
     googleSheetUpdateTasks[id] = {
