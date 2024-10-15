@@ -27,7 +27,7 @@ class BinaryOutputService {
 
     for (const key of Object.keys(binaryOutput)) {
       const binaryData = binaryOutput[key];
-      const bufferData = Buffer.from(binaryData, 'binary'); 
+      const bufferData = Buffer.from(binaryData, 'binary');
       const minioKey = `${run.runId}/${key}`;
 
       await run.uploadBinaryOutputToMinioBucket(minioKey, bufferData);
@@ -48,4 +48,4 @@ class BinaryOutputService {
 
 
 
-export  { minioClient, BinaryOutputService };
+export { minioClient, BinaryOutputService };
