@@ -44,7 +44,6 @@ class Run extends Model<RunAttributes, RunCreationAttributes> implements RunAttr
 
   public async uploadBinaryOutputToMinioBucket(key: string, data: Buffer): Promise<void> {
     const bucketName = 'maxun-run-screenshots';
-
     try {
       console.log(`Uploading to bucket ${bucketName} with key ${key}`);
       await minioClient.putObject(bucketName, key, data, data.length, { 'Content-Type': 'image/png' });
@@ -52,6 +51,7 @@ class Run extends Model<RunAttributes, RunCreationAttributes> implements RunAttr
       console.log(`Successfully uploaded to MinIO: minio://${bucketName}/${key}`);
     } catch (error) {
       console.error(`Error uploading to MinIO bucket: ${bucketName} with key: ${key}`, error);
+      throw error; 
     }
   }
 
