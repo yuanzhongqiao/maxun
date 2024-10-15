@@ -115,9 +115,9 @@ async function executeRun(id: string) {
 
     const interpretationInfo = await browser.interpreter.InterpretRecording(
       recording.recording, currentPage, plainRun.interpreterSettings);
-    
-      const binaryOutputService = new BinaryOutputService('maxun-run-screenshots');
-      const uploadedBinaryOutput = await binaryOutputService.uploadAndStoreBinaryOutput(run, interpretationInfo.binaryOutput);
+
+    const binaryOutputService = new BinaryOutputService('maxun-run-screenshots');
+    const uploadedBinaryOutput = await binaryOutputService.uploadAndStoreBinaryOutput(run, interpretationInfo.binaryOutput);
 
     await destroyRemoteBrowser(plainRun.browserId);
 
