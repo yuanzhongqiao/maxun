@@ -11,6 +11,7 @@ import { createRemoteBrowserForRun, destroyRemoteBrowser } from "../browser-mana
 import logger from "../logger";
 import { browserPool } from "../server";
 import { io, Socket } from "socket.io-client";
+import { BinaryOutputService } from "../storage/mino";
 
 const formatRecording = (recordingData: any) => {
     const recordingMeta = recordingData.recording_meta;
@@ -306,6 +307,9 @@ async function executeRun(id: string) {
         const interpretationInfo = await browser.interpreter.InterpretRecording(
             recording.recording, currentPage, plainRun.interpreterSettings
         );
+
+        const binaryOutputService = new BinaryOutputService('maxun-run-screenshots');
+        const uploadedBinaryOutput = await binaryOutputService.uploadAndStoreBinaryOutput(run, interpretationInfo.binaryOutput);
 
         await destroyRemoteBrowser(plainRun.browserId);
 
