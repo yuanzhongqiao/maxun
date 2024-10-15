@@ -34,13 +34,14 @@ class BinaryOutputService {
    * @param binaryOutput - The binary output object containing data to upload.
    * @returns A map of Minio URLs pointing to the uploaded binary data.
    */
-  async uploadAndStoreBinaryOutput(run: Run, binaryOutput: Record<string, any>, runId: string): Promise<Record<string, string>> {
+  async uploadAndStoreBinaryOutput(run: Run, binaryOutput: Record<string, any>): Promise<Record<string, string>> {
     const uploadedBinaryOutput: Record<string, string> = {};
+    const plainRun = run.toJSON();
 
     for (const key of Object.keys(binaryOutput)) {
       let binaryData = binaryOutput[key];
 
-      if (!runId) {
+      if (!plainRun.runId) {
         console.error('Run ID is undefined. Cannot upload binary data.');
         continue;
       }
@@ -71,7 +72,7 @@ class BinaryOutputService {
       }
 
       try {
-        const minioKey = `${run.id}/${key}`;
+        const minioKey = `${plainRun.runId}/${key}`;
 
         await run.uploadBinaryOutputToMinioBucket(minioKey, binaryData);
 
