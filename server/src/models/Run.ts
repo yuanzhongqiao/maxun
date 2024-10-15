@@ -1,10 +1,7 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../storage/db';
 import Robot from './Robot';
-import minioClient from '../storage/mino';
-
-// TODO:
-// 1. we might not need interpreter settings?
+import { minioClient } from '../storage/mino';
 
 interface InterpreterSettings {
   maxConcurrency: number;
