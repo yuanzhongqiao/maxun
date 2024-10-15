@@ -40,13 +40,14 @@ class BinaryOutputService {
     for (const key of Object.keys(binaryOutput)) {
       let binaryData = binaryOutput[key];
 
+      // Log the key and data
       console.log(`Processing binary output key: ${key}`);
       console.log(`Binary data:`, binaryData);
 
-      // If the binary data is a string, try parsing it as JSON
-      if (typeof binaryData === 'string') {
+      // Check if binaryData is an object with a "data" field (containing the Buffer string)
+      if (binaryData && typeof binaryData.data === 'string') {
         try {
-          const parsedData = JSON.parse(binaryData);
+          const parsedData = JSON.parse(binaryData.data);
 
           // Check if the parsed data has the "type" and "data" fields
           if (parsedData && parsedData.type === 'Buffer' && Array.isArray(parsedData.data)) {
@@ -85,6 +86,7 @@ class BinaryOutputService {
       }
     }
 
+    // Log the binary output after processing
     console.log('Uploaded Binary Output:', uploadedBinaryOutput);
 
     // Update the run with the Minio URLs for binary output
