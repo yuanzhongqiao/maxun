@@ -47,7 +47,7 @@ class Run extends Model<RunAttributes, RunCreationAttributes> implements RunAttr
 
     try {
       console.log(`Uploading to bucket ${bucketName} with key ${key}`);
-      await minioClient.putObject(bucketName, key, data);
+      await minioClient.putObject(bucketName, key, data, data.length, { 'Content-Type': 'image/png' });
       this.binaryOutput[key] = `minio://${bucketName}/${key}`;
       console.log(`Successfully uploaded to MinIO: minio://${bucketName}/${key}`);
     } catch (error) {
