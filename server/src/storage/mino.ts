@@ -71,7 +71,7 @@ class BinaryOutputService {
       }
 
       try {
-        const minioKey = `${run.runId}/${key}`;
+        const minioKey = run.runId ? `${run.runId}/${key}`: key;
 
         console.log(`Uploading data to MinIO with key: ${minioKey}`);
 
