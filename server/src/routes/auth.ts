@@ -189,7 +189,7 @@ router.get('/google', (req, res) => {
 // Step 2: Handle Google OAuth callback
 router.get('/google/callback', async (req, res) => {
     const { code } = req.query;
-    
+
     try {
         // Get access and refresh tokens
         if (typeof code !== 'string') {
