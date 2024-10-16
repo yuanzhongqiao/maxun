@@ -55,19 +55,19 @@ Robot.init(
     google_sheets_email: {
       type: DataTypes.STRING,
       allowNull: true,
-  },
-  google_sheet_id: {
+    },
+    google_sheet_id: {
       type: DataTypes.STRING,
       allowNull: true,
-  },
-  google_access_token: {
+    },
+    google_access_token: {
       type: DataTypes.STRING,
       allowNull: true,
-  },
-  google_refresh_token: {
+    },
+    google_refresh_token: {
       type: DataTypes.STRING,
       allowNull: true,
-  },
+    },
   },
   {
     sequelize,
