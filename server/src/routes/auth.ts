@@ -168,7 +168,7 @@ router.delete('/delete-api-key', requireSignIn, async (req, res) => {
 const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    // process.env.GOOGLE_REDIRECT_URI
+    process.env.GOOGLE_REDIRECT_URI
 );
 
 // Step 1: Redirect to Google for authentication
@@ -206,24 +206,19 @@ router.get('/google/callback', requireSignIn, async (req, res) => {
             return res.status(400).json({ message: 'Email not found' });
         }
 
-        // Check if user already exists
-        let user = await User.findOne({ where: { email } });
+        // Get the currently authenticated user (from `requireSignIn`)
+        let user = await User.findOne({ where: { id: req.user.id } });
+
         if (!user) {
-            const hashedPassword = await hashPassword(email + process.env.JWT_SECRET);
-            user = await User.create({
-                email,
-                password: hashedPassword,
-                google_sheets_email: email, // Gmail used for Sheets
-                google_access_token: tokens.access_token,
-                google_refresh_token: tokens.refresh_token,
-            });
-        } else {
-            // Update user's Google tokens if they exist
-            await User.update({
-                google_access_token: tokens.access_token,
-                google_refresh_token: tokens.refresh_token,
-            }, { where: { email } });
+            return res.status(400).json({ message: 'User not found' });
         }
+
+        // Update the current user's Google Sheets email and tokens
+        user = await user.update({
+            google_sheets_email: email,
+            google_access_token: tokens.access_token,
+            google_refresh_token: tokens.refresh_token,
+        });
 
         // List user's Google Sheets from their Google Drive
         const drive = google.drive({ version: 'v3', auth: oauth2Client });
@@ -243,7 +238,7 @@ router.get('/google/callback', requireSignIn, async (req, res) => {
 
         res.json({ 
             message: 'Google authentication successful', 
-            email: user.email, 
+            google_sheet_email: user.google_sheets_email, 
             jwtToken, 
             files 
         });
@@ -251,7 +246,6 @@ router.get('/google/callback', requireSignIn, async (req, res) => {
         res.status(500).json({ message: `Google OAuth error: ${error.message}` });
     }
 });
-
 
 // Step 3: Get data from Google Sheets
 router.post('/gsheets/data', requireSignIn, async (req, res) => {
