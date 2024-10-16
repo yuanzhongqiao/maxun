@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { hashPassword, comparePassword } from '../utils/auth';
 import { requireSignIn } from '../middlewares/auth';
 import { genAPIKey } from '../utils/api';
-import { OAuth2Client } from 'google-auth-library';
+import { google } from 'googleapis';
 export const router = Router();
 
 interface AuthenticatedRequest extends Request {
@@ -165,54 +165,95 @@ router.delete('/delete-api-key', requireSignIn, async (req, res) => {
     }
 });
 
-const googleClient = new OAuth2Client(
+const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT_URI
 );
 
-router.post('/google', requireSignIn, async (req: AuthenticatedRequest, res) => {
-    const { token } = req.body;
+// Step 1: Redirect to Google for authentication
+router.get('/google', (req, res) => {
+    const scopes = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/userinfo.email'];
+    const url = oauth2Client.generateAuthUrl({
+        access_type: 'offline',
+        prompt: 'consent',  // Ensures you get a refresh token on first login
+        scope: scopes,
+    });
+    res.redirect(url);
+});
 
-    const ticket = await googleClient.verifyIdToken({
-        idToken: token,
-        audience: `${process.env.GOOGLE_CLIENT_ID}`,
+// Step 2: Handle Google OAuth callback
+router.get('/google/callback', async (req, res) => {
+    const { code } = req.query;
+    
+    try {
+        // Get access and refresh tokens
+        if (typeof code !== 'string') {
+            return res.status(400).json({ message: 'Invalid code' });
+        }
+        const { tokens } = await oauth2Client.getToken(code);
+        oauth2Client.setCredentials(tokens);
+
+        // Get user profile from Google
+        const oauth2 = google.oauth2({ version: 'v2', auth: oauth2Client });
+        const { data: { email } } = await oauth2.userinfo.get();
+
+        if (!email) {
+            return res.status(400).json({ message: 'Email not found' });
+        }
+
+        // Check if user already exists
+        let user = await User.findOne({ where: { email } });
+        if (!user) {
+            const hashedPassword = await hashPassword(email + process.env.JWT_SECRET);
+            user = await User.create({
+                email,
+                password: hashedPassword,
+                google_sheets_email: email, // Gmail used for Sheets
+                google_access_token: tokens.access_token,
+                google_refresh_token: tokens.refresh_token,
+            });
+        } else {
+            // Update user's Google tokens if they exist
+            await User.update({
+                google_access_token: tokens.access_token,
+                google_refresh_token: tokens.refresh_token,
+            }, { where: { email } });
+        }
+
+        // Generate JWT token for session
+        const jwtToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, { expiresIn: '12h' });
+        res.cookie('token', jwtToken, { httpOnly: true });
+
+        res.json({ message: 'Google authentication successful', user, jwtToken });
+    } catch (error) {
+        res.status(500).json({ message: `Google OAuth error: ${error.message}` });
+    }
+});
+
+// Step 3: Get data from Google Sheets
+router.get('/gsheets/data', async (req, res) => {
+    const user = await User.findOne({ where: { id: req.userId } });
+    if (!user) {
+        return res.status(400).json({ message: 'User not found' });
+    }
+
+    // Set Google OAuth credentials
+    oauth2Client.setCredentials({
+        access_token: user.google_access_token,
+        refresh_token: user.google_refresh_token,
     });
 
-    const { name, email, picture, email_verified } = ticket.getPayload();
+    // If the access token has expired, it will be automatically refreshed using the refresh token
+    const sheets = google.sheets({ version: 'v4', auth: oauth2Client });
 
-    let emailVerified: boolean;
-    let userExist: any;
-    let user: any;
-
-    if (email_verified) {
-        try {
-            emailVerified = true;
-            let userExist = await User.findOne({ raw: true, where: { email } });
-            if (userExist) return res.status(400).send('User already exists')
-        } catch (error) {
-            return res.status(500).send(`Could not verify the user - ${error.message}.`);
-        }
+    try {
+        const sheetData = await sheets.spreadsheets.values.get({
+            spreadsheetId: 'your-spreadsheet-id',
+            range: 'Sheet1!A1:D5', // Example range
+        });
+        res.json(sheetData.data);
+    } catch (error) {
+        res.status(500).json({ message: `Error accessing Google Sheets: ${error.message}` });
     }
-
-    if (!userExist) {
-        emailVerified = false;
-        const hashedPassword = await hashPassword(email + name + email)
-        try {
-            user = await User.create({ email, password: hashedPassword });
-        } catch (err) {
-            return res.status(500).send(`Could not create user - ${err.message}.`);
-        }
-    }
-    const jwtToken = jwt.sign({
-        _id: user._id
-    }, process.env.JWT_SECRET as string, {
-        expiresIn: '3d'
-    })
-    // return user and token to client, exclude hashed password
-    user.password = undefined
-    // send token in cookie
-    res.cookie('token', jwtToken, {
-        httpOnly: true
-    })
-    // send user and token as json response
-    res.json({ user, jwtToken });
-})
+});
