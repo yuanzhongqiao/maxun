@@ -1,11 +1,7 @@
 import { Model, DataTypes, Optional } from 'sequelize';
-import sequelize from '../db/config';
+import sequelize from '../storage/db';
 import Robot from './Robot';
 
-// TODO:
-// 1. rename variables 
-// 2. we might not need interpreter settings?
-// 3. store binaryOutput in MinIO
 interface InterpreterSettings {
   maxConcurrency: number;
   maxRepeats: number;
@@ -25,7 +21,7 @@ interface RunAttributes {
   log: string;
   runId: string;
   serializableOutput: Record<string, any[]>;
-  binaryOutput: Record<string, any>;
+  binaryOutput: Record<string, string>;
 }
 
 interface RunCreationAttributes extends Optional<RunAttributes, 'id'> { }
@@ -104,6 +100,7 @@ Run.init(
     binaryOutput: {
       type: DataTypes.JSONB,
       allowNull: true,
+      defaultValue: {},
     },
   },
   {
