@@ -42,19 +42,6 @@ class Run extends Model<RunAttributes, RunCreationAttributes> implements RunAttr
   public serializableOutput!: Record<string, any[]>;
   public binaryOutput!: Record<string, any>;
 
-  public async uploadBinaryOutputToMinioBucket(key: string, data: Buffer): Promise<void> {
-    const bucketName = 'maxun-run-screenshots';
-    try {
-      console.log(`Uploading to bucket ${bucketName} with key ${key}`);
-      await minioClient.putObject(bucketName, key, data, data.length, { 'Content-Type': 'image/png' });
-      this.binaryOutput[key] = `minio://${bucketName}/${key}`;
-      console.log(`Successfully uploaded to MinIO: minio://${bucketName}/${key}`);
-    } catch (error) {
-      console.error(`Error uploading to MinIO bucket: ${bucketName} with key: ${key}`, error);
-      throw error; 
-    }
-  }
-
   public async getBinaryOutputFromMinioBucket(key: string): Promise<Buffer> {
     const bucketName = 'maxun-run-screenshots';
 
