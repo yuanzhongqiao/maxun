@@ -173,7 +173,11 @@ const oauth2Client = new google.auth.OAuth2(
 
 // Step 1: Redirect to Google for authentication
 router.get('/google', (req, res) => {
-    const scopes = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/userinfo.email'];
+    const scopes = [
+        'https://www.googleapis.com/auth/spreadsheets',
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/drive.readonly',
+    ];
     const url = oauth2Client.generateAuthUrl({
         access_type: 'offline',
         prompt: 'consent',  // Ensures you get a refresh token on first login
