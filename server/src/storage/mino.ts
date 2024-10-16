@@ -47,7 +47,6 @@ class BinaryOutputService {
       }
 
       console.log(`Processing binary output key: ${key}`);
-      console.log(`Binary data:`, binaryData);
 
       // Check if binaryData has a valid Buffer structure and parse it
       if (binaryData && typeof binaryData.data === 'string') {
