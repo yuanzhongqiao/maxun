@@ -228,11 +228,9 @@ export class WorkflowInterpreter {
         this.serializableData.push(data);
         this.socket.emit('serializableCallback', data);
       },
-      binaryCallback: async (data: Buffer, mimetype: string) => {
-        const base64Data = data.toString('base64');
-      const binaryObject = { mimetype, data: base64Data };
-      this.binaryData.push(binaryObject);
-      this.socket.emit('binaryCallback', binaryObject);
+      binaryCallback: async (data: string, mimetype: string) => {
+        this.binaryData.push({ mimetype, data: JSON.stringify(data) });
+        this.socket.emit('binaryCallback', { data, mimetype });
       }
     }
 
