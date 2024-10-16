@@ -168,7 +168,7 @@ router.delete('/delete-api-key', requireSignIn, async (req, res) => {
 const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    process.env.GOOGLE_REDIRECT_URI
+    // process.env.GOOGLE_REDIRECT_URI
 );
 
 // Step 1: Redirect to Google for authentication
@@ -241,11 +241,17 @@ router.get('/google/callback', async (req, res) => {
         const jwtToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, { expiresIn: '12h' });
         res.cookie('token', jwtToken, { httpOnly: true });
 
-        res.json({ message: 'Google authentication successful', user, jwtToken, files });
+        res.json({ 
+            message: 'Google authentication successful', 
+            email: user.email, 
+            jwtToken, 
+            files 
+        });
     } catch (error: any) {
         res.status(500).json({ message: `Google OAuth error: ${error.message}` });
     }
 });
+
 
 // Step 3: Get data from Google Sheets
 router.post('/gsheets/data', async (req, res) => {
