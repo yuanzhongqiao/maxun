@@ -74,7 +74,7 @@ class BinaryOutputService {
       try {
         const minioKey = `${plainRun.runId}/${key}`;
 
-        await run.uploadBinaryOutputToMinioBucket(minioKey, binaryData);
+        await this.uploadBinaryOutputToMinioBucket(run, minioKey, binaryData);
 
         // Save the Minio URL in the result object
         uploadedBinaryOutput[key] = `minio://${this.bucketName}/${minioKey}`;
@@ -93,6 +93,20 @@ class BinaryOutputService {
     }
 
     return uploadedBinaryOutput;
+  }
+
+  async uploadBinaryOutputToMinioBucket(run: Run, key: string, data: Buffer): Promise<void> {
+    const bucketName = 'maxun-run-screenshots';
+    try {
+      console.log(`Uploading to bucket ${bucketName} with key ${key}`);
+      await minioClient.putObject(bucketName, key, data, data.length, { 'Content-Type': 'image/png' });
+      const plainRun = run.toJSON();
+      plainRun.binaryOutput[key] = `minio://${bucketName}/${key}`;
+      console.log(`Successfully uploaded to MinIO: minio://${bucketName}/${key}`);
+    } catch (error) {
+      console.error(`Error uploading to MinIO bucket: ${bucketName} with key: ${key}`, error);
+      throw error; 
+    }
   }
 }
 
