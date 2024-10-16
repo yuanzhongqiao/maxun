@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import User from '../models/User';
+import Robot from '../models/Robot';
 import jwt from 'jsonwebtoken';
 import { hashPassword, comparePassword } from '../utils/auth';
 import { requireSignIn } from '../middlewares/auth';
@@ -187,10 +188,15 @@ router.get('/google', (req, res) => {
 });
 
 // Step 2: Handle Google OAuth callback
-router.get('/google/callback', requireSignIn, async (req, res) => {
+router.post('/google/callback', requireSignIn, async (req, res) => {
     const { code } = req.query;
+    const { robotId } = req.body;
 
     try {
+        if (!robotId) {
+            return res.status(400).json({ message: 'Robot ID is required' });
+        }
+
         // Get access and refresh tokens
         if (typeof code !== 'string') {
             return res.status(400).json({ message: 'Invalid code' });
@@ -213,8 +219,13 @@ router.get('/google/callback', requireSignIn, async (req, res) => {
             return res.status(400).json({ message: 'User not found' });
         }
 
-        // Update the current user's Google Sheets email and tokens
-        user = await user.update({
+        let robot = await Robot.findOne({ where: { 'recording_meta.id': robotId } });
+
+        if (!robot) {
+            return res.status(400).json({ message: 'Robot not found' });
+        }
+
+        robot = await robot.update({
             google_sheets_email: email,
             google_access_token: tokens.access_token,
             google_refresh_token: tokens.refresh_token,
@@ -236,13 +247,14 @@ router.get('/google/callback', requireSignIn, async (req, res) => {
         const jwtToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, { expiresIn: '12h' });
         res.cookie('token', jwtToken, { httpOnly: true });
 
+        res.redirect('http://localhost:3000');
+
         res.json({
             message: 'Google authentication successful',
-            google_sheet_email: user.google_sheets_email,
+            google_sheet_email: robot.google_sheets_email,
             jwtToken,
             files
         });
-        res.redirect('http://localhost:3000');
     } catch (error: any) {
         res.status(500).json({ message: `Google OAuth error: ${error.message}` });
     }
@@ -250,17 +262,23 @@ router.get('/google/callback', requireSignIn, async (req, res) => {
 
 // Step 3: Get data from Google Sheets
 router.post('/gsheets/data', requireSignIn, async (req, res) => {
-    const { spreadsheetId } = req.body;
+    const { spreadsheetId, robotId } = req.body;
     const user = await User.findOne({ where: { id: req.user.id } });
 
     if (!user) {
         return res.status(400).json({ message: 'User not found' });
     }
 
+    const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId } });
+
+    if (!robot) {
+        return res.status(400).json({ message: 'Robot not found' });
+    }
+
     // Set Google OAuth credentials
     oauth2Client.setCredentials({
-        access_token: user.google_access_token,
-        refresh_token: user.google_refresh_token,
+        access_token: robot.google_access_token,
+        refresh_token: robot.google_refresh_token,
     });
 
     const sheets = google.sheets({ version: 'v4', auth: oauth2Client });
