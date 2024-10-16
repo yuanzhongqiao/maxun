@@ -236,11 +236,11 @@ router.get('/google/callback', requireSignIn, async (req, res) => {
         const jwtToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, { expiresIn: '12h' });
         res.cookie('token', jwtToken, { httpOnly: true });
 
-        res.json({ 
-            message: 'Google authentication successful', 
-            google_sheet_email: user.google_sheets_email, 
-            jwtToken, 
-            files 
+        res.json({
+            message: 'Google authentication successful',
+            google_sheet_email: user.google_sheets_email,
+            jwtToken,
+            files
         });
     } catch (error: any) {
         res.status(500).json({ message: `Google OAuth error: ${error.message}` });
