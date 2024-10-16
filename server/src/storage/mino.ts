@@ -39,64 +39,63 @@ class BinaryOutputService {
     const plainRun = run.toJSON();
 
     for (const key of Object.keys(binaryOutput)) {
-        let binaryData = binaryOutput[key];
+      let binaryData = binaryOutput[key];
 
-        if (!plainRun.runId) {
-            console.error('Run ID is undefined. Cannot upload binary data.');
-            continue;
-        }
+      if (!plainRun.runId) {
+        console.error('Run ID is undefined. Cannot upload binary data.');
+        continue;
+      }
 
-        console.log(`Processing binary output key: ${key}`);
+      console.log(`Processing binary output key: ${key}`);
 
-        // Check if binaryData has a valid Buffer structure and parse it
-        if (binaryData && typeof binaryData.data === 'string') {
-            try {
-                const parsedData = JSON.parse(binaryData.data);
-                if (parsedData && parsedData.type === 'Buffer' && Array.isArray(parsedData.data)) {
-                    binaryData = Buffer.from(parsedData.data);
-                } else {
-                    console.error(`Invalid Buffer format for key: ${key}`);
-                    continue;
-                }
-            } catch (error) {
-                console.error(`Failed to parse JSON for key: ${key}`, error);
-                continue;
-            }
-        }
-
-        // Handle cases where binaryData might not be a Buffer
-        if (!Buffer.isBuffer(binaryData)) {
-            console.error(`Binary data for key ${key} is not a valid Buffer.`);
-            continue;
-        }
-
+      // Check if binaryData has a valid Buffer structure and parse it
+      if (binaryData && typeof binaryData.data === 'string') {
         try {
-            const minioKey = `${plainRun.runId}/${key}`;
-
-            await this.uploadBinaryOutputToMinioBucket(run, minioKey, binaryData);
-
-            // Construct the public URL for the uploaded object
-            const publicUrl = `http://${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${this.bucketName}/${minioKey}`;
-
-            // Save the public URL in the result object
-            uploadedBinaryOutput[key] = publicUrl;
+          const parsedData = JSON.parse(binaryData.data);
+          if (parsedData && parsedData.type === 'Buffer' && Array.isArray(parsedData.data)) {
+            binaryData = Buffer.from(parsedData.data);
+          } else {
+            console.error(`Invalid Buffer format for key: ${key}`);
+            continue;
+          }
         } catch (error) {
-            console.error(`Error uploading key ${key} to MinIO:`, error);
+          console.error(`Failed to parse JSON for key: ${key}`, error);
+          continue;
         }
+      }
+
+      // Handle cases where binaryData might not be a Buffer
+      if (!Buffer.isBuffer(binaryData)) {
+        console.error(`Binary data for key ${key} is not a valid Buffer.`);
+        continue;
+      }
+
+      try {
+        const minioKey = `${plainRun.runId}/${key}`;
+
+        await this.uploadBinaryOutputToMinioBucket(run, minioKey, binaryData);
+
+        // Construct the public URL for the uploaded object
+        const publicUrl = `http://${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${this.bucketName}/${minioKey}`;
+
+        // Save the public URL in the result object
+        uploadedBinaryOutput[key] = publicUrl;
+      } catch (error) {
+        console.error(`Error uploading key ${key} to MinIO:`, error);
+      }
     }
 
     console.log('Uploaded Binary Output:', uploadedBinaryOutput);
 
     try {
-        await run.update({ binaryOutput: uploadedBinaryOutput });
-        console.log('Run successfully updated with binary output');
+      await run.update({ binaryOutput: uploadedBinaryOutput });
+      console.log('Run successfully updated with binary output');
     } catch (updateError) {
-        console.error('Error updating run with binary output:', updateError);
+      console.error('Error updating run with binary output:', updateError);
     }
 
     return uploadedBinaryOutput;
-}
-
+  }
 
   async uploadBinaryOutputToMinioBucket(run: Run, key: string, data: Buffer): Promise<void> {
     const bucketName = 'maxun-run-screenshots';
