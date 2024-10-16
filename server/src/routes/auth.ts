@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { hashPassword, comparePassword } from '../utils/auth';
 import { requireSignIn } from '../middlewares/auth';
 import { genAPIKey } from '../utils/api';
+import { OAuth2Client } from 'google-auth-library';
 export const router = Router();
 
 interface AuthenticatedRequest extends Request {
@@ -163,3 +164,55 @@ router.delete('/delete-api-key', requireSignIn, async (req, res) => {
         return res.status(500).json({ message: 'Error deleting API key', error: error.message });
     }
 });
+
+const googleClient = new OAuth2Client(
+    process.env.GOOGLE_CLIENT_ID,
+);
+
+router.post('/google', requireSignIn, async (req: AuthenticatedRequest, res) => {
+    const { token } = req.body;
+
+    const ticket = await googleClient.verifyIdToken({
+        idToken: token,
+        audience: `${process.env.GOOGLE_CLIENT_ID}`,
+    });
+
+    const { name, email, picture, email_verified } = ticket.getPayload();
+
+    let emailVerified: boolean;
+    let userExist: any;
+    let user: any;
+
+    if (email_verified) {
+        try {
+            emailVerified = true;
+            let userExist = await User.findOne({ raw: true, where: { email } });
+            if (userExist) return res.status(400).send('User already exists')
+        } catch (error) {
+            return res.status(500).send(`Could not verify the user - ${error.message}.`);
+        }
+    }
+
+    if (!userExist) {
+        emailVerified = false;
+        const hashedPassword = await hashPassword(email + name + email)
+        try {
+            user = await User.create({ email, password: hashedPassword });
+        } catch (err) {
+            return res.status(500).send(`Could not create user - ${err.message}.`);
+        }
+    }
+    const jwtToken = jwt.sign({
+        _id: user._id
+    }, process.env.JWT_SECRET as string, {
+        expiresIn: '3d'
+    })
+    // return user and token to client, exclude hashed password
+    user.password = undefined
+    // send token in cookie
+    res.cookie('token', jwtToken, {
+        httpOnly: true
+    })
+    // send user and token as json response
+    res.json({ user, jwtToken });
+})
