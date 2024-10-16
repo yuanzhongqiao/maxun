@@ -248,8 +248,10 @@ router.get('/google/callback', async (req, res) => {
 });
 
 // Step 3: Get data from Google Sheets
-router.get('/gsheets/data', async (req, res) => {
-    const user = await User.findOne({ where: { id: req.userId } });
+router.post('/gsheets/data', async (req, res) => {
+    const { spreadsheetId } = req.body;
+    const user = await User.findOne({ where: { id: req.user.id } });
+
     if (!user) {
         return res.status(400).json({ message: 'User not found' });
     }
@@ -260,13 +262,13 @@ router.get('/gsheets/data', async (req, res) => {
         refresh_token: user.google_refresh_token,
     });
 
-    // If the access token has expired, it will be automatically refreshed using the refresh token
     const sheets = google.sheets({ version: 'v4', auth: oauth2Client });
 
     try {
+        // Fetch data from the spreadsheet (you can let the user choose a specific range too)
         const sheetData = await sheets.spreadsheets.values.get({
-            spreadsheetId: 'your-spreadsheet-id',
-            range: 'Sheet1!A1:D5', // Example range
+            spreadsheetId,
+            range: 'Sheet1!A1:D5',  // Default range, could be dynamic based on user input
         });
         res.json(sheetData.data);
     } catch (error) {
