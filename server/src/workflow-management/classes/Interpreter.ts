@@ -228,7 +228,7 @@ export class WorkflowInterpreter {
         this.serializableData.push(data);
         this.socket.emit('serializableCallback', data);
       },
-      binaryCallback: async (data: string, mimetype: string) => {
+      binaryCallback: async (data: Buffer, mimetype: string) => {
         this.binaryData.push({ mimetype, data: JSON.stringify(data) });
         this.socket.emit('binaryCallback', { data, mimetype });
       }
