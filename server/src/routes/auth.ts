@@ -242,6 +242,7 @@ router.get('/google/callback', requireSignIn, async (req, res) => {
             jwtToken,
             files
         });
+        res.redirect('http://localhost:3000');
     } catch (error: any) {
         res.status(500).json({ message: `Google OAuth error: ${error.message}` });
     }
