@@ -187,7 +187,7 @@ router.get('/google', (req, res) => {
 });
 
 // Step 2: Handle Google OAuth callback
-router.get('/google/callback', async (req, res) => {
+router.get('/google/callback', requireSignIn, async (req, res) => {
     const { code } = req.query;
 
     try {
@@ -254,7 +254,7 @@ router.get('/google/callback', async (req, res) => {
 
 
 // Step 3: Get data from Google Sheets
-router.post('/gsheets/data', async (req, res) => {
+router.post('/gsheets/data', requireSignIn, async (req, res) => {
     const { spreadsheetId } = req.body;
     const user = await User.findOne({ where: { id: req.user.id } });
 
