@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { GenericModal } from "../atoms/GenericModal";
-import { MenuItem, TextField, Typography, CircularProgress } from "@mui/material";
+import { MenuItem, Typography, CircularProgress } from "@mui/material";
 import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 import axios from 'axios';
-import { modalStyle } from "./AddWhereCondModal";
 
 interface IntegrationProps {
     isOpen: boolean;
@@ -12,52 +12,56 @@ interface IntegrationProps {
 }
 
 export interface IntegrationSettings {
-    credentials: string;
     spreadsheetId: string;
-    range: string;
     data: string;
 }
 
 export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: IntegrationProps) => {
     const [settings, setSettings] = useState<IntegrationSettings>({
-        credentials: '',
         spreadsheetId: '',
-        range: '',
         data: '',
     });
+
     const [spreadsheets, setSpreadsheets] = useState<{ id: string, name: string }[]>([]);
+    const [userInfo, setUserInfo] = useState<{ email: string } | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    useEffect(() => {
-        if (isOpen) {
-            // Fetch Google Sheets from backend when modal is opened
-            setLoading(true);
-            axios.get('http://localhost:8080/auth/google/callback')
-                .then(response => {
-                    setSpreadsheets(response.data.files);
-                    setLoading(false);
-                })
-                .catch(error => {
-                    setError(`Error fetching spreadsheets: ${error}`);
-                    setLoading(false);
-                });
-        }
-    }, [isOpen]);
-
-    const handleChange = (field: keyof IntegrationSettings) => (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSettings({ ...settings, [field]: e.target.value });
+    // Function to trigger Google OAuth authentication
+    const authenticateWithGoogle = () => {
+        window.location.href = 'http://localhost:8080/auth/google';  // Redirect to backend Google OAuth route
     };
 
+    // Function to handle Google OAuth callback and fetch spreadsheets
+    const handleOAuthCallback = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/auth/google/callback');
+            const { email, files } = response.data;
+            setUserInfo({ email });
+            setSpreadsheets(files);
+            setIsAuthenticated(true);
+        } catch (error) {
+            setError('Error authenticating with Google');
+        }
+    };
+
+    // Handle spreadsheet selection
     const handleSpreadsheetSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSettings({ ...settings, spreadsheetId: e.target.value });
     };
+
+    useEffect(() => {
+        // Simulate handling OAuth callback here after redirect
+        if (window.location.pathname === 'http://localhost:8080/auth/google/callback') {
+            handleOAuthCallback();
+        }
+    }, [isOpen]);
 
     return (
         <GenericModal
             isOpen={isOpen}
             onClose={handleClose}
-            modalStyle={modalStyle}
         >
             <div style={{
                 display: 'flex',
@@ -67,57 +71,67 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
             }}>
                 <Typography sx={{ margin: '20px 0px' }}>Google Sheets Integration</Typography>
 
-                <TextField
-                    sx={{ marginBottom: '15px' }}
-                    label="Service Account JSON"
-                    multiline
-                    rows={10}
-                    required
-                    value={settings.credentials}
-                    onChange={handleChange('credentials')}
-                    fullWidth
-                />
-
-                {loading ? (
-                    <CircularProgress sx={{ marginBottom: '15px' }} />
-                ) : error ? (
-                    <Typography color="error">{error}</Typography>
-                ) : (
-                    <TextField
-                        sx={{ marginBottom: '15px' }}
-                        select
-                        label="Select Google Spreadsheet"
-                        required
-                        value={settings.spreadsheetId}
-                        onChange={handleSpreadsheetSelect}
-                        fullWidth
+                {/* If user is not authenticated, show Google OAuth button */}
+                {!isAuthenticated ? (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={authenticateWithGoogle}
+                        style={{ marginBottom: '15px' }}
                     >
-                        {spreadsheets.map(sheet => (
-                            <MenuItem key={sheet.id} value={sheet.id}>
-                                {sheet.name}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                        Authenticate with Google
+                    </Button>
+                ) : (
+                    <>
+                        {/* Show user info and allow spreadsheet selection once authenticated */}
+                        {userInfo && (
+                            <Typography sx={{ marginBottom: '10px' }}>
+                                Logged in as: {userInfo.email}
+                            </Typography>
+                        )}
+
+                        {loading ? (
+                            <CircularProgress sx={{ marginBottom: '15px' }} />
+                        ) : error ? (
+                            <Typography color="error">{error}</Typography>
+                        ) : (
+                            <>
+                                <TextField
+                                    sx={{ marginBottom: '15px' }}
+                                    select
+                                    label="Select Google Spreadsheet"
+                                    required
+                                    value={settings.spreadsheetId}
+                                    onChange={handleSpreadsheetSelect}
+                                    fullWidth
+                                >
+                                    {spreadsheets.map(sheet => (
+                                        <MenuItem key={sheet.id} value={sheet.id}>
+                                            {sheet.name}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+
+                                {/* Display selected spreadsheet name */}
+                                {settings.spreadsheetId && (
+                                    <Typography sx={{ marginBottom: '10px' }}>
+                                        Selected Spreadsheet ID: {settings.spreadsheetId}
+                                    </Typography>
+                                )}
+                            </>
+                        )}
+
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleStart(settings)}
+                            style={{ marginTop: '10px' }}
+                            disabled={!settings.spreadsheetId || loading}
+                        >
+                            Submit
+                        </Button>
+                    </>
                 )}
-
-                <TextField
-                    sx={{ marginBottom: '15px' }}
-                    label="Range (e.g., Sheet1!A1:B2)"
-                    required
-                    value={settings.range}
-                    onChange={handleChange('range')}
-                    fullWidth
-                />
-
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleStart(settings)}
-                    style={{ marginTop: '10px' }}
-                    disabled={loading}
-                >
-                    Submit
-                </Button>
             </div>
         </GenericModal>
     );
