@@ -184,19 +184,16 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
                 Binary output</Typography>
               {Object.keys(row.binaryOutput).map((key) => {
                 try {
-                  const binaryBuffer = JSON.parse(row.binaryOutput[key].data);
-                  const b64 = Buffer.from(binaryBuffer.data).toString('base64');
+                  const imageUrl = row.binaryOutput[key];
                   return (
                     <Box key={`number-of-binary-output-${key}`} sx={{
                       width: 'max-content',
                     }}>
                       <Typography key={`binary-output-key-${key}`}>
                         {key}:
-                        <a href={`data:${row.binaryOutput[key].mimetype};base64,${b64}`}
-                          download={key} style={{ margin: '10px' }}>Download</a>
+                        <a href={imageUrl} download={key} style={{ margin: '10px' }}>Download</a>
                       </Typography>
-                      <img key={`image-${key}`} src={`data:${row.binaryOutput[key].mimetype};base64,${b64}`}
-                        alt={key} height='auto' width='700px' />
+                      <img key={`image-${key}`} src={imageUrl} alt={key} height='auto' width='700px' />
                     </Box>
                   )
                 } catch (e) {
