@@ -10,10 +10,6 @@ interface UserAttributes {
     proxy_url?: string | null;
     proxy_username?: string | null;
     proxy_password?: string | null;
-    google_sheets_email?: string | null;
-    google_sheet_id?: string | null;
-    google_access_token?: string | null;
-    google_refresh_token?: string | null;
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { }
@@ -27,10 +23,6 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
     public proxy_url!: string | null;
     public proxy_username!: string | null;
     public proxy_password!: string | null;
-    public google_sheets_email!: string | null;
-    public google_sheet_id?: string | null;
-    public google_access_token!: string | null;
-    public google_refresh_token!: string | null;
 }
 
 User.init(
@@ -77,22 +69,6 @@ User.init(
             },
         },
         proxy_password: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        google_sheets_email: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        google_sheet_id: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        google_access_token: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        google_refresh_token: {
             type: DataTypes.STRING,
             allowNull: true,
         },
