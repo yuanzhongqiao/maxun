@@ -105,7 +105,7 @@ class BinaryOutputService {
       console.log(`Successfully uploaded to MinIO: minio://${bucketName}/${key}`);
     } catch (error) {
       console.error(`Error uploading to MinIO bucket: ${bucketName} with key: ${key}`, error);
-      throw error; 
+      throw error;
     }
   }
 }
