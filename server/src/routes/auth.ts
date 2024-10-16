@@ -242,7 +242,7 @@ router.get('/google/callback', async (req, res) => {
         res.cookie('token', jwtToken, { httpOnly: true });
 
         res.json({ message: 'Google authentication successful', user, jwtToken, files });
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({ message: `Google OAuth error: ${error.message}` });
     }
 });
@@ -271,7 +271,7 @@ router.post('/gsheets/data', async (req, res) => {
             range: 'Sheet1!A1:D5',  // Default range, could be dynamic based on user input
         });
         res.json(sheetData.data);
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({ message: `Error accessing Google Sheets: ${error.message}` });
     }
 });
