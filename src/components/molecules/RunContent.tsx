@@ -7,7 +7,6 @@ import { TabPanel, TabContext } from "@mui/lab";
 import SettingsIcon from '@mui/icons-material/Settings';
 import ImageIcon from '@mui/icons-material/Image';
 import ArticleIcon from '@mui/icons-material/Article';
-import { Buffer } from 'buffer';
 import { useEffect, useState } from "react";
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import Table from '@mui/material/Table';
