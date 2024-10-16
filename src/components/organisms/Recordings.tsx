@@ -9,7 +9,7 @@ interface RecordingsProps {
   handleEditRecording: (id: string, fileName: string) => void;
   handleRunRecording: (settings: RunSettings) => void;
   handleScheduleRecording: (settings: ScheduleSettings) => void;
-  handleIntegrateRecording: (settings: IntegrationSettings) => void;
+  handleIntegrateRecording: (id: string, settings: IntegrationSettings) => void;
   setRecordingInfo: (id: string, name: string) => void;
 }
 
@@ -19,6 +19,8 @@ export const Recordings = ({ handleEditRecording, handleRunRecording, setRecordi
   const [integrateSettingsAreOpen, setIntegrateSettingsAreOpen] = useState(false);
   const [params, setParams] = useState<string[]>([]);
   const [selectedRecordingId, setSelectedRecordingId] = useState<string>('');
+
+  console.log(`Selected reocrding id: ${selectedRecordingId}`);
 
   const handleSettingsAndIntegrate = (id: string, name: string, params: string[]) => {
     if (params.length === 0) {
@@ -94,7 +96,7 @@ export const Recordings = ({ handleEditRecording, handleRunRecording, setRecordi
       />
       <IntegrationSettingsModal isOpen={integrateSettingsAreOpen}
         handleClose={handleIntegrateClose}
-        handleStart={(settings) => handleIntegrateRecording(settings)}
+        handleStart={(settings) => handleIntegrateRecording(selectedRecordingId, settings)}
       />
       <Grid container direction="column" sx={{ padding: '30px' }}>
         <Grid item xs>
