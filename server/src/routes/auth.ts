@@ -225,11 +225,23 @@ router.get('/google/callback', async (req, res) => {
             }, { where: { email } });
         }
 
+        // List user's Google Sheets from their Google Drive
+        const drive = google.drive({ version: 'v3', auth: oauth2Client });
+        const response = await drive.files.list({
+            q: "mimeType='application/vnd.google-apps.spreadsheet'", // List only Google Sheets files
+            fields: 'files(id, name)',  // Retrieve the ID and name of each file
+        });
+
+        const files = response.data.files || [];
+        if (files.length === 0) {
+            return res.status(404).json({ message: 'No spreadsheets found.' });
+        }
+
         // Generate JWT token for session
         const jwtToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, { expiresIn: '12h' });
         res.cookie('token', jwtToken, { httpOnly: true });
 
-        res.json({ message: 'Google authentication successful', user, jwtToken });
+        res.json({ message: 'Google authentication successful', user, jwtToken, files });
     } catch (error) {
         res.status(500).json({ message: `Google OAuth error: ${error.message}` });
     }
