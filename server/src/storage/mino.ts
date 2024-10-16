@@ -107,6 +107,27 @@ class BinaryOutputService {
       throw error;
     }
   }
+
+  public async getBinaryOutputFromMinioBucket(key: string): Promise<Buffer> {
+    const bucketName = 'maxun-run-screenshots';
+
+    try {
+      console.log(`Fetching from bucket ${bucketName} with key ${key}`);
+      const stream = await minioClient.getObject(bucketName, key);
+      return new Promise((resolve, reject) => {
+        const chunks: Buffer[] = [];
+        stream.on('data', (chunk) => chunks.push(chunk));
+        stream.on('end', () => resolve(Buffer.concat(chunks)));
+        stream.on('error', (error) => {
+          console.error('Error while reading the stream from MinIO:', error);
+          reject(error);
+        });
+      });
+    } catch (error) {
+      console.error(`Error fetching from MinIO bucket: ${bucketName} with key: ${key}`, error);
+      throw error;
+    }
+  }
 }
 
 export { minioClient, BinaryOutputService };
