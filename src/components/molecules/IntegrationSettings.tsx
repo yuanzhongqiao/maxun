@@ -62,19 +62,18 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
     };
 
     // Function to send the selected sheet ID to the backend to update the robot's google_sheet_id
-const updateGoogleSheetId = async () => {
-    try {
-        const response = await axios.post(
-            `http://localhost:8080/auth/gsheets/update`, 
-            { spreadsheetId: settings.spreadsheetId, robotId: recordingId },
-            { withCredentials: true }
-        );
-        console.log('Google Sheet ID updated:', response.data);
-    } catch (error: any) {
-        console.error('Error updating Google Sheet ID:', error.response?.data?.message || error.message);
-    }
-};
-    
+    const updateGoogleSheetId = async () => {
+        try {
+            const response = await axios.post(
+                `http://localhost:8080/auth/gsheets/update`,
+                { spreadsheetId: settings.spreadsheetId, robotId: recordingId },
+                { withCredentials: true }
+            );
+            console.log('Google Sheet ID updated:', response.data);
+        } catch (error: any) {
+            console.error('Error updating Google Sheet ID:', error.response?.data?.message || error.message);
+        }
+    };
 
     // Handle spreadsheet selection
     const handleSpreadsheetSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,9 +128,9 @@ const updateGoogleSheetId = async () => {
                         {/* Show user info and allow spreadsheet selection once authenticated */}
                         {userInfo && (
                             <>
-                            <Typography sx={{ marginBottom: '10px' }}>
-                                Logged in as: {userInfo.email}
-                            </Typography>
+                                <Typography sx={{ marginBottom: '10px' }}>
+                                    Logged in as: {userInfo.email}
+                                </Typography>
                             </>
                         )}
 
@@ -158,8 +157,8 @@ const updateGoogleSheetId = async () => {
                                 </TextField>
 
                                 <button onClick={fetchSpreadsheetFiles}>
-                                Fetch Google Spreadsheets
-                            </button>
+                                    Fetch Google Spreadsheets
+                                </button>
 
                                 {/* Display selected spreadsheet name */}
                                 {settings.spreadsheetId && (
