@@ -37,6 +37,9 @@ router.get('/recordings', requireSignIn, async (req, res) => {
   }
 });
 
+/**
+ * GET endpoint for getting a recording.
+ */
 router.get('/recordings/:id', requireSignIn, async (req, res) => {
   try {
     const data = await Robot.findOne({
