@@ -93,7 +93,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
             if (!recordingId) return;
             const recording = await getStoredRecording(recordingId);
             if (recording) {
-                setGoogleSheetsEmail(recording.google_sheets_email); // Assuming this is how the email is stored
+                setGoogleSheetsEmail(recording.google_sheets_email);
             }
         };
 
@@ -113,7 +113,6 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
             }}>
                 <Typography sx={{ margin: '20px 0px' }}>Google Sheets Integration</Typography>
 
-                {/* If Google Sheets email is empty, show Google OAuth button */}
                 {!googleSheetsEmail ? (
                     <Button
                         variant="contained"
@@ -125,7 +124,6 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                     </Button>
                 ) : (
                     <>
-                        {/* Show user info and allow spreadsheet selection once authenticated */}
                         {userInfo && (
                             <>
                                 <Typography sx={{ marginBottom: '10px' }}>
@@ -160,7 +158,6 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                                     Fetch Google Spreadsheets
                                 </button>
 
-                                {/* Display selected spreadsheet name */}
                                 {settings.spreadsheetId && (
                                     <Typography sx={{ marginBottom: '10px' }}>
                                         Selected Spreadsheet ID: {settings.spreadsheetId}

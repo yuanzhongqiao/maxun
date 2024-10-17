@@ -20,6 +20,7 @@ interface RobotAttributes {
   recording_meta: RobotMeta;
   recording: RobotWorkflow;
   google_sheets_email?: string | null;
+  google_sheets_name?: string | null;
   google_sheet_id?: string | null;
   google_access_token?: string | null;
   google_refresh_token?: string | null;
@@ -32,6 +33,7 @@ class Robot extends Model<RobotAttributes, RobotCreationAttributes> implements R
   public recording_meta!: RobotMeta;
   public recording!: RobotWorkflow;
   public google_sheets_email!: string | null;
+  public google_sheets_name?: string | null;
   public google_sheet_id?: string | null;
   public google_access_token!: string | null;
   public google_refresh_token!: string | null;
@@ -53,6 +55,10 @@ Robot.init(
       allowNull: false,
     },
     google_sheets_email: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    google_sheets_name: {
       type: DataTypes.STRING,
       allowNull: true,
     },
