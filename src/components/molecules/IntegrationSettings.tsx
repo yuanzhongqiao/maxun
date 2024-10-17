@@ -70,7 +70,7 @@ const updateGoogleSheetId = async () => {
             { withCredentials: true }
         );
         console.log('Google Sheet ID updated:', response.data);
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error updating Google Sheet ID:', error.response?.data?.message || error.message);
     }
 };
