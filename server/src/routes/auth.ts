@@ -350,7 +350,7 @@ router.post('/gsheets/update', requireSignIn, async (req, res) => {
         await robot.update({ google_sheet_id: spreadsheetId });
 
         res.json({ message: 'Robot updated with selected Google Sheet ID' });
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({ message: `Error updating robot: ${error.message}` });
     }
 });
