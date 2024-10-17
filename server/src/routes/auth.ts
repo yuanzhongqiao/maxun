@@ -188,10 +188,8 @@ router.get('/google', (req, res) => {
 });
 
 // Step 2: Handle Google OAuth callback
-router.post('/google/callback', requireSignIn, async (req, res) => {
-    const { code } = req.query;
-    const { robotId } = req.body;
-
+router.get('/google/callback', requireSignIn, async (req, res) => {
+    const { code, robotId } = req.query;
     try {
         if (!robotId) {
             return res.status(400).json({ message: 'Robot ID is required' });
