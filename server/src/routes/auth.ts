@@ -334,7 +334,7 @@ router.get('/gsheets/files', requireSignIn, async (req, res) => {
 
 // Step 5: Update robot's google_sheet_id when a Google Sheet is selected
 router.post('/gsheets/update', requireSignIn, async (req, res) => {
-    const { spreadsheetId, robotId } = req.body;
+    const { spreadsheetId, spreadsheetName, robotId } = req.body;
 
     if (!spreadsheetId || !robotId) {
         return res.status(400).json({ message: 'Spreadsheet ID and Robot ID are required' });
@@ -347,7 +347,7 @@ router.post('/gsheets/update', requireSignIn, async (req, res) => {
             return res.status(404).json({ message: 'Robot not found' });
         }
 
-        await robot.update({ google_sheet_id: spreadsheetId });
+        await robot.update({ google_sheet_id: spreadsheetId, google_sheet_name: spreadsheetName });
 
         res.json({ message: 'Robot updated with selected Google Sheet ID' });
     } catch (error: any) {
