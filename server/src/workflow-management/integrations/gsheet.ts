@@ -36,8 +36,6 @@ export function saveIntegrations(fileName: string, integrations: any) {
 }
 
 export async function updateGoogleSheet(robotId: string, runId: string) {
-  console.log(`Starting updateGoogleSheet for robotId: ${robotId}, runId: ${runId}`);
-  
   try {
     const run = await Run.findOne({ where: { runId } });
 
@@ -49,10 +47,8 @@ export async function updateGoogleSheet(robotId: string, runId: string) {
 
     if (plainRun.status === 'success' && plainRun.serializableOutput) {
       const data = plainRun.serializableOutput['item-0'] as { [key: string]: any }[];
-      console.log('Serializable output data:', data);
 
       const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId } });
-      console.log('Robot found:', robot);
 
       if (!robot) {
         throw new Error(`Robot not found for robotId: ${robotId}`);
@@ -67,8 +63,6 @@ export async function updateGoogleSheet(robotId: string, runId: string) {
         const headers = Object.keys(data[0]);
         const rows = data.map((row: { [key: string]: any }) => Object.values(row));
         const outputData = [headers, ...rows];
-        
-        console.log('Data to be written to sheet:', outputData);
 
         await writeDataToSheet(robotId, spreadsheetId, outputData);
         console.log(`Data written to Google Sheet successfully for Robot: ${robotId} and Run: ${runId}`);
@@ -82,7 +76,6 @@ export async function updateGoogleSheet(robotId: string, runId: string) {
     console.error(`Failed to write data to Google Sheet for Robot: ${robotId} and Run: ${runId}: ${error.message}`);
   }
 };
-
 
 export async function writeDataToSheet(robotId: string, spreadsheetId: string, data: any[]) {
   try {
@@ -109,9 +102,7 @@ export async function writeDataToSheet(robotId: string, spreadsheetId: string, d
       refresh_token: plainRobot.google_refresh_token,
     });
 
-    // Log tokens and any refresh activity
     oauth2Client.on('tokens', async (tokens) => {
-      console.log('OAuth2 tokens updated:', tokens);
       if (tokens.refresh_token) {
         await robot.update({ google_refresh_token: tokens.refresh_token });
       }
@@ -124,7 +115,6 @@ export async function writeDataToSheet(robotId: string, spreadsheetId: string, d
 
     const resource = { values: data };
     console.log('Attempting to write to spreadsheet:', spreadsheetId);
-    console.log('Data being written:', data);
 
     const response = await sheets.spreadsheets.values.append({
       spreadsheetId,
@@ -132,8 +122,6 @@ export async function writeDataToSheet(robotId: string, spreadsheetId: string, d
       valueInputOption: 'USER_ENTERED',
       requestBody: resource,
     });
-
-    console.log('Google Sheets API response:', JSON.stringify(response, null, 2));
 
     if (response.status === 200) {
       console.log('Data successfully appended to Google Sheet.');
@@ -147,7 +135,6 @@ export async function writeDataToSheet(robotId: string, spreadsheetId: string, d
     throw error;
   }
 }
-
 
 export const processGoogleSheetUpdates = async () => {
   while (true) {
