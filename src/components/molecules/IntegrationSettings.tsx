@@ -60,7 +60,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
     const handleSpreadsheetSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedSheet = spreadsheets.find(sheet => sheet.id === e.target.value);
         if (selectedSheet) {
-            setSettings({ ...settings, spreadsheetId: selectedSheet.id });
+            setSettings({ ...settings, spreadsheetId: selectedSheet.id, spreadsheetName: selectedSheet.name });
         }
     };
 
