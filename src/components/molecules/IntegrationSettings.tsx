@@ -28,28 +28,28 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
     const [userInfo, setUserInfo] = useState<{ email: string } | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [googleSheetsEmail, setGoogleSheetsEmail] = useState<string | null>(null); // To store the Google Sheets email
 
     const { recordingId } = useGlobalInfoStore();
 
-    // trigger Google OAuth authentication
+    // Function to trigger Google OAuth authentication
     const authenticateWithGoogle = () => {
         window.location.href = `http://localhost:8080/auth/google?robotId=${recordingId}`;
     };
 
-    // handle Google OAuth callback and fetch spreadsheets
+    // Function to handle Google OAuth callback and fetch spreadsheets
     const handleOAuthCallback = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/auth/google/callback`);
             const { google_sheet_email, files } = response.data;
             setUserInfo({ email: google_sheet_email });
             setSpreadsheets(files);
-            setIsAuthenticated(true);
         } catch (error) {
             setError('Error authenticating with Google');
         }
     };
 
+    // Handle spreadsheet selection
     const handleSpreadsheetSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSettings({ ...settings, spreadsheetId: e.target.value });
     };
@@ -61,7 +61,18 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
         if (code) {
             handleOAuthCallback();
         }
-    }, []);
+
+        // Fetch the stored recording to check the Google Sheets email
+        const fetchRecordingInfo = async () => {
+            if (!recordingId) return;
+            const recording = await getStoredRecording(recordingId);
+            if (recording) {
+                setGoogleSheetsEmail(recording.google_sheets_email); // Assuming this is how the email is stored
+            }
+        };
+
+        fetchRecordingInfo();
+    }, [recordingId]);
 
     return (
         <GenericModal
@@ -76,8 +87,8 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
             }}>
                 <Typography sx={{ margin: '20px 0px' }}>Google Sheets Integration</Typography>
 
-                {/* If user is not authenticated, show Google OAuth button */}
-                {!isAuthenticated ? (
+                {/* If Google Sheets email is empty, show Google OAuth button */}
+                {!googleSheetsEmail ? (
                     <Button
                         variant="contained"
                         color="primary"
