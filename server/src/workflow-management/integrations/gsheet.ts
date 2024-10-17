@@ -59,7 +59,7 @@ export async function updateGoogleSheet(robotId: string, runId: string) {
       const spreadsheetId = plainRobot.google_sheet_id;
       if (plainRobot.google_sheet_email && spreadsheetId) {
         console.log(`Preparing to write data to Google Sheet for robot: ${robotId}, spreadsheetId: ${spreadsheetId}`);
-        
+
         const headers = Object.keys(data[0]);
         const rows = data.map((row: { [key: string]: any }) => Object.values(row));
         const outputData = [headers, ...rows];
