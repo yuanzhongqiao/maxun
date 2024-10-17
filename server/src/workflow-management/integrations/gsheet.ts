@@ -36,8 +36,11 @@ export function saveIntegrations(fileName: string, integrations: any) {
 }
 
 export async function updateGoogleSheet(robotId: string, runId: string) {
+  console.log(`Starting updateGoogleSheet for robotId: ${robotId}, runId: ${runId}`);
+  
   try {
     const run = await Run.findOne({ where: { runId } });
+    console.log('Run found:', run);
 
     if (!run) {
       throw new Error(`Run not found for runId: ${runId}`);
@@ -45,28 +48,38 @@ export async function updateGoogleSheet(robotId: string, runId: string) {
 
     if (run.status === 'success' && run.serializableOutput) {
       const data = run.serializableOutput['item-0'] as { [key: string]: any }[];
+      console.log('Serializable output data:', data);
 
       const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId } });
+      console.log('Robot found:', robot);
+
       if (!robot) {
         throw new Error(`Robot not found for robotId: ${robotId}`);
       }
 
-      const spreadsheetId = robot.google_sheet_id
-
+      const spreadsheetId = robot.google_sheet_id;
       if (robot.google_sheet_email && spreadsheetId) {
-        // Convert data to Google Sheets format (headers and rows)
+        console.log(`Preparing to write data to Google Sheet for robot: ${robotId}, spreadsheetId: ${spreadsheetId}`);
+        
         const headers = Object.keys(data[0]);
         const rows = data.map((row: { [key: string]: any }) => Object.values(row));
         const outputData = [headers, ...rows];
+        
+        console.log('Data to be written to sheet:', outputData);
 
         await writeDataToSheet(robotId, spreadsheetId, outputData);
-        logger.log('info', `Data written to Google Sheet successfully for Robot: ${robotId} and Run: ${runId}`);
+        console.log(`Data written to Google Sheet successfully for Robot: ${robotId} and Run: ${runId}`);
+      } else {
+        console.log('Google Sheets integration not configured.');
       }
+    } else {
+      console.log('Run status is not success or serializableOutput is missing.');
     }
   } catch (error: any) {
-    logger.log('error', `Failed to write data to Google Sheet for Robot: ${robotId} and Run: ${runId}: ${error.message}`);
+    console.error(`Failed to write data to Google Sheet for Robot: ${robotId} and Run: ${runId}: ${error.message}`);
   }
 };
+
 
 export async function writeDataToSheet(robotId: string, spreadsheetId: string, data: any[]) {
   try {
@@ -115,7 +128,14 @@ export async function writeDataToSheet(robotId: string, spreadsheetId: string, d
       requestBody: resource,
     });
 
-    console.log('Google Sheets append response:', response);
+    console.log('Google Sheets API response:', JSON.stringify(response, null, 2));
+
+    if (response.status === 200) {
+      console.log('Data successfully appended to Google Sheet.');
+    } else {
+      console.error('Google Sheets append failed:', response);
+    }
+
     logger.log(`info`, `Data written to Google Sheet: ${spreadsheetId}`);
   } catch (error: any) {
     logger.log(`error`, `Error writing data to Google Sheet: ${error.message}`);
