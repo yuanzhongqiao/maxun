@@ -32,7 +32,7 @@ export const getStoredRuns = async (): Promise<string[] | null> => {
   }
 };
 
-export const getStoredRecording = async (id: string): Promise<WorkflowFile | null> => {
+export const getStoredRecording = async (id: string) => {
   try {
     const response = await axios.get(`http://localhost:8080/storage/recordings/${id}`);
     if (response.status === 200) {
