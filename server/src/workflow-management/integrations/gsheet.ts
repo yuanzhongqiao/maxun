@@ -17,24 +17,6 @@ const MAX_RETRIES = 5;
 
 export let googleSheetUpdateTasks: { [runId: string]: GoogleSheetUpdateTask } = {};
 
-
-// *** Temporary Path to the JSON file that will store the integration details ***
-const getIntegrationsFilePath = (fileName: string) => path.join(__dirname, `integrations-${fileName}.json`);
-
-export function loadIntegrations(fileName: string) {
-  const filePath = getIntegrationsFilePath(fileName);
-  if (fs.existsSync(filePath)) {
-    const data = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(data);
-  }
-  return {};
-}
-
-export function saveIntegrations(fileName: string, integrations: any) {
-  const filePath = getIntegrationsFilePath(fileName);
-  fs.writeFileSync(filePath, JSON.stringify(integrations, null, 2));
-}
-
 export async function updateGoogleSheet(robotId: string, runId: string) {
   try {
     const run = await Run.findOne({ where: { runId } });
