@@ -32,6 +32,20 @@ export const getStoredRuns = async (): Promise<string[] | null> => {
   }
 };
 
+export const getStoredRecording = async (id: string) => {
+  try {
+    const response = await axios.get(`http://localhost:8080/storage/recordings/${id}`);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error(`Couldn't retrieve stored recording ${id}`);
+    }
+  } catch(error: any) {
+    console.log(error);
+    return null;
+  }
+}
+
 export const deleteRecordingFromStorage = async (id: string): Promise<boolean> => {
   try {
     const response = await axios.delete(`http://localhost:8080/storage/recordings/${id}`);

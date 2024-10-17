@@ -132,7 +132,7 @@ async function executeRun(id: string) {
     });
 
     googleSheetUpdateTasks[id] = {
-      name: plainRun.name,
+      robotId: plainRun.robotMetaId,
       runId: id,
       status: 'pending',
       retries: 5,

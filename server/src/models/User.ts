@@ -12,7 +12,6 @@ interface UserAttributes {
     proxy_password?: string | null;
 }
 
-// Optional fields for creating a new user
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { }
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {

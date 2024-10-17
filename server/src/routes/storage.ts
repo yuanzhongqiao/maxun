@@ -12,7 +12,7 @@ import { requireSignIn } from '../middlewares/auth';
 import Robot from '../models/Robot';
 import Run from '../models/Run';
 import { BinaryOutputService } from '../storage/mino';
-import { workflowQueue } from '../worker';
+// import { workflowQueue } from '../worker';
 
 export const router = Router();
 
@@ -36,6 +36,23 @@ router.get('/recordings', requireSignIn, async (req, res) => {
     return res.send(null);
   }
 });
+
+/**
+ * GET endpoint for getting a recording.
+ */
+router.get('/recordings/:id', requireSignIn, async (req, res) => {
+  try {
+    const data = await Robot.findOne({
+      where: { 'recording_meta.id': req.params.id },
+      raw: true
+    }
+  );
+    return res.send(data);
+  } catch (e) {
+    logger.log('info', 'Error while reading recordings');
+    return res.send(null);
+  }
+})
 
 /**
  * DELETE endpoint for deleting a recording from the storage.
@@ -202,13 +219,17 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
         serializableOutput: interpretationInfo.serializableOutput,
         binaryOutput: uploadedBinaryOutput,
       });
-      googleSheetUpdateTasks[req.params.id] = {
-        name: plainRun.name,
-        runId: plainRun.runId,
-        status: 'pending',
-        retries: 5,
-      };
-      processGoogleSheetUpdates();
+      try {
+        googleSheetUpdateTasks[plainRun.runId] = {
+          robotId: plainRun.robotMetaId,
+          runId: plainRun.runId,
+          status: 'pending',
+          retries: 5,
+        };
+        processGoogleSheetUpdates();
+      } catch (err: any) {
+        logger.log('error', `Failed to update Google Sheet for run: ${plainRun.runId}: ${err.message}`);
+      }
       return res.send(true);
     } else {
       throw new Error('Could not destroy browser');
@@ -282,16 +303,16 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
     const runId = uuid();
     const userId = req.user.id;
 
-      await workflowQueue.add(
-        'run workflow',
-       { id, runId, userId },
-        {
-         repeat: {
-           pattern: cronExpression,
-          tz: timezone
-      }
-       }
-      );
+    //  await workflowQueue.add(
+    //    'run workflow',
+    //    { id, runId, userId },
+    //    {
+    //      repeat: {
+    //        pattern: cronExpression,
+    //       tz: timezone
+    //  }
+    //    }
+    //  );
 
     res.status(200).json({
       message: 'success',

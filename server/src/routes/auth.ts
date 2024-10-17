@@ -1,9 +1,11 @@
 import { Router, Request, Response } from 'express';
 import User from '../models/User';
+import Robot from '../models/Robot';
 import jwt from 'jsonwebtoken';
 import { hashPassword, comparePassword } from '../utils/auth';
 import { requireSignIn } from '../middlewares/auth';
 import { genAPIKey } from '../utils/api';
+import { google } from 'googleapis';
 export const router = Router();
 
 interface AuthenticatedRequest extends Request {
@@ -161,5 +163,194 @@ router.delete('/delete-api-key', requireSignIn, async (req, res) => {
         return res.status(200).json({ message: 'API Key deleted successfully' });
     } catch (error: any) {
         return res.status(500).json({ message: 'Error deleting API key', error: error.message });
+    }
+});
+
+const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT_URI
+);
+
+// Step 1: Redirect to Google for authentication
+router.get('/google', (req, res) => {
+    const { robotId } = req.query;
+    if (!robotId) {
+        return res.status(400).json({ message: 'Robot ID is required' });
+    }
+    const scopes = [
+        'https://www.googleapis.com/auth/spreadsheets',
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/drive.readonly',
+    ];
+    const url = oauth2Client.generateAuthUrl({
+        access_type: 'offline',
+        prompt: 'consent',  // Ensures you get a refresh token on first login
+        scope: scopes,
+        state: robotId.toString(),
+    });
+    res.redirect(url);
+});
+
+// Step 2: Handle Google OAuth callback
+router.get('/google/callback', requireSignIn, async (req, res) => {
+    const { code, state } = req.query;
+    try {
+        if (!state) {
+            return res.status(400).json({ message: 'Robot ID is required' });
+        }
+
+        const robotId = state
+
+        // Get access and refresh tokens
+        if (typeof code !== 'string') {
+            return res.status(400).json({ message: 'Invalid code' });
+        }
+        const { tokens } = await oauth2Client.getToken(code);
+        oauth2Client.setCredentials(tokens);
+
+        // Get user profile from Google
+        const oauth2 = google.oauth2({ version: 'v2', auth: oauth2Client });
+        const { data: { email } } = await oauth2.userinfo.get();
+
+        if (!email) {
+            return res.status(400).json({ message: 'Email not found' });
+        }
+
+        // Get the currently authenticated user (from `requireSignIn`)
+        let user = await User.findOne({ where: { id: req.user.id } });
+
+        if (!user) {
+            return res.status(400).json({ message: 'User not found' });
+        }
+
+        let robot = await Robot.findOne({ where: { 'recording_meta.id': robotId } });
+
+        if (!robot) {
+            return res.status(400).json({ message: 'Robot not found' });
+        }
+
+        robot = await robot.update({
+            google_sheet_email: email,
+            google_access_token: tokens.access_token,
+            google_refresh_token: tokens.refresh_token,
+        });
+
+        // List user's Google Sheets from their Google Drive
+        const drive = google.drive({ version: 'v3', auth: oauth2Client });
+        const response = await drive.files.list({
+            q: "mimeType='application/vnd.google-apps.spreadsheet'", // List only Google Sheets files
+            fields: 'files(id, name)',  // Retrieve the ID and name of each file
+        });
+
+        const files = response.data.files || [];
+        if (files.length === 0) {
+            return res.status(404).json({ message: 'No spreadsheets found.' });
+        }
+
+        // Generate JWT token for session
+        const jwtToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, { expiresIn: '12h' });
+        res.cookie('token', jwtToken, { httpOnly: true });
+
+        res.json({
+            message: 'Google authentication successful',
+            google_sheet_email: robot.google_sheet_email,
+            jwtToken,
+            files
+        });
+    } catch (error: any) {
+        res.status(500).json({ message: `Google OAuth error: ${error.message}` });
+    }
+});
+
+// Step 3: Get data from Google Sheets
+router.post('/gsheets/data', requireSignIn, async (req, res) => {
+    const { spreadsheetId, robotId } = req.body;
+    const user = await User.findByPk(req.user.id, { raw: true });
+
+    if (!user) {
+        return res.status(400).json({ message: 'User not found' });
+    }
+
+    const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId }, raw: true });
+
+    if (!robot) {
+        return res.status(400).json({ message: 'Robot not found' });
+    }
+
+    // Set Google OAuth credentials
+    oauth2Client.setCredentials({
+        access_token: robot.google_access_token,
+        refresh_token: robot.google_refresh_token,
+    });
+
+    const sheets = google.sheets({ version: 'v4', auth: oauth2Client });
+
+    try {
+        // Fetch data from the spreadsheet (you can let the user choose a specific range too)
+        const sheetData = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: 'Sheet1!A1:D5',  // Default range, could be dynamic based on user input
+        });
+        res.json(sheetData.data);
+    } catch (error: any) {
+        res.status(500).json({ message: `Error accessing Google Sheets: ${error.message}` });
+    }
+});
+
+// Step 4: Get user's Google Sheets files (new route)
+router.get('/gsheets/files', requireSignIn, async (req, res) => {
+    try {
+        const robotId = req.query.robotId;
+        const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId }, raw:true });
+
+        if (!robot) {
+            return res.status(400).json({ message: 'Robot not found' });
+        }
+
+        oauth2Client.setCredentials({
+            access_token: robot.google_access_token,
+            refresh_token: robot.google_refresh_token,
+        });
+
+        // List user's Google Sheets files from their Google Drive
+        const drive = google.drive({ version: 'v3', auth: oauth2Client });
+        const response = await drive.files.list({
+            q: "mimeType='application/vnd.google-apps.spreadsheet'",
+            fields: 'files(id, name)',
+        });
+
+        const files = response.data.files || [];
+        if (files.length === 0) {
+            return res.status(404).json({ message: 'No spreadsheets found.' });
+        }
+
+        res.json(files);
+    } catch (error: any) {
+        console.log('Error fetching Google Sheets files:', error);
+        res.status(500).json({ message: `Error retrieving Google Sheets files: ${error.message}` });
+    }
+});
+
+// Step 5: Update robot's google_sheet_id when a Google Sheet is selected
+router.post('/gsheets/update', requireSignIn, async (req, res) => {
+    const { spreadsheetId, spreadsheetName, robotId } = req.body;
+
+    if (!spreadsheetId || !robotId) {
+        return res.status(400).json({ message: 'Spreadsheet ID and Robot ID are required' });
+    }
+
+    try {
+        let robot = await Robot.findOne({ where: { 'recording_meta.id': robotId } });
+
+        if (!robot) {
+            return res.status(404).json({ message: 'Robot not found' });
+        }
+
+        await robot.update({ google_sheet_id: spreadsheetId, google_sheet_name: spreadsheetName });
+
+        res.json({ message: 'Robot updated with selected Google Sheet ID' });
+    } catch (error: any) {
+        res.status(500).json({ message: `Error updating robot: ${error.message}` });
     }
 });

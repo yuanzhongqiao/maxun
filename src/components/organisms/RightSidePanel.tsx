@@ -346,6 +346,10 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       }
     });
     resetListState();
+    setShowPaginationOptions(false);
+    setShowLimitOptions(false);
+    setCaptureStage('initial');
+    setConfirmedListTextFields({});
     notify('error', 'Capture List Discarded');
   }, [browserSteps, stopGetList, deleteBrowserStep, resetListState]);
 
