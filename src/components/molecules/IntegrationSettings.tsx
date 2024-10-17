@@ -62,6 +62,19 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
         }
     };
 
+    const updateGoogleSheetId = async () => {
+        try {
+            const response = await axios.post(
+                `http://localhost:8080/auth/gsheets/update`,
+                { spreadsheetId: settings.spreadsheetId, robotId: recordingId },
+                { withCredentials: true }
+            );
+            console.log('Google Sheet ID updated:', response.data);
+        } catch (error: any) {
+            console.error('Error updating Google Sheet ID:', error.response?.data?.message || error.message);
+        }
+    };
+
     useEffect(() => {
         // Check if we're on the callback URL
         const urlParams = new URLSearchParams(window.location.search);
