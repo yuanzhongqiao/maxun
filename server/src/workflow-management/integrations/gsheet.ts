@@ -3,6 +3,9 @@ import fs from 'fs';
 import path from 'path';
 import logger from "../../logger";
 import { readFile } from "../storage";
+import Run from "../../models/Run";
+import Robot from "../../models/Robot";
+
 interface GoogleSheetUpdateTask {
   name: string;
   runId: string;
@@ -32,33 +35,36 @@ export function saveIntegrations(fileName: string, integrations: any) {
   fs.writeFileSync(filePath, JSON.stringify(integrations, null, 2));
 }
 
-export async function updateGoogleSheet(fileName: string, runId: string) {
+export async function updateGoogleSheet(robotId: string, runId: string) {
   try {
-    const run = await readFile(`./../storage/runs/${fileName}_${runId}.json`);
-    const parsedRun = JSON.parse(run);
+    const run = await Run.findOne({ where: { runId } });
 
-    if (parsedRun.status === 'success' && parsedRun.serializableOutput) {
-      const data = parsedRun.serializableOutput['item-0'] as { [key: string]: any }[];
-      const integrationConfig = await loadIntegrations(fileName);
+    if (!run) {
+      throw new Error(`Run not found for runId: ${runId}`);
+    }
 
-      if (integrationConfig) {
-        const { fileName, spreadsheetId, range, credentials } = integrationConfig;
+    if (run.status === 'success' && run.serializableOutput) {
+      const data = run.serializableOutput['item-0'] as { [key: string]: any }[];
 
-        if (fileName && spreadsheetId && range && credentials) {
+      const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId } });
+      if (!robot) {
+        throw new Error(`Robot not found for robotId: ${robotId}`);
+      }
+
+      const spreadsheetId = robot.google_sheet_id
+
+        if (robot.google_sheet_email && spreadsheetId ) {
           // Convert data to Google Sheets format (headers and rows)
           const headers = Object.keys(data[0]);
           const rows = data.map((row: { [key: string]: any }) => Object.values(row));
           const outputData = [headers, ...rows];
 
-          await writeDataToSheet(fileName, spreadsheetId, range, outputData);
-          logger.log('info', `Data written to Google Sheet successfully for ${fileName}_${runId}`);
+          await writeDataToSheet(robotId, spreadsheetId, outputData);
+          logger.log('info', `Data written to Google Sheet successfully for Robot: ${robotId} and Run: ${runId}`);
         }
       }
-      logger.log('error', `Google Sheet integration not configured for ${fileName}_${runId}`);
-    }
-    logger.log('error', `Run not successful or no data to update for ${fileName}_${runId}`);
   } catch (error: any) {
-    logger.log('error', `Failed to write data to Google Sheet for ${fileName}_${runId}: ${error.message}`);
+    logger.log('error', `Failed to write data to Google Sheet for Robot: ${robotId} and Run: ${runId}: ${error.message}`);
   }
 };
 
