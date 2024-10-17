@@ -7,7 +7,7 @@ import Run from "../../models/Run";
 import Robot from "../../models/Robot";
 
 interface GoogleSheetUpdateTask {
-  name: string;
+  robotId: string;
   runId: string;
   status: 'pending' | 'completed' | 'failed';
   retries: number;
@@ -83,7 +83,7 @@ export async function writeDataToSheet(robotId: string, spreadsheetId: string, d
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      'http://localhost:3000'
+      process.env.GOOGLE_REDIRECT_URI
     );
 
     oauth2Client.setCredentials({
@@ -91,12 +91,12 @@ export async function writeDataToSheet(robotId: string, spreadsheetId: string, d
       refresh_token: robot.google_refresh_token,
     });
 
-    // Refresh the access token if needed
+    // Log tokens and any refresh activity
     oauth2Client.on('tokens', async (tokens) => {
+      console.log('OAuth2 tokens updated:', tokens);
       if (tokens.refresh_token) {
         await robot.update({ google_refresh_token: tokens.refresh_token });
       }
-
       if (tokens.access_token) {
         await robot.update({ google_access_token: tokens.access_token });
       }
@@ -105,14 +105,17 @@ export async function writeDataToSheet(robotId: string, spreadsheetId: string, d
     const sheets = google.sheets({ version: 'v4', auth: oauth2Client });
 
     const resource = { values: data };
+    console.log('Attempting to write to spreadsheet:', spreadsheetId);
+    console.log('Data being written:', data);
 
-    await sheets.spreadsheets.values.append({
+    const response = await sheets.spreadsheets.values.append({
       spreadsheetId,
       range: 'Sheet1!A1',
       valueInputOption: 'USER_ENTERED',
       requestBody: resource,
     });
 
+    console.log('Google Sheets append response:', response);
     logger.log(`info`, `Data written to Google Sheet: ${spreadsheetId}`);
   } catch (error: any) {
     logger.log(`error`, `Error writing data to Google Sheet: ${error.message}`);
@@ -120,30 +123,39 @@ export async function writeDataToSheet(robotId: string, spreadsheetId: string, d
   }
 }
 
+
 export const processGoogleSheetUpdates = async () => {
   while (true) {
     let hasPendingTasks = false;
     for (const runId in googleSheetUpdateTasks) {
       const task = googleSheetUpdateTasks[runId];
+      console.log(`Processing task for runId: ${runId}, status: ${task.status}`);
+
       if (task.status === 'pending') {
         hasPendingTasks = true;
         try {
-          await updateGoogleSheet(task.name, task.runId);
+          await updateGoogleSheet(task.robotId, task.runId);
+          console.log(`Successfully updated Google Sheet for runId: ${runId}`);
           delete googleSheetUpdateTasks[runId];
         } catch (error: any) {
+          console.error(`Failed to update Google Sheets for run ${task.runId}:`, error);
           if (task.retries < MAX_RETRIES) {
             googleSheetUpdateTasks[runId].retries += 1;
+            console.log(`Retrying task for runId: ${runId}, attempt: ${task.retries}`);
           } else {
-            // Mark as failed after maximum retries
             googleSheetUpdateTasks[runId].status = 'failed';
+            console.log(`Max retries reached for runId: ${runId}. Marking task as failed.`);
           }
-          console.error(`Failed to update Google Sheets for run ${task.runId}:`, error);
         }
       }
     }
+
     if (!hasPendingTasks) {
+      console.log('No pending tasks. Exiting loop.');
       break;
     }
+
+    console.log('Waiting for 5 seconds before checking again...');
     await new Promise(resolve => setTimeout(resolve, 5000));
   }
 };
