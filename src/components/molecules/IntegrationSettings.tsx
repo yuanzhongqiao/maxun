@@ -28,7 +28,9 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
     const [userInfo, setUserInfo] = useState<{ email: string } | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [googleSheetsEmail, setGoogleSheetsEmail] = useState<string | null>(null); // To store the Google Sheets email
+    const [googleSheetsEmail, setGoogleSheetsEmail] = useState<string | null>(null);
+    const [googleSheetId, setGoogleSheetId] = useState<string | null>(null); // Store the integrated sheet ID
+    const [googleSheetName, setGoogleSheetName] = useState<string | null>(null); // Store the integrated sheet name
 
     const { recordingId } = useGlobalInfoStore();
 
@@ -43,7 +45,6 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
             const response = await axios.get(`http://localhost:8080/auth/google/callback`);
             const { google_sheet_email, files } = response.data;
             setUserInfo({ email: google_sheet_email });
-            //setSpreadsheets(files);
         } catch (error) {
             setError('Error authenticating with Google');
         }
@@ -55,28 +56,18 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                 withCredentials: true,
             });
             setSpreadsheets(response.data);
-            console.log(`Fetched spreadsheets:`, response.data);
         } catch (error: any) {
             console.error('Error fetching spreadsheet files:', error.response?.data?.message || error.message);
         }
     };
 
-    // Function to send the selected sheet ID to the backend to update the robot's google_sheet_id
-    const updateGoogleSheetId = async () => {
-        try {
-            const response = await axios.post(
-                `http://localhost:8080/auth/gsheets/update`,
-                { spreadsheetId: settings.spreadsheetId, robotId: recordingId },
-                { withCredentials: true }
-            );
-            console.log('Google Sheet ID updated:', response.data);
-        } catch (error: any) {
-            console.error('Error updating Google Sheet ID:', error.response?.data?.message || error.message);
-        }
-    };
-
     // Handle spreadsheet selection
     const handleSpreadsheetSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedSheet = spreadsheets.find(sheet => sheet.id === e.target.value);
+        if (selectedSheet) {
+            setGoogleSheetId(selectedSheet.id);
+            setGoogleSheetName(selectedSheet.name);
+        }
         setSettings({ ...settings, spreadsheetId: e.target.value });
     };
 
@@ -88,12 +79,14 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
             handleOAuthCallback();
         }
 
-        // Fetch the stored recording to check the Google Sheets email
+        // Fetch the stored recording to check the Google Sheets email and google_sheet_id
         const fetchRecordingInfo = async () => {
             if (!recordingId) return;
             const recording = await getStoredRecording(recordingId);
             if (recording) {
-                setGoogleSheetsEmail(recording.google_sheets_email);
+                setGoogleSheetsEmail(recording.google_sheet_email);
+                setGoogleSheetId(recording.google_sheet_id); 
+                setGoogleSheetName(recording.google_sheet_id); 
             }
         };
 
@@ -101,83 +94,92 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
     }, [recordingId]);
 
     return (
-        <GenericModal
-            isOpen={isOpen}
-            onClose={handleClose}
-        >
-            <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                marginLeft: '65px',
-            }}>
+        <GenericModal isOpen={isOpen} onClose={handleClose}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginLeft: '65px' }}>
                 <Typography sx={{ margin: '20px 0px' }}>Google Sheets Integration</Typography>
 
-                {!googleSheetsEmail ? (
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={authenticateWithGoogle}
-                        style={{ marginBottom: '15px' }}
-                    >
-                        Authenticate with Google
-                    </Button>
+                {/* Check if Google Sheet is already integrated */}
+                {googleSheetId ? (
+                    <Typography sx={{ marginBottom: '10px' }}>
+                        Google Sheet Integrated Successfully!
+                        <br />
+                        Sheet Name: {googleSheetName}
+                        <br />
+                        Sheet ID: {googleSheetId}
+                    </Typography>
                 ) : (
                     <>
-                        {userInfo && (
-                            <>
-                                <Typography sx={{ marginBottom: '10px' }}>
-                                    Logged in as: {userInfo.email}
-                                </Typography>
-                            </>
-                        )}
-
-                        {loading ? (
-                            <CircularProgress sx={{ marginBottom: '15px' }} />
-                        ) : error ? (
-                            <Typography color="error">{error}</Typography>
+                        {/* If Google Sheets email is empty, show Google OAuth button */}
+                        {!googleSheetsEmail ? (
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={authenticateWithGoogle}
+                                style={{ marginBottom: '15px' }}
+                            >
+                                Authenticate with Google
+                            </Button>
                         ) : (
                             <>
-                                <TextField
-                                    sx={{ marginBottom: '15px' }}
-                                    select
-                                    label="Select Google Spreadsheet"
-                                    required
-                                    value={settings.spreadsheetId}
-                                    onChange={handleSpreadsheetSelect}
-                                    fullWidth
-                                >
-                                    {spreadsheets.map(sheet => (
-                                        <MenuItem key={sheet.id} value={sheet.id}>
-                                            {sheet.name}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-
-                                <button onClick={fetchSpreadsheetFiles}>
-                                    Fetch Google Spreadsheets
-                                </button>
-
-                                {settings.spreadsheetId && (
+                                {/* Show user info and allow spreadsheet selection once authenticated */}
+                                {userInfo && (
                                     <Typography sx={{ marginBottom: '10px' }}>
-                                        Selected Spreadsheet ID: {settings.spreadsheetId}
+                                        Logged in as: {userInfo.email}
                                     </Typography>
+                                )}
+
+                                {loading ? (
+                                    <CircularProgress sx={{ marginBottom: '15px' }} />
+                                ) : error ? (
+                                    <Typography color="error">{error}</Typography>
+                                ) : spreadsheets.length === 0 ? (
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={fetchSpreadsheetFiles}
+                                        style={{ marginBottom: '15px' }}
+                                    >
+                                        Fetch Google Spreadsheets
+                                    </Button>
+                                ) : (
+                                    <>
+                                        {/* Dropdown for selecting the Google Sheet */}
+                                        <TextField
+                                            sx={{ marginBottom: '15px' }}
+                                            select
+                                            label="Select Google Spreadsheet"
+                                            required
+                                            value={settings.spreadsheetId}
+                                            onChange={handleSpreadsheetSelect}
+                                            fullWidth
+                                        >
+                                            {spreadsheets.map(sheet => (
+                                                <MenuItem key={sheet.id} value={sheet.id}>
+                                                    {sheet.name}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+
+                                        {/* Display selected spreadsheet name and ID */}
+                                        {settings.spreadsheetId && (
+                                            <Typography sx={{ marginBottom: '10px' }}>
+                                                Selected Sheet: {googleSheetName} (ID: {settings.spreadsheetId})
+                                            </Typography>
+                                        )}
+
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={() => handleStart(settings)}
+                                            style={{ marginTop: '10px' }}
+                                            disabled={!settings.spreadsheetId || loading}
+                                        >
+                                            Submit
+                                        </Button>
+                                    </>
                                 )}
                             </>
                         )}
-
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => {
-                                updateGoogleSheetId();
-                                handleStart(settings);
-                            }}
-                            style={{ marginTop: '10px' }}
-                            disabled={!settings.spreadsheetId || loading}
-                        >
-                            Submit
-                        </Button>
                     </>
                 )}
             </div>
