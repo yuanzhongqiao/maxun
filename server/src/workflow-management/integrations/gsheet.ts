@@ -40,14 +40,15 @@ export async function updateGoogleSheet(robotId: string, runId: string) {
   
   try {
     const run = await Run.findOne({ where: { runId } });
-    console.log('Run found:', run);
 
     if (!run) {
       throw new Error(`Run not found for runId: ${runId}`);
     }
 
-    if (run.status === 'success' && run.serializableOutput) {
-      const data = run.serializableOutput['item-0'] as { [key: string]: any }[];
+    const plainRun = run.toJSON();
+
+    if (plainRun.status === 'success' && plainRun.serializableOutput) {
+      const data = plainRun.serializableOutput['item-0'] as { [key: string]: any }[];
       console.log('Serializable output data:', data);
 
       const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId } });
@@ -57,8 +58,10 @@ export async function updateGoogleSheet(robotId: string, runId: string) {
         throw new Error(`Robot not found for robotId: ${robotId}`);
       }
 
-      const spreadsheetId = robot.google_sheet_id;
-      if (robot.google_sheet_email && spreadsheetId) {
+      const plainRobot = robot.toJSON();
+
+      const spreadsheetId = plainRobot.google_sheet_id;
+      if (plainRobot.google_sheet_email && spreadsheetId) {
         console.log(`Preparing to write data to Google Sheet for robot: ${robotId}, spreadsheetId: ${spreadsheetId}`);
         
         const headers = Object.keys(data[0]);
@@ -89,7 +92,9 @@ export async function writeDataToSheet(robotId: string, spreadsheetId: string, d
       throw new Error(`Robot not found for robotId: ${robotId}`);
     }
 
-    if (!robot.google_access_token || !robot.google_refresh_token) {
+    const plainRobot = robot.toJSON();
+
+    if (!plainRobot.google_access_token || !plainRobot.google_refresh_token) {
       throw new Error('Google Sheets access not configured for user');
     }
 
@@ -100,8 +105,8 @@ export async function writeDataToSheet(robotId: string, spreadsheetId: string, d
     );
 
     oauth2Client.setCredentials({
-      access_token: robot.google_access_token,
-      refresh_token: robot.google_refresh_token,
+      access_token: plainRobot.google_access_token,
+      refresh_token: plainRobot.google_refresh_token,
     });
 
     // Log tokens and any refresh activity
