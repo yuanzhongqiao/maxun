@@ -266,13 +266,13 @@ router.get('/google/callback', requireSignIn, async (req, res) => {
 // Step 3: Get data from Google Sheets
 router.post('/gsheets/data', requireSignIn, async (req, res) => {
     const { spreadsheetId, robotId } = req.body;
-    const user = await User.findOne({ where: { id: req.user.id } });
+    const user = await User.findByPk(req.user.id, { raw: true });
 
     if (!user) {
         return res.status(400).json({ message: 'User not found' });
     }
 
-    const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId } });
+    const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId }, raw: true });
 
     if (!robot) {
         return res.status(400).json({ message: 'Robot not found' });
@@ -301,14 +301,14 @@ router.post('/gsheets/data', requireSignIn, async (req, res) => {
 // Step 4: Get user's Google Sheets files (new route)
 router.get('/gsheets/files', requireSignIn, async (req, res) => {
     try {
-        const user = await User.findOne({ where: { id: req.user.id } });
+        // const user = await User.findByPk(req.user.id, { raw: true });
 
-        if (!user) {
-            return res.status(400).json({ message: 'User not found' });
-        }
+        // if (!user) {
+        //     return res.status(400).json({ message: 'User not found' });
+        // }
 
         const robotId = req.query.robotId;
-        const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId } });
+        const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId }, raw:true });
 
         if (!robot) {
             return res.status(400).json({ message: 'Robot not found' });
@@ -333,6 +333,7 @@ router.get('/gsheets/files', requireSignIn, async (req, res) => {
 
         res.json(files);
     } catch (error: any) {
+        console.log('Error fetching Google Sheets files:', error);
         res.status(500).json({ message: `Error retrieving Google Sheets files: ${error.message}` });
     }
 });
