@@ -168,7 +168,10 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                                         <Button
                                             variant="contained"
                                             color="primary"
-                                            onClick={() => handleStart(settings)}
+                                            onClick={() => {
+                                                updateGoogleSheetId();
+                                                handleStart(settings);
+                                            }}
                                             style={{ marginTop: '10px' }}
                                             disabled={!settings.spreadsheetId || loading}
                                         >
