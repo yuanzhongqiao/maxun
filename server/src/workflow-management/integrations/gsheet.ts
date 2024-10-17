@@ -68,32 +68,52 @@ export async function updateGoogleSheet(robotId: string, runId: string) {
   }
 };
 
-export async function writeDataToSheet(fileName: string, spreadsheetId: string, range: string, data: any[]) {
+export async function writeDataToSheet(robotId: string, spreadsheetId: string, data: any[]) {
   try {
-    const integrationCredentialsPath = getIntegrationsFilePath(fileName);
-    const integrationCredentials = JSON.parse(fs.readFileSync(integrationCredentialsPath, 'utf-8'));;
+    const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId } });
 
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: integrationCredentials.credentials.client_email,
-        private_key: integrationCredentials.credentials.private_key,
-      },
-      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    if (!robot) {
+      throw new Error(`Robot not found for robotId: ${robotId}`);
+    }
+
+    if (!robot.google_access_token || !robot.google_refresh_token) {
+      throw new Error('Google Sheets access not configured for user');
+    }
+
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      'http://localhost:3000'
+    );
+
+    oauth2Client.setCredentials({
+      access_token: robot.google_access_token,
+      refresh_token: robot.google_refresh_token,
     });
 
-    const authToken = await auth.getClient();
-    const sheets = google.sheets({ version: 'v4', auth: authToken as any });
+    // Refresh the access token if needed
+    oauth2Client.on('tokens', async (tokens) => {
+      if (tokens.refresh_token) {
+        await robot.update({ google_refresh_token: tokens.refresh_token });
+      }
+
+      if (tokens.access_token) {
+        await robot.update({ google_access_token: tokens.access_token });
+      }
+    });
+
+    const sheets = google.sheets({ version: 'v4', auth: oauth2Client });
 
     const resource = { values: data };
 
     await sheets.spreadsheets.values.append({
       spreadsheetId,
-      range,
+      range: 'Sheet1!A1',
       valueInputOption: 'USER_ENTERED',
       requestBody: resource,
     });
 
-    logger.log(`info`, `Data written to Google Sheet: ${spreadsheetId}, Range: ${range}`);
+    logger.log(`info`, `Data written to Google Sheet: ${spreadsheetId}`);
   } catch (error: any) {
     logger.log(`error`, `Error writing data to Google Sheet: ${error.message}`);
     throw error;
