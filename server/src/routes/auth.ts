@@ -231,7 +231,7 @@ router.get('/google/callback', requireSignIn, async (req, res) => {
         }
 
         robot = await robot.update({
-            google_sheets_email: email,
+            google_sheet_email: email,
             google_access_token: tokens.access_token,
             google_refresh_token: tokens.refresh_token,
         });
@@ -254,7 +254,7 @@ router.get('/google/callback', requireSignIn, async (req, res) => {
 
         res.json({
             message: 'Google authentication successful',
-            google_sheet_email: robot.google_sheets_email,
+            google_sheet_email: robot.google_sheet_email,
             jwtToken,
             files
         });
