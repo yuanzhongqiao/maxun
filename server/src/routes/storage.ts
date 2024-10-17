@@ -37,6 +37,20 @@ router.get('/recordings', requireSignIn, async (req, res) => {
   }
 });
 
+router.get('/recordings/:id', requireSignIn, async (req, res) => {
+  try {
+    const data = await Robot.findOne({
+      where: { 'recording_meta.id': req.params.id },
+      raw: true
+    }
+  );
+    return res.send(data);
+  } catch (e) {
+    logger.log('info', 'Error while reading recordings');
+    return res.send(null);
+  }
+})
+
 /**
  * DELETE endpoint for deleting a recording from the storage.
  */
