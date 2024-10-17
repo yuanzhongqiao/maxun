@@ -55,7 +55,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                 withCredentials: true,
             });
             setSpreadsheets(response.data);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error fetching spreadsheet files:', error.response?.data?.message || error.message);
         }
     };
