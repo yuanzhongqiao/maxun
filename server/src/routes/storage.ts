@@ -219,13 +219,17 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
         serializableOutput: interpretationInfo.serializableOutput,
         binaryOutput: uploadedBinaryOutput,
       });
-      googleSheetUpdateTasks[req.params.id] = {
-        name: plainRun.name,
-        runId: plainRun.runId,
-        status: 'pending',
-        retries: 5,
-      };
-      processGoogleSheetUpdates();
+      try {
+        googleSheetUpdateTasks[plainRun.runId] = {
+          robotId: plainRun.robotMetaId,
+          runId: plainRun.runId,
+          status: 'pending',
+          retries: 5,
+        };
+        processGoogleSheetUpdates();
+      } catch (err: any) {
+        logger.log('error', `Failed to update Google Sheet for run: ${plainRun.runId}: ${err.message}`);
+      }
       return res.send(true);
     } else {
       throw new Error('Could not destroy browser');
