@@ -174,6 +174,10 @@ const oauth2Client = new google.auth.OAuth2(
 
 // Step 1: Redirect to Google for authentication
 router.get('/google', (req, res) => {
+    const { robotId } = req.query;
+    if (!robotId) {
+        return res.status(400).json({ message: 'Robot ID is required' });
+    }
     const scopes = [
         'https://www.googleapis.com/auth/spreadsheets',
         'https://www.googleapis.com/auth/userinfo.email',
@@ -183,17 +187,20 @@ router.get('/google', (req, res) => {
         access_type: 'offline',
         prompt: 'consent',  // Ensures you get a refresh token on first login
         scope: scopes,
+        state: robotId.toString(),
     });
     res.redirect(url);
 });
 
 // Step 2: Handle Google OAuth callback
 router.get('/google/callback', requireSignIn, async (req, res) => {
-    const { code, robotId } = req.query;
+    const { code, state } = req.query;
     try {
-        if (!robotId) {
+        if (!state) {
             return res.status(400).json({ message: 'Robot ID is required' });
         }
+
+        const robotId = state
 
         // Get access and refresh tokens
         if (typeof code !== 'string') {
