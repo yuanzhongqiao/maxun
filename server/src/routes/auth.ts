@@ -331,3 +331,26 @@ router.get('/gsheets/files', requireSignIn, async (req, res) => {
         res.status(500).json({ message: `Error retrieving Google Sheets files: ${error.message}` });
     }
 });
+
+// Step 5: Update robot's google_sheet_id when a Google Sheet is selected
+router.post('/gsheets/update', requireSignIn, async (req, res) => {
+    const { spreadsheetId, robotId } = req.body;
+
+    if (!spreadsheetId || !robotId) {
+        return res.status(400).json({ message: 'Spreadsheet ID and Robot ID are required' });
+    }
+
+    try {
+        let robot = await Robot.findOne({ where: { 'recording_meta.id': robotId }, raw:true });
+
+        if (!robot) {
+            return res.status(404).json({ message: 'Robot not found' });
+        }
+
+        await robot.update({ google_sheet_id: spreadsheetId });
+
+        res.json({ message: 'Robot updated with selected Google Sheet ID' });
+    } catch (error) {
+        res.status(500).json({ message: `Error updating robot: ${error.message}` });
+    }
+});
