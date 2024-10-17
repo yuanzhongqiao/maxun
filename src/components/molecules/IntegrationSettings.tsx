@@ -4,6 +4,7 @@ import { MenuItem, Typography, CircularProgress } from "@mui/material";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import axios from 'axios';
+import { useGlobalInfoStore } from '../../context/globalInfo';
 
 interface IntegrationProps {
     isOpen: boolean;
@@ -28,18 +29,17 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
     const [error, setError] = useState<string | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+    const { recordingId } = useGlobalInfoStore();
+
     // Function to trigger Google OAuth authentication
     const authenticateWithGoogle = () => {
-        window.location.href = 'http://localhost:8080/auth/google';  // Redirect to backend Google OAuth route
+        window.location.href = `http://localhost:8080/auth/google?robotId=${recordingId}`;
     };
 
     // Function to handle Google OAuth callback and fetch spreadsheets
     const handleOAuthCallback = async () => {
         try {
-            const response = await axios.post('http://localhost:8080/auth/google/callback', {
-                // code: new URLSearchParams(window.location.search).get('code'),
-                robotId: '' 
-            });
+            const response = await axios.get(`http://localhost:8080/auth/google/callback`);
             const { google_sheet_email, files } = response.data;
             setUserInfo({ email:google_sheet_email });
             setSpreadsheets(files);
@@ -55,11 +55,13 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
     };
 
     useEffect(() => {
-        // Simulate handling OAuth callback here after redirect
-        if (window.location.pathname === 'http://localhost:8080/auth/google/callback') {
+        // Check if we're on the callback URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        if (code) {
             handleOAuthCallback();
         }
-    }, [isOpen]);
+    }, []);
 
     return (
         <GenericModal
