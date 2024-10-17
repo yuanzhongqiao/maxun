@@ -301,12 +301,6 @@ router.post('/gsheets/data', requireSignIn, async (req, res) => {
 // Step 4: Get user's Google Sheets files (new route)
 router.get('/gsheets/files', requireSignIn, async (req, res) => {
     try {
-        // const user = await User.findByPk(req.user.id, { raw: true });
-
-        // if (!user) {
-        //     return res.status(400).json({ message: 'User not found' });
-        // }
-
         const robotId = req.query.robotId;
         const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId }, raw:true });
 
