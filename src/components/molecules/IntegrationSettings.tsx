@@ -60,6 +60,20 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
             console.error('Error fetching spreadsheet files:', error.response?.data?.message || error.message);
         }
     };
+
+    // Function to send the selected sheet ID to the backend to update the robot's google_sheet_id
+const updateGoogleSheetId = async () => {
+    try {
+        const response = await axios.post(
+            `http://localhost:8080/auth/gsheets/update`, 
+            { spreadsheetId: settings.spreadsheetId, robotId: recordingId },
+            { withCredentials: true }
+        );
+        console.log('Google Sheet ID updated:', response.data);
+    } catch (error) {
+        console.error('Error updating Google Sheet ID:', error.response?.data?.message || error.message);
+    }
+};
     
 
     // Handle spreadsheet selection
