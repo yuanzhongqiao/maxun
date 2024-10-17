@@ -341,7 +341,7 @@ router.post('/gsheets/update', requireSignIn, async (req, res) => {
     }
 
     try {
-        let robot = await Robot.findOne({ where: { 'recording_meta.id': robotId }, raw:true });
+        let robot = await Robot.findOne({ where: { 'recording_meta.id': robotId } });
 
         if (!robot) {
             return res.status(404).json({ message: 'Robot not found' });
