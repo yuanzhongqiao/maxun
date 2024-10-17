@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import axios from 'axios';
 import { useGlobalInfoStore } from '../../context/globalInfo';
+import { getStoredRecording } from '../../api/storage';
 
 interface IntegrationProps {
     isOpen: boolean;
@@ -31,12 +32,12 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
 
     const { recordingId } = useGlobalInfoStore();
 
-    // Function to trigger Google OAuth authentication
+    // trigger Google OAuth authentication
     const authenticateWithGoogle = () => {
         window.location.href = `http://localhost:8080/auth/google?robotId=${recordingId}`;
     };
 
-    // Function to handle Google OAuth callback and fetch spreadsheets
+    // handle Google OAuth callback and fetch spreadsheets
     const handleOAuthCallback = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/auth/google/callback`);
@@ -49,7 +50,6 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
         }
     };
 
-    // Handle spreadsheet selection
     const handleSpreadsheetSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSettings({ ...settings, spreadsheetId: e.target.value });
     };
