@@ -49,6 +49,18 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
         }
     };
 
+    const fetchSpreadsheetFiles = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/gsheets/files?robotId=${recordingId}`, {
+                withCredentials: true,
+            });
+            setSpreadsheets(response.data);
+        } catch (error) {
+            console.error('Error fetching spreadsheet files:', error.response?.data?.message || error.message);
+        }
+    };
+    
+
     // Handle spreadsheet selection
     const handleSpreadsheetSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSettings({ ...settings, spreadsheetId: e.target.value });
