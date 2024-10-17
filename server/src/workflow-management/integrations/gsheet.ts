@@ -53,16 +53,16 @@ export async function updateGoogleSheet(robotId: string, runId: string) {
 
       const spreadsheetId = robot.google_sheet_id
 
-        if (robot.google_sheet_email && spreadsheetId ) {
-          // Convert data to Google Sheets format (headers and rows)
-          const headers = Object.keys(data[0]);
-          const rows = data.map((row: { [key: string]: any }) => Object.values(row));
-          const outputData = [headers, ...rows];
+      if (robot.google_sheet_email && spreadsheetId) {
+        // Convert data to Google Sheets format (headers and rows)
+        const headers = Object.keys(data[0]);
+        const rows = data.map((row: { [key: string]: any }) => Object.values(row));
+        const outputData = [headers, ...rows];
 
-          await writeDataToSheet(robotId, spreadsheetId, outputData);
-          logger.log('info', `Data written to Google Sheet successfully for Robot: ${robotId} and Run: ${runId}`);
-        }
+        await writeDataToSheet(robotId, spreadsheetId, outputData);
+        logger.log('info', `Data written to Google Sheet successfully for Robot: ${robotId} and Run: ${runId}`);
       }
+    }
   } catch (error: any) {
     logger.log('error', `Failed to write data to Google Sheet for Robot: ${robotId} and Run: ${runId}: ${error.message}`);
   }
