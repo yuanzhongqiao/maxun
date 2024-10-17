@@ -15,12 +15,14 @@ interface IntegrationProps {
 
 export interface IntegrationSettings {
     spreadsheetId: string;
+    spreadsheetName: string;
     data: string;
 }
 
 export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: IntegrationProps) => {
     const [settings, setSettings] = useState<IntegrationSettings>({
         spreadsheetId: '',
+        spreadsheetName: '',
         data: '',
     });
 
@@ -66,7 +68,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
         try {
             const response = await axios.post(
                 `http://localhost:8080/auth/gsheets/update`,
-                { spreadsheetId: settings.spreadsheetId, robotId: recordingId },
+                { spreadsheetId: settings.spreadsheetId, spreadsheetName: settings.spreadsheetName, robotId: recordingId },
                 { withCredentials: true }
             );
             console.log('Google Sheet ID updated:', response.data);
