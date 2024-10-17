@@ -86,7 +86,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
             if (recording) {
                 setGoogleSheetsEmail(recording.google_sheet_email);
                 setGoogleSheetId(recording.google_sheet_id); 
-                setGoogleSheetName(recording.google_sheet_id); 
+                setGoogleSheetName(recording.google_sheet_name); 
             }
         };
 
