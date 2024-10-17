@@ -43,7 +43,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
             const response = await axios.get(`http://localhost:8080/auth/google/callback`);
             const { google_sheet_email, files } = response.data;
             setUserInfo({ email: google_sheet_email });
-            setSpreadsheets(files);
+            //setSpreadsheets(files);
         } catch (error) {
             setError('Error authenticating with Google');
         }
@@ -55,6 +55,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                 withCredentials: true,
             });
             setSpreadsheets(response.data);
+            console.log(`Fetched spreadsheets:`, response.data);
         } catch (error: any) {
             console.error('Error fetching spreadsheet files:', error.response?.data?.message || error.message);
         }
@@ -113,9 +114,11 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                     <>
                         {/* Show user info and allow spreadsheet selection once authenticated */}
                         {userInfo && (
+                            <>
                             <Typography sx={{ marginBottom: '10px' }}>
                                 Logged in as: {userInfo.email}
                             </Typography>
+                            </>
                         )}
 
                         {loading ? (
@@ -139,6 +142,10 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                                         </MenuItem>
                                     ))}
                                 </TextField>
+
+                                <button onClick={fetchSpreadsheetFiles}>
+                                Fetch Google Spreadsheets
+                            </button>
 
                                 {/* Display selected spreadsheet name */}
                                 {settings.spreadsheetId && (
