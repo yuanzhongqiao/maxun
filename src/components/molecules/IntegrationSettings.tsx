@@ -25,26 +25,20 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
     });
 
     const [spreadsheets, setSpreadsheets] = useState<{ id: string, name: string }[]>([]);
-    const [userInfo, setUserInfo] = useState<{ email: string } | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [googleSheetsEmail, setGoogleSheetsEmail] = useState<string | null>(null);
-    const [googleSheetId, setGoogleSheetId] = useState<string | null>(null); // Store the integrated sheet ID
-    const [googleSheetName, setGoogleSheetName] = useState<string | null>(null); // Store the integrated sheet name
 
     const { recordingId } = useGlobalInfoStore();
+    const [recording, setRecording] = useState<any>(null);
 
-    // Function to trigger Google OAuth authentication
     const authenticateWithGoogle = () => {
         window.location.href = `http://localhost:8080/auth/google?robotId=${recordingId}`;
     };
 
-    // Function to handle Google OAuth callback and fetch spreadsheets
     const handleOAuthCallback = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/auth/google/callback`);
             const { google_sheet_email, files } = response.data;
-            setUserInfo({ email: google_sheet_email });
         } catch (error) {
             setError('Error authenticating with Google');
         }
@@ -61,14 +55,11 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
         }
     };
 
-    // Handle spreadsheet selection
     const handleSpreadsheetSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedSheet = spreadsheets.find(sheet => sheet.id === e.target.value);
         if (selectedSheet) {
-            setGoogleSheetId(selectedSheet.id);
-            setGoogleSheetName(selectedSheet.name);
+            setSettings({ ...settings, spreadsheetId: selectedSheet.id });
         }
-        setSettings({ ...settings, spreadsheetId: e.target.value });
     };
 
     useEffect(() => {
@@ -79,14 +70,11 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
             handleOAuthCallback();
         }
 
-        // Fetch the stored recording to check the Google Sheets email and google_sheet_id
         const fetchRecordingInfo = async () => {
             if (!recordingId) return;
             const recording = await getStoredRecording(recordingId);
             if (recording) {
-                setGoogleSheetsEmail(recording.google_sheet_email);
-                setGoogleSheetId(recording.google_sheet_id); 
-                setGoogleSheetName(recording.google_sheet_name); 
+                setRecording(recording);
             }
         };
 
@@ -98,19 +86,17 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginLeft: '65px' }}>
                 <Typography sx={{ margin: '20px 0px' }}>Google Sheets Integration</Typography>
 
-                {/* Check if Google Sheet is already integrated */}
-                {googleSheetId ? (
+                {recording && recording.google_sheet_id ? (
                     <Typography sx={{ marginBottom: '10px' }}>
                         Google Sheet Integrated Successfully!
                         <br />
-                        Sheet Name: {googleSheetName}
+                        Sheet Name: {recording.google_sheet_name}
                         <br />
-                        Sheet ID: {googleSheetId}
+                        Sheet ID: {recording.google_sheet_id}
                     </Typography>
                 ) : (
                     <>
-                        {/* If Google Sheets email is empty, show Google OAuth button */}
-                        {!googleSheetsEmail ? (
+                        {!recording?.google_sheet_email ? (
                             <Button
                                 variant="contained"
                                 color="primary"
@@ -121,10 +107,9 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                             </Button>
                         ) : (
                             <>
-                                {/* Show user info and allow spreadsheet selection once authenticated */}
-                                {userInfo && (
+                                {recording.google_sheet_email && (
                                     <Typography sx={{ marginBottom: '10px' }}>
-                                        Logged in as: {userInfo.email}
+                                        Logged in as: {recording.google_sheet_email}
                                     </Typography>
                                 )}
 
@@ -143,7 +128,6 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                                     </Button>
                                 ) : (
                                     <>
-                                        {/* Dropdown for selecting the Google Sheet */}
                                         <TextField
                                             sx={{ marginBottom: '15px' }}
                                             select
@@ -160,10 +144,9 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                                             ))}
                                         </TextField>
 
-                                        {/* Display selected spreadsheet name and ID */}
                                         {settings.spreadsheetId && (
                                             <Typography sx={{ marginBottom: '10px' }}>
-                                                Selected Sheet: {googleSheetName} (ID: {settings.spreadsheetId})
+                                                Selected Sheet: {spreadsheets.find(s => s.id === settings.spreadsheetId)?.name} (ID: {settings.spreadsheetId})
                                             </Typography>
                                         )}
 
