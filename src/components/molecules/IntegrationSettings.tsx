@@ -51,7 +51,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
 
     const fetchSpreadsheetFiles = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/gsheets/files?robotId=${recordingId}`, {
+            const response = await axios.get(`http://localhost:8080/auth/gsheets/files?robotId=${recordingId}`, {
                 withCredentials: true,
             });
             setSpreadsheets(response.data);
