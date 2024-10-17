@@ -297,3 +297,42 @@ router.post('/gsheets/data', requireSignIn, async (req, res) => {
         res.status(500).json({ message: `Error accessing Google Sheets: ${error.message}` });
     }
 });
+
+// Step 4: Get user's Google Sheets files (new route)
+router.get('/gsheets/files', requireSignIn, async (req, res) => {
+    try {
+        const user = await User.findOne({ where: { id: req.user.id } });
+
+        if (!user) {
+            return res.status(400).json({ message: 'User not found' });
+        }
+
+        const robotId = req.query.robotId;
+        const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId } });
+
+        if (!robot) {
+            return res.status(400).json({ message: 'Robot not found' });
+        }
+
+        oauth2Client.setCredentials({
+            access_token: robot.google_access_token,
+            refresh_token: robot.google_refresh_token,
+        });
+
+        // List user's Google Sheets files from their Google Drive
+        const drive = google.drive({ version: 'v3', auth: oauth2Client });
+        const response = await drive.files.list({
+            q: "mimeType='application/vnd.google-apps.spreadsheet'",
+            fields: 'files(id, name)',
+        });
+
+        const files = response.data.files || [];
+        if (files.length === 0) {
+            return res.status(404).json({ message: 'No spreadsheets found.' });
+        }
+
+        res.json(files);
+    } catch (error: any) {
+        res.status(500).json({ message: `Error retrieving Google Sheets files: ${error.message}` });
+    }
+});
