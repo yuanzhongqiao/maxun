@@ -41,7 +41,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
         try {
             const response = await axios.get(`http://localhost:8080/auth/google/callback`);
             const { google_sheet_email, files } = response.data;
-            setUserInfo({ email:google_sheet_email });
+            setUserInfo({ email: google_sheet_email });
             setSpreadsheets(files);
             setIsAuthenticated(true);
         } catch (error) {
