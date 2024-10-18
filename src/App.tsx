@@ -15,8 +15,19 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
+          // Default styles for all buttons (optional)
+        },
+        containedPrimary: {
+          // Styles for 'contained' variant with 'primary' color
           '&:hover': {
             backgroundColor: "#ff66d9",
+          },
+        },
+        outlined: {
+          // Apply white background for all 'outlined' variant buttons
+          backgroundColor: "#ffffff",
+          '&:hover': {
+            backgroundColor: "#f0f0f0", // Optional lighter background on hover
           },
         },
       },
@@ -41,6 +52,7 @@ const theme = createTheme({
     },
   },
 });
+
 
 function App() {
   return (
