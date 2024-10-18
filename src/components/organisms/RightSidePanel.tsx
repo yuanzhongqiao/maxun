@@ -514,7 +514,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                   {!confirmedTextSteps[step.id] && (
                     <Box display="flex" justifyContent="space-between" gap={2}>
                       <Button variant="contained" onClick={() => handleTextStepConfirm(step.id)} disabled={!textLabels[step.id]?.trim()}>Confirm</Button>
-                      <Button variant="contained" onClick={() => handleTextStepDiscard(step.id)}>Discard</Button>
+                      <Button variant="contained" color="error" onClick={() => handleTextStepDiscard(step.id)}>Discard</Button>
                     </Box>
                   )}
                 </>
@@ -572,6 +572,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                         </Button>
                         <Button
                           variant="contained"
+                          color="error"
                           onClick={() => handleListTextFieldDiscard(step.id, key)}
                         >
                           Discard
