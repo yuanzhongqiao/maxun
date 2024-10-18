@@ -25,11 +25,26 @@ code {
 }
 
 #browser-actions {
-background: rgb(255,255,255);
-background: -moz-radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(247,155,225,1) 100%, rgba(255,255,255,1) 100%);
-background: -webkit-radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(247,155,225,1) 100%, rgba(255,255,255,1) 100%);
-background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(247,155,225,1) 100%, rgba(255,255,255,1) 100%);
-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);
+  background: rgb(255, 255, 255);
+  background: -moz-radial-gradient(
+    circle,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(247, 155, 225, 1) 100%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  background: -webkit-radial-gradient(
+    circle,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(247, 155, 225, 1) 100%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(247, 155, 225, 1) 100%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);
 }
 
 #browser-recorder {
