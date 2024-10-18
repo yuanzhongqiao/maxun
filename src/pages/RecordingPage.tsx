@@ -114,17 +114,9 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
     <ActionProvider>
       <BrowserStepsProvider>
         <div>
-          {isLoaded ?
+          {isLoaded ? (
             <Grid container direction="row" spacing={0}>
-              <Grid item xs={2} ref={workflowListRef} style={{ display: "flex", flexDirection: "row" }}>
-                <LeftSidePanel
-                  sidePanelRef={workflowListRef.current}
-                  alreadyHasScrollbar={hasScrollbar}
-                  recordingName={recordingName ? recordingName : ''}
-                  handleSelectPairForEdit={handleSelectPairForEdit}
-                />
-              </Grid>
-              <Grid id="browser-content" ref={browserContentRef} item xs>
+              <Grid id="browser-content" ref={browserContentRef} item xs={10} sx={{ width: '900px', height: '500px'}}>
                 <BrowserContent />
                 <InterpretationLog isOpen={showOutputData} setIsOpen={setShowOutputData} />
               </Grid>
@@ -132,7 +124,9 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
                 <RightSidePanel onFinishCapture={handleShowOutputData} />
               </Grid>
             </Grid>
-            : <Loader />}
+          ) : (
+            <Loader />
+          )}
         </div>
       </BrowserStepsProvider>
     </ActionProvider>
