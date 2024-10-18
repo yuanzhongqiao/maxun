@@ -7,8 +7,8 @@ interface BrowserDimensions {
 };
 
 class BrowserDimensionsStore implements Partial<BrowserDimensions> {
-  width: number = 900;
-  height: number = 500;
+  width: number = 1150;
+  height: number = 400;
 };
 
 const browserDimensionsStore = new BrowserDimensionsStore();

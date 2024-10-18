@@ -1,5 +1,5 @@
-export const VIEWPORT_W = 900;
-export const VIEWPORT_H = 500;
+export const VIEWPORT_W = 1150;
+export const VIEWPORT_H = 400;
 
 export const ONE_PERCENT_OF_VIEWPORT_W = VIEWPORT_W / 100;
 export const ONE_PERCENT_OF_VIEWPORT_H = VIEWPORT_H / 100;
