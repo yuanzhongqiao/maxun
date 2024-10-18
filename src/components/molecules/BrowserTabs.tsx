@@ -46,7 +46,7 @@ export const BrowserTabs = (
               <Tab
                 key={`tab-${index}`}
                 id={`tab-${index}`}
-                sx={{ background: 'white'}}
+                sx={{ background: 'white' }}
                 icon={<CloseButton closeTab={() => {
                   tabWasClosed = true;
                   handleCloseTab(index);
