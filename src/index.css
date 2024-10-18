@@ -32,5 +32,28 @@ code {
 #browser-window {
   overflow-y: auto; /* Allow vertical scrolling within this component */
   height: 100%; /* Set to 100% of parent height */
-  max-height: calc(100vh - <height_of_fixed_elements>); /* Adjust based on your fixed elements */
+  max-height: calc(100vh - @media (max-width: 1200px) {
+  #browser-content {
+    flex-direction: column; /* Stack them vertically on smaller screens */
+  }
+
+  .right-side-panel {
+    height: auto; /* Allow it to adjust its height */
+  }
 }
+
+/* Ensure proper spacing */
+.right-side-panel {
+  overflow-y: auto;
+  height: 100%; /* Full height of its parent */
+  margin: 0; /* Adjust margin as needed */
+}
+
+/* Adjust padding in grid items */
+.Grid {
+  padding: 8px; /* Add some padding for inner spacing */
+}
+<height_of_fixed_elements>); /* Adjust based on your fixed elements */
+}
+
+
