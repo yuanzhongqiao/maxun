@@ -161,7 +161,7 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                   onClick={startRecording}
                   disabled={!recordingUrl}
                 >
-                  Submit & Start Recording
+                  Start Training Robot
                 </Button>
               </div>
             </GenericModal>
