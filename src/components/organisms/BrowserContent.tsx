@@ -117,7 +117,7 @@ export const BrowserContent = () => {
   }, [])
 
   return (
-    <div style={{ background: '#101828' }}>
+    <div id="browser">
       <BrowserTabs
         tabs={tabs}
         handleTabChange={handleTabChange}
