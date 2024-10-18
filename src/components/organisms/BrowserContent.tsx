@@ -7,6 +7,7 @@ import { BrowserTabs } from "../molecules/BrowserTabs";
 import { useSocketStore } from "../../context/socket";
 import { getCurrentTabs, getCurrentUrl, interpretCurrentRecording } from "../../api/recording";
 import { Box } from '@mui/material';
+import { InterpretationLog } from "../molecules/InterpretationLog";
 
 // TODO: Tab !show currentUrl after recordingUrl global state
 export const BrowserContent = () => {
@@ -15,6 +16,7 @@ export const BrowserContent = () => {
 
  const [tabs, setTabs] = useState<string[]>(['current']);
  const [tabIndex, setTabIndex] = React.useState(0);
+ const [showOutputData, setShowOutputData] = useState(false);
 
  const handleChangeIndex = useCallback((index: number) => {
    setTabIndex(index);
@@ -115,7 +117,7 @@ export const BrowserContent = () => {
   }, [])
 
   return (
-    <div style={{ flexGrow: 1 }}>
+    <div style={{ background: 'red' }}>
       <BrowserTabs
         tabs={tabs}
         handleTabChange={handleTabChange}
@@ -126,10 +128,11 @@ export const BrowserContent = () => {
       />
       <BrowserNavBar
         // todo: use width from browser dimension once fixed
-        browserWidth={900}
+        browserWidth={1150}
         handleUrlChanged={handleUrlChanged}
       />
       <BrowserWindow/>
+      <InterpretationLog isOpen={showOutputData} setIsOpen={setShowOutputData} />
     </div>
   );
 }
