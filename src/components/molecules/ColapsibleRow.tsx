@@ -70,7 +70,7 @@ export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRun
                           handleDelete();
                         }
                       })
-                    }} sx={{'&:hover': { color: '#1976d2', backgroundColor: 'transparent' }}}>
+                    }}>
                       <DeleteForever/>
                     </IconButton>
                   </TableCell>
