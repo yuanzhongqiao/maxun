@@ -316,7 +316,7 @@ export const BrowserWindow = () => {
 
 
     return (
-        <div onClick={handleClick} style={{ width: '900px', height: '500px'}} id="browser-window">
+        <div onClick={handleClick} style={{ width: '900px'}} id="browser-window">
             {
                 getText === true || getList === true ? (
                     <GenericModal
@@ -356,6 +356,7 @@ export const BrowserWindow = () => {
                     </GenericModal>
                 ) : null
             }
+            <div style={{ height: '500px', overflowY: 'auto' }}> {/* Make this section scrollable */}
             {((getText === true || getList === true) && !showAttributeModal && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
                 <Highlighter
                     unmodifiedRect={highlighterData?.rect}
@@ -370,6 +371,7 @@ export const BrowserWindow = () => {
                 width={900}
                 height={500}
             />
+            </div>
         </div>
     );
 };

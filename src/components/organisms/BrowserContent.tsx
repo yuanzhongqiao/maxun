@@ -115,7 +115,7 @@ export const BrowserContent = () => {
   }, [])
 
   return (
-    <div style={{  width: '900px', height: '500px' }}>
+    <div style={{ flexGrow: 1 }}>
       <BrowserTabs
         tabs={tabs}
         handleTabChange={handleTabChange}

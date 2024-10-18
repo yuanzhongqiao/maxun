@@ -106,7 +106,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
   const columns = tableData.length > 0 ? Object.keys(tableData[0]) : [];
 
   return (
-    <div>
+    <div style={{ width: '900px', height: '500px' }}>
       <button
         onClick={toggleDrawer(true)}
         style={{
@@ -114,7 +114,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
           background: '#3f4853',
           border: 'none',
           padding: '10px 20px',
-          width: 1280,
+          width: 900,
           textAlign: 'left'
         }}>
         Interpretation Log
@@ -129,7 +129,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
             background: 'white',
             color: 'black',
             padding: '10px',
-            height: 720,
+            height: 500,
             width: width - 10,
             display: 'flex'
           }
