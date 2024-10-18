@@ -239,7 +239,7 @@ const InterpretButton = ({ handleInterpret }: InterpretButtonProps) => {
     <IconButton aria-label="add" size="small" onClick={() => {
       handleInterpret();
     }}
-      >
+    >
       <PlayCircle />
     </IconButton>
   )
@@ -255,7 +255,7 @@ const ScheduleButton = ({ handleSchedule }: ScheduleButtonProps) => {
     <IconButton aria-label="add" size="small" onClick={() => {
       handleSchedule();
     }}
-      >
+    >
       <Schedule />
     </IconButton>
   )
@@ -270,7 +270,7 @@ const IntegrateButton = ({ handleIntegrate }: IntegrateButtonProps) => {
     <IconButton aria-label="add" size="small" onClick={() => {
       handleIntegrate();
     }}
-      >
+    >
       <LinkIcon />
     </IconButton>
   )
