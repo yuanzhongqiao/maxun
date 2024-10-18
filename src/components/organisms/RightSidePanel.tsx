@@ -369,7 +369,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   };
 
   return (
-    <Paper variant="outlined" sx={{ height: '100%', width: '100%', backgroundColor: 'white', alignItems: "center" }}>
+    <Paper variant="outlined" sx={{ height: '100%', width: '100%', backgroundColor: 'white', alignItems: "center" }} id="browser-actions">
       <SimpleBox height={60} width='100%' background='lightGray' radius='0%'>
         <Typography sx={{ padding: '10px' }}>Last action: {` ${lastAction}`}</Typography>
       </SimpleBox>
