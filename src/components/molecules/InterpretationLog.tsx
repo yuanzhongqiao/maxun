@@ -106,16 +106,18 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
   const columns = tableData.length > 0 ? Object.keys(tableData[0]) : [];
 
   return (
-    <div style={{ width: '900px', height: '500px' }}>
+    <div>
       <button
         onClick={toggleDrawer(true)}
         style={{
           color: 'white',
+          position: 'fixed',
           background: '#3f4853',
           border: 'none',
           padding: '10px 20px',
-          width: 900,
-          textAlign: 'left'
+          width: '100%',
+          textAlign: 'left',
+          bottom: 0,
         }}>
         Interpretation Log
       </button>
