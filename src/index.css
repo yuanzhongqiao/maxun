@@ -18,6 +18,19 @@ code {
     monospace;
 }
 
-html {
-  overflow-y:scroll;
+#browser-content {
+  height: 100vh; /* Ensure it takes the full viewport height */
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+}
+
+.right-side-panel {
+  overflow-y: auto; /* Enable vertical scrolling */
+  height: 100%; /* Full height of its parent */
+}
+
+#browser-window {
+  overflow-y: auto; /* Allow vertical scrolling within this component */
+  height: 100%; /* Set to 100% of parent height */
+  max-height: calc(100vh - <height_of_fixed_elements>); /* Adjust based on your fixed elements */
 }
