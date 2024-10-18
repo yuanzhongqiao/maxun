@@ -153,7 +153,7 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                   fullWidth
                   value={recordingUrl}
                   onChange={(e: any) => setRecordingUrl(e.target.value)}
-                  style={{ marginBottom: '20px' }}
+                  style={{ marginBottom: '20px', marginTop: '20px' }}
                 />
                 <Button
                   variant="contained"
