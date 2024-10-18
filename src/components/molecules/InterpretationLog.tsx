@@ -112,7 +112,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
         style={{
           color: 'white',
           position: 'fixed',
-          background: '#870468',
+          background: '#101828',
           border: 'none',
           padding: '30px 20px',
           width: '100%',

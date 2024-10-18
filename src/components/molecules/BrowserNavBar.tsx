@@ -77,7 +77,7 @@ const BrowserNavBar: FC<NavBarProps> = ({
   };
 
   return (
-    <StyledNavBar browserWidth={900}>
+    <StyledNavBar browserWidth={1150}>
       <NavBarButton
         type="button"
         onClick={() => {
