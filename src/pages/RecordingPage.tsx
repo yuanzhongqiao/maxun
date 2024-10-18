@@ -113,14 +113,14 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
   return (
     <ActionProvider>
       <BrowserStepsProvider>
-        <div>
+        <div style={{ overflow: 'hidden', height: '100%' }}>
           {isLoaded ? (
             <Grid container direction="row" spacing={0}>
-              <Grid id="browser-content" ref={browserContentRef} item xs={10} sx={{ width: '900px', height: '500px' }}>
+              <Grid id="browser-content" ref={browserContentRef} item xs={10} sx={{ overflow: 'hidden', height: '100vh'}}>
                 <BrowserContent />
                 <InterpretationLog isOpen={showOutputData} setIsOpen={setShowOutputData} />
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={2} sx={{ overflowY: 'auto', height: '100vh'}}>
                 <RightSidePanel onFinishCapture={handleShowOutputData} />
               </Grid>
             </Grid>
