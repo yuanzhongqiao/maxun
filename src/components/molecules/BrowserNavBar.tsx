@@ -16,7 +16,7 @@ import { useGlobalInfoStore } from '../../context/globalInfo';
 
 const StyledNavBar = styled.div<{ browserWidth: number }>`
     display: flex;
-    padding: 5px;
+    padding: 12px 0px;
     background-color: #f6f6f6;
     width: ${({ browserWidth }) => browserWidth}px;
 `;
