@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const NavBarButton = styled.button<{ disabled: boolean }>`
-    margin-left: 5px;
+    margin-left: 10px;
     margin-right: 5px;
     padding: 0;
     border: none;
@@ -26,7 +26,7 @@ export const NavBarButton = styled.button<{ disabled: boolean }>`
 export const UrlFormButton = styled.button`
     position: absolute;
     top: 0;
-    right: 0;
+    right: 10px;
     padding: 0;
     border: none;
     background-color: transparent;
