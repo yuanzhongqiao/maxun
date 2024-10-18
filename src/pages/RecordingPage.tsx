@@ -110,23 +110,26 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
     }
   }, [socket, handleLoaded]);
 
+
   return (
     <ActionProvider>
       <BrowserStepsProvider>
-        <div>
+        <div style={{ height: '100vh', display: 'flex' }}>
           {isLoaded ? (
-            <Grid container direction="row" spacing={0} style={{ height: '100vh' }}>
-              <Grid item xs={6} sm={6} md={6} lg={10} xl={6}> 
-                <div style={{ height: '100%' }}>
-                  <BrowserContent />
-                </div>
+            <>
+              <Grid container direction="row" style={{ flexGrow: 1, height: '100%' }}>
+                <Grid item xs={12} md={10} lg={10} style={{ height: '100%', overflow: 'hidden' }}>
+                  <div style={{ height: '100%', overflow: 'auto' }}>
+                    <BrowserContent />
+                  </div>
+                </Grid>
+                <Grid item xs={12} md={2} lg={2} style={{ height: '100%', overflowY: 'auto' }}>
+                  <div className="right-side-panel" style={{ height: '100%' }}>
+                    <RightSidePanel onFinishCapture={handleShowOutputData} />
+                  </div>
+                </Grid>
               </Grid>
-              <Grid item xs={6} sm={6} md={6} lg={2} xl={6}>
-                <div className="right-side-panel">
-                  <RightSidePanel onFinishCapture={handleShowOutputData} />
-                </div>
-              </Grid>
-            </Grid>
+            </>
           ) : (
             <Loader />
           )}
@@ -135,6 +138,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
     </ActionProvider>
   );
 };
+
 
 const RecordingPageWrapper = styled.div`
   position: relative;
