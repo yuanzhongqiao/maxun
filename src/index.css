@@ -25,6 +25,8 @@ code {
 }
 
 #browser-actions {
+  margin-right: 0.5rem;
+  margin-top: 0.5rem;
   background: rgb(255, 255, 255);
   background: -moz-radial-gradient(
     circle,
@@ -79,6 +81,11 @@ code {
   flex-direction: column;
   transform: scale(1); /* Ensure no scaling */
   transform-origin: top left; /* Keep the position fixed */
+}
+
+#browser {
+margin-left: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 #browser-window {
