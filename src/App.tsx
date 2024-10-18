@@ -25,7 +25,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '&:hover': {
-            color: "#ff00c3", 
+            color: "#ff00c3",
           },
         },
       },
@@ -45,11 +45,11 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-    <GlobalInfoProvider>
-      <Routes>
-        <Route path="/*" element={<PageWrapper />} />
-      </Routes>
-    </GlobalInfoProvider>
+      <GlobalInfoProvider>
+        <Routes>
+          <Route path="/*" element={<PageWrapper />} />
+        </Routes>
+      </GlobalInfoProvider>
     </ThemeProvider>
   );
 }
