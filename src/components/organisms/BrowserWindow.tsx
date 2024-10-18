@@ -316,7 +316,7 @@ export const BrowserWindow = () => {
 
 
     return (
-        <div onClick={handleClick} style={{ width: '900px'}} id="browser-window">
+        <div onClick={handleClick} style={{ width: '1150px'}} id="browser-window">
             {
                 getText === true || getList === true ? (
                     <GenericModal
@@ -356,20 +356,20 @@ export const BrowserWindow = () => {
                     </GenericModal>
                 ) : null
             }
-            <div style={{ height: '500px', overflowY: 'auto' }}> {/* Make this section scrollable */}
+            <div style={{ height: '400px', overflow: 'hidden' }}>
             {((getText === true || getList === true) && !showAttributeModal && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
                 <Highlighter
                     unmodifiedRect={highlighterData?.rect}
                     displayedSelector={highlighterData?.selector}
-                    width={900}
-                    height={500}
+                    width={1150}
+                    height={400}
                     canvasRect={canvasRef.current.getBoundingClientRect()}
                 />
                 : null}
             <Canvas
                 onCreateRef={setCanvasReference}
-                width={900}
-                height={500}
+                width={1150}
+                height={400}
             />
             </div>
         </div>
@@ -385,7 +385,7 @@ const drawImage = (image: string, canvas: HTMLCanvasElement): void => {
     img.src = image;
     img.onload = () => {
         URL.revokeObjectURL(img.src);
-        ctx?.drawImage(img, 0, 0, 900, 500);
+        ctx?.drawImage(img, 0, 0, 1150, 400);
     };
 
 };
