@@ -116,7 +116,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
         <div>
           {isLoaded ? (
             <Grid container direction="row" spacing={0}>
-              <Grid id="browser-content" ref={browserContentRef} item xs={10} sx={{ width: '900px', height: '500px'}}>
+              <Grid id="browser-content" ref={browserContentRef} item xs={10} sx={{ width: '900px', height: '500px' }}>
                 <BrowserContent />
                 <InterpretationLog isOpen={showOutputData} setIsOpen={setShowOutputData} />
               </Grid>
