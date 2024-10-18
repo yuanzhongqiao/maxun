@@ -3,7 +3,7 @@ import axios from 'axios';
 import styled from "styled-components";
 import { stopRecording } from "../../api/recording";
 import { useGlobalInfoStore } from "../../context/globalInfo";
-import { Button, IconButton } from "@mui/material";
+import { Button, IconButton, Typography } from "@mui/material";
 import { RecordingIcon } from "../atoms/RecorderIcon";
 import { SaveRecording } from "./SaveRecording";
 import { Circle, Add, Logout, Clear } from "@mui/icons-material";
@@ -146,7 +146,7 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
             </div>
             <GenericModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
               <div style={{ padding: '20px' }}>
-                <h2>Enter URL</h2>
+                <Typography variant="h6" gutterBottom>Enter URL To Extract Data</Typography>
                 <TextField
                   label="URL"
                   variant="outlined"
