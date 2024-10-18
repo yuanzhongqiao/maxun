@@ -115,7 +115,7 @@ export const BrowserContent = () => {
   }, [])
 
   return (
-    <>
+    <div style={{  width: '900px', height: '500px' }}>
       <BrowserTabs
         tabs={tabs}
         handleTabChange={handleTabChange}
@@ -130,7 +130,7 @@ export const BrowserContent = () => {
         handleUrlChanged={handleUrlChanged}
       />
       <BrowserWindow/>
-    </>
+    </div>
   );
 }
 
