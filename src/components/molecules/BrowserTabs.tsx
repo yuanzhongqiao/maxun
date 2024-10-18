@@ -46,7 +46,12 @@ export const BrowserTabs = (
               <Tab
                 key={`tab-${index}`}
                 id={`tab-${index}`}
-                sx={{ background: 'white' }}
+                sx={{ 
+                  background: 'white', 
+                  borderTopLeftRadius: index === 0 ? '20px' : 0,  // For the first tab
+                  borderTopRightRadius: index === tabs.length - 1 ? '20px' : 0, // For the last tab
+                  transition: 'border-radius 0.2s ease',
+                }}
                 icon={<CloseButton closeTab={() => {
                   tabWasClosed = true;
                   handleCloseTab(index);
@@ -65,7 +70,7 @@ export const BrowserTabs = (
           })}
         </Tabs>
       </Box>
-      <AddButton handleClick={handleAddNewTab} />
+      <AddButton handleClick={handleAddNewTab} style={{ background: 'white'}} />
     </Box>
   );
 }
