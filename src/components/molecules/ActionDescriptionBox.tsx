@@ -35,11 +35,11 @@ const ActionDescriptionBox = () => {
   const messages = [
     {
       stage: 'initial' as const,
-      text: 'Choose the ',
+      text: 'Select the list you want to extract along with the texts inside it',
     },
     {
       stage: 'pagination' as const,
-      text: 'Select how the robot can capture the rest of the list?',
+      text: 'Select how the robot can capture the rest of the list',
     },
     {
       stage: 'limit' as const,
