@@ -92,7 +92,7 @@ export class RemoteBrowser {
         this.browser = <Browser>(await options.browser.launch(options.launchOptions));
         const context = await this.browser.newContext(
             {
-                viewport: { height: 500, width: 900 },
+                viewport: { height: 400, width: 900 },
                 // recordVideo: { dir: 'videos/' }
             }
         );
@@ -280,7 +280,7 @@ export class RemoteBrowser {
         if (page) {
             await this.stopScreencast();
             this.currentPage = page;
-            await this.currentPage.setViewportSize({ height: 500, width: 900 })
+            await this.currentPage.setViewportSize({ height: 400, width: 900 })
             this.client = await this.currentPage.context().newCDPSession(this.currentPage);
             this.socket.emit('urlChanged', this.currentPage.url());
             await this.makeAndEmitScreenshot();
