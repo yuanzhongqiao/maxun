@@ -121,7 +121,9 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                       <Logout sx={{ marginRight: '5px' }} />
                       Logout</IconButton>
                   </>
-                ) : <IconButton sx={{
+                ) : 
+                <>
+                <IconButton sx={{
                   width: '140px',
                   borderRadius: '5px',
                   padding: '8px',
@@ -137,11 +139,8 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                 }} onClick={goToMainMenu}>
                   <Clear sx={{ marginRight: '5px' }} />
                   Discard</IconButton>
-              }
-              {
-                recordingLength > 0
-                  ? <SaveRecording fileName={recordingName} />
-                  : null
+                  <SaveRecording fileName={recordingName} />
+                </>
               }
             </div>
             <GenericModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
