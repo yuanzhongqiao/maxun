@@ -132,7 +132,6 @@ export const BrowserContent = () => {
         handleUrlChanged={handleUrlChanged}
       />
       <BrowserWindow/>
-      <InterpretationLog isOpen={showOutputData} setIsOpen={setShowOutputData} />
     </div>
   );
 }
