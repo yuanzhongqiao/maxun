@@ -316,7 +316,7 @@ export const BrowserWindow = () => {
 
 
     return (
-        <div onClick={handleClick} style={{ width: '1150px'}} id="browser-window">
+        <div onClick={handleClick} style={{ width: '900px'}} id="browser-window">
             {
                 getText === true || getList === true ? (
                     <GenericModal
@@ -361,14 +361,14 @@ export const BrowserWindow = () => {
                 <Highlighter
                     unmodifiedRect={highlighterData?.rect}
                     displayedSelector={highlighterData?.selector}
-                    width={1150}
+                    width={900}
                     height={400}
                     canvasRect={canvasRef.current.getBoundingClientRect()}
                 />
                 : null}
             <Canvas
                 onCreateRef={setCanvasReference}
-                width={1150}
+                width={900}
                 height={400}
             />
             </div>
@@ -385,7 +385,7 @@ const drawImage = (image: string, canvas: HTMLCanvasElement): void => {
     img.src = image;
     img.onload = () => {
         URL.revokeObjectURL(img.src);
-        ctx?.drawImage(img, 0, 0, 1150, 400);
+        ctx?.drawImage(img, 0, 0, 900, 400);
     };
 
 };

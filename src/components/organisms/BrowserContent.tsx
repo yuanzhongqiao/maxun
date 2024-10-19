@@ -128,7 +128,7 @@ export const BrowserContent = () => {
       />
       <BrowserNavBar
         // todo: use width from browser dimension once fixed
-        browserWidth={1150}
+        browserWidth={900}
         handleUrlChanged={handleUrlChanged}
       />
       <BrowserWindow />

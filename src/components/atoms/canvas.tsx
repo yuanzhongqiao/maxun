@@ -142,7 +142,7 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
             tabIndex={0}
             ref={canvasRef}
             height={400}
-            width={1150}
+            width={900}
         />
     );
 
