@@ -10,6 +10,7 @@ import HelpIcon from '@mui/icons-material/Help';
 
 interface InterpretationButtonsProps {
   enableStepping: (isPaused: boolean) => void;
+  setShowOutputData: (show: boolean) => void;
 }
 
 interface InterpretationInfo {
@@ -22,7 +23,7 @@ const interpretationInfo: InterpretationInfo = {
   isPaused: false,
 }
 
-export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsProps) => {
+export const InterpretationButtons = ({ enableStepping, setShowOutputData }: InterpretationButtonsProps) => {
   const [info, setInfo] = React.useState<InterpretationInfo>(interpretationInfo);
   const [decisionModal, setDecisionModal] = useState<{
     pair: WhereWhatPair | null,
@@ -118,6 +119,7 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
       } else {
         notify('error', 'Interpretation failed to start');
       }
+      setShowOutputData(true);
     }
   };
 
