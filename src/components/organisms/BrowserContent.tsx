@@ -11,16 +11,16 @@ import { InterpretationLog } from "../molecules/InterpretationLog";
 
 // TODO: Tab !show currentUrl after recordingUrl global state
 export const BrowserContent = () => {
- const { width } = useBrowserDimensionsStore();
- const { socket } = useSocketStore();
+  const { width } = useBrowserDimensionsStore();
+  const { socket } = useSocketStore();
 
- const [tabs, setTabs] = useState<string[]>(['current']);
- const [tabIndex, setTabIndex] = React.useState(0);
- const [showOutputData, setShowOutputData] = useState(false);
+  const [tabs, setTabs] = useState<string[]>(['current']);
+  const [tabIndex, setTabIndex] = React.useState(0);
+  const [showOutputData, setShowOutputData] = useState(false);
 
- const handleChangeIndex = useCallback((index: number) => {
-   setTabIndex(index);
- }, [tabIndex])
+  const handleChangeIndex = useCallback((index: number) => {
+    setTabIndex(index);
+  }, [tabIndex])
 
   const handleCloseTab = useCallback((index: number) => {
     // the tab needs to be closed on the backend
@@ -53,17 +53,17 @@ export const BrowserContent = () => {
     handleChangeIndex(tabs.length);
   }, [socket, tabs]);
 
- const handleNewTab = useCallback((tab: string) => {
-   // Adds a new tab to the end of the tabs array and shifts focus
-   setTabs((prevState) => [...prevState, tab]);
-   // changes focus on the new tab - same happens in the remote browser
-   handleChangeIndex(tabs.length);
-   handleTabChange(tabs.length);
- }, [tabs]);
+  const handleNewTab = useCallback((tab: string) => {
+    // Adds a new tab to the end of the tabs array and shifts focus
+    setTabs((prevState) => [...prevState, tab]);
+    // changes focus on the new tab - same happens in the remote browser
+    handleChangeIndex(tabs.length);
+    handleTabChange(tabs.length);
+  }, [tabs]);
 
   const handleTabChange = useCallback((index: number) => {
     // page screencast and focus needs to be changed on backend
-      socket?.emit('changeTab', index);
+    socket?.emit('changeTab', index);
   }, [socket]);
 
   const handleUrlChanged = (url: string) => {
@@ -93,18 +93,18 @@ export const BrowserContent = () => {
     handleCloseTab(index);
   }, [handleCloseTab])
 
- useEffect(() => {
-   if (socket) {
-     socket.on('newTab', handleNewTab);
-     socket.on('tabHasBeenClosed', tabHasBeenClosedHandler);
-   }
-   return () => {
-     if (socket) {
-       socket.off('newTab', handleNewTab);
-       socket.off('tabHasBeenClosed', tabHasBeenClosedHandler);
-     }
-   }
- }, [socket, handleNewTab])
+  useEffect(() => {
+    if (socket) {
+      socket.on('newTab', handleNewTab);
+      socket.on('tabHasBeenClosed', tabHasBeenClosedHandler);
+    }
+    return () => {
+      if (socket) {
+        socket.off('newTab', handleNewTab);
+        socket.off('tabHasBeenClosed', tabHasBeenClosedHandler);
+      }
+    }
+  }, [socket, handleNewTab])
 
   useEffect(() => {
     getCurrentTabs().then((response) => {
@@ -131,7 +131,7 @@ export const BrowserContent = () => {
         browserWidth={1150}
         handleUrlChanged={handleUrlChanged}
       />
-      <BrowserWindow/>
+      <BrowserWindow />
     </div>
   );
 }
