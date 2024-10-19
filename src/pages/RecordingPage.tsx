@@ -32,7 +32,6 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
     pair: null,
     index: 0,
   });
-  const [showOutputData, setShowOutputData] = useState(false);
 
   const browserContentRef = React.useRef<HTMLDivElement>(null);
   const workflowListRef = React.useRef<HTMLDivElement>(null);
@@ -41,9 +40,6 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
   const { setWidth } = useBrowserDimensionsStore();
   const { browserId, setBrowserId, recordingId } = useGlobalInfoStore();
 
-  const handleShowOutputData = useCallback(() => {
-    setShowOutputData(true);
-  }, []);
 
   const handleSelectPairForEdit = (pair: WhereWhatPair, index: number) => {
     setPairForEdit({
