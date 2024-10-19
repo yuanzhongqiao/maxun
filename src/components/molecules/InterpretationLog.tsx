@@ -187,7 +187,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
                     hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction ? (
                       <>
                         <Typography variant="body1" align="center" color="textSecondary">
-                          You've successfully trained the robot to perform actions. Click on the Get Output Data Preview to show a preview of data extraction.
+                          You've successfully trained the robot to perform actions! Click on the button below to get a preview of data your robot will extract.
                         </Typography>
                         <SidePanelHeader />
                       </>
