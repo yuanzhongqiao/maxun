@@ -3,11 +3,11 @@ import styled from 'styled-components';
 
 const CustomBoxContainer = styled.div`
   position: relative;
-  width: 200px; /* Adjust width as needed */
+  width: 300px; /* Adjust width as needed */
   height: 200px; /* Adjust height as needed */
-  border: 2px solid black;
+  border: 2px solid #ff00c3;
   background-color: white;
-  margin: 50px auto;
+  margin: 30px auto;
 `;
 
 const Triangle = styled.div`
@@ -19,7 +19,7 @@ const Triangle = styled.div`
   height: 0;
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
-  border-bottom: 20px solid black;
+  border-bottom: 20px solid #ff00c3;
 `;
 
 const Content = styled.div`
