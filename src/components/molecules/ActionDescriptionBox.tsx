@@ -30,7 +30,7 @@ const Content = styled.div`
 `;
 
 const ActionDescriptionBox = () => {
-  const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitType, customLimit, updateLimitType, updateCustomLimit, stopLimitMode, startLimitMode } = useActionContext();
+  const { getText, getScreenshot, getList } = useActionContext();
 
   const renderActionDescription = () => {
     if (getText) {
