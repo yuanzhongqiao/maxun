@@ -14,6 +14,7 @@ import { useGlobalInfoStore } from "../context/globalInfo";
 import { editRecordingFromStorage } from "../api/storage";
 import { WhereWhatPair } from "maxun-core";
 import styled from "styled-components";
+import BrowserRecordingSave from '../components/molecules/BrowserRecordingSave';
 
 interface RecordingPageProps {
   recordingName?: string;
@@ -127,6 +128,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
                 <Grid item xs={12} md={3} lg={3} style={{ height: '100%', overflowY: 'auto' }}>
                   <div className="right-side-panel" style={{ height: '100%' }}>
                     <RightSidePanel onFinishCapture={handleShowOutputData} />
+                    <BrowserRecordingSave />
                   </div>
                 </Grid>
               </Grid>
