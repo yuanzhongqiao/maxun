@@ -188,13 +188,13 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
                   <Grid item>
                     {hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction ? (
                       <>
-                        <Typography variant="h6" gutterBottom align="center">
+                        <Typography variant="h6" gutterBottom align="left">
                           You've successfully trained the robot to perform actions! Click on the button below to get a preview of the data your robot will extract.
                         </Typography>
                         <SidePanelHeader />
                       </>
                     ) : (
-                      <Typography variant="h6" gutterBottom align="center">
+                      <Typography variant="h6" gutterBottom align="left">
                         It looks like you have not selected anything for extraction yet. Once you do, the robot will show a preview of your selections here.
                       </Typography>
                     )}
