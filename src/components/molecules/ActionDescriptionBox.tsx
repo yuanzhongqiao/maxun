@@ -43,7 +43,12 @@ const ActionDescriptionBox = () => {
     } else if (getScreenshot) {
       return <p>Getting screenshot...</p>;
     } else if (getList) {
-      return <p>Getting list...</p>;
+      return (
+        <>
+        <Typography variant="h6" gutterBottom>Capture List</Typography>
+        <Typography variant="body1" gutterBottom>Hover over the list you want to extract. Once selected, you can hover over all texts inside the list you selected. Click to select them. </Typography>
+        </>
+      )
     } else {
       return (
         <div>
