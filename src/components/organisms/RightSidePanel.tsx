@@ -54,6 +54,12 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   const [showCaptureScreenshot, setShowCaptureScreenshot] = useState(true);
   const [showCaptureText, setShowCaptureText] = useState(true);
   const [hoverStates, setHoverStates] = useState<{ [id: string]: boolean }>({});
+  const [actionsState, setActionsState] = useState({
+    hasScrapeListAction: false,
+    hasScreenshotAction: false,
+    hasScrapeSchemaAction: false,
+  });
+
 
   const { lastAction, notify } = useGlobalInfoStore();
   const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitType, customLimit, updateLimitType, updateCustomLimit, stopLimitMode, startLimitMode, captureStage, setCaptureStage } = useActionContext();
@@ -87,7 +93,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
   useEffect(() => {
     const hasPairs = workflow.workflow.length > 0;
-
     if (!hasPairs) {
       setShowCaptureList(true);
       setShowCaptureScreenshot(true);
@@ -96,19 +101,25 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     }
 
     const hasScrapeListAction = workflow.workflow.some(pair =>
-      pair.what.some(action => action.action === "scrapeList")
+      pair.what.some(action => action.action === 'scrapeList')
     );
-
     const hasScreenshotAction = workflow.workflow.some(pair =>
-      pair.what.some(action => action.action === "screenshot")
+      pair.what.some(action => action.action === 'screenshot')
     );
-
     const hasScrapeSchemaAction = workflow.workflow.some(pair =>
-      pair.what.some(action => action.action === "scrapeSchema")
+      pair.what.some(action => action.action === 'scrapeSchema')
     );
 
-    setShowCaptureList(!(hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction));
-    setShowCaptureScreenshot(!(hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction));
+    setActionsState({
+      hasScrapeListAction,
+      hasScreenshotAction,
+      hasScrapeSchemaAction,
+    });
+
+    const shouldHideActions = hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction;
+
+    setShowCaptureList(!shouldHideActions);
+    setShowCaptureScreenshot(!shouldHideActions);
     setShowCaptureText(!(hasScrapeListAction || hasScreenshotAction));
   }, [workflow]);
 
@@ -368,12 +379,18 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     stopGetScreenshot();
   };
 
+  const { hasScrapeListAction, hasScreenshotAction, hasScrapeSchemaAction } = actionsState;
+
   return (
     <Paper variant="outlined" sx={{ height: '100%', width: '100%', alignItems: "center" }} id="browser-actions">
       <SimpleBox height={60} width='100%' background='lightGray' radius='0%'>
         <Typography sx={{ padding: '10px' }}>Last action: {` ${lastAction}`}</Typography>
       </SimpleBox>
-      <SidePanelHeader />
+      {
+        hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction ? (
+          <SidePanelHeader />
+        ) : ""
+      }
       <ActionDescriptionBox />
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
         {!getText && !getScreenshot && !getList && showCaptureList && <Button variant="contained" onClick={startGetList}>Capture List</Button>}
