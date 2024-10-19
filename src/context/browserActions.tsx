@@ -3,6 +3,7 @@ import { useSocketStore } from './socket';
 
 export type PaginationType = 'scrollDown' | 'scrollUp' | 'clickNext' | 'clickLoadMore' | 'none' | '';
 export type LimitType = '10' | '100' | 'custom' | '';
+export type CaptureStage = 'initial' | 'pagination' | 'limit' | 'complete';
 
 interface ActionContextProps {
     getText: boolean;
@@ -13,6 +14,8 @@ interface ActionContextProps {
     paginationType: PaginationType;
     limitType: LimitType;
     customLimit: string;
+    captureStage: CaptureStage; // New captureStage property
+    setCaptureStage: (stage: CaptureStage) => void; // Setter for captureStage
     startPaginationMode: () => void;
     startGetText: () => void;
     stopGetText: () => void;
@@ -39,17 +42,26 @@ export const ActionProvider = ({ children }: { children: ReactNode }) => {
     const [paginationType, setPaginationType] = useState<PaginationType>('');
     const [limitType, setLimitType] = useState<LimitType>('');
     const [customLimit, setCustomLimit] = useState<string>('');
+    const [captureStage, setCaptureStage] = useState<CaptureStage>('initial'); // New captureStage state
 
-    const {socket} = useSocketStore();
+    const { socket } = useSocketStore();
 
     const updatePaginationType = (type: PaginationType) => setPaginationType(type);
     const updateLimitType = (type: LimitType) => setLimitType(type);
     const updateCustomLimit = (limit: string) => setCustomLimit(limit);
 
-    const startPaginationMode = () => setPaginationMode(true);
+    const startPaginationMode = () => {
+        setPaginationMode(true);
+        setCaptureStage('pagination');
+    };
+
     const stopPaginationMode = () => setPaginationMode(false);
 
-    const startLimitMode = () => setLimitMode(true);
+    const startLimitMode = () => {
+        setLimitMode(true);
+        setCaptureStage('limit');
+    };
+
     const stopLimitMode = () => setLimitMode(false);
 
     const startGetText = () => setGetText(true);
@@ -59,35 +71,38 @@ export const ActionProvider = ({ children }: { children: ReactNode }) => {
         setGetList(true);
         socket?.emit('setGetList', { getList: true });
     }
-        
+
     const stopGetList = () => {
         setGetList(false);
         socket?.emit('setGetList', { getList: false });
         setPaginationType('');
         setLimitType('');
         setCustomLimit('');
+        setCaptureStage('initial'); // Reset captureStage when stopping getList
     };
 
     const startGetScreenshot = () => setGetScreenshot(true);
     const stopGetScreenshot = () => setGetScreenshot(false);
 
     return (
-        <ActionContext.Provider value={{ 
-            getText, 
-            getList, 
-            getScreenshot, 
-            paginationMode, 
+        <ActionContext.Provider value={{
+            getText,
+            getList,
+            getScreenshot,
+            paginationMode,
             limitMode,
-            paginationType, 
+            paginationType,
             limitType,
             customLimit,
-            startGetText, 
-            stopGetText, 
-            startGetList, 
-            stopGetList, 
-            startGetScreenshot, 
-            stopGetScreenshot, 
-            startPaginationMode, 
+            captureStage,
+            setCaptureStage,
+            startGetText,
+            stopGetText,
+            startGetList,
+            stopGetList,
+            startGetScreenshot,
+            stopGetScreenshot,
+            startPaginationMode,
             stopPaginationMode,
             startLimitMode,
             stopLimitMode,
