@@ -71,7 +71,7 @@ const ActionDescriptionBox = () => {
         <>
           <Typography variant="h6" gutterBottom>Capture List</Typography>
           <Typography variant="body1" gutterBottom>
-          Hover over the list you want to extract. Once selected, you can hover over all texts inside the list you selected. Click to select them. 
+            Hover over the list you want to extract. Once selected, you can hover over all texts inside the list you selected. Click to select them.
           </Typography>
           <Box>
             {messages.map(({ stage, text }, index) => (
