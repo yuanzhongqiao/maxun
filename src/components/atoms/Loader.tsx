@@ -2,89 +2,72 @@ import styled from "styled-components";
 import { Stack } from "@mui/material";
 
 interface LoaderProps {
-  text: string
+  text: string;
 }
 
 export const Loader: React.FC<LoaderProps> = ({ text }) => {
   return (
-    <Stack direction="column" sx={{ margin: "30px 0px 291px 0px" }}>
-      <StyledLoader />
-      <StyledParagraph>
-        {text}
-      </StyledParagraph>
+    <Stack direction="column" sx={{ margin: "30px 0px", alignItems: "center" }}>
+      <DotsContainer>
+        <Dot />
+        <Dot />
+        <Dot />
+        <Dot />
+      </DotsContainer>
+      <StyledParagraph>{text}</StyledParagraph>
     </Stack>
   );
-}
+};
 
 const StyledParagraph = styled.p`
-  font-size: x-large;
+  font-size: large;
   font-family: inherit;
-  color: black;
-  display: grid;
-  justify-content: center;
+  color: #333;
+  margin-top: 20px;
 `;
 
-const StyledLoader = styled.div`
+const DotsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px; /* Space between dots */
+`;
+
+const Dot = styled.div`
+  width: 15px;
+  height: 15px;
+  background-color: #ff00c3;
   border-radius: 50%;
-  color: #ff00c3;
-  font-size: 11px;
-  text-indent: -99999em;
-  margin: 55px auto;
-  position: relative;
-  width: 10em;
-  height: 10em;
-  box-shadow: inset 0 0 0 1em;
-  -webkit-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  transform: translateZ(0);
-  &:before {
-    position: absolute;
-    content: '';
-    border-radius: 50%;
-    width: 5.2em;
-    height: 10.2em;
-    background: #ffffff;
-    border-radius: 10.2em 0 0 10.2em;
-    top: -0.1em;
-    left: -0.1em;
-    -webkit-transform-origin: 5.1em 5.1em;
-    transform-origin: 5.1em 5.1em;
-    -webkit-animation: load2 2s infinite ease 1.5s;
-    animation: load2 2s infinite ease 1.5s;
+  animation: intensePulse 1.2s infinite ease-in-out both, bounceAndPulse 1.5s infinite ease-in-out;
+
+  &:nth-child(1) {
+    animation-delay: -0.3s;
   }
-  &:after {
-    position: absolute;
-    content: '';
-    border-radius: 50%;
-    width: 5.2em;
-    height: 10.2em;
-    background: #ffffff;
-    border-radius: 0 10.2em 10.2em 0;
-    top: -0.1em;
-    left: 4.9em;
-    -webkit-transform-origin: 0.1em 5.1em;
-    transform-origin: 0.1em 5.1em;
-    -webkit-animation: load2 2s infinite ease;
-    animation: load2 2s infinite ease;
+  &:nth-child(2) {
+    animation-delay: -0.2s;
   }
-  @-webkit-keyframes load2 {
-    0% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
+  &:nth-child(3) {
+    animation-delay: -0.1s;
+  }
+  &:nth-child(4) {
+    animation-delay: 0s;
+  }
+
+  @keyframes bounceAndPulse {
+    0%, 100% {
+      transform: translateY(0) scale(1);
     }
-    100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
+    50% {
+      transform: translateY(-10px) scale(1.3);
     }
   }
-  @keyframes load2 {
-    0% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
+
+  @keyframes intensePulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(255, 0, 195, 0.7);
     }
-    100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
+    50% {
+      box-shadow: 0 0 15px 10px rgba(255, 0, 195, 0.3);
     }
   }
 `;
