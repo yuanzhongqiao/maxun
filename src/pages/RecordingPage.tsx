@@ -132,7 +132,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
               </Grid>
             </>
           ) : (
-            <Loader />
+            <Loader text={'Spinning up a browser just for you...'} />
           )}
         </div>
       </BrowserStepsProvider>
