@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
+import { PaginationType, useActionContext, LimitType } from '../../context/browserActions';
 
 const CustomBoxContainer = styled.div`
   position: relative;
@@ -27,11 +28,31 @@ const Content = styled.div`
   text-align: center;
 `;
 
-const ActionDescriptionBox = ({ children }: { children: ReactNode }) => {
+const ActionDescriptionBox = () => {
+  const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitType, customLimit, updateLimitType, updateCustomLimit, stopLimitMode, startLimitMode } = useActionContext();
+
+  const renderActionDescription = () => {
+    if (getText) {
+      return <p>Getting text...</p>;
+    } else if (getScreenshot) {
+      return <p>Getting screenshot...</p>;
+    } else if (getList) {
+      return <p>Getting list...</p>;
+    } else {
+      return (
+        <div>
+          <p>Defauly</p>
+        </div>
+      );
+    }
+  }
+
     return (
         <CustomBoxContainer>
             <Triangle />
-            <Content>{children}</Content>
+            <Content>
+                {renderActionDescription()}
+            </Content>
         </CustomBoxContainer>
     );
 };
