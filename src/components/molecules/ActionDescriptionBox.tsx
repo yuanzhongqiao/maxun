@@ -26,7 +26,7 @@ const Triangle = styled.div`
 
 const Content = styled.div`
   padding: 20px;
-  text-align: center;
+  text-align: left;
 `;
 
 const ActionDescriptionBox = () => {
