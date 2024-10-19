@@ -188,6 +188,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
                     <Typography variant="body1" align="center" color="textSecondary">
                       It looks like you have not selected anything for extraction yet. Once you do, the robot will show a preview of your selections here.
                     </Typography>
+                    <SidePanelHeader />
                     </>
                   )}
                 </TableBody>
