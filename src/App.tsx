@@ -16,6 +16,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           // Default styles for all buttons (optional)
+          textTransform: "none",
         },
         containedPrimary: {
           // Styles for 'contained' variant with 'primary' color
