@@ -3,7 +3,7 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Typography from '@mui/material/Typography';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import { Button, TextField } from '@mui/material';
+import { Button, TextField, Grid } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
@@ -106,108 +106,111 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
   const columns = tableData.length > 0 ? Object.keys(tableData[0]) : [];
 
   return (
-    <div>
-      <button
-        onClick={toggleDrawer(true)}
-        style={{
-          color: 'white',
-          position: 'fixed',
-          background: '#101828',
-          border: 'none',
-          padding: '30px 20px',
-          width: '100%',
-          textAlign: 'left',
-          bottom: 0,
-        }}>
-        Interpretation Log
-      </button>
-      <SwipeableDrawer
-        anchor="bottom"
-        open={isOpen}
-        onClose={toggleDrawer(false)}
-        onOpen={toggleDrawer(true)}
-        PaperProps={{
-          sx: {
-            background: 'white',
-            color: 'black',
+    <Grid container>
+      <Grid item xs={12} md={9} lg={9}>
+        <button
+          onClick={toggleDrawer(true)}
+          style={{
+            color: 'white',
+            position: 'fixed',
+            background: '#ff00c3',
+            border: 'none',
+            padding: '30px 20px',
+            width: 'calc(100% - 25%)',
+            textAlign: 'left',
+            bottom: 0,
+            overflow: 'hidden',
+          }}>
+          Interpretation Log
+        </button>
+        <SwipeableDrawer
+          anchor="bottom"
+          open={isOpen}
+          onClose={toggleDrawer(false)}
+          onOpen={toggleDrawer(true)}
+          PaperProps={{
+            sx: {
+              background: 'white',
+              color: 'black',
+              padding: '10px',
+              height: 500,
+              width: width - 10,
+              display: 'flex'
+            }
+          }}
+        >
+          <Typography variant="h6" gutterBottom>
+            <StorageIcon /> Output Data Preview
+          </Typography>
+          <div style={{
+            height: '50vh',
+            overflow: 'none',
             padding: '10px',
-            height: 500,
-            width: width - 10,
-            display: 'flex'
-          }
-        }}
-      >
-        <Typography variant="h6" gutterBottom>
-          <StorageIcon /> Output Data Preview
-        </Typography>
-        <div style={{
-          height: '50vh',
-          overflow: 'none',
-          padding: '10px',
-        }}>
-          {/* <Highlight className="javascript">
+          }}>
+            {/* <Highlight className="javascript">
             {log}
           </Highlight> */}
-          {tableData.length > 0 && (
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
-                <TableHead>
-                  <TableRow>
-                    {columns.map((column) => (
-                      <TableCell key={column}>{column}</TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {tableData.map((row, index) => (
-                    <TableRow key={index}>
+            {tableData.length > 0 && (
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
+                  <TableHead>
+                    <TableRow>
                       {columns.map((column) => (
-                        <TableCell key={column}>{row[column]}</TableCell>
+                        <TableCell key={column}>{column}</TableCell>
                       ))}
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '200px' }}>
-            <FormControl>
-              <FormLabel>
-                <h4>What is the maximum number of rows you want to extract?</h4>
-              </FormLabel>
-              <RadioGroup row value={selectedOption} onChange={handleRadioChange} sx={{ width: '500px' }}>
-                <FormControlLabel value="10" control={<Radio />} label="10" />
-                <FormControlLabel value="100" control={<Radio />} label="100" />
-                <FormControlLabel value="custom" control={<Radio />} label="Custom" />
-                {selectedOption === 'custom' && (
-                  <TextField
-                    type="number"
-                    value={customValue}
-                    onChange={handleCustomValueChange}
-                    placeholder="Enter number"
-                    sx={{
-                      marginLeft: '10px',
-                      marginTop: '-3px',
-                      '& input': {
-                        padding: '10px',
-                      },
-                    }}
-                  />
-                )}
-              </RadioGroup>
-            </FormControl>
-            <div style={{ paddingBottom: '40px' }}>
-              <h4>How can we find the next item?</h4>
-              <p>Select and review the pagination setting this webpage is using</p>
-              <Button variant="outlined">
-                Select Pagination Setting
-              </Button>
+                  </TableHead>
+                  <TableBody>
+                    {tableData.map((row, index) => (
+                      <TableRow key={index}>
+                        {columns.map((column) => (
+                          <TableCell key={column}>{row[column]}</TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '200px' }}>
+              <FormControl>
+                <FormLabel>
+                  <h4>What is the maximum number of rows you want to extract?</h4>
+                </FormLabel>
+                <RadioGroup row value={selectedOption} onChange={handleRadioChange} sx={{ width: '500px' }}>
+                  <FormControlLabel value="10" control={<Radio />} label="10" />
+                  <FormControlLabel value="100" control={<Radio />} label="100" />
+                  <FormControlLabel value="custom" control={<Radio />} label="Custom" />
+                  {selectedOption === 'custom' && (
+                    <TextField
+                      type="number"
+                      value={customValue}
+                      onChange={handleCustomValueChange}
+                      placeholder="Enter number"
+                      sx={{
+                        marginLeft: '10px',
+                        marginTop: '-3px',
+                        '& input': {
+                          padding: '10px',
+                        },
+                      }}
+                    />
+                  )}
+                </RadioGroup>
+              </FormControl>
+              <div style={{ paddingBottom: '40px' }}>
+                <h4>How can we find the next item?</h4>
+                <p>Select and review the pagination setting this webpage is using</p>
+                <Button variant="outlined">
+                  Select Pagination Setting
+                </Button>
+              </div>
             </div>
+            <div style={{ float: "left", clear: "both" }}
+              ref={logEndRef} />
           </div>
-          <div style={{ float: "left", clear: "both" }}
-            ref={logEndRef} />
-        </div>
-      </SwipeableDrawer>
-    </div>
+        </SwipeableDrawer>
+      </Grid>
+    </Grid>
   );
 }
