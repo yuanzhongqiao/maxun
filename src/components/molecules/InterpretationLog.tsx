@@ -112,97 +112,99 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
   }, [hasScrapeListAction, hasScrapeSchemaAction, hasScreenshotAction, setIsOpen]);
 
   return (
-    <Grid container>
-      <Grid item xs={12} md={9} lg={9}>
-        <Button
-          onClick={toggleDrawer(true)}
-          variant="contained"
-          color="primary"
-          sx={{
-            color: 'white',
-            position: 'fixed',
-            background: '#ff00c3',
-            border: 'none',
-            padding: '30px 20px',
-            width: 'calc(100% - 25%)',
-            bottom: 0,
-            overflow: 'hidden',
-            justifyContent: 'flex-start',
-            '&:hover': {
-              backgroundColor: '#ff00c3',
-            },
-          }}
-        >
-          Output Data Preview
-        </Button>
-        <SwipeableDrawer
-          anchor="bottom"
-          open={isOpen}
-          onClose={toggleDrawer(false)}
-          onOpen={toggleDrawer(true)}
-          PaperProps={{
-            sx: {
-              background: 'white',
-              color: 'black',
-              padding: '10px',
-              height: 500,
-              width: width - 10,
-              display: 'flex',
-            },
-          }}
-        >
-          <Typography variant="h6" gutterBottom>
-            <StorageIcon /> Output Data Preview
-          </Typography>
-          <div
-            style={{
-              height: '50vh',
-              overflow: 'none',
-              padding: '10px',
+      <Grid container>
+        <Grid item xs={12} md={9} lg={9}>
+          <Button
+            onClick={toggleDrawer(true)}
+            variant="contained"
+            color="primary"
+            sx={{
+              color: 'white',
+              position: 'fixed',
+              background: '#ff00c3',
+              border: 'none',
+              padding: '30px 20px',
+              width: 'calc(100% - 25%)',
+              bottom: 0,
+              overflow: 'hidden',
+              textAlign: 'left',
+              justifyContent: 'flex-start',
+              '&:hover': {
+                backgroundColor: '#ff00c3',
+              },
             }}
           >
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
-                <TableHead>
-                  <TableRow>
-                    {columns.length > 0 ? (
-                      columns.map((column) => (
-                        <TableCell key={column}>{column}</TableCell>
-                      ))
-                    ) : ""}
-                  </TableRow>
-                </TableHead>
-                {tableData.length > 0 ? (
-                  tableData.map((row, index) => (
-                    <TableBody>
-                      <TableRow key={index}>
+            Output Data Preview
+          </Button>
+          <SwipeableDrawer
+            anchor="bottom"
+            open={isOpen}
+            onClose={toggleDrawer(false)}
+            onOpen={toggleDrawer(true)}
+            PaperProps={{
+              sx: {
+                background: 'white',
+                color: 'black',
+                padding: '10px',
+                height: 500,
+                width: width - 10,
+                display: 'flex',
+              },
+            }}
+          >
+            <Typography variant="h6" gutterBottom>
+              <StorageIcon /> Output Data Preview
+            </Typography>
+            <div
+              style={{
+                height: '50vh',
+                overflow: 'none',
+                padding: '10px',
+              }}
+            >
+              {tableData.length > 0 ? (
+                <TableContainer component={Paper}>
+                  <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
+                    <TableHead>
+                      <TableRow>
                         {columns.map((column) => (
-                          <TableCell key={column}>{row[column]}</TableCell>
+                          <TableCell key={column}>{column}</TableCell>
                         ))}
                       </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {tableData.map((row, index) => (
+                        <TableRow key={index}>
+                          {columns.map((column) => (
+                            <TableCell key={column}>{row[column]}</TableCell>
+                          ))}
+                        </TableRow>
+                      ))}
                     </TableBody>
-                  ))
-                ) : (
-                  hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction ? (
-                    <>
-                      <Typography variant="h6" gutterBottom>
-                        You've successfully trained the robot to perform actions! Click on the button below to get a preview of data your robot will extract.
+                  </Table>
+                </TableContainer>
+              ) : (
+                <Grid container justifyContent="center" alignItems="center" style={{ height: '100%' }}>
+                  <Grid item>
+                    {hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction ? (
+                      <>
+                        <Typography variant="h6" gutterBottom align="center">
+                          You've successfully trained the robot to perform actions! Click on the button below to get a preview of the data your robot will extract.
+                        </Typography>
+                        <SidePanelHeader />
+                      </>
+                    ) : (
+                      <Typography variant="h6" gutterBottom align="center">
+                        It looks like you have not selected anything for extraction yet. Once you do, the robot will show a preview of your selections here.
                       </Typography>
-                      <SidePanelHeader />
-                    </>
-                  ) : (
-                    <Typography variant="h6" gutterBottom>
-                      It looks like you have not selected anything for extraction yet. Once you do, the robot will show a preview of your selections here.
-                    </Typography>
-                  )
-                )}
-              </Table>
-            </TableContainer>
-            <div style={{ float: 'left', clear: 'both' }} ref={logEndRef} />
-          </div>
-        </SwipeableDrawer>
+                    )}
+                  </Grid>
+                </Grid>
+              )}
+              <div style={{ float: 'left', clear: 'both' }} ref={logEndRef} />
+            </div>
+          </SwipeableDrawer>
+        </Grid>
       </Grid>
-    </Grid>
-
-  );
+    );
 }
