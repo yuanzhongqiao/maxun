@@ -40,10 +40,9 @@ const fetchWorkflow = (id: string, callback: (response: WorkflowFile) => void) =
 // 2. Handle non custom action steps
 interface RightSidePanelProps {
   onFinishCapture: () => void;
-  setShowOutputData: (show: boolean) => void;
 }
 
-export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture, setShowOutputData }) => {
+export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture }) => {
   const [workflow, setWorkflow] = useState<WorkflowFile>(emptyWorkflow);
   const [textLabels, setTextLabels] = useState<{ [id: string]: string }>({});
   const [errors, setErrors] = useState<{ [id: string]: string }>({});
