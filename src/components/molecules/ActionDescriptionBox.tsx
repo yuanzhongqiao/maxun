@@ -55,22 +55,22 @@ const ActionDescriptionBox = () => {
     if (getText) {
       return (
         <>
-          <Typography variant="h6" gutterBottom>Capture Text</Typography>
-          <Typography variant="body1" gutterBottom>Hover over the texts you want to extract and click to select them</Typography>
+          <Typography variant="subtitle2" gutterBottom>Capture Text</Typography>
+          <Typography variant="body2" gutterBottom>Hover over the texts you want to extract and click to select them</Typography>
         </>
       )
     } else if (getScreenshot) {
       return (
         <>
-          <Typography variant="h6" gutterBottom>Capture Screenshot</Typography>
-          <Typography variant="body1" gutterBottom>Capture a partial or full page screenshot of the current page. </Typography>
+          <Typography variant="subtitle2" gutterBottom>Capture Screenshot</Typography>
+          <Typography variant="body2" gutterBottom>Capture a partial or full page screenshot of the current page. </Typography>
         </>
       )
     } else if (getList) {
       return (
         <>
-          <Typography variant="h6" gutterBottom>Capture List</Typography>
-          <Typography variant="body1" gutterBottom>
+          <Typography variant="subtitle2" gutterBottom>Capture List</Typography>
+          <Typography variant="body2" gutterBottom>
             Hover over the list you want to extract. Once selected, you can hover over all texts inside the list you selected. Click to select them.
           </Typography>
           <Box>
@@ -89,7 +89,7 @@ const ActionDescriptionBox = () => {
                   />
                 }
                 label={
-                  <Typography variant="body1" gutterBottom>{text}</Typography>
+                  <Typography variant="body2" gutterBottom>{text}</Typography>
                 }
               />
             ))}
@@ -99,8 +99,8 @@ const ActionDescriptionBox = () => {
     } else {
       return (
         <>
-          <Typography variant="h6" gutterBottom>What data do you want to extract?</Typography>
-          <Typography variant="body1" gutterBottom>A robot is designed to perform one action at a time. You can choose any of the options below.</Typography>
+          <Typography variant="subtitle2" gutterBottom>What data do you want to extract?</Typography>
+          <Typography variant="body2" gutterBottom>A robot is designed to perform one action at a time. You can choose any of the options below.</Typography>
         </>
       )
     }
