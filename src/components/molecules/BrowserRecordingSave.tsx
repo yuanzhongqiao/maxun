@@ -36,7 +36,7 @@ const BrowserRecordingSave = () => {
                  display: 'flex',
                  justifyContent: 'space-between',
             }}>
-                <Button onClick={goToMainMenu} variant="outlined" sx={{ marginLeft: "20px" }} size="small">
+                <Button onClick={goToMainMenu} variant="outlined" sx={{ marginLeft: "20px" }} size="small" color="error">
                   Discard
                 </Button>
                 <SaveRecording fileName={recordingName} />
