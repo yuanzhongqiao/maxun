@@ -35,7 +35,7 @@ const ActionDescriptionBox = () => {
   const messages = [
     {
       stage: 'initial' as const,
-      text: 'Choose the capture mode',
+      text: 'Choose the ',
     },
     {
       stage: 'pagination' as const,
@@ -69,9 +69,9 @@ const ActionDescriptionBox = () => {
     } else if (getList) {
       return (
         <>
-          <Typography variant="h6" gutterBottom>Capture Screenshot</Typography>
+          <Typography variant="h6" gutterBottom>Capture List</Typography>
           <Typography variant="body1" gutterBottom>
-            Capture a partial or full page screenshot of the current page.
+          Hover over the list you want to extract. Once selected, you can hover over all texts inside the list you selected. Click to select them. 
           </Typography>
           <Box>
             {messages.map(({ stage, text }, index) => (
