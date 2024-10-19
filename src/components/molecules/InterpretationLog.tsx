@@ -169,33 +169,33 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
                       columns.map((column) => (
                         <TableCell key={column}>{column}</TableCell>
                       ))
-                    ) : "" }
+                    ) : ""}
                   </TableRow>
                 </TableHead>
-                  {tableData.length > 0 ? (
-                    tableData.map((row, index) => (
-                      <TableBody>
+                {tableData.length > 0 ? (
+                  tableData.map((row, index) => (
+                    <TableBody>
                       <TableRow key={index}>
                         {columns.map((column) => (
                           <TableCell key={column}>{row[column]}</TableCell>
                         ))}
                       </TableRow>
-                </TableBody>
-                    ))
-                  ) : (
-                    hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction ? (
-                      <>
-                        <Typography variant="h6" gutterBottom>
-                          You've successfully trained the robot to perform actions! Click on the button below to get a preview of data your robot will extract.
-                        </Typography>
-                        <SidePanelHeader />
-                      </>
-                    ) : (
+                    </TableBody>
+                  ))
+                ) : (
+                  hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction ? (
+                    <>
                       <Typography variant="h6" gutterBottom>
-                        It looks like you have not selected anything for extraction yet. Once you do, the robot will show a preview of your selections here.
+                        You've successfully trained the robot to perform actions! Click on the button below to get a preview of data your robot will extract.
                       </Typography>
-                    )
-                  )}
+                      <SidePanelHeader />
+                    </>
+                  ) : (
+                    <Typography variant="h6" gutterBottom>
+                      It looks like you have not selected anything for extraction yet. Once you do, the robot will show a preview of your selections here.
+                    </Typography>
+                  )
+                )}
               </Table>
             </TableContainer>
             <div style={{ float: 'left', clear: 'both' }} ref={logEndRef} />
