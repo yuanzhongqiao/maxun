@@ -29,7 +29,7 @@ const BrowserRecordingSave = () => {
                  position: 'fixed',
                  background: '#ff00c3',
                  border: 'none',
-                 padding: '10px',
+                 padding: '7.5px',
                  width: '100%',
                  bottom: 0,
                  overflow: 'hidden',
