@@ -169,19 +169,18 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
                       columns.map((column) => (
                         <TableCell key={column}>{column}</TableCell>
                       ))
-                    ) : (
-                      <TableCell align="center">No Data</TableCell>
-                    )}
+                    ) : "" }
                   </TableRow>
                 </TableHead>
-                <TableBody>
                   {tableData.length > 0 ? (
                     tableData.map((row, index) => (
+                      <TableBody>
                       <TableRow key={index}>
                         {columns.map((column) => (
                           <TableCell key={column}>{row[column]}</TableCell>
                         ))}
                       </TableRow>
+                </TableBody>
                     ))
                   ) : (
                     hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction ? (
@@ -197,7 +196,6 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
                       </Typography>
                     )
                   )}
-                </TableBody>
               </Table>
             </TableContainer>
             <div style={{ float: 'left', clear: 'both' }} ref={logEndRef} />
