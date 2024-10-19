@@ -172,40 +172,6 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
                 </Table>
               </TableContainer>
             )}
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '200px' }}>
-              <FormControl>
-                <FormLabel>
-                  <h4>What is the maximum number of rows you want to extract?</h4>
-                </FormLabel>
-                <RadioGroup row value={selectedOption} onChange={handleRadioChange} sx={{ width: '500px' }}>
-                  <FormControlLabel value="10" control={<Radio />} label="10" />
-                  <FormControlLabel value="100" control={<Radio />} label="100" />
-                  <FormControlLabel value="custom" control={<Radio />} label="Custom" />
-                  {selectedOption === 'custom' && (
-                    <TextField
-                      type="number"
-                      value={customValue}
-                      onChange={handleCustomValueChange}
-                      placeholder="Enter number"
-                      sx={{
-                        marginLeft: '10px',
-                        marginTop: '-3px',
-                        '& input': {
-                          padding: '10px',
-                        },
-                      }}
-                    />
-                  )}
-                </RadioGroup>
-              </FormControl>
-              <div style={{ paddingBottom: '40px' }}>
-                <h4>How can we find the next item?</h4>
-                <p>Select and review the pagination setting this webpage is using</p>
-                <Button variant="outlined">
-                  Select Pagination Setting
-                </Button>
-              </div>
-            </div>
             <div style={{ float: "left", clear: "both" }}
               ref={logEndRef} />
           </div>
