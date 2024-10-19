@@ -184,12 +184,18 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
                       </TableRow>
                     ))
                   ) : (
-                    <>
-                    <Typography variant="body1" align="center" color="textSecondary">
-                      It looks like you have not selected anything for extraction yet. Once you do, the robot will show a preview of your selections here.
-                    </Typography>
-                    <SidePanelHeader />
-                    </>
+                    hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction ? (
+                      <>
+                        <Typography variant="body1" align="center" color="textSecondary">
+                          You've successfully trained the robot to perform actions. Click on the Get Output Data Preview to show a preview of data extraction.
+                        </Typography>
+                        <SidePanelHeader />
+                      </>
+                    ) : (
+                      <Typography variant="body1" align="center" color="textSecondary">
+                        "It looks like you have not selected anything for extraction yet. Once you do, the robot will show a preview of your selections here."
+                      </Typography>
+                    )
                   )}
                 </TableBody>
               </Table>
