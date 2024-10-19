@@ -41,7 +41,12 @@ const ActionDescriptionBox = () => {
         </>
       )
     } else if (getScreenshot) {
-      return <p>Getting screenshot...</p>;
+      return (
+        <>
+        <Typography variant="h6" gutterBottom>Capture Screenshot</Typography>
+        <Typography variant="body1" gutterBottom>Capture a partial or full page screenshot of the current page. </Typography>
+        </>
+      )
     } else if (getList) {
       return (
         <>
