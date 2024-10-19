@@ -5,8 +5,9 @@ import { Typography, FormControlLabel, Checkbox, Box } from '@mui/material';
 
 const CustomBoxContainer = styled.div`
   position: relative;
-  width: 300px; /* Adjust width as needed */
-  height: 200px; /* Adjust height as needed */
+  width: 300px; 
+  min-height: 100px;
+  height: auto;
   border: 2px solid #ff00c3;
   background-color: white;
   margin: 30px auto;
@@ -14,7 +15,7 @@ const CustomBoxContainer = styled.div`
 
 const Triangle = styled.div`
   position: absolute;
-  top: -20px; /* Adjust this value to control the height of the triangle */
+  top: -20px;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
