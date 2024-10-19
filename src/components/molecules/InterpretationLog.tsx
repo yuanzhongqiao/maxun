@@ -108,22 +108,24 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
   return (
     <Grid container>
   <Grid item xs={12} md={9} lg={9}>
-    <button
+    <Button
       onClick={toggleDrawer(true)}
-      style={{
+      variant="contained"
+      color="primary"
+      sx={{
         color: 'white',
         position: 'fixed',
         background: '#ff00c3',
         border: 'none',
         padding: '30px 20px',
         width: 'calc(100% - 25%)',
-        textAlign: 'left',
         bottom: 0,
-        overflow: 'hidden',
+        overflow: 'hidden',         
+        justifyContent: 'flex-start',
       }}
     >
       Output Data Preview
-    </button>
+    </Button>
     <SwipeableDrawer
       anchor="bottom"
       open={isOpen}
