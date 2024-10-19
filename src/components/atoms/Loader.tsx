@@ -1,12 +1,16 @@
 import styled from "styled-components";
 import { Stack } from "@mui/material";
 
-export const Loader = () => {
+interface LoaderProps {
+  text: string
+}
+
+export const Loader: React.FC<LoaderProps> = ({ text }) => {
   return (
     <Stack direction="column" sx={{ margin: "30px 0px 291px 0px" }}>
       <StyledLoader />
       <StyledParagraph>
-        Loading...
+        {text}
       </StyledParagraph>
     </Stack>
   );
