@@ -131,7 +131,7 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
   */
 
   return (
-    <Stack direction="row" spacing={3} sx={{ marginTop: '10px', marginBottom: '5px', justifyContent: 'center' }}>
+    <Stack direction="row" spacing={3} sx={{ marginTop: '30px', marginBottom: '5px', justifyContent: 'center' }}>
       <Button
         variant="contained"
         color="primary"
@@ -139,7 +139,7 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
         disabled={info.running}
         sx={{ display: 'grid' }}
       >
-        {info.running ? 'Extracting data...almost there' : 'Get Preview of Output Data'}
+        {info.running ? 'Extracting data...almost there!' : 'Get Preview of Output Data'}
       </Button>
       <GenericModal
         onClose={() => { }}
