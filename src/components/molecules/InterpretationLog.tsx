@@ -27,7 +27,6 @@ interface InterpretationLogProps {
 
 export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, setIsOpen }) => {
   const [log, setLog] = useState<string>('');
-  const [selectedOption, setSelectedOption] = useState<string>('10');
   const [customValue, setCustomValue] = useState('');
   const [tableData, setTableData] = useState<any[]>([]);
 
@@ -82,10 +81,6 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
       + '------------------------------------------------');
     scrollLogToBottom();
   }, [log, scrollLogToBottom]);
-
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedOption(event.target.value);
-  };
 
   const handleCustomValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCustomValue(event.target.value);
