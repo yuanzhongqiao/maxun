@@ -48,9 +48,6 @@ export const BrowserTabs = (
                 id={`tab-${index}`}
                 sx={{
                   background: 'white',
-                  borderTopLeftRadius: index === 0 ? '20px' : 0,  // For the first tab
-                  borderTopRightRadius: index === tabs.length - 1 ? '20px' : 0, // For the last tab
-                  transition: 'border-radius 0.2s ease',
                 }}
                 icon={<CloseButton closeTab={() => {
                   tabWasClosed = true;
