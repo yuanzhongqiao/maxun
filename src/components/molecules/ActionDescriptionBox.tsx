@@ -36,22 +36,22 @@ const ActionDescriptionBox = () => {
     if (getText) {
       return (
         <>
-        <Typography variant="h6" gutterBottom>Capture Text</Typography>
-        <Typography variant="body1" gutterBottom>Hover over the texts you want to extract and click to select them</Typography>
+          <Typography variant="h6" gutterBottom>Capture Text</Typography>
+          <Typography variant="body1" gutterBottom>Hover over the texts you want to extract and click to select them</Typography>
         </>
       )
     } else if (getScreenshot) {
       return (
         <>
-        <Typography variant="h6" gutterBottom>Capture Screenshot</Typography>
-        <Typography variant="body1" gutterBottom>Capture a partial or full page screenshot of the current page. </Typography>
+          <Typography variant="h6" gutterBottom>Capture Screenshot</Typography>
+          <Typography variant="body1" gutterBottom>Capture a partial or full page screenshot of the current page. </Typography>
         </>
       )
     } else if (getList) {
       return (
         <>
-        <Typography variant="h6" gutterBottom>Capture List</Typography>
-        <Typography variant="body1" gutterBottom>Hover over the list you want to extract. Once selected, you can hover over all texts inside the list you selected. Click to select them. </Typography>
+          <Typography variant="h6" gutterBottom>Capture List</Typography>
+          <Typography variant="body1" gutterBottom>Hover over the list you want to extract. Once selected, you can hover over all texts inside the list you selected. Click to select them. </Typography>
         </>
       )
     } else {
@@ -63,14 +63,14 @@ const ActionDescriptionBox = () => {
     }
   }
 
-    return (
-        <CustomBoxContainer>
-            <Triangle />
-            <Content>
-                {renderActionDescription()}
-            </Content>
-        </CustomBoxContainer>
-    );
+  return (
+    <CustomBoxContainer>
+      <Triangle />
+      <Content>
+        {renderActionDescription()}
+      </Content>
+    </CustomBoxContainer>
+  );
 };
 
 export default ActionDescriptionBox;
