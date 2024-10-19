@@ -10,13 +10,10 @@ import { FastForward } from "@mui/icons-material";
 import { useSocketStore } from "../../context/socket";
 import { useGlobalInfoStore } from "../../context/globalInfo";
 
-interface SidePanelHeaderProps {
-  setShowOutputData: (show: boolean) => void;
-}
-
-export const SidePanelHeader: React.FC<SidePanelHeaderProps> = ({ setShowOutputData }) => {
+export const SidePanelHeader = () => {
 
   const [steppingIsDisabled, setSteppingIsDisabled] = useState(true);
+
   const { socket } = useSocketStore();
 
   const handleStep = () => {
@@ -25,7 +22,7 @@ export const SidePanelHeader: React.FC<SidePanelHeaderProps> = ({ setShowOutputD
 
   return (
     <div style={{ width: 'inherit' }}>
-      <InterpretationButtons enableStepping={(isPaused) => setSteppingIsDisabled(!isPaused)} setShowOutputData={setShowOutputData} />
+      <InterpretationButtons enableStepping={(isPaused) => setSteppingIsDisabled(!isPaused)} />
       {/* <Button
        variant='outlined'
        disabled={steppingIsDisabled}
