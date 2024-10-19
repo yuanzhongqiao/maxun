@@ -19,6 +19,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import StorageIcon from '@mui/icons-material/Storage';
+import { SidePanelHeader } from './SidePanelHeader';
+import { useGlobalInfoStore } from '../../context/globalInfo';
 
 interface InterpretationLogProps {
   isOpen: boolean;
@@ -34,6 +36,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
 
   const { width } = useBrowserDimensionsStore();
   const { socket } = useSocketStore();
+  const { currentWorkflowActionsState } = useGlobalInfoStore();
 
   const toggleDrawer = (newOpen: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
     if (
@@ -99,6 +102,14 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
 
   // Extract columns dynamically from the first item of tableData
   const columns = tableData.length > 0 ? Object.keys(tableData[0]) : [];
+
+  const { hasScrapeListAction, hasScreenshotAction, hasScrapeSchemaAction } = currentWorkflowActionsState
+
+  useEffect(() => {
+    if (hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction) {
+      setIsOpen(true);
+    }
+  }, [hasScrapeListAction, hasScrapeSchemaAction, hasScreenshotAction, setIsOpen]);
 
   return (
     <Grid container>
@@ -173,11 +184,11 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
                       </TableRow>
                     ))
                   ) : (
-                    <TableRow>
-                      <TableCell colSpan={columns.length || 1} align="center">
-                        It looks like you have not selected anything for extraction yet. Once you do, the robot will show a preview of your selections here.
-                      </TableCell>
-                    </TableRow>
+                    <>
+                    <Typography variant="body1" align="center" color="textSecondary">
+                      It looks like you have not selected anything for extraction yet. Once you do, the robot will show a preview of your selections here.
+                    </Typography>
+                    </>
                   )}
                 </TableBody>
               </Table>
