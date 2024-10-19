@@ -126,7 +126,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} style={{ height: '100%', overflowY: 'auto' }}>
                   <div className="right-side-panel" style={{ height: '100%' }}>
-                    <RightSidePanel onFinishCapture={handleShowOutputData} setShowOutputData={setShowOutputData} />
+                    <RightSidePanel onFinishCapture={handleShowOutputData} />
                   </div>
                 </Grid>
               </Grid>
