@@ -121,11 +121,12 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
                 <Grid item xs={12} md={9} lg={9} style={{ height: '100%', overflow: 'hidden' }}>
                   <div style={{ height: '100%', overflow: 'auto' }}>
                     <BrowserContent />
+                    <InterpretationLog isOpen={showOutputData} setIsOpen={setShowOutputData} />
                   </div>
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} style={{ height: '100%', overflowY: 'auto' }}>
                   <div className="right-side-panel" style={{ height: '100%' }}>
-                    <RightSidePanel onFinishCapture={handleShowOutputData} />
+                    <RightSidePanel onFinishCapture={handleShowOutputData} setShowOutputData={setShowOutputData} />
                   </div>
                 </Grid>
               </Grid>
