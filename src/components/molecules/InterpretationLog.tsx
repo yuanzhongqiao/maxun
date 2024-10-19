@@ -122,7 +122,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
         overflow: 'hidden',
       }}
     >
-      Interpretation Log
+      Output Data Preview
     </button>
     <SwipeableDrawer
       anchor="bottom"
