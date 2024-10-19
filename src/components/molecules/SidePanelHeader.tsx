@@ -16,18 +16,17 @@ interface SidePanelHeaderProps {
 
 export const SidePanelHeader: React.FC<SidePanelHeaderProps> = ({ setShowOutputData }) => {
 
- const [steppingIsDisabled, setSteppingIsDisabled] = useState(true);
+  const [steppingIsDisabled, setSteppingIsDisabled] = useState(true);
+  const { socket } = useSocketStore();
 
- const { socket } = useSocketStore();
+  const handleStep = () => {
+    socket?.emit('step');
+  };
 
- const handleStep = () => {
-   socket?.emit('step');
- };
-
- return (
-   <div style={{width: 'inherit'}}>
-    <InterpretationButtons enableStepping={(isPaused) => setSteppingIsDisabled(!isPaused)} setShowOutputData={setShowOutputData} />
-     {/* <Button
+  return (
+    <div style={{ width: 'inherit' }}>
+      <InterpretationButtons enableStepping={(isPaused) => setSteppingIsDisabled(!isPaused)} setShowOutputData={setShowOutputData} />
+      {/* <Button
        variant='outlined'
        disabled={steppingIsDisabled}
        onClick={handleStep}
@@ -36,7 +35,7 @@ export const SidePanelHeader: React.FC<SidePanelHeaderProps> = ({ setShowOutputD
        step
        <FastForward/>
      </Button> */}
-    <hr/>
-   </div>
- );
+      <hr />
+    </div>
+  );
 };
