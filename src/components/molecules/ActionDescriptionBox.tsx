@@ -56,10 +56,11 @@ const ActionDescriptionBox = () => {
       )
     } else {
       return (
-        <div>
-          <p>Defauly</p>
-        </div>
-      );
+        <>
+          <Typography variant="h6" gutterBottom>What data do you want to extract?</Typography>
+          <Typography variant="body1" gutterBottom>A robot is designed to perform one action at a time. You can choose any of the options below.</Typography>
+        </>
+      )
     }
   }
 
