@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { PaginationType, useActionContext, LimitType } from '../../context/browserActions';
-import Typography from "@mui/material/Typography";
+import { Typography, FormControlLabel, Checkbox, Box } from '@mui/material';
 
 const CustomBoxContainer = styled.div`
   position: relative;
@@ -30,7 +30,26 @@ const Content = styled.div`
 `;
 
 const ActionDescriptionBox = () => {
-  const { getText, getScreenshot, getList } = useActionContext();
+  const { getText, getScreenshot, getList, captureStage } = useActionContext();
+
+  const messages = [
+    {
+      stage: 'initial' as const,
+      text: 'Choose the capture mode',
+    },
+    {
+      stage: 'pagination' as const,
+      text: 'Select how the robot can capture the rest of the list?',
+    },
+    {
+      stage: 'limit' as const,
+      text: 'Choose the number of items to extract',
+    },
+    {
+      stage: 'complete' as const,
+      text: 'Capture is complete',
+    },
+  ];
 
   const renderActionDescription = () => {
     if (getText) {
@@ -50,10 +69,33 @@ const ActionDescriptionBox = () => {
     } else if (getList) {
       return (
         <>
-          <Typography variant="h6" gutterBottom>Capture List</Typography>
-          <Typography variant="body1" gutterBottom>Hover over the list you want to extract. Once selected, you can hover over all texts inside the list you selected. Click to select them. </Typography>
+          <Typography variant="h6" gutterBottom>Capture Screenshot</Typography>
+          <Typography variant="body1" gutterBottom>
+            Capture a partial or full page screenshot of the current page.
+          </Typography>
+          <Box>
+            {messages.map(({ stage, text }, index) => (
+              <FormControlLabel
+                key={stage}
+                control={
+                  <Checkbox
+                    checked={
+                      (stage === 'initial' && captureStage !== '') || // Checked if captureStage is at least 'initial'
+                      (stage === 'pagination' && (captureStage === 'pagination' || captureStage === 'limit' || captureStage === 'complete')) || // captureStage is at least 'pagination'
+                      (stage === 'limit' && (captureStage === 'limit' || captureStage === 'complete')) || // captureStage is at least 'limit'
+                      (stage === 'complete' && captureStage === 'complete') // captureStage is 'complete'
+                    }
+                    disabled
+                  />
+                }
+                label={
+                  <Typography variant="body1" gutterBottom>{text}</Typography>
+                }
+              />
+            ))}
+          </Box>
         </>
-      )
+      );
     } else {
       return (
         <>
