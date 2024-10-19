@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { PaginationType, useActionContext, LimitType } from '../../context/browserActions';
+import Typography from "@mui/material/Typography";
 
 const CustomBoxContainer = styled.div`
   position: relative;
@@ -33,7 +34,12 @@ const ActionDescriptionBox = () => {
 
   const renderActionDescription = () => {
     if (getText) {
-      return <p>Getting text...</p>;
+      return (
+        <>
+        <Typography variant="h6" gutterBottom>Capture Text</Typography>
+        <Typography variant="body1" gutterBottom>Hover over the texts you want to extract and click to select them</Typography>
+        </>
+      )
     } else if (getScreenshot) {
       return <p>Getting screenshot...</p>;
     } else if (getList) {
