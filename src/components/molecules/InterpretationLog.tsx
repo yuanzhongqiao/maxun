@@ -123,7 +123,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
               position: 'fixed',
               background: '#ff00c3',
               border: 'none',
-              padding: '30px 20px',
+              padding: '10px 20px',
               width: 'calc(100% - 25%)',
               bottom: 0,
               overflow: 'hidden',
