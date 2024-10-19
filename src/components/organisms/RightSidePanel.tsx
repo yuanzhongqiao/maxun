@@ -55,14 +55,8 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture,
   const [showCaptureScreenshot, setShowCaptureScreenshot] = useState(true);
   const [showCaptureText, setShowCaptureText] = useState(true);
   const [hoverStates, setHoverStates] = useState<{ [id: string]: boolean }>({});
-  const [actionsState, setActionsState] = useState({
-    hasScrapeListAction: false,
-    hasScreenshotAction: false,
-    hasScrapeSchemaAction: false,
-  });
 
-
-  const { lastAction, notify } = useGlobalInfoStore();
+  const { lastAction, notify, currentWorkflowActionsState, setCurrentWorkflowActionsState } = useGlobalInfoStore();
   const { getText, startGetText, stopGetText, getScreenshot, startGetScreenshot, stopGetScreenshot, getList, startGetList, stopGetList, startPaginationMode, stopPaginationMode, paginationType, updatePaginationType, limitType, customLimit, updateLimitType, updateCustomLimit, stopLimitMode, startLimitMode, captureStage, setCaptureStage } = useActionContext();
   const { browserSteps, updateBrowserTextStepLabel, deleteBrowserStep, addScreenshotStep, updateListTextFieldLabel, removeListTextField } = useBrowserSteps();
   const { id, socket } = useSocketStore();
@@ -111,7 +105,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture,
       pair.what.some(action => action.action === 'scrapeSchema')
     );
 
-    setActionsState({
+    setCurrentWorkflowActionsState({
       hasScrapeListAction,
       hasScreenshotAction,
       hasScrapeSchemaAction,
@@ -380,18 +374,11 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture,
     stopGetScreenshot();
   };
 
-  const { hasScrapeListAction, hasScreenshotAction, hasScrapeSchemaAction } = actionsState;
-
   return (
     <Paper variant="outlined" sx={{ height: '100%', width: '100%', alignItems: "center" }} id="browser-actions">
       <SimpleBox height={60} width='100%' background='lightGray' radius='0%'>
         <Typography sx={{ padding: '10px' }}>Last action: {` ${lastAction}`}</Typography>
       </SimpleBox>
-      {
-        hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction ? (
-          <SidePanelHeader setShowOutputData={setShowOutputData} />
-        ) : ""
-      }
       <ActionDescriptionBox />
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
         {!getText && !getScreenshot && !getList && showCaptureList && <Button variant="contained" onClick={startGetList}>Capture List</Button>}
