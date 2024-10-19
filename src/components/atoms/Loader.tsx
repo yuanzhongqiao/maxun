@@ -15,14 +15,14 @@ export const Loader = () => {
 const StyledParagraph = styled.p`
   font-size: x-large;
   font-family: inherit;
-  color: #1976d2;
+  color: black;
   display: grid;
   justify-content: center;
 `;
 
 const StyledLoader = styled.div`
   border-radius: 50%;
-  color: #1976d2;
+  color: #ff00c3;
   font-size: 11px;
   text-indent: -99999em;
   margin: 55px auto;
