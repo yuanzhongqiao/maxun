@@ -122,6 +122,9 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
         bottom: 0,
         overflow: 'hidden',         
         justifyContent: 'flex-start',
+        '&:hover': {
+          backgroundColor: '#ff00c3',
+        },
       }}
     >
       Output Data Preview
