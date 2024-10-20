@@ -118,6 +118,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                 <Typography sx={{ margin: '20px 0px' }}>Google Sheets Integration</Typography>
 
                 {recording && recording.google_sheet_id ? (
+                    <>
                     <Typography sx={{ marginBottom: '10px' }}>
                         Google Sheet Integrated Successfully!
                         <br />
@@ -125,6 +126,15 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                         <br />
                         Sheet ID: {recording.google_sheet_id}
                     </Typography>
+                    <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={removeIntegration}
+                        style={{ marginTop: '15px' }}
+                    >
+                        Remove Integration
+                    </Button>
+                    </>
                 ) : (
                     <>
                         {!recording?.google_sheet_email ? (
