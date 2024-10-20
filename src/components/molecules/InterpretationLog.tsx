@@ -119,6 +119,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
             variant="contained"
             color="primary"
             sx={{
+              marginTop: '10px',
               color: 'white',
               position: 'absolute',
               background: '#ff00c3',
