@@ -24,6 +24,7 @@ const BrowserRecordingSave = () => {
         <Grid container>
             <Grid item xs={12} md={3} lg={3}>
                 <div style={{
+                     marginTop: '10px',
                      marginLeft: '10px',
                      color: 'white',
                      position: 'absolute',
@@ -31,7 +32,6 @@ const BrowserRecordingSave = () => {
                      border: 'none',
                      padding: '7.5px',
                      width: 'calc(100% - 20px)',  // Ensure it takes full width but with padding
-                     bottom: 0,
                      overflow: 'hidden',
                      display: 'flex',
                      justifyContent: 'space-between',
