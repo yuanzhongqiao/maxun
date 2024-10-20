@@ -92,7 +92,7 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
   const [rows, setRows] = React.useState<Data[]>([]);
   const [isModalOpen, setModalOpen] = React.useState(false);
 
-  const { notify, setRecordings, browserId, setBrowserId, recordingUrl, setRecordingUrl } = useGlobalInfoStore();
+  const { notify, setRecordings, browserId, setBrowserId, recordingUrl, setRecordingUrl, recordingName, setRecordingName, recordingId, setRecordingId } = useGlobalInfoStore();
   const navigate = useNavigate();
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -132,8 +132,16 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
     setModalOpen(true);
   };
 
+  const handleStartRecording = () => {
+    setBrowserId('new-recording');
+    setRecordingName('');
+    setRecordingId('');
+    navigate('/recording');
+  }
+
   const startRecording = () => {
     setModalOpen(false);
+    handleStartRecording();
     notify('info', 'New Recording started for ' + recordingUrl);
   };
 
