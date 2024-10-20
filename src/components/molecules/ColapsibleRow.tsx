@@ -16,10 +16,10 @@ interface CollapsibleRowProps {
   abortRunHandler: () => void;
   runningRecordingName: string;
 }
-export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRunHandler,runningRecordingName }: CollapsibleRowProps) => {
+export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRunHandler, runningRecordingName }: CollapsibleRowProps) => {
   const [open, setOpen] = useState(isOpen);
 
-  const logEndRef = useRef<HTMLDivElement|null>(null);
+  const logEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToLogBottom = () => {
     if (logEndRef.current) {
@@ -52,7 +52,7 @@ export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRun
         </TableCell>
         {columns.map((column) => {
           // @ts-ignore
-          const value : any = row[column.id];
+          const value: any = row[column.id];
           if (value !== undefined) {
             return (
               <TableCell key={column.id} align={column.align}>
@@ -64,14 +64,14 @@ export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRun
               case 'delete':
                 return (
                   <TableCell key={column.id} align={column.align}>
-                    <IconButton aria-label="add" size= "small" onClick={() => {
+                    <IconButton aria-label="add" size="small" onClick={() => {
                       deleteRunFromStorage(`${row.runId}`).then((result: boolean) => {
                         if (result) {
                           handleDelete();
                         }
                       })
-                    }} sx={{'&:hover': { color: '#1976d2', backgroundColor: 'transparent' }}}>
-                      <DeleteForever/>
+                    }}>
+                      <DeleteForever />
                     </IconButton>
                   </TableCell>
                 );
@@ -85,7 +85,7 @@ export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRun
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <RunContent row={row} abortRunHandler={handleAbort} currentLog={currentLog}
-            logEndRef={logEndRef} interpretationInProgress={runningRecordingName === row.name} />
+              logEndRef={logEndRef} interpretationInProgress={runningRecordingName === row.name} />
           </Collapse>
         </TableCell>
       </TableRow>

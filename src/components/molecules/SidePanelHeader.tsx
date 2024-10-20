@@ -12,18 +12,18 @@ import { useGlobalInfoStore } from "../../context/globalInfo";
 
 export const SidePanelHeader = () => {
 
- const [steppingIsDisabled, setSteppingIsDisabled] = useState(true);
+  const [steppingIsDisabled, setSteppingIsDisabled] = useState(true);
 
- const { socket } = useSocketStore();
+  const { socket } = useSocketStore();
 
- const handleStep = () => {
-   socket?.emit('step');
- };
+  const handleStep = () => {
+    socket?.emit('step');
+  };
 
- return (
-   <div style={{width: 'inherit'}}>
-    <InterpretationButtons enableStepping={(isPaused) => setSteppingIsDisabled(!isPaused)}/>
-     <Button
+  return (
+    <div style={{ width: 'inherit' }}>
+      <InterpretationButtons enableStepping={(isPaused) => setSteppingIsDisabled(!isPaused)} />
+      {/* <Button
        variant='outlined'
        disabled={steppingIsDisabled}
        onClick={handleStep}
@@ -31,8 +31,8 @@ export const SidePanelHeader = () => {
      >
        step
        <FastForward/>
-     </Button>
-    <hr/>
-   </div>
- );
+     </Button> */}
+      <hr />
+    </div>
+  );
 };

@@ -45,34 +45,35 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     }, [getText, getList]);
 
     const onMouseEvent = useCallback((event: MouseEvent) => {
-        if (socket) {
-            const coordinates = {
-                x: event.clientX,
-                y: event.clientY,
-            }
+        if (socket && canvasRef.current) {
+            // Get the canvas bounding rectangle
+            const rect = canvasRef.current.getBoundingClientRect();
+            const clickCoordinates = {
+                x: event.clientX - rect.left, // Use relative x coordinate
+                y: event.clientY - rect.top, // Use relative y coordinate
+            };
+
             switch (event.type) {
                 case 'mousedown':
-                    const clickCoordinates = getMappedCoordinates(event, canvasRef.current, width, height);
                     if (getTextRef.current === true) {
                         console.log('Capturing Text...');
-                    } else if (getListRef.current === true){
+                    } else if (getListRef.current === true) {
                         console.log('Capturing List...');
-                    }else {
+                    } else {
                         socket.emit('input:mousedown', clickCoordinates);
                     }
                     notifyLastAction('click');
                     break;
                 case 'mousemove':
-                    const coordinates = getMappedCoordinates(event, canvasRef.current, width, height);
-                    if (lastMousePosition.current.x !== coordinates.x ||
-                        lastMousePosition.current.y !== coordinates.y) {
+                    if (lastMousePosition.current.x !== clickCoordinates.x ||
+                        lastMousePosition.current.y !== clickCoordinates.y) {
                         lastMousePosition.current = {
-                            x: coordinates.x,
-                            y: coordinates.y,
+                            x: clickCoordinates.x,
+                            y: clickCoordinates.y,
                         };
                         socket.emit('input:mousemove', {
-                            x: coordinates.x,
-                            y: coordinates.y,
+                            x: clickCoordinates.x,
+                            y: clickCoordinates.y,
                         });
                         notifyLastAction('move');
                     }
@@ -140,8 +141,8 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
         <canvas
             tabIndex={0}
             ref={canvasRef}
-            height={720}
-            width={1280}
+            height={400}
+            width={900}
         />
     );
 

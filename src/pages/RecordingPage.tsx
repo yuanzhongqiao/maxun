@@ -14,6 +14,7 @@ import { useGlobalInfoStore } from "../context/globalInfo";
 import { editRecordingFromStorage } from "../api/storage";
 import { WhereWhatPair } from "maxun-core";
 import styled from "styled-components";
+import BrowserRecordingSave from '../components/molecules/BrowserRecordingSave';
 
 interface RecordingPageProps {
   recordingName?: string;
@@ -53,6 +54,17 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
   };
 
   useEffect(() => changeBrowserDimensions(), [isLoaded])
+
+  useEffect(() => {
+    document.body.style.background = 'radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(232, 191, 222, 1) 100%, rgba(255, 255, 255, 1) 100%)';
+    document.body.style.filter = 'progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);'
+
+    return () => {
+      // Cleanup the background when leaving the page
+      document.body.style.background = '';
+      document.body.style.filter = '';
+    };
+  }, []);
 
   useEffect(() => {
     let isCancelled = false;
@@ -110,34 +122,37 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
     }
   }, [socket, handleLoaded]);
 
+
   return (
     <ActionProvider>
       <BrowserStepsProvider>
-        <div>
-          {isLoaded ?
-            <Grid container direction="row" spacing={0}>
-              <Grid item xs={2} ref={workflowListRef} style={{ display: "flex", flexDirection: "row" }}>
-                <LeftSidePanel
-                  sidePanelRef={workflowListRef.current}
-                  alreadyHasScrollbar={hasScrollbar}
-                  recordingName={recordingName ? recordingName : ''}
-                  handleSelectPairForEdit={handleSelectPairForEdit}
-                />
+        <div id="browser-recorder">
+          {isLoaded ? (
+            <>
+              <Grid container direction="row" style={{ flexGrow: 1, height: '100%' }}>
+                <Grid item xs={12} md={9} lg={9} style={{ height: '100%', overflow: 'hidden', position: 'relative' }}>
+                  <div style={{ height: '100%', overflow: 'auto' }}>
+                    <BrowserContent />
+                    <InterpretationLog isOpen={showOutputData} setIsOpen={setShowOutputData} />
+                  </div>
+                </Grid>
+                <Grid item xs={12} md={3} lg={3} style={{ height: '100%', overflow: 'hidden' }}>
+                  <div className="right-side-panel" style={{ height: '100%' }}>
+                    <RightSidePanel onFinishCapture={handleShowOutputData} />
+                    <BrowserRecordingSave />
+                  </div>
+                </Grid>
               </Grid>
-              <Grid id="browser-content" ref={browserContentRef} item xs>
-                <BrowserContent />
-                <InterpretationLog isOpen={showOutputData} setIsOpen={setShowOutputData} />
-              </Grid>
-              <Grid item xs={2}>
-                <RightSidePanel onFinishCapture={handleShowOutputData} />
-              </Grid>
-            </Grid>
-            : <Loader />}
+            </>
+          ) : (
+            <Loader text={'Spinning up a browser just for you...'} />
+          )}
         </div>
       </BrowserStepsProvider>
     </ActionProvider>
   );
 };
+
 
 const RecordingPageWrapper = styled.div`
   position: relative;

@@ -3,7 +3,7 @@ import axios from 'axios';
 import styled from "styled-components";
 import { stopRecording } from "../../api/recording";
 import { useGlobalInfoStore } from "../../context/globalInfo";
-import { Button, IconButton } from "@mui/material";
+import { Button, IconButton, Typography } from "@mui/material";
 import { RecordingIcon } from "../atoms/RecorderIcon";
 import { SaveRecording } from "./SaveRecording";
 import { Circle, Add, Logout, Clear } from "@mui/icons-material";
@@ -121,7 +121,9 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                       <Logout sx={{ marginRight: '5px' }} />
                       Logout</IconButton>
                   </>
-                ) : <IconButton sx={{
+                ) : 
+                <>
+                <IconButton sx={{
                   width: '140px',
                   borderRadius: '5px',
                   padding: '8px',
@@ -137,23 +139,20 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                 }} onClick={goToMainMenu}>
                   <Clear sx={{ marginRight: '5px' }} />
                   Discard</IconButton>
-              }
-              {
-                recordingLength > 0
-                  ? <SaveRecording fileName={recordingName} />
-                  : null
+                  <SaveRecording fileName={recordingName} />
+                </>
               }
             </div>
             <GenericModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
               <div style={{ padding: '20px' }}>
-                <h2>Enter URL</h2>
+                <Typography variant="h6" gutterBottom>Enter URL To Extract Data</Typography>
                 <TextField
                   label="URL"
                   variant="outlined"
                   fullWidth
                   value={recordingUrl}
                   onChange={(e: any) => setRecordingUrl(e.target.value)}
-                  style={{ marginBottom: '20px' }}
+                  style={{ marginBottom: '20px', marginTop: '20px' }}
                 />
                 <Button
                   variant="contained"
@@ -161,7 +160,7 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                   onClick={startRecording}
                   disabled={!recordingUrl}
                 >
-                  Submit & Start Recording
+                  Start Training Robot
                 </Button>
               </div>
             </GenericModal>

@@ -3,7 +3,7 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Typography from '@mui/material/Typography';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import { Button, TextField } from '@mui/material';
+import { Button, TextField, Grid } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
@@ -19,6 +19,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import StorageIcon from '@mui/icons-material/Storage';
+import { SidePanelHeader } from './SidePanelHeader';
+import { useGlobalInfoStore } from '../../context/globalInfo';
 
 interface InterpretationLogProps {
   isOpen: boolean;
@@ -27,7 +29,6 @@ interface InterpretationLogProps {
 
 export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, setIsOpen }) => {
   const [log, setLog] = useState<string>('');
-  const [selectedOption, setSelectedOption] = useState<string>('10');
   const [customValue, setCustomValue] = useState('');
   const [tableData, setTableData] = useState<any[]>([]);
 
@@ -35,6 +36,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
 
   const { width } = useBrowserDimensionsStore();
   const { socket } = useSocketStore();
+  const { currentWorkflowActionsState } = useGlobalInfoStore();
 
   const toggleDrawer = (newOpen: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
     if (
@@ -83,10 +85,6 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
     scrollLogToBottom();
   }, [log, scrollLogToBottom]);
 
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedOption(event.target.value);
-  };
-
   const handleCustomValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCustomValue(event.target.value);
   };
@@ -105,107 +103,108 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
   // Extract columns dynamically from the first item of tableData
   const columns = tableData.length > 0 ? Object.keys(tableData[0]) : [];
 
+  const { hasScrapeListAction, hasScreenshotAction, hasScrapeSchemaAction } = currentWorkflowActionsState
+
+  useEffect(() => {
+    if (hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction) {
+      setIsOpen(true);
+    }
+  }, [hasScrapeListAction, hasScrapeSchemaAction, hasScreenshotAction, setIsOpen]);
+
   return (
-    <div>
-      <button
-        onClick={toggleDrawer(true)}
-        style={{
-          color: 'white',
-          background: '#3f4853',
-          border: 'none',
-          padding: '10px 20px',
-          width: 1280,
-          textAlign: 'left'
-        }}>
-        Interpretation Log
-      </button>
-      <SwipeableDrawer
-        anchor="bottom"
-        open={isOpen}
-        onClose={toggleDrawer(false)}
-        onOpen={toggleDrawer(true)}
-        PaperProps={{
-          sx: {
-            background: 'white',
-            color: 'black',
-            padding: '10px',
-            height: 720,
-            width: width - 10,
-            display: 'flex'
-          }
-        }}
-      >
-        <Typography variant="h6" gutterBottom>
-          <StorageIcon /> Output Data Preview
-        </Typography>
-        <div style={{
-          height: '50vh',
-          overflow: 'none',
-          padding: '10px',
-        }}>
-          {/* <Highlight className="javascript">
-            {log}
-          </Highlight> */}
-          {tableData.length > 0 && (
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
-                <TableHead>
-                  <TableRow>
-                    {columns.map((column) => (
-                      <TableCell key={column}>{column}</TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {tableData.map((row, index) => (
-                    <TableRow key={index}>
-                      {columns.map((column) => (
-                        <TableCell key={column}>{row[column]}</TableCell>
+      <Grid container>
+        <Grid item xs={12} md={9} lg={9}>
+          <Button
+            onClick={toggleDrawer(true)}
+            variant="contained"
+            color="primary"
+            sx={{
+              marginTop: '10px',
+              color: 'white',
+              position: 'absolute',
+              background: '#ff00c3',
+              border: 'none',
+              padding: '10px 20px',
+              width: '900px',
+              overflow: 'hidden',
+              textAlign: 'left',
+              justifyContent: 'flex-start',
+              '&:hover': {
+                backgroundColor: '#ff00c3',
+              },
+            }}
+          >
+            Output Data Preview
+          </Button>
+          <SwipeableDrawer
+            anchor="bottom"
+            open={isOpen}
+            onClose={toggleDrawer(false)}
+            onOpen={toggleDrawer(true)}
+            PaperProps={{
+              sx: {
+                background: 'white',
+                color: 'black',
+                padding: '10px',
+                height: 500,
+                width: width - 10,
+                display: 'flex',
+              },
+            }}
+          >
+            <Typography variant="h6" gutterBottom>
+              <StorageIcon /> Output Data Preview
+            </Typography>
+            <div
+              style={{
+                height: '50vh',
+                overflow: 'none',
+                padding: '10px',
+              }}
+            >
+              {tableData.length > 0 ? (
+                <TableContainer component={Paper}>
+                  <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
+                    <TableHead>
+                      <TableRow>
+                        {columns.map((column) => (
+                          <TableCell key={column}>{column}</TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {tableData.map((row, index) => (
+                        <TableRow key={index}>
+                          {columns.map((column) => (
+                            <TableCell key={column}>{row[column]}</TableCell>
+                          ))}
+                        </TableRow>
                       ))}
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '200px' }}>
-            <FormControl>
-              <FormLabel>
-                <h4>What is the maximum number of rows you want to extract?</h4>
-              </FormLabel>
-              <RadioGroup row value={selectedOption} onChange={handleRadioChange} sx={{ width: '500px' }}>
-                <FormControlLabel value="10" control={<Radio />} label="10" />
-                <FormControlLabel value="100" control={<Radio />} label="100" />
-                <FormControlLabel value="custom" control={<Radio />} label="Custom" />
-                {selectedOption === 'custom' && (
-                  <TextField
-                    type="number"
-                    value={customValue}
-                    onChange={handleCustomValueChange}
-                    placeholder="Enter number"
-                    sx={{
-                      marginLeft: '10px',
-                      marginTop: '-3px',
-                      '& input': {
-                        padding: '10px',
-                      },
-                    }}
-                  />
-                )}
-              </RadioGroup>
-            </FormControl>
-            <div style={{ paddingBottom: '40px' }}>
-              <h4>How can we find the next item?</h4>
-              <p>Select and review the pagination setting this webpage is using</p>
-              <Button variant="outlined">
-                Select Pagination Setting
-              </Button>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                <Grid container justifyContent="center" alignItems="center" style={{ height: '100%' }}>
+                  <Grid item>
+                    {hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction ? (
+                      <>
+                        <Typography variant="h6" gutterBottom align="left">
+                          You've successfully trained the robot to perform actions! Click on the button below to get a preview of the data your robot will extract.
+                        </Typography>
+                        <SidePanelHeader />
+                      </>
+                    ) : (
+                      <Typography variant="h6" gutterBottom align="left">
+                        It looks like you have not selected anything for extraction yet. Once you do, the robot will show a preview of your selections here.
+                      </Typography>
+                    )}
+                  </Grid>
+                </Grid>
+              )}
+              <div style={{ float: 'left', clear: 'both' }} ref={logEndRef} />
             </div>
-          </div>
-          <div style={{ float: "left", clear: "both" }}
-            ref={logEndRef} />
-        </div>
-      </SwipeableDrawer>
-    </div>
-  );
+          </SwipeableDrawer>
+        </Grid>
+      </Grid>
+    );
 }

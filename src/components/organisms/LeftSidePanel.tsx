@@ -105,7 +105,7 @@ export const LeftSidePanel = (
         flexDirection: 'column',
       }}
     >
-      <SidePanelHeader />
+      {/* <SidePanelHeader /> */}
       <TabContext value={tab}>
         <Tabs value={tab} onChange={(e, newTab) => setTab(newTab)}>
           <Tab label="Recording" value='recording' />

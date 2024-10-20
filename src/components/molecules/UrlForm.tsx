@@ -62,6 +62,7 @@ export const UrlForm = ({
                 type="text"
                 value={address}
                 onChange={onChange}
+                readOnly
             />
             <UrlFormButton type="submit">
                 <KeyboardArrowRightIcon />

@@ -64,7 +64,7 @@ export const BrowserWindow = () => {
     const [paginationSelector, setPaginationSelector] = useState<string>('');
 
     const { socket } = useSocketStore();
-    const { width, height } = useBrowserDimensionsStore();
+    //const { width, height } = useBrowserDimensionsStore();
     const { getText, getList, paginationMode, paginationType, limitMode } = useActionContext();
     const { addTextStep, addListStep } = useBrowserSteps();
 
@@ -316,7 +316,7 @@ export const BrowserWindow = () => {
 
 
     return (
-        <div onClick={handleClick}>
+        <div onClick={handleClick} style={{ width: '900px'}} id="browser-window">
             {
                 getText === true || getList === true ? (
                     <GenericModal
@@ -356,20 +356,22 @@ export const BrowserWindow = () => {
                     </GenericModal>
                 ) : null
             }
+            <div style={{ height: '400px', overflow: 'hidden' }}>
             {((getText === true || getList === true) && !showAttributeModal && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
                 <Highlighter
                     unmodifiedRect={highlighterData?.rect}
                     displayedSelector={highlighterData?.selector}
-                    width={width}
-                    height={height}
+                    width={900}
+                    height={400}
                     canvasRect={canvasRef.current.getBoundingClientRect()}
                 />
                 : null}
             <Canvas
                 onCreateRef={setCanvasReference}
-                width={width}
-                height={height}
+                width={900}
+                height={400}
             />
+            </div>
         </div>
     );
 };
@@ -383,7 +385,7 @@ const drawImage = (image: string, canvas: HTMLCanvasElement): void => {
     img.src = image;
     img.onload = () => {
         URL.revokeObjectURL(img.src);
-        ctx?.drawImage(img, 0, 0, 1280, 720);
+        ctx?.drawImage(img, 0, 0, 900, 400);
     };
 
 };

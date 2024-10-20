@@ -69,22 +69,9 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
 
   return (
     <div>
-      <IconButton sx={{
-        width: '140px',
-        background: 'green',
-        color: 'white',
-        '&:hover': { background: 'green', color: 'white' },
-        padding: '13px',
-        marginRight: '10px',
-        borderRadius: '5px',
-        fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
-        fontWeight: '500',
-        fontSize: '0.875rem',
-        lineHeight: '1.75',
-        letterSpacing: '0.02857em',
-      }} onClick={() => setOpenModal(true)}>
-        <DoneAll sx={{ marginRight: '5px' }} /> Finish
-      </IconButton>
+      <Button onClick={() => setOpenModal(true)} variant="outlined" sx={{ marginRight: '20px' }} size="small" color="success">
+        Finish
+      </Button>
 
       <GenericModal isOpen={openModal} onClose={() => setOpenModal(false)} modalStyle={modalStyle}>
         <form onSubmit={handleSaveRecording} style={{ paddingTop: '20px', display: 'flex', flexDirection: 'column' }} >

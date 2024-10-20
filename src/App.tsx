@@ -1,15 +1,69 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { GlobalInfoProvider } from "./context/globalInfo";
 import { PageWrapper } from "./pages/PageWrappper";
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#ff00c3",
+      contrastText: "#ffffff",
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          // Default styles for all buttons (optional)
+          textTransform: "none",
+        },
+        containedPrimary: {
+          // Styles for 'contained' variant with 'primary' color
+          '&:hover': {
+            backgroundColor: "#ff66d9",
+          },
+        },
+        outlined: {
+          // Apply white background for all 'outlined' variant buttons
+          backgroundColor: "#ffffff",
+          '&:hover': {
+            backgroundColor: "#f0f0f0", // Optional lighter background on hover
+          },
+        },
+      },
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            color: "#ff00c3",
+          },
+        },
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            color: "#ff66d9",
+          },
+        },
+      },
+    },
+  },
+});
+
+
 function App() {
   return (
-    <GlobalInfoProvider>
-      <Routes>
-        <Route path="/*" element={<PageWrapper />} />
-      </Routes>
-    </GlobalInfoProvider>
+    <ThemeProvider theme={theme}>
+      <GlobalInfoProvider>
+        <Routes>
+          <Route path="/*" element={<PageWrapper />} />
+        </Routes>
+      </GlobalInfoProvider>
+    </ThemeProvider>
   );
 }
 

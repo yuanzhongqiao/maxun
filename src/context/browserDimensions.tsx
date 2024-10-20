@@ -6,9 +6,9 @@ interface BrowserDimensions {
   setWidth: (newWidth: number) => void;
 };
 
-class BrowserDimensionsStore implements Partial<BrowserDimensions>{
-  width: number = 1280;
-  height: number = 720;
+class BrowserDimensionsStore implements Partial<BrowserDimensions> {
+  width: number = 900;
+  height: number = 400;
 };
 
 const browserDimensionsStore = new BrowserDimensionsStore();

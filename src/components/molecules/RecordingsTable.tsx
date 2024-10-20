@@ -200,7 +200,7 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
                                       fetchRecordings();
                                     }
                                   })
-                                }} sx={{ '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
+                                }}>
                                   <DeleteForever />
                                 </IconButton>
                               </TableCell>
@@ -239,7 +239,7 @@ const InterpretButton = ({ handleInterpret }: InterpretButtonProps) => {
     <IconButton aria-label="add" size="small" onClick={() => {
       handleInterpret();
     }}
-      sx={{ '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
+    >
       <PlayCircle />
     </IconButton>
   )
@@ -255,7 +255,7 @@ const ScheduleButton = ({ handleSchedule }: ScheduleButtonProps) => {
     <IconButton aria-label="add" size="small" onClick={() => {
       handleSchedule();
     }}
-      sx={{ '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
+    >
       <Schedule />
     </IconButton>
   )
@@ -270,7 +270,7 @@ const IntegrateButton = ({ handleIntegrate }: IntegrateButtonProps) => {
     <IconButton aria-label="add" size="small" onClick={() => {
       handleIntegrate();
     }}
-      sx={{ '&:hover': { color: '#1976d2', backgroundColor: 'transparent' } }}>
+    >
       <LinkIcon />
     </IconButton>
   )

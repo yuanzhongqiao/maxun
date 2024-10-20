@@ -22,6 +22,16 @@ interface GlobalInfo {
   setRecordingName: (recordingName: string) => void;
   recordingUrl: string;
   setRecordingUrl: (recordingUrl: string) => void;
+  currentWorkflowActionsState: {
+    hasScrapeListAction: boolean;
+    hasScreenshotAction: boolean;
+    hasScrapeSchemaAction: boolean;
+  };
+  setCurrentWorkflowActionsState: (actionsState: {
+    hasScrapeListAction: boolean;
+    hasScreenshotAction: boolean;
+    hasScrapeSchemaAction: boolean;
+  }) => void;
 };
 
 class GlobalInfoStore implements Partial<GlobalInfo> {
@@ -38,6 +48,11 @@ class GlobalInfoStore implements Partial<GlobalInfo> {
   rerenderRuns = false;
   recordingName = '';
   recordingUrl = 'https://';
+  currentWorkflowActionsState = {
+    hasScrapeListAction: false,
+    hasScreenshotAction: false,
+    hasScrapeSchemaAction: false,
+  };
 };
 
 const globalInfoStore = new GlobalInfoStore();
@@ -55,6 +70,7 @@ export const GlobalInfoProvider = ({ children }: { children: JSX.Element }) => {
   const [recordingId, setRecordingId] = useState<string | null>(globalInfoStore.recordingId);
   const [recordingName, setRecordingName] = useState<string>(globalInfoStore.recordingName);
   const [recordingUrl, setRecordingUrl] = useState<string>(globalInfoStore.recordingUrl);
+  const [currentWorkflowActionsState, setCurrentWorkflowActionsState] = useState(globalInfoStore.currentWorkflowActionsState);
 
   const notify = (severity: 'error' | 'warning' | 'info' | 'success', message: string) => {
     setNotification({ severity, message, isOpen: true });
@@ -93,6 +109,8 @@ export const GlobalInfoProvider = ({ children }: { children: JSX.Element }) => {
         setRecordingName,
         recordingUrl,
         setRecordingUrl,
+        currentWorkflowActionsState,
+        setCurrentWorkflowActionsState,
       }}
     >
       {children}

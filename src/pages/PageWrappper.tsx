@@ -57,7 +57,11 @@ export const PageWrapper = () => {
       <AuthProvider>
         <SocketProvider>
           <React.Fragment>
-            <NavBar newRecording={handleNewRecording} recordingName={recordingName} isRecording={!!browserId} />
+            {
+              !!browserId ? (
+                ""
+              ) : <NavBar newRecording={handleNewRecording} recordingName={recordingName} isRecording={!!browserId} />
+            }
             <Routes>
               <Route element={<UserRoute />}>
                 <Route path="/" element={<MainPage handleEditRecording={handleEditRecording} />} />
