@@ -107,27 +107,6 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                 </>
               }
             </div>
-            <GenericModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
-              <div style={{ padding: '20px' }}>
-                <Typography variant="h6" gutterBottom>Enter URL To Extract Data</Typography>
-                <TextField
-                  label="URL"
-                  variant="outlined"
-                  fullWidth
-                  value={recordingUrl}
-                  onChange={(e: any) => setRecordingUrl(e.target.value)}
-                  style={{ marginBottom: '20px', marginTop: '20px' }}
-                />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={startRecording}
-                  disabled={!recordingUrl}
-                >
-                  Start Training Robot
-                </Button>
-              </div>
-            </GenericModal>
           </>
         ) : ""
       }
