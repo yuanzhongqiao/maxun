@@ -85,12 +85,8 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                 { withCredentials: true }
             );
 
-            setRecording((prev: any) => ({
-                ...prev,
-                google_sheet_id: null,
-                google_sheet_name: null,
-                google_sheet_email: null,
-            }));
+            setRecording(null);
+            setSpreadsheets([]);
             setSettings({ spreadsheetId: '', spreadsheetName: '', data: '' });
         } catch (error: any) {
             console.error('Error removing Google Sheets integration:', error.response?.data?.message || error.message);
