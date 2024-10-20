@@ -77,6 +77,26 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
         }
     };
 
+    const removeIntegration = async () => {
+        try {
+            await axios.post(
+                `http://localhost:8080/auth/gsheets/remove`,
+                { robotId: recordingId },
+                { withCredentials: true }
+            );
+
+            setRecording((prev: any) => ({
+                ...prev,
+                google_sheet_id: null,
+                google_sheet_name: null,
+                google_sheet_email: null,
+            }));
+            setSettings({ spreadsheetId: '', spreadsheetName: '', data: '' });
+        } catch (error: any) {
+            console.error('Error removing Google Sheets integration:', error.response?.data?.message || error.message);
+        }
+    };
+
     useEffect(() => {
         // Check if we're on the callback URL
         const urlParams = new URLSearchParams(window.location.search);
