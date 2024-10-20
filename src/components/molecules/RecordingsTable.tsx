@@ -9,7 +9,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { useEffect } from "react";
 import { WorkflowFile } from "maxun-core";
-import { IconButton } from "@mui/material";
+import { IconButton, Button, Box } from "@mui/material";
 import { Schedule, DeleteForever, Edit, PlayCircle } from "@mui/icons-material";
 import LinkIcon from '@mui/icons-material/Link';
 import { useGlobalInfoStore } from "../../context/globalInfo";
@@ -126,9 +126,14 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
 
   return (
     <React.Fragment>
-      <Typography variant="h6" gutterBottom component="div">
-        My Robots
-      </Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography variant="h6" gutterBottom>
+          My Robots
+        </Typography>
+        <Button variant="contained" color="primary" onClick={() => console.log("Create Robot Clicked")}>
+          Create Robot
+        </Button>
+      </Box>
       <TableContainer component={Paper} sx={{ width: '100%', overflow: 'hidden', marginTop: '15px' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
