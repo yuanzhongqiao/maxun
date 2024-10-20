@@ -3,15 +3,12 @@ import axios from 'axios';
 import styled from "styled-components";
 import { stopRecording } from "../../api/recording";
 import { useGlobalInfoStore } from "../../context/globalInfo";
-import { Button, IconButton, Typography } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { RecordingIcon } from "../atoms/RecorderIcon";
 import { SaveRecording } from "./SaveRecording";
-import { Circle, Add, Logout, Clear } from "@mui/icons-material";
-import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Logout, Clear } from "@mui/icons-material";
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/auth';
-import { GenericModal } from '../atoms/GenericModal';
-import TextField from '@mui/material/TextField';
 
 interface NavBarProps {
   newRecording: () => void;
