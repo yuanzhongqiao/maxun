@@ -302,7 +302,7 @@ router.post('/gsheets/data', requireSignIn, async (req, res) => {
 router.get('/gsheets/files', requireSignIn, async (req, res) => {
     try {
         const robotId = req.query.robotId;
-        const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId }, raw:true });
+        const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId }, raw: true });
 
         if (!robot) {
             return res.status(400).json({ message: 'Robot not found' });
@@ -352,5 +352,32 @@ router.post('/gsheets/update', requireSignIn, async (req, res) => {
         res.json({ message: 'Robot updated with selected Google Sheet ID' });
     } catch (error: any) {
         res.status(500).json({ message: `Error updating robot: ${error.message}` });
+    }
+});
+
+router.post('/gsheets/remove', requireSignIn, async (req, res) => {
+    const { robotId } = req.body;
+    if (!robotId) {
+        return res.status(400).json({ message: 'Robot ID is required' });
+    }
+
+    try {
+        let robot = await Robot.findOne({ where: { 'recording_meta.id': robotId } });
+
+        if (!robot) {
+            return res.status(404).json({ message: 'Robot not found' });
+        }
+
+        await robot.update({
+            google_sheet_id: null,
+            google_sheet_name: null,
+            google_sheet_email: null,
+            google_access_token: null,
+            google_refresh_token: null
+        });
+
+        res.json({ message: 'Google Sheets integration removed successfully' });
+    } catch (error: any) {
+        res.status(500).json({ message: `Error removing Google Sheets integration: ${error.message}` });
     }
 });

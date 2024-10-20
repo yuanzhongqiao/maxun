@@ -77,6 +77,22 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
         }
     };
 
+    const removeIntegration = async () => {
+        try {
+            await axios.post(
+                `http://localhost:8080/auth/gsheets/remove`,
+                { robotId: recordingId },
+                { withCredentials: true }
+            );
+
+            setRecording(null);
+            setSpreadsheets([]);
+            setSettings({ spreadsheetId: '', spreadsheetName: '', data: '' });
+        } catch (error: any) {
+            console.error('Error removing Google Sheets integration:', error.response?.data?.message || error.message);
+        }
+    };
+
     useEffect(() => {
         // Check if we're on the callback URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -102,13 +118,23 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                 <Typography sx={{ margin: '20px 0px' }}>Google Sheets Integration</Typography>
 
                 {recording && recording.google_sheet_id ? (
-                    <Typography sx={{ marginBottom: '10px' }}>
-                        Google Sheet Integrated Successfully!
-                        <br />
-                        Sheet Name: {recording.google_sheet_name}
-                        <br />
-                        Sheet ID: {recording.google_sheet_id}
-                    </Typography>
+                    <>
+                        <Typography sx={{ marginBottom: '10px' }}>
+                            Google Sheet Integrated Successfully!
+                            <br />
+                            Sheet Name: {recording.google_sheet_name}
+                            <br />
+                            Sheet ID: {recording.google_sheet_id}
+                        </Typography>
+                        <Button
+                            variant="outlined"
+                            color="error"
+                            onClick={removeIntegration}
+                            style={{ marginTop: '15px' }}
+                        >
+                            Remove Integration
+                        </Button>
+                    </>
                 ) : (
                     <>
                         {!recording?.google_sheet_email ? (
