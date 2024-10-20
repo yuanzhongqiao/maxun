@@ -15,6 +15,9 @@ import LinkIcon from '@mui/icons-material/Link';
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
 import { Typography } from '@mui/material';
+import { Circle, Add, Logout, Clear } from "@mui/icons-material";
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { stopRecording } from "../../api/recording";
 
 /** TODO:
  *  1. allow editing existing robot after persisting browser steps
@@ -86,8 +89,10 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState<Data[]>([]);
+  const [isModalOpen, setModalOpen] = useState(false);
 
-  const { notify, setRecordings } = useGlobalInfoStore();
+  const { notify, setRecordings, browserId, setBrowserId } = useGlobalInfoStore();
+  const navigate = useNavigate();
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -118,6 +123,14 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
     }
   }
 
+  const handleNewRecording = async () => {
+    if (browserId) {
+      setBrowserId(null);
+      await stopRecording(browserId);
+    }
+    setModalOpen(true);
+  };
+
   useEffect(() => {
     if (rows.length === 0) {
       fetchRecordings();
@@ -130,7 +143,7 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
         <Typography variant="h6" gutterBottom>
           My Robots
         </Typography>
-        <Button variant="contained" color="primary" onClick={() => console.log("Create Robot Clicked")}>
+        <Button variant="contained" color="primary" onClick={handleNewRecording}>
           Create Robot
         </Button>
       </Box>
