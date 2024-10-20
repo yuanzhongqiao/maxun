@@ -69,7 +69,7 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
 
   return (
     <div>
-      <Button onClick={() => setOpenModal(true)} variant="outlined" sx={{ marginRight: '50px' }} size="small" color="success">
+      <Button onClick={() => setOpenModal(true)} variant="outlined" sx={{ marginRight: '20px' }} size="small" color="success">
         Finish
       </Button>
 
