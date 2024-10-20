@@ -18,10 +18,9 @@ interface NavBarProps {
 
 export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isRecording }) => {
 
-  const { notify, browserId, setBrowserId, recordingLength, recordingUrl, setRecordingUrl } = useGlobalInfoStore();
+  const { notify, browserId, setBrowserId, recordingUrl } = useGlobalInfoStore();
   const { state, dispatch } = useContext(AuthContext);
   const { user } = state;
-  const [isModalOpen, setModalOpen] = useState(false);
 
   console.log(`Recording URL: ${recordingUrl}`)
 
