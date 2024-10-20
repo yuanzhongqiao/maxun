@@ -119,13 +119,13 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
           {isLoaded ? (
             <>
               <Grid container direction="row" style={{ flexGrow: 1, height: '100%' }}>
-                <Grid item xs={12} md={9} lg={9} style={{ height: '100%', overflow: 'hidden' }}>
+                <Grid item xs={12} md={9} lg={9} style={{ height: '100%', overflow: 'hidden', position: 'relative' }}>
                   <div style={{ height: '100%', overflow: 'auto' }}>
                     <BrowserContent />
                     <InterpretationLog isOpen={showOutputData} setIsOpen={setShowOutputData} />
                   </div>
                 </Grid>
-                <Grid item xs={12} md={3} lg={3} style={{ height: '100%', overflowY: 'auto' }}>
+                <Grid item xs={12} md={3} lg={3} style={{ height: '100%', overflow: 'hidden' }}>
                   <div className="right-side-panel" style={{ height: '100%' }}>
                     <RightSidePanel onFinishCapture={handleShowOutputData} />
                     <BrowserRecordingSave />
