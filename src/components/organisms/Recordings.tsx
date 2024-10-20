@@ -20,8 +20,6 @@ export const Recordings = ({ handleEditRecording, handleRunRecording, setRecordi
   const [params, setParams] = useState<string[]>([]);
   const [selectedRecordingId, setSelectedRecordingId] = useState<string>('');
 
-  console.log(`Selected reocrding id: ${selectedRecordingId}`);
-
   const handleSettingsAndIntegrate = (id: string, name: string, params: string[]) => {
     if (params.length === 0) {
       setIntegrateSettingsAreOpen(true);

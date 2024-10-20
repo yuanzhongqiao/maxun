@@ -25,18 +25,19 @@ const BrowserRecordingSave = () => {
             <Grid item xs={12} md={3} lg={3}>
                 <div style={{
                      marginTop: '10px',
-                     marginLeft: '10px',
+                    //  marginLeft: '10px',
                      color: 'white',
                      position: 'absolute',
                      background: '#ff00c3',
                      border: 'none',
+                     borderRadius: '5px',
                      padding: '7.5px',
                      width: 'calc(100% - 20px)',  // Ensure it takes full width but with padding
                      overflow: 'hidden',
                      display: 'flex',
                      justifyContent: 'space-between',
                 }}>
-                    <Button onClick={goToMainMenu} variant="outlined" sx={{ marginLeft: "20px" }} size="small" color="error">
+                    <Button onClick={goToMainMenu} variant="outlined" sx={{ marginLeft: "25px" }} size="small" color="error">
                       Discard
                     </Button>
                     <SaveRecording fileName={recordingName} />

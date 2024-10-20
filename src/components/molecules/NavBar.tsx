@@ -3,28 +3,23 @@ import axios from 'axios';
 import styled from "styled-components";
 import { stopRecording } from "../../api/recording";
 import { useGlobalInfoStore } from "../../context/globalInfo";
-import { Button, IconButton, Typography } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { RecordingIcon } from "../atoms/RecorderIcon";
 import { SaveRecording } from "./SaveRecording";
-import { Circle, Add, Logout, Clear } from "@mui/icons-material";
-import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Logout, Clear } from "@mui/icons-material";
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/auth';
-import { GenericModal } from '../atoms/GenericModal';
-import TextField from '@mui/material/TextField';
 
 interface NavBarProps {
-  newRecording: () => void;
   recordingName: string;
   isRecording: boolean;
 }
 
-export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isRecording }) => {
+export const NavBar: React.FC<NavBarProps> = ({ recordingName, isRecording }) => {
 
-  const { notify, browserId, setBrowserId, recordingLength, recordingUrl, setRecordingUrl } = useGlobalInfoStore();
+  const { notify, browserId, setBrowserId, recordingUrl } = useGlobalInfoStore();
   const { state, dispatch } = useContext(AuthContext);
   const { user } = state;
-  const [isModalOpen, setModalOpen] = useState(false);
 
   console.log(`Recording URL: ${recordingUrl}`)
 
@@ -49,20 +44,6 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
     navigate('/');
   };
 
-  const handleNewRecording = async () => {
-    if (browserId) {
-      setBrowserId(null);
-      await stopRecording(browserId);
-    }
-    setModalOpen(true);
-  };
-
-  const startRecording = () => {
-    setModalOpen(false);
-    newRecording();
-    notify('info', 'New Recording started for ' + recordingUrl);
-  };
-
   return (
     <NavBarWrapper>
       <div style={{
@@ -82,28 +63,6 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
               {
                 !isRecording ? (
                   <>
-                    <IconButton
-                      aria-label="new"
-                      size={"small"}
-                      onClick={handleNewRecording}
-                      sx={{
-                        width: '140px',
-                        borderRadius: '5px',
-                        padding: '8px',
-                        background: '#ff00c3',
-                        color: 'white',
-                        marginRight: '10px',
-                        fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
-                        fontWeight: '500',
-                        fontSize: '0.875rem',
-                        lineHeight: '1.75',
-                        letterSpacing: '0.02857em',
-                        '&:hover': { color: 'white', backgroundColor: '#ff00c3' }
-                      }
-                      }
-                    >
-                      <Add sx={{ marginRight: '5px' }} /> Create Robot
-                    </IconButton>
                     <IconButton sx={{
                       width: '140px',
                       borderRadius: '5px',
@@ -121,49 +80,28 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
                       <Logout sx={{ marginRight: '5px' }} />
                       Logout</IconButton>
                   </>
-                ) : 
-                <>
-                <IconButton sx={{
-                  width: '140px',
-                  borderRadius: '5px',
-                  padding: '8px',
-                  background: 'red',
-                  color: 'white',
-                  marginRight: '10px',
-                  fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
-                  fontWeight: '500',
-                  fontSize: '0.875rem',
-                  lineHeight: '1.75',
-                  letterSpacing: '0.02857em',
-                  '&:hover': { color: 'white', backgroundColor: 'red' }
-                }} onClick={goToMainMenu}>
-                  <Clear sx={{ marginRight: '5px' }} />
-                  Discard</IconButton>
-                  <SaveRecording fileName={recordingName} />
-                </>
+                ) :
+                  <>
+                    <IconButton sx={{
+                      width: '140px',
+                      borderRadius: '5px',
+                      padding: '8px',
+                      background: 'red',
+                      color: 'white',
+                      marginRight: '10px',
+                      fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
+                      fontWeight: '500',
+                      fontSize: '0.875rem',
+                      lineHeight: '1.75',
+                      letterSpacing: '0.02857em',
+                      '&:hover': { color: 'white', backgroundColor: 'red' }
+                    }} onClick={goToMainMenu}>
+                      <Clear sx={{ marginRight: '5px' }} />
+                      Discard</IconButton>
+                    <SaveRecording fileName={recordingName} />
+                  </>
               }
             </div>
-            <GenericModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
-              <div style={{ padding: '20px' }}>
-                <Typography variant="h6" gutterBottom>Enter URL To Extract Data</Typography>
-                <TextField
-                  label="URL"
-                  variant="outlined"
-                  fullWidth
-                  value={recordingUrl}
-                  onChange={(e: any) => setRecordingUrl(e.target.value)}
-                  style={{ marginBottom: '20px', marginTop: '20px' }}
-                />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={startRecording}
-                  disabled={!recordingUrl}
-                >
-                  Start Training Robot
-                </Button>
-              </div>
-            </GenericModal>
           </>
         ) : ""
       }
