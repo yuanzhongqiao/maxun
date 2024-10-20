@@ -302,7 +302,7 @@ router.post('/gsheets/data', requireSignIn, async (req, res) => {
 router.get('/gsheets/files', requireSignIn, async (req, res) => {
     try {
         const robotId = req.query.robotId;
-        const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId }, raw:true });
+        const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId }, raw: true });
 
         if (!robot) {
             return res.status(400).json({ message: 'Robot not found' });
@@ -357,7 +357,6 @@ router.post('/gsheets/update', requireSignIn, async (req, res) => {
 
 router.post('/gsheets/remove', requireSignIn, async (req, res) => {
     const { robotId } = req.body;
-
     if (!robotId) {
         return res.status(400).json({ message: 'Robot ID is required' });
     }
@@ -369,8 +368,8 @@ router.post('/gsheets/remove', requireSignIn, async (req, res) => {
             return res.status(404).json({ message: 'Robot not found' });
         }
 
-        await robot.update({ 
-            google_sheet_id: null, 
+        await robot.update({
+            google_sheet_id: null,
             google_sheet_name: null,
             google_sheet_email: null,
             google_access_token: null,
