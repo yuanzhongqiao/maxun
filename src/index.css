@@ -114,19 +114,75 @@ code {
 }
 
 /* For desktops (between 1441px and 1920px) */
-@media (min-width: 1441px) and (max-width: 1920px) {
-  /* Styles for desktops */
-  .your-element {
-    font-size: 18px;
-    padding: 16px;
+@media (min-width: 1441px) and (max-width: 1500px) {
+ #browser-recorder {
+    box-sizing: border-box;
+    height: calc(100vh - 2rem);
+    margin: 1rem;
+  }
+}
+
+@media (min-width: 1501px) and (max-width: 1700px) {
+ #browser-recorder {
+    box-sizing: border-box;
+    height: calc(100vh - 2rem);
+    margin: 1rem 8rem;
+  }
+}
+
+@media (min-width: 1701px) and (max-width: 1800px) {
+ #browser-recorder {
+    box-sizing: border-box;
+    height: calc(100vh - 2rem);
+    margin: 1rem 14rem;
+  }
+}
+
+@media (min-width: 1801px) and (max-width: 1900px) {
+ #browser-recorder {
+    box-sizing: border-box;
+    height: calc(100vh - 2rem);
+    margin: 1rem 18.5rem;
+  }
+}
+
+@media (min-width: 1900px) and (max-width: 1920px) {
+ #browser-recorder {
+    box-sizing: border-box;
+    height: calc(100vh - 2rem);
+    margin: 1rem 20rem;
   }
 }
 
 /* For very large desktops (greater than 1920px) */
-@media (min-width: 1921px) {
-  /* Styles for very large desktops */
-  .your-element {
-    font-size: 20px;
-    padding: 20px;
+@media (min-width: 1921px) and (max-width: 2000px) {
+  #browser-recorder {
+    box-sizing: border-box;
+    height: calc(100vh - 2rem);
+    margin: 1rem 20rem;
+  }
+}
+
+@media (min-width: 2001px) and (max-width: 2500px) {
+  #browser-recorder {
+    box-sizing: border-box;
+    height: calc(100vh - 2rem);
+    margin: 1rem 24rem;
+  }
+}
+
+@media (min-width: 2501px) and (max-width: 2999px) {
+  #browser-recorder {
+    box-sizing: border-box;
+    height: calc(100vh - 2rem);
+    margin: 1rem 40rem;
+  }
+}
+
+@media (min-width: 3000px) {
+  #browser-recorder {
+    box-sizing: border-box;
+    height: calc(100vh - 2rem);
+    margin: 1rem 55rem;
   }
 }
