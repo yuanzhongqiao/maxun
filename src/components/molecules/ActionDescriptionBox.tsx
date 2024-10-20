@@ -11,7 +11,7 @@ const CustomBoxContainer = styled.div`
   height: auto;
   border: 2px solid #ff00c3;
   background-color: white;
-  margin: 30px auto;
+  margin: 30px 15px;
 `;
 
 const Triangle = styled.div`
