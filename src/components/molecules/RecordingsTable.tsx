@@ -89,7 +89,7 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState<Data[]>([]);
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalOpen, setModalOpen] = React.useState(false);
 
   const { notify, setRecordings, browserId, setBrowserId } = useGlobalInfoStore();
   const navigate = useNavigate();
