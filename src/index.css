@@ -27,20 +27,6 @@ code {
 #browser-actions {
   right: 0;
   overflow-x: hidden;
-  background: rgb(255, 255, 255);
-  background: rgb(255, 255, 255);
-  background: -moz-radial-gradient(
-    circle,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(232, 191, 222, 1) 100%,
-    rgba(255, 255, 255, 1) 100%
-  );
-  background: -webkit-radial-gradient(
-    circle,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(232, 191, 222, 1) 100%,
-    rgba(255, 255, 255, 1) 100%
-  );
   background: radial-gradient(
     circle,
     rgba(255, 255, 255, 1) 0%,
@@ -51,19 +37,6 @@ code {
 }
 
 #browser-recorder {
-  background: rgb(255, 255, 255);
-  background: -moz-radial-gradient(
-    circle,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(232, 191, 222, 1) 100%,
-    rgba(255, 255, 255, 1) 100%
-  );
-  background: -webkit-radial-gradient(
-    circle,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(232, 191, 222, 1) 100%,
-    rgba(255, 255, 255, 1) 100%
-  );
   background: radial-gradient(
     circle,
     rgba(255, 255, 255, 1) 0%,
@@ -108,8 +81,8 @@ code {
 @media (min-width: 1024px) and (max-width: 1440px) {
   #browser-recorder {
     box-sizing: border-box;
-    height: calc(100vh - 2rem);
-    margin: 1rem;
+    height: calc(100vh - 0.6rem);
+    margin: 0.3rem;
   }
 }
 
