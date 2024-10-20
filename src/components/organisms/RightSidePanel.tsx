@@ -375,9 +375,9 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
 
   return (
     <Paper variant="outlined" sx={{ height: '520px', width: 'auto', alignItems: "center", background: 'inherit' }} id="browser-actions">
-      <SimpleBox height={60} width='100%' background='lightGray' radius='0%'>
+      {/* <SimpleBox height={60} width='100%' background='lightGray' radius='0%'>
         <Typography sx={{ padding: '10px' }}>Last action: {` ${lastAction}`}</Typography>
-      </SimpleBox>
+      </SimpleBox> */}
       <ActionDescriptionBox />
       <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
         {!getText && !getScreenshot && !getList && showCaptureList && <Button variant="contained" onClick={startGetList}>Capture List</Button>}
