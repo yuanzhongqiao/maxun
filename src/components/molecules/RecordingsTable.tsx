@@ -9,15 +9,16 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { useEffect } from "react";
 import { WorkflowFile } from "maxun-core";
-import { IconButton, Button, Box } from "@mui/material";
+import { IconButton, Button, Box, Typography, TextField } from "@mui/material";
 import { Schedule, DeleteForever, Edit, PlayCircle } from "@mui/icons-material";
 import LinkIcon from '@mui/icons-material/Link';
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
-import { Typography } from '@mui/material';
 import { Circle, Add, Logout, Clear } from "@mui/icons-material";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { stopRecording } from "../../api/recording";
+import { GenericModal } from '../atoms/GenericModal';
+
 
 /** TODO:
  *  1. allow editing existing robot after persisting browser steps
@@ -91,7 +92,7 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
   const [rows, setRows] = React.useState<Data[]>([]);
   const [isModalOpen, setModalOpen] = React.useState(false);
 
-  const { notify, setRecordings, browserId, setBrowserId } = useGlobalInfoStore();
+  const { notify, setRecordings, browserId, setBrowserId, recordingUrl, setRecordingUrl } = useGlobalInfoStore();
   const navigate = useNavigate();
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -129,6 +130,11 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
       await stopRecording(browserId);
     }
     setModalOpen(true);
+  };
+
+  const startRecording = () => {
+    setModalOpen(false);
+    notify('info', 'New Recording started for ' + recordingUrl);
   };
 
   useEffect(() => {
@@ -244,6 +250,27 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+      <GenericModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+              <div style={{ padding: '20px' }}>
+                <Typography variant="h6" gutterBottom>Enter URL To Extract Data</Typography>
+                <TextField
+                  label="URL"
+                  variant="outlined"
+                  fullWidth
+                  value={recordingUrl}
+                  onChange={(e: any) => setRecordingUrl(e.target.value)}
+                  style={{ marginBottom: '20px', marginTop: '20px' }}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={startRecording}
+                  disabled={!recordingUrl}
+                >
+                  Start Training Robot
+                </Button>
+              </div>
+            </GenericModal>
     </React.Fragment>
   );
 }
