@@ -5,7 +5,8 @@ import { Typography, FormControlLabel, Checkbox, Box } from '@mui/material';
 
 const CustomBoxContainer = styled.div`
   position: relative;
-  width: 300px; 
+  min-width: 250px;
+  width: auto; 
   min-height: 100px;
   height: auto;
   border: 2px solid #ff00c3;
