@@ -20,13 +20,6 @@ export const PageWrapper = () => {
 
   const { browserId, setBrowserId, notification, recordingName, setRecordingName, recordingId, setRecordingId } = useGlobalInfoStore();
 
-  const handleNewRecording = () => {
-    setBrowserId('new-recording');
-    setRecordingName('');
-    setRecordingId('');
-    navigate('/recording');
-  }
-
   const handleEditRecording = (recordingId: string, fileName: string) => {
     setRecordingName(fileName);
     setRecordingId(recordingId);
@@ -57,11 +50,7 @@ export const PageWrapper = () => {
       <AuthProvider>
         <SocketProvider>
           <React.Fragment>
-            {
-              !!browserId ? (
-                ""
-              ) : <NavBar newRecording={handleNewRecording} recordingName={recordingName} isRecording={!!browserId} />
-            }
+           <NavBar recordingName={recordingName} isRecording={!!browserId} />
             <Routes>
               <Route element={<UserRoute />}>
                 <Route path="/" element={<MainPage handleEditRecording={handleEditRecording} />} />
