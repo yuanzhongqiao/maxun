@@ -49,20 +49,6 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
     navigate('/');
   };
 
-  const handleNewRecording = async () => {
-    if (browserId) {
-      setBrowserId(null);
-      await stopRecording(browserId);
-    }
-    setModalOpen(true);
-  };
-
-  const startRecording = () => {
-    setModalOpen(false);
-    newRecording();
-    notify('info', 'New Recording started for ' + recordingUrl);
-  };
-
   return (
     <NavBarWrapper>
       <div style={{
@@ -82,28 +68,6 @@ export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isR
               {
                 !isRecording ? (
                   <>
-                    <IconButton
-                      aria-label="new"
-                      size={"small"}
-                      onClick={handleNewRecording}
-                      sx={{
-                        width: '140px',
-                        borderRadius: '5px',
-                        padding: '8px',
-                        background: '#ff00c3',
-                        color: 'white',
-                        marginRight: '10px',
-                        fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
-                        fontWeight: '500',
-                        fontSize: '0.875rem',
-                        lineHeight: '1.75',
-                        letterSpacing: '0.02857em',
-                        '&:hover': { color: 'white', backgroundColor: '#ff00c3' }
-                      }
-                      }
-                    >
-                      <Add sx={{ marginRight: '5px' }} /> Create Robot
-                    </IconButton>
                     <IconButton sx={{
                       width: '140px',
                       borderRadius: '5px',
