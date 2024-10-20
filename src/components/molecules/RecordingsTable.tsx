@@ -14,8 +14,8 @@ import { Schedule, DeleteForever, Edit, PlayCircle } from "@mui/icons-material";
 import LinkIcon from '@mui/icons-material/Link';
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
-import { Circle, Add, Logout, Clear } from "@mui/icons-material";
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Add } from "@mui/icons-material";
+import { useNavigate } from 'react-router-dom';
 import { stopRecording } from "../../api/recording";
 import { GenericModal } from '../atoms/GenericModal';
 
