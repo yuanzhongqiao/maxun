@@ -25,9 +25,8 @@ code {
 }
 
 #browser-actions {
-  bottom: 0;
-  margin-right: 0.5rem;
-  margin-top: 0.5rem;
+  right: 0;
+  overflow-x: hidden;
   background: rgb(255, 255, 255);
   background: rgb(255, 255, 255);
   background: -moz-radial-gradient(
@@ -72,10 +71,11 @@ code {
     rgba(255, 255, 255, 1) 100%
   );
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);
-  height: 100vh;
   display: flex;
   justify-content: center; 
   align-items: center;
+  overflow: hidden;
+  position: relative;
 }
 
 #browser-content {
@@ -88,8 +88,7 @@ code {
 }
 
 #browser {
-  margin-left: 0.5rem;
-  margin-top: 0.5rem;
+  
 }
 
 #browser-window {
@@ -97,20 +96,37 @@ code {
   height: 100%;
 }
 
-@media (max-width: 1200px) {
-  #browser-content {
-    flex-direction: column;
-  }
-
-  .right-side-panel {
-    height: auto;
-  }
-}
-
 .right-side-panel {
-  overflow-y: auto;
-  height: 100%;
   margin: 0;
   transform: scale(1);
   transform-origin: top left;
+  overflow: hidden;
+  position: relative;
+}
+
+/* For laptops (between 1024px and 1440px) */
+@media (min-width: 1024px) and (max-width: 1440px) {
+  #browser-recorder {
+    box-sizing: border-box;
+    height: calc(100vh - 2rem);
+    margin: 1rem;
+  }
+}
+
+/* For desktops (between 1441px and 1920px) */
+@media (min-width: 1441px) and (max-width: 1920px) {
+  /* Styles for desktops */
+  .your-element {
+    font-size: 18px;
+    padding: 16px;
+  }
+}
+
+/* For very large desktops (greater than 1920px) */
+@media (min-width: 1921px) {
+  /* Styles for very large desktops */
+  .your-element {
+    font-size: 20px;
+    padding: 20px;
+  }
 }
