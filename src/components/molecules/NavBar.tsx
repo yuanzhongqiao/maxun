@@ -11,12 +11,11 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/auth';
 
 interface NavBarProps {
-  newRecording: () => void;
   recordingName: string;
   isRecording: boolean;
 }
 
-export const NavBar: React.FC<NavBarProps> = ({ newRecording, recordingName, isRecording }) => {
+export const NavBar: React.FC<NavBarProps> = ({ recordingName, isRecording }) => {
 
   const { notify, browserId, setBrowserId, recordingUrl } = useGlobalInfoStore();
   const { state, dispatch } = useContext(AuthContext);
