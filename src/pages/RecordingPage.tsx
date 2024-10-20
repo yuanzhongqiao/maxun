@@ -58,7 +58,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
   useEffect(() => {
     document.body.style.background = 'radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(232, 191, 222, 1) 100%, rgba(255, 255, 255, 1) 100%)';
     document.body.style.filter = 'progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);'
-    
+
     return () => {
       // Cleanup the background when leaving the page
       document.body.style.background = '';
