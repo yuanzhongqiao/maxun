@@ -163,6 +163,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
             }}
           >
             {tableData.length > 0 ? (
+              <>
               <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
                   <TableHead>
@@ -183,6 +184,8 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
                   </TableBody>
                 </Table>
               </TableContainer>
+                        <span >Additional rows of data will be extracted once you finish recording. </span>
+                </>
             ) : (
               <Grid container justifyContent="center" alignItems="center" style={{ height: '100%' }}>
                 <Grid item>
