@@ -126,10 +126,12 @@ export class WorkflowGenerator {
    * @private
    */
   private registerEventHandlers = (socket: Socket) => {
-    socket.on('save', async (fileName: string) => {
-      logger.log('debug', `Saving workflow ${fileName}`);
-      await this.saveNewWorkflow(fileName)
-    });
+    socket.on('save', (data) => {
+      console.log('Received data:', data);
+      const { fileName, userId } = data;
+      logger.log('debug', `Saving workflow ${fileName} for user ID ${userId}`);
+      this.saveNewWorkflow(fileName, userId);
+  });
     socket.on('new-recording', () => this.workflowRecord = {
       workflow: [],
     });
@@ -477,7 +479,7 @@ export class WorkflowGenerator {
    * @param fileName The name of the file.
    * @returns {Promise<void>}
    */
-  public saveNewWorkflow = async (fileName: string) => {
+  public saveNewWorkflow = async (fileName: string, userId: number) => {
     const recording = this.optimizeWorkflow(this.workflowRecord);
     try {
       this.recordingMeta = {
@@ -489,6 +491,7 @@ export class WorkflowGenerator {
         params: this.getParams() || [],
       }
       const robot = await Robot.create({
+        userId,
         recording_meta: this.recordingMeta,
         recording: recording,
       });
@@ -497,7 +500,7 @@ export class WorkflowGenerator {
     }
     catch (e) {
       const { message } = e as Error;
-      logger.log('warn', `Cannot save the file to the local file system`)
+      logger.log('warn', `Cannot save the file to the local file system ${e}`)
     }
     this.socket.emit('fileSaved');
   }

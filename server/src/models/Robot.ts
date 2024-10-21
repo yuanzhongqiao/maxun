@@ -1,6 +1,8 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../storage/db';
 import { WorkflowFile, Where, What, WhereWhatPair } from 'maxun-core';
+import User from './User';  // Import User model
+import Run from './Run';
 
 interface RobotMeta {
   name: string;
@@ -17,6 +19,7 @@ interface RobotWorkflow {
 
 interface RobotAttributes {
   id: string;
+  userId?: number;
   recording_meta: RobotMeta;
   recording: RobotWorkflow;
   google_sheet_email?: string | null;
@@ -30,6 +33,7 @@ interface RobotCreationAttributes extends Optional<RobotAttributes, 'id'> { }
 
 class Robot extends Model<RobotAttributes, RobotCreationAttributes> implements RobotAttributes {
   public id!: string;
+  public userId!: number;
   public recording_meta!: RobotMeta;
   public recording!: RobotWorkflow;
   public google_sheet_email!: string | null;
@@ -45,6 +49,10 @@ Robot.init(
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     recording_meta: {
       type: DataTypes.JSONB,
@@ -81,5 +89,10 @@ Robot.init(
     timestamps: false,
   }
 );
+
+// Robot.hasMany(Run, {
+//   foreignKey: 'robotId',
+//   as: 'runs', // Alias for the relation
+// });
 
 export default Robot;

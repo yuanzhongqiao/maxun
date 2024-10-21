@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../storage/db';
+import Robot from './Robot';
 
 interface UserAttributes {
     id: number;
@@ -78,5 +79,10 @@ User.init(
         tableName: 'user',
     }
 );
+
+// User.hasMany(Robot, {
+//     foreignKey: 'userId',
+//     as: 'robots', // Alias for the relation
+//   });
 
 export default User;
