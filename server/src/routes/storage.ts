@@ -45,7 +45,7 @@ router.get('/recordings', requireSignIn, async (req, res) => {
 router.get('/recordings/:id', requireSignIn, async (req, res) => {
   try {
     const data = await Robot.findOne({
-      where: { 'recording_meta.id': req.params.id },
+      where: { 'recording_meta.id': req.params.id, userId: req.user.id },
       raw: true
     }
   );
