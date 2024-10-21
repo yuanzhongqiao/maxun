@@ -30,6 +30,10 @@ export class RemoteBrowser {
      */
     private browser: Browser | null = null;
 
+    /**
+     * Playwright's [browser context](https://playwright.dev/docs/api/class-browsercontext) instance.
+     * @private
+     */
     private context: BrowserContext | null = null;
 
     /**
