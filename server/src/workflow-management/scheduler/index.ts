@@ -59,6 +59,7 @@ async function createWorkflowAndStoreMetadata(id: string, userId: string) {
       interpreterSettings: { maxConcurrency: 1, maxRepeats: 1, debug: true },
       log: '',
       runId,
+      runByScheduleId: uuid(),
       serializableOutput: {},
       binaryOutput: {},
     });
