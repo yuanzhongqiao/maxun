@@ -184,7 +184,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
                   </TableBody>
                 </Table>
               </TableContainer>
-                        <span >Additional rows of data will be extracted once you finish recording. </span>
+                        <span style={{ marginLeft: '15px', marginTop: '10px', fontSize: '12px'}}>Additional rows of data will be extracted once you finish recording. </span>
                 </>
             ) : (
               <Grid container justifyContent="center" alignItems="center" style={{ height: '100%' }}>
