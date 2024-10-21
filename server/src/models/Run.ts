@@ -22,7 +22,7 @@ interface RunAttributes {
   runId: string;
   runByUserId?: string;
   runByScheduleId?: string;
-  runByAPI?: string;
+  runByAPI?: boolean;
   serializableOutput: Record<string, any[]>;
   binaryOutput: Record<string, string>;
 }
@@ -43,7 +43,7 @@ class Run extends Model<RunAttributes, RunCreationAttributes> implements RunAttr
   public runId!: string;
   public runByUserId!: string;
   public runByScheduleId!: string;
-  public runByAPI!: string;
+  public runByAPI!: boolean;
   public serializableOutput!: Record<string, any[]>;
   public binaryOutput!: Record<string, any>;
 }
@@ -108,7 +108,7 @@ Run.init(
       allowNull: true,
     },
     runByAPI: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.BOOLEAN,
       allowNull: true,
     },
     serializableOutput: {
