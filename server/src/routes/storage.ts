@@ -29,9 +29,7 @@ router.all('/', requireSignIn, (req, res, next) => {
  */
 router.get('/recordings', requireSignIn, async (req, res) => {
   try {
-    const data = await Robot.findAll({
-      where: { userId: req.user.id },
-    });
+    const data = await Robot.findAll();
     return res.send(data);
   } catch (e) {
     logger.log('info', 'Error while reading recordings');
@@ -45,7 +43,7 @@ router.get('/recordings', requireSignIn, async (req, res) => {
 router.get('/recordings/:id', requireSignIn, async (req, res) => {
   try {
     const data = await Robot.findOne({
-      where: { 'recording_meta.id': req.params.id, userId: req.user.id },
+      where: { 'recording_meta.id': req.params.id },
       raw: true
     }
   );
@@ -62,7 +60,7 @@ router.get('/recordings/:id', requireSignIn, async (req, res) => {
 router.delete('/recordings/:id', requireSignIn, async (req, res) => {
   try {
     await Robot.destroy({
-      where: { 'recording_meta.id': req.params.id, userId: req.user.id }
+      where: { 'recording_meta.id': req.params.id }
     });
     return res.send(true);
   } catch (e) {
@@ -107,8 +105,7 @@ router.put('/runs/:id', requireSignIn, async (req, res) => {
   try {
     const recording = await Robot.findOne({
       where: {
-        'recording_meta.id': req.params.id,
-        userId: req.user.id,
+        'recording_meta.id': req.params.id
       },
       raw: true
     });
@@ -200,7 +197,7 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
 
     const plainRun = run.toJSON();
 
-    const recording = await Robot.findOne({ where: { 'recording_meta.id': plainRun.robotMetaId, userId: req.user.id }, raw: true });
+    const recording = await Robot.findOne({ where: { 'recording_meta.id': plainRun.robotMetaId }, raw: true });
     if (!recording) {
       return res.status(404).send(false);
     }
