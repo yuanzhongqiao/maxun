@@ -164,28 +164,28 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
           >
             {tableData.length > 0 ? (
               <>
-              <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
-                  <TableHead>
-                    <TableRow>
-                      {columns.map((column) => (
-                        <TableCell key={column}>{column}</TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {tableData.slice(0, Math.min(5, tableData.length)).map((row, index) => (
-                      <TableRow key={index}>
+                <TableContainer component={Paper}>
+                  <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
+                    <TableHead>
+                      <TableRow>
                         {columns.map((column) => (
-                          <TableCell key={column}>{row[column]}</TableCell>
+                          <TableCell key={column}>{column}</TableCell>
                         ))}
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-                        <span style={{ marginLeft: '15px', marginTop: '10px', fontSize: '12px'}}>Additional rows of data will be extracted once you finish recording. </span>
-                </>
+                    </TableHead>
+                    <TableBody>
+                      {tableData.slice(0, Math.min(5, tableData.length)).map((row, index) => (
+                        <TableRow key={index}>
+                          {columns.map((column) => (
+                            <TableCell key={column}>{row[column]}</TableCell>
+                          ))}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <span style={{ marginLeft: '15px', marginTop: '10px', fontSize: '12px' }}>Additional rows of data will be extracted once you finish recording. </span>
+              </>
             ) : (
               <Grid container justifyContent="center" alignItems="center" style={{ height: '100%' }}>
                 <Grid item>
