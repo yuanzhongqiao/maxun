@@ -60,15 +60,15 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
   // releases resources and changes the view for main page by clearing the global browserId
   const saveRecording = async () => {
     if (user) {
-        const payload = { fileName: recordingName, userId: user.id };
-        console.log('Emitting save with payload:', payload);
-        socket?.emit('save', payload);
-        setWaitingForSave(true);
-        console.log(`Saving the recording as ${recordingName} for userId ${user.id}`);
+      const payload = { fileName: recordingName, userId: user.id };
+      console.log('Emitting save with payload:', payload);
+      socket?.emit('save', payload);
+      setWaitingForSave(true);
+      console.log(`Saving the recording as ${recordingName} for userId ${user.id}`);
     } else {
-        console.error('User not logged in. Cannot save recording.');
+      console.error('User not logged in. Cannot save recording.');
     }
-};
+  };
 
   useEffect(() => {
     socket?.on('fileSaved', exitRecording);
