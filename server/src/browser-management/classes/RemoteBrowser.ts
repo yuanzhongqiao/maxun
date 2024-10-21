@@ -36,6 +36,10 @@ export class RemoteBrowser {
      */
     private context: BrowserContext | null = null;
 
+    /**
+     * The viewport size of the browser.
+     * @private
+     */
     private viewportSize: { width: number, height: number } = { width: 900, height: 400 };
 
     /**
