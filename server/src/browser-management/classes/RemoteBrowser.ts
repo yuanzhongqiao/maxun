@@ -36,6 +36,8 @@ export class RemoteBrowser {
      */
     private context: BrowserContext | null = null;
 
+    private viewportSize: { width: number, height: number } = { width: 900, height: 400 };
+
     /**
      * The Playwright's [CDPSession](https://playwright.dev/docs/api/class-cdpsession) instance,
      * used to talk raw Chrome Devtools Protocol.
