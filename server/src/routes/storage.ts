@@ -107,7 +107,8 @@ router.put('/runs/:id', requireSignIn, async (req, res) => {
   try {
     const recording = await Robot.findOne({
       where: {
-        'recording_meta.id': req.params.id
+        'recording_meta.id': req.params.id,
+        userId: req.user.id,
       },
       raw: true
     });
