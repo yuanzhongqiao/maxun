@@ -20,6 +20,9 @@ interface RunAttributes {
   interpreterSettings: InterpreterSettings;
   log: string;
   runId: string;
+  runByUserId?: string;
+  runByScheduleId?: string;
+  runByAPI?: boolean;
   serializableOutput: Record<string, any[]>;
   binaryOutput: Record<string, string>;
 }
@@ -38,6 +41,9 @@ class Run extends Model<RunAttributes, RunCreationAttributes> implements RunAttr
   public interpreterSettings!: InterpreterSettings;
   public log!: string;
   public runId!: string;
+  public runByUserId!: string;
+  public runByScheduleId!: string;
+  public runByAPI!: boolean;
   public serializableOutput!: Record<string, any[]>;
   public binaryOutput!: Record<string, any>;
 }
@@ -92,6 +98,18 @@ Run.init(
     runId: {
       type: DataTypes.UUID,
       allowNull: false,
+    },
+    runByUserId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+    runByScheduleId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+    runByAPI: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
     },
     serializableOutput: {
       type: DataTypes.JSONB,

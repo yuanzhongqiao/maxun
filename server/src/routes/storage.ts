@@ -148,6 +148,7 @@ router.put('/runs/:id', requireSignIn, async (req, res) => {
       interpreterSettings: req.body,
       log: '',
       runId,
+      runByUserId: req.user.id,
       serializableOutput: {},
       binaryOutput: {},
     });
