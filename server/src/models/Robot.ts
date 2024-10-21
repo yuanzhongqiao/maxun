@@ -19,7 +19,7 @@ interface RobotWorkflow {
 
 interface RobotAttributes {
   id: string;
-  userId?: string;
+  userId?: number;
   recording_meta: RobotMeta;
   recording: RobotWorkflow;
   google_sheet_email?: string | null;
@@ -33,7 +33,7 @@ interface RobotCreationAttributes extends Optional<RobotAttributes, 'id'> { }
 
 class Robot extends Model<RobotAttributes, RobotCreationAttributes> implements RobotAttributes {
   public id!: string;
-  public userId!: string;
+  public userId!: number;
   public recording_meta!: RobotMeta;
   public recording!: RobotWorkflow;
   public google_sheet_email!: string | null;
@@ -51,7 +51,7 @@ Robot.init(
       primaryKey: true,
     },
     userId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     recording_meta: {
