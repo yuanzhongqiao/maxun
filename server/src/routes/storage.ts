@@ -29,7 +29,9 @@ router.all('/', requireSignIn, (req, res, next) => {
  */
 router.get('/recordings', requireSignIn, async (req, res) => {
   try {
-    const data = await Robot.findAll();
+    const data = await Robot.findAll({
+      where: { userId: req.user.id },
+    });
     return res.send(data);
   } catch (e) {
     logger.log('info', 'Error while reading recordings');
