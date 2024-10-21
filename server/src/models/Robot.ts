@@ -19,7 +19,7 @@ interface RobotWorkflow {
 
 interface RobotAttributes {
   id: string;
-  userId: string;
+  userId?: string;
   recording_meta: RobotMeta;
   recording: RobotWorkflow;
   google_sheet_email?: string | null;
