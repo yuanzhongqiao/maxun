@@ -173,7 +173,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {tableData.map((row, index) => (
+                      {tableData.slice(0, Math.min(5, tableData.length)).map((row, index) => (
                         <TableRow key={index}>
                           {columns.map((column) => (
                             <TableCell key={column}>{row[column]}</TableCell>
