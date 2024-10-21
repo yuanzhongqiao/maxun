@@ -62,7 +62,7 @@ router.get('/recordings/:id', requireSignIn, async (req, res) => {
 router.delete('/recordings/:id', requireSignIn, async (req, res) => {
   try {
     await Robot.destroy({
-      where: { 'recording_meta.id': req.params.id }
+      where: { 'recording_meta.id': req.params.id, userId: req.user.id }
     });
     return res.send(true);
   } catch (e) {
