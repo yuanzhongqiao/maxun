@@ -153,6 +153,8 @@ export class RemoteBrowser {
         this.socket.on('setViewportSize', async (data: { width: number, height: number }) => {
             const { width, height } = data;
             logger.log('debug', `Received viewport size: width=${width}, height=${height}`);
+
+            this.viewportSize = { width, height };
     
             // Update the browser context's viewport dynamically
             if (this.context && this.browser) {
