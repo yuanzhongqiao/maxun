@@ -200,7 +200,7 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
 
     const plainRun = run.toJSON();
 
-    const recording = await Robot.findOne({ where: { 'recording_meta.id': plainRun.robotMetaId }, raw: true });
+    const recording = await Robot.findOne({ where: { 'recording_meta.id': plainRun.robotMetaId, userId: req.user.id }, raw: true });
     if (!recording) {
       return res.status(404).send(false);
     }
