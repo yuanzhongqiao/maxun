@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { IconButton, Button, Box, LinearProgress, Tooltip } from "@mui/material";
 import { GenericModal } from "../atoms/GenericModal";
 import { stopRecording } from "../../api/recording";
 import { useGlobalInfoStore } from "../../context/globalInfo";
+import { AuthContext } from '../../context/auth';
 import { useSocketStore } from "../../context/socket";
 import { TextField, Typography } from "@mui/material";
 import { WarningText } from "../atoms/texts";
@@ -24,6 +25,8 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
 
   const { browserId, setBrowserId, notify, recordings } = useGlobalInfoStore();
   const { socket } = useSocketStore();
+  const { state, dispatch } = useContext(AuthContext);
+  const { user } = state;
   const navigate = useNavigate();
 
   const handleChangeOfTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,9 +59,16 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
   // notifies backed to save the recording in progress,
   // releases resources and changes the view for main page by clearing the global browserId
   const saveRecording = async () => {
-    socket?.emit('save', recordingName)
-    setWaitingForSave(true);
-  }
+    if (user) {
+        const payload = { fileName: recordingName, userId: user.id };
+        console.log('Emitting save with payload:', payload);
+        socket?.emit('save', payload);
+        setWaitingForSave(true);
+        console.log(`Saving the recording as ${recordingName} for userId ${user.id}`);
+    } else {
+        console.error('User not logged in. Cannot save recording.');
+    }
+};
 
   useEffect(() => {
     socket?.on('fileSaved', exitRecording);
