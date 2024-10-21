@@ -112,99 +112,99 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
   }, [hasScrapeListAction, hasScrapeSchemaAction, hasScreenshotAction, setIsOpen]);
 
   return (
-      <Grid container>
-        <Grid item xs={12} md={9} lg={9}>
-          <Button
-            onClick={toggleDrawer(true)}
-            variant="contained"
-            color="primary"
-            sx={{
-              marginTop: '10px',
-              color: 'white',
-              position: 'absolute',
-              background: '#ff00c3',
-              border: 'none',
-              padding: '10px 20px',
-              width: '900px',
-              overflow: 'hidden',
-              textAlign: 'left',
-              justifyContent: 'flex-start',
-              '&:hover': {
-                backgroundColor: '#ff00c3',
-              },
+    <Grid container>
+      <Grid item xs={12} md={9} lg={9}>
+        <Button
+          onClick={toggleDrawer(true)}
+          variant="contained"
+          color="primary"
+          sx={{
+            marginTop: '10px',
+            color: 'white',
+            position: 'absolute',
+            background: '#ff00c3',
+            border: 'none',
+            padding: '10px 20px',
+            width: '900px',
+            overflow: 'hidden',
+            textAlign: 'left',
+            justifyContent: 'flex-start',
+            '&:hover': {
+              backgroundColor: '#ff00c3',
+            },
+          }}
+        >
+          Output Data Preview
+        </Button>
+        <SwipeableDrawer
+          anchor="bottom"
+          open={isOpen}
+          onClose={toggleDrawer(false)}
+          onOpen={toggleDrawer(true)}
+          PaperProps={{
+            sx: {
+              background: 'white',
+              color: 'black',
+              padding: '10px',
+              height: 500,
+              width: width - 10,
+              display: 'flex',
+            },
+          }}
+        >
+          <Typography variant="h6" gutterBottom>
+            <StorageIcon /> Output Data Preview
+          </Typography>
+          <div
+            style={{
+              height: '50vh',
+              overflow: 'none',
+              padding: '10px',
             }}
           >
-            Output Data Preview
-          </Button>
-          <SwipeableDrawer
-            anchor="bottom"
-            open={isOpen}
-            onClose={toggleDrawer(false)}
-            onOpen={toggleDrawer(true)}
-            PaperProps={{
-              sx: {
-                background: 'white',
-                color: 'black',
-                padding: '10px',
-                height: 500,
-                width: width - 10,
-                display: 'flex',
-              },
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              <StorageIcon /> Output Data Preview
-            </Typography>
-            <div
-              style={{
-                height: '50vh',
-                overflow: 'none',
-                padding: '10px',
-              }}
-            >
-              {tableData.length > 0 ? (
-                <TableContainer component={Paper}>
-                  <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
-                    <TableHead>
-                      <TableRow>
+            {tableData.length > 0 ? (
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
+                  <TableHead>
+                    <TableRow>
+                      {columns.map((column) => (
+                        <TableCell key={column}>{column}</TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {tableData.slice(0, Math.min(5, tableData.length)).map((row, index) => (
+                      <TableRow key={index}>
                         {columns.map((column) => (
-                          <TableCell key={column}>{column}</TableCell>
+                          <TableCell key={column}>{row[column]}</TableCell>
                         ))}
                       </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {tableData.slice(0, Math.min(5, tableData.length)).map((row, index) => (
-                        <TableRow key={index}>
-                          {columns.map((column) => (
-                            <TableCell key={column}>{row[column]}</TableCell>
-                          ))}
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              ) : (
-                <Grid container justifyContent="center" alignItems="center" style={{ height: '100%' }}>
-                  <Grid item>
-                    {hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction ? (
-                      <>
-                        <Typography variant="h6" gutterBottom align="left">
-                          You've successfully trained the robot to perform actions! Click on the button below to get a preview of the data your robot will extract.
-                        </Typography>
-                        <SidePanelHeader />
-                      </>
-                    ) : (
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            ) : (
+              <Grid container justifyContent="center" alignItems="center" style={{ height: '100%' }}>
+                <Grid item>
+                  {hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction ? (
+                    <>
                       <Typography variant="h6" gutterBottom align="left">
-                        It looks like you have not selected anything for extraction yet. Once you do, the robot will show a preview of your selections here.
+                        You've successfully trained the robot to perform actions! Click on the button below to get a preview of the data your robot will extract.
                       </Typography>
-                    )}
-                  </Grid>
+                      <SidePanelHeader />
+                    </>
+                  ) : (
+                    <Typography variant="h6" gutterBottom align="left">
+                      It looks like you have not selected anything for extraction yet. Once you do, the robot will show a preview of your selections here.
+                    </Typography>
+                  )}
                 </Grid>
-              )}
-              <div style={{ float: 'left', clear: 'both' }} ref={logEndRef} />
-            </div>
-          </SwipeableDrawer>
-        </Grid>
+              </Grid>
+            )}
+            <div style={{ float: 'left', clear: 'both' }} ref={logEndRef} />
+          </div>
+        </SwipeableDrawer>
       </Grid>
-    );
+    </Grid>
+  );
 }
