@@ -147,3 +147,18 @@ export const scheduleStoredRecording = async (id: string, settings: ScheduleSett
     return {message: '', runId: ''};
   }
 }
+
+
+export const getSchedule = async (id: string): Promise<ScheduleSettings | null> => {
+  try {
+    const response = await axios.get(`http://localhost:8080/storage/schedule/${id}`);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error(`Couldn't retrieve schedule for recording ${id}`);
+    }
+  } catch(error: any) {
+    console.log(error);
+    return null;
+  }
+}
