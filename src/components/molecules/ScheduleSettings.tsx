@@ -25,6 +25,7 @@ export interface ScheduleSettings {
 }
 
 export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initialSettings }: ScheduleSettingsProps) => {
+  const [schedule, setSchedule] = useState<any>(null);
   const [settings, setSettings] = useState<ScheduleSettings>({
     runEvery: 1,
     runEveryUnit: 'HOURS',
@@ -89,11 +90,14 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
 
  const { recordingId } = useGlobalInfoStore();
 
+ console.log(`Recoridng ID Shculde: ${recordingId}`);
+
   const getRobotSchedule = async () => {
     if (recordingId) {
       const schedule = await getSchedule(recordingId);
+      console.log(`RObot found schedule: ${schedule}`)
       if (schedule) {
-        setSettings(schedule);
+        setSchedule(schedule);
       }
     } else {
       console.error('No recording id provided');
@@ -104,7 +108,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
     if (isOpen) {
       getRobotSchedule();
     }
-  }, [isOpen]);
+  }, [isOpen, getRobotSchedule]);
 
 
   return (
@@ -122,7 +126,20 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
       }}>
         <Typography variant="h6" sx={{ marginBottom: '20px' }}>Schedule Settings</Typography>
         <>
-          <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+          {
+            (schedule != null) ? (
+              <Box mt={2} display="flex" justifyContent="space-between">
+          <Button
+            onClick={deleteSchedule}
+            variant="outlined"
+            color="secondary"
+          >
+            Delete Schedule
+          </Button>
+        </Box>
+            ) : (
+              <>
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
             <Typography sx={{ marginRight: '10px' }}>Run once every</Typography>
             <TextField
               type="number"
@@ -203,8 +220,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
               ))}
             </Dropdown>
           </Box>
-        </>
-        <Box mt={2} display="flex" justifyContent="flex-end">
+          <Box mt={2} display="flex" justifyContent="flex-end">
           <Button onClick={() => handleStart(settings)} variant="contained" color="primary">
             Save Schedule
           </Button>
@@ -212,16 +228,10 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
             Cancel
           </Button>
         </Box>
-
-        <Box mt={2} display="flex" justifyContent="space-between">
-          <Button
-            onClick={deleteSchedule}
-            variant="outlined"
-            color="secondary"
-          >
-            Delete Schedule
-          </Button>
-        </Box>
+              </>
+            )
+          }
+        </>
       </Box>
     </GenericModal>
   );
