@@ -135,6 +135,8 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
         <>
           {
             (schedule != null) ? (
+              <>
+              <Typography>Robot is scheduled to run every {schedule.runEvery} {schedule.runEveryUnit} starting from {schedule.startFrom} at {schedule.atTimeStart} to {schedule.atTimeEnd} in {schedule.timezone} timezone.</Typography>
               <Box mt={2} display="flex" justifyContent="space-between">
                 <Button
                   onClick={deleteRobotSchedule}
@@ -144,6 +146,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
                   Delete Schedule
                 </Button>
               </Box>
+              </>
             ) : (
               <>
                 <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
