@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GenericModal } from "../atoms/GenericModal";
-import { MenuItem, TextField, Typography, Box } from "@mui/material";
+import { MenuItem, TextField, Typography, Box, Switch, FormControlLabel } from "@mui/material";
 import { Dropdown } from "../atoms/DropdownMui";
 import Button from "@mui/material/Button";
 import { modalStyle } from "./AddWhereCondModal";
@@ -10,28 +10,38 @@ interface ScheduleSettingsProps {
   isOpen: boolean;
   handleStart: (settings: ScheduleSettings) => void;
   handleClose: () => void;
+  initialSettings?: ScheduleSettings | null;
 }
 
 export interface ScheduleSettings {
+  enabled: boolean;
   runEvery: number;
   runEveryUnit: string;
   startFrom: string;
-  atTimeStart?: string; // Start time for "In Between"
-  atTimeEnd?: string;   // End time for "In Between"
+  atTimeStart?: string;
+  atTimeEnd?: string;
   timezone: string;
 }
 
-export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: ScheduleSettingsProps) => {
+export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initialSettings }: ScheduleSettingsProps) => {
   const [settings, setSettings] = useState<ScheduleSettings>({
+    enabled: true,
     runEvery: 1,
     runEveryUnit: 'HOURS',
     startFrom: 'MONDAY',
     atTimeStart: '00:00',
-    atTimeEnd: '01:00', // Default end time
+    atTimeEnd: '01:00',
     timezone: 'UTC'
   });
 
-  const handleChange = (field: keyof ScheduleSettings, value: string | number) => {
+  // Load initial settings if provided
+  useEffect(() => {
+    if (initialSettings) {
+      setSettings(initialSettings);
+    }
+  }, [initialSettings]);
+
+  const handleChange = (field: keyof ScheduleSettings, value: string | number | boolean) => {
     setSettings(prev => ({ ...prev, [field]: value }));
   };
 
@@ -66,6 +76,15 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
     'SUNDAY'
   ];
 
+  const handleSubmit = () => {
+    // If scheduling is disabled, only send the enabled flag
+    if (!settings.enabled) {
+      handleStart({ enabled: false } as ScheduleSettings);
+      return;
+    }
+    handleStart(settings);
+  };
+
   return (
     <GenericModal
       isOpen={isOpen}
@@ -81,94 +100,117 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
       }}>
         <Typography variant="h6" sx={{ marginBottom: '20px' }}>Schedule Settings</Typography>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-          <Typography sx={{ marginRight: '10px' }}>Run once every</Typography>
-          <TextField
-            type="number"
-            value={settings.runEvery}
-            onChange={(e) => handleChange('runEvery', parseInt(e.target.value))}
-            sx={textStyle}
-            inputProps={{ min: 1 }}
-          />
-          <Dropdown
-            label=""
-            id="runEveryUnit"
-            value={settings.runEveryUnit}
-            handleSelect={(e) => handleChange('runEveryUnit', e.target.value)}
-            sx={dropDownStyle}
-          >
-            {units.map((unit) => (
-              <MenuItem key={unit} value={unit}>{unit}</MenuItem>
-            ))}
-          </Dropdown>
-        </Box>
-
-        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-          <Typography sx={{ marginBottom: '5px', marginRight: '25px' }}>Start from / On</Typography>
-          <Dropdown
-            label=""
-            id="startFrom"
-            value={settings.startFrom}
-            handleSelect={(e) => handleChange('startFrom', e.target.value)}
-            sx={dropDownStyle}
-          >
-            {days.map((day) => (
-              <MenuItem key={day} value={day}>{day}</MenuItem>
-            ))}
-          </Dropdown>
-        </Box>
-
-        {/* Conditional rendering based on the selected runEveryUnit */}
-        {['MINUTES', 'HOURS'].includes(settings.runEveryUnit) ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-            <Box sx={{ marginRight: '20px' }}>
-              <Typography sx={{ marginBottom: '5px' }}>In Between</Typography>
-              <TextField
-                type="time"
-                value={settings.atTimeStart}
-                onChange={(e) => handleChange('atTimeStart', e.target.value)}
-                sx={textStyle}
-              />
-              <TextField
-                type="time"
-                value={settings.atTimeEnd}
-                onChange={(e) => handleChange('atTimeEnd', e.target.value)}
-                sx={textStyle}
-              />
-            </Box>
-          </Box>
-        ) : (
-          <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-            <Typography sx={{ marginBottom: '5px', marginRight: '10px' }}>At Around</Typography>
-            <TextField
-              type="time"
-              value={settings.atTimeStart}
-              onChange={(e) => handleChange('atTimeStart', e.target.value)}
-              sx={textStyle}
+        <FormControlLabel
+          control={
+            <Switch
+              checked={settings.enabled}
+              onChange={(e) => handleChange('enabled', e.target.checked)}
+              color="primary"
             />
-          </Box>
+          }
+          label="Enable Scheduling"
+        />
+
+        {settings.enabled && (
+          <>
+            <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+              <Typography sx={{ marginRight: '10px' }}>Run once every</Typography>
+              <TextField
+                type="number"
+                value={settings.runEvery}
+                onChange={(e) => handleChange('runEvery', parseInt(e.target.value))}
+                sx={textStyle}
+                inputProps={{ min: 1 }}
+              />
+              <Dropdown
+                label=""
+                id="runEveryUnit"
+                value={settings.runEveryUnit}
+                handleSelect={(e) => handleChange('runEveryUnit', e.target.value)}
+                sx={dropDownStyle}
+              >
+                {units.map((unit) => (
+                  <MenuItem key={unit} value={unit}>{unit}</MenuItem>
+                ))}
+              </Dropdown>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+              <Typography sx={{ marginBottom: '5px', marginRight: '25px' }}>Start from / On</Typography>
+              <Dropdown
+                label=""
+                id="startFrom"
+                value={settings.startFrom}
+                handleSelect={(e) => handleChange('startFrom', e.target.value)}
+                sx={dropDownStyle}
+              >
+                {days.map((day) => (
+                  <MenuItem key={day} value={day}>{day}</MenuItem>
+                ))}
+              </Dropdown>
+            </Box>
+
+            {['MINUTES', 'HOURS'].includes(settings.runEveryUnit) ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <Box sx={{ marginRight: '20px' }}>
+                  <Typography sx={{ marginBottom: '5px' }}>In Between</Typography>
+                  <TextField
+                    type="time"
+                    value={settings.atTimeStart}
+                    onChange={(e) => handleChange('atTimeStart', e.target.value)}
+                    sx={textStyle}
+                  />
+                  <TextField
+                    type="time"
+                    value={settings.atTimeEnd}
+                    onChange={(e) => handleChange('atTimeEnd', e.target.value)}
+                    sx={textStyle}
+                  />
+                </Box>
+              </Box>
+            ) : (
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <Typography sx={{ marginBottom: '5px', marginRight: '10px' }}>At Around</Typography>
+                <TextField
+                  type="time"
+                  value={settings.atTimeStart}
+                  onChange={(e) => handleChange('atTimeStart', e.target.value)}
+                  sx={textStyle}
+                />
+              </Box>
+            )}
+
+            <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+              <Typography sx={{ marginRight: '10px' }}>Timezone</Typography>
+              <Dropdown
+                label=""
+                id="timezone"
+                value={settings.timezone}
+                handleSelect={(e) => handleChange('timezone', e.target.value)}
+                sx={dropDownStyle}
+              >
+                {validMomentTimezones.map((tz) => (
+                  <MenuItem key={tz} value={tz}>{tz}</MenuItem>
+                ))}
+              </Dropdown>
+            </Box>
+          </>
         )}
 
-        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-          <Typography sx={{ marginRight: '10px' }}>Timezone</Typography>
-          <Dropdown
-            label=""
-            id="timezone"
-            value={settings.timezone}
-            handleSelect={(e) => handleChange('timezone', e.target.value)}
-            sx={dropDownStyle}
-          >
-            {validMomentTimezones.map((tz) => (
-              <MenuItem key={tz} value={tz}>{tz}</MenuItem>
-            ))}
-          </Dropdown>
-        </Box>
+        {/* {settings.enabled && (
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            {initialSettings?.nextRunAt && (
+              `Next scheduled run: ${new Date(initialSettings.nextRunAt).toLocaleString()}`
+            )}
+          </Typography>
+        )} */}
 
         <Button
           variant="contained"
-          onClick={() => handleStart(settings)}
+          onClick={handleSubmit}
+          color={settings.enabled ? 'primary' : 'secondary'}
         >
-          Schedule
+          {settings.enabled ? 'Schedule' : 'Disable Schedule'}
         </Button>
       </Box>
     </GenericModal>
