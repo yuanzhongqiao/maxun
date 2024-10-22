@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import { modalStyle } from "./AddWhereCondModal";
 import { validMomentTimezones } from '../../constants/const';
 import { useGlobalInfoStore } from '../../context/globalInfo';
-import { getSchedule } from '../../api/storage';
+import { getSchedule, deleteSchedule } from '../../api/storage';
 
 interface ScheduleSettingsProps {
   isOpen: boolean;
@@ -77,7 +77,18 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
     'SUNDAY'
   ];
 
-  const deleteSchedule = () => {
+  const { recordingId } = useGlobalInfoStore();
+
+  console.log(`Recoridng ID Shculde: ${recordingId}`);
+
+  const deleteRobotSchedule = () => {
+    if (recordingId) {
+      deleteSchedule(recordingId);
+      setSchedule(null);
+    } else {
+      console.error('No recording id provided');
+    }
+
     setSettings({
       runEvery: 1,
       runEveryUnit: 'HOURS',
@@ -87,10 +98,6 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
       timezone: 'UTC'
     });
   };
-
- const { recordingId } = useGlobalInfoStore();
-
- console.log(`Recoridng ID Shculde: ${recordingId}`);
 
   const getRobotSchedule = async () => {
     if (recordingId) {
@@ -130,7 +137,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
             (schedule != null) ? (
               <Box mt={2} display="flex" justifyContent="space-between">
           <Button
-            onClick={deleteSchedule}
+            onClick={deleteRobotSchedule}
             variant="outlined"
             color="secondary"
           >
