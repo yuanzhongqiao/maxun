@@ -136,16 +136,16 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
           {
             (schedule !== null) ? (
               <>
-              <Typography>Robot is scheduled to run every {schedule.runEvery} {schedule.runEveryUnit} starting from {schedule.startFrom} at {schedule.atTimeStart} to {schedule.atTimeEnd} in {schedule.timezone} timezone.</Typography>
-              <Box mt={2} display="flex" justifyContent="space-between">
-                <Button
-                  onClick={deleteRobotSchedule}
-                  variant="outlined"
-                  color="secondary"
-                >
-                  Delete Schedule
-                </Button>
-              </Box>
+                <Typography>Robot is scheduled to run every {schedule.runEvery} {schedule.runEveryUnit} starting from {schedule.startFrom} at {schedule.atTimeStart} to {schedule.atTimeEnd} in {schedule.timezone} timezone.</Typography>
+                <Box mt={2} display="flex" justifyContent="space-between">
+                  <Button
+                    onClick={deleteRobotSchedule}
+                    variant="outlined"
+                    color="secondary"
+                  >
+                    Delete Schedule
+                  </Button>
+                </Box>
               </>
             ) : (
               <>
