@@ -392,7 +392,7 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
 // Endpoint to get schedule details
 router.get('/schedule/:id', requireSignIn, async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
     const robot = await Robot.findOne({ where: { 'recording_meta.id': id } });
 
     if (!robot) {
@@ -400,7 +400,7 @@ router.get('/schedule/:id', requireSignIn, async (req, res) => {
     }
 
     return res.status(200).json({
-      schedule: robot.schedule || { enabled: false }
+      schedule: robot.schedule
     });
 
   } catch (error) {
