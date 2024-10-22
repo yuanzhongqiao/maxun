@@ -12,7 +12,7 @@ export const getStoredRecordings = async (): Promise<string[] | null> => {
     } else {
       throw new Error('Couldn\'t retrieve stored recordings');
     }
-  } catch(error: any) {
+  } catch (error: any) {
     console.log(error);
     return null;
   }
@@ -26,7 +26,7 @@ export const getStoredRuns = async (): Promise<string[] | null> => {
     } else {
       throw new Error('Couldn\'t retrieve stored recordings');
     }
-  } catch(error: any) {
+  } catch (error: any) {
     console.log(error);
     return null;
   }
@@ -40,7 +40,7 @@ export const getStoredRecording = async (id: string) => {
     } else {
       throw new Error(`Couldn't retrieve stored recording ${id}`);
     }
-  } catch(error: any) {
+  } catch (error: any) {
     console.log(error);
     return null;
   }
@@ -54,7 +54,7 @@ export const deleteRecordingFromStorage = async (id: string): Promise<boolean> =
     } else {
       throw new Error(`Couldn't delete stored recording ${id}`);
     }
-  } catch(error: any) {
+  } catch (error: any) {
     console.log(error);
     return false;
   }
@@ -68,7 +68,7 @@ export const deleteRunFromStorage = async (id: string): Promise<boolean> => {
     } else {
       throw new Error(`Couldn't delete stored recording ${id}`);
     }
-  } catch(error: any) {
+  } catch (error: any) {
     console.log(error);
     return false;
   }
@@ -82,7 +82,7 @@ export const editRecordingFromStorage = async (browserId: string, id: string): P
     } else {
       throw new Error(`Couldn't edit stored recording ${id}`);
     }
-  } catch(error: any) {
+  } catch (error: any) {
     console.log(error);
     return null;
   }
@@ -92,15 +92,15 @@ export const createRunForStoredRecording = async (id: string, settings: RunSetti
   try {
     const response = await axios.put(
       `http://localhost:8080/storage/runs/${id}`,
-      {...settings});
+      { ...settings });
     if (response.status === 200) {
       return response.data;
     } else {
       throw new Error(`Couldn't create a run for a recording ${id}`);
     }
-  } catch(error: any) {
+  } catch (error: any) {
     console.log(error);
-    return {browserId: '', runId: ''};
+    return { browserId: '', runId: '' };
   }
 }
 
@@ -112,13 +112,13 @@ export const interpretStoredRecording = async (id: string): Promise<boolean> => 
     } else {
       throw new Error(`Couldn't run a recording ${id}`);
     }
-  } catch(error: any) {
+  } catch (error: any) {
     console.log(error);
     return false;
   }
 }
 
-export const notifyAboutAbort = async (id:string): Promise<boolean> => {
+export const notifyAboutAbort = async (id: string): Promise<boolean> => {
   try {
     const response = await axios.post(`http://localhost:8080/storage/runs/abort/${id}`);
     if (response.status === 200) {
@@ -126,7 +126,7 @@ export const notifyAboutAbort = async (id:string): Promise<boolean> => {
     } else {
       throw new Error(`Couldn't abort a running recording with id ${id}`);
     }
-  } catch(error: any) {
+  } catch (error: any) {
     console.log(error);
     return false;
   }
@@ -136,14 +136,42 @@ export const scheduleStoredRecording = async (id: string, settings: ScheduleSett
   try {
     const response = await axios.put(
       `http://localhost:8080/storage/schedule/${id}`,
-      {...settings});
+      { ...settings });
     if (response.status === 200) {
       return response.data;
     } else {
       throw new Error(`Couldn't schedule recording ${id}. Please try again later.`);
     }
-  } catch(error: any) {
+  } catch (error: any) {
     console.log(error);
-    return {message: '', runId: ''};
+    return { message: '', runId: '' };
+  }
+}
+
+export const getSchedule = async (id: string) => {
+  try {
+    const response = await axios.get(`http://localhost:8080/storage/schedule/${id}`);
+    if (response.status === 200) {
+      return response.data.schedule;
+    } else {
+      throw new Error(`Couldn't retrieve schedule for recording ${id}`);
+    }
+  } catch (error: any) {
+    console.log(error);
+    return null;
+  }
+}
+
+export const deleteSchedule = async (id: string): Promise<boolean> => {
+  try {
+    const response = await axios.delete(`http://localhost:8080/storage/schedule/${id}`);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error(`Couldn't delete schedule for recording ${id}`);
+    }
+  } catch (error: any) {
+    console.log(error);
+    return false;
   }
 }

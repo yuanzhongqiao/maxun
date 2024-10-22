@@ -58,16 +58,19 @@ readdirSync(path.join(__dirname, 'api')).forEach((r) => {
   }
 });
 
-const workerProcess = fork(path.resolve(__dirname, './worker.ts'));
- workerProcess.on('message', (message) => {
-   console.log(`Message from worker: ${message}`);
- });
+const workerProcess = fork(path.resolve(__dirname, './worker.ts'), [], {
+  execArgv: ['--inspect=5859'],  // Specify a different debug port for the worker
+});
+
+workerProcess.on('message', (message) => {
+  console.log(`Message from worker: ${message}`);
+});
 workerProcess.on('error', (error) => {
-   console.error(`Error in worker: ${error}`);
- });
- workerProcess.on('exit', (code) => {
+  console.error(`Error in worker: ${error}`);
+});
+workerProcess.on('exit', (code) => {
   console.log(`Worker exited with code: ${code}`);
- });
+});
 
 app.get('/', function (req, res) {
   return res.send('Maxun server started 🚀');
@@ -81,6 +84,6 @@ server.listen(SERVER_PORT, async () => {
 
 process.on('SIGINT', () => {
   console.log('Main app shutting down...');
-  //workerProcess.kill();
+  workerProcess.kill();
   process.exit();
 });

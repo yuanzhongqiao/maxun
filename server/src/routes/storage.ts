@@ -12,7 +12,7 @@ import { requireSignIn } from '../middlewares/auth';
 import Robot from '../models/Robot';
 import Run from '../models/Run';
 import { BinaryOutputService } from '../storage/mino';
-// import { workflowQueue } from '../worker';
+import { workflowQueue } from '../worker';
 
 export const router = Router();
 
@@ -46,7 +46,7 @@ router.get('/recordings/:id', requireSignIn, async (req, res) => {
       where: { 'recording_meta.id': req.params.id },
       raw: true
     }
-  );
+    );
     return res.send(data);
   } catch (e) {
     logger.log('info', 'Error while reading recordings');
@@ -208,8 +208,8 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
     if (browser && currentPage) {
       const interpretationInfo = await browser.interpreter.InterpretRecording(
         recording.recording, currentPage, plainRun.interpreterSettings);
-        const binaryOutputService = new BinaryOutputService('maxun-run-screenshots');
-        const uploadedBinaryOutput = await binaryOutputService.uploadAndStoreBinaryOutput(run, interpretationInfo.binaryOutput);
+      const binaryOutputService = new BinaryOutputService('maxun-run-screenshots');
+      const uploadedBinaryOutput = await binaryOutputService.uploadAndStoreBinaryOutput(run, interpretationInfo.binaryOutput);
       await destroyRemoteBrowser(plainRun.browserId);
       await run.update({
         ...run,
@@ -247,18 +247,45 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
   try {
     const { id } = req.params;
     const {
+      // enabled = true,
       runEvery,
       runEveryUnit,
       startFrom,
-      atTime,
+      atTimeStart,
+      atTimeEnd,
       timezone
     } = req.body;
 
-    if (!id || !runEvery || !runEveryUnit || !startFrom || !atTime || !timezone) {
+    const robot = await Robot.findOne({ where: { 'recording_meta.id': id } });
+    if (!robot) {
+      return res.status(404).json({ error: 'Robot not found' });
+    }
+
+    // If disabled, remove scheduling
+    // if (!enabled) {
+    //   // Remove existing job from queue if it exists
+    //   const existingJobs = await workflowQueue.getJobs(['delayed', 'waiting']);
+    //   for (const job of existingJobs) {
+    //     if (job.data.id === id) {
+    //       await job.remove();
+    //     }
+    //   }
+
+    //   // Update robot to disable scheduling
+    //   await robot.update({
+    //     schedule: null
+    //   });
+
+    //   return res.status(200).json({
+    //     message: 'Schedule disabled successfully'
+    //   });
+    // }
+
+    if (!id || !runEvery || !runEveryUnit || !startFrom || !timezone || (runEveryUnit === 'HOURS' || runEveryUnit === 'MINUTES') && (!atTimeStart || !atTimeEnd)) {
       return res.status(400).json({ error: 'Missing required parameters' });
     }
 
-    if (!['HOURS', 'DAYS', 'WEEKS', 'MONTHS'].includes(runEveryUnit)) {
+    if (!['HOURS', 'DAYS', 'WEEKS', 'MONTHS', 'MINUTES'].includes(runEveryUnit)) {
       return res.status(400).json({ error: 'Invalid runEvery unit' });
     }
 
@@ -266,8 +293,12 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
       return res.status(400).json({ error: 'Invalid timezone' });
     }
 
-    const [hours, minutes] = atTime.split(':').map(Number);
-    if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+    const [startHours, startMinutes] = atTimeStart.split(':').map(Number);
+    const [endHours, endMinutes] = atTimeEnd.split(':').map(Number);
+
+    if (isNaN(startHours) || isNaN(startMinutes) || isNaN(endHours) || isNaN(endMinutes) ||
+        startHours < 0 || startHours > 23 || startMinutes < 0 || startMinutes > 59 ||
+        endHours < 0 || endHours > 23 || endMinutes < 0 || endMinutes > 59) {
       return res.status(400).json({ error: 'Invalid time format' });
     }
 
@@ -278,18 +309,19 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
 
     let cronExpression;
     switch (runEveryUnit) {
+      case 'MINUTES':
       case 'HOURS':
-        cronExpression = `${minutes} */${runEvery} * * *`;
+        cronExpression = `${startMinutes}-${endMinutes} */${runEvery} * * *`;
         break;
       case 'DAYS':
-        cronExpression = `${minutes} ${hours} */${runEvery} * *`;
+        cronExpression = `${startMinutes} ${startHours} */${runEvery} * *`;
         break;
       case 'WEEKS':
         const dayIndex = days.indexOf(startFrom);
-        cronExpression = `${minutes} ${hours} * * ${dayIndex}/${7 * runEvery}`;
+        cronExpression = `${startMinutes} ${startHours} * * ${dayIndex}/${7 * runEvery}`;
         break;
       case 'MONTHS':
-        cronExpression = `${minutes} ${hours} 1-7 */${runEvery} *`;
+        cronExpression = `${startMinutes} ${startHours} 1-7 */${runEvery} *`;
         if (startFrom !== 'SUNDAY') {
           const dayIndex = days.indexOf(startFrom);
           cronExpression += ` ${dayIndex}`;
@@ -304,22 +336,50 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
     const runId = uuid();
     const userId = req.user.id;
 
-    //  await workflowQueue.add(
-    //    'run workflow',
-    //    { id, runId, userId },
-    //    {
-    //      repeat: {
-    //        pattern: cronExpression,
-    //       tz: timezone
-    //  }
-    //    }
-    //  );
+    // Remove existing jobs for this robot just in case some were left
+    // const existingJobs = await workflowQueue.getJobs(['delayed', 'waiting']);
+    // for (const job of existingJobs) {
+    //   if (job.data.id === id) {
+    //     await job.remove();
+    //   }
+    // }
+
+    // Add new job
+    const job = await workflowQueue.add(
+      'run workflow',
+      { id, runId, userId },
+      {
+        repeat: {
+          pattern: cronExpression,
+          tz: timezone
+        }
+      }
+    );
+
+    const nextRun = job.timestamp;
+
+    // Update robot with schedule details
+    await robot.update({
+      schedule: {
+        runEvery,
+        runEveryUnit,
+        startFrom,
+        atTimeStart,
+        atTimeEnd,
+        timezone,
+        cronExpression,
+        lastRunAt: undefined,
+        nextRunAt: new Date(nextRun)
+      }
+    });
+
+    // Fetch updated schedule details after setting it
+    const updatedRobot = await Robot.findOne({ where: { 'recording_meta.id': id } });
 
     res.status(200).json({
       message: 'success',
       runId,
-      // cronExpression,
-      // nextRunTime: getNextRunTime(cronExpression, timezone)
+      robot: updatedRobot
     });
 
   } catch (error) {
@@ -328,12 +388,55 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
   }
 });
 
-// function getNextRunTime(cronExpression, timezone) {
-//   const schedule = cron.schedule(cronExpression, () => {}, { timezone });
-//   const nextDate = schedule.nextDate();
-//   schedule.stop();
-//   return nextDate.toDate();
-// }
+// Endpoint to get schedule details
+router.get('/schedule/:id', requireSignIn, async (req, res) => {
+  try {
+    const robot = await Robot.findOne({ where: { 'recording_meta.id': req.params.id }, raw: true });
+
+    if (!robot) {
+      return res.status(404).json({ error: 'Robot not found' });
+    }
+
+    return res.status(200).json({
+      schedule: robot.schedule
+    });
+
+  } catch (error) {
+    console.error('Error getting schedule:', error);
+    res.status(500).json({ error: 'Failed to get schedule' });
+  }
+});
+
+// Endpoint to delete schedule
+router.delete('/schedule/:id', requireSignIn, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const robot = await Robot.findOne({ where: { 'recording_meta.id': id } });
+    if (!robot) {
+      return res.status(404).json({ error: 'Robot not found' });
+    }
+
+    // Remove existing job from queue if it exists
+    const existingJobs = await workflowQueue.getJobs(['delayed', 'waiting']);
+    for (const job of existingJobs) {
+      if (job.data.id === id) {
+        await job.remove();
+      }
+    }
+
+    // Delete the schedule from the robot
+    await robot.update({
+      schedule: null
+    });
+
+    res.status(200).json({ message: 'Schedule deleted successfully' });
+
+  } catch (error) {
+    console.error('Error deleting schedule:', error);
+    res.status(500).json({ error: 'Failed to delete schedule' });
+  }
+});
 
 /**
  * POST endpoint for aborting a current interpretation of the run.

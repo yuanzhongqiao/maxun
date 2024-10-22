@@ -30,6 +30,8 @@ export class RemoteBrowser {
      */
     private browser: Browser | null = null;
 
+    private context: BrowserContext | null = null;
+
     /**
      * The Playwright's [CDPSession](https://playwright.dev/docs/api/class-cdpsession) instance,
      * used to talk raw Chrome Devtools Protocol.
@@ -90,13 +92,13 @@ export class RemoteBrowser {
      */
     public initialize = async (options: RemoteBrowserOptions): Promise<void> => {
         this.browser = <Browser>(await options.browser.launch(options.launchOptions));
-        const context = await this.browser.newContext(
+        this.context = await this.browser.newContext(
             {
                 viewport: { height: 400, width: 900 },
                 // recordVideo: { dir: 'videos/' }
             }
         );
-        this.currentPage = await context.newPage();
+        this.currentPage = await this.context.newPage();
         const blocker = await PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch);
         await blocker.enableBlockingInPage(this.currentPage);
         this.client = await this.currentPage.context().newCDPSession(this.currentPage);
@@ -136,6 +138,16 @@ export class RemoteBrowser {
                 )
             } else {
                 logger.log('error', `${tabInfo.index} index out of range of pages`)
+            }
+        });
+        this.socket.on('setViewportSize', async (data: { width: number, height: number }) => {
+            const { width, height } = data;
+            logger.log('debug', `Received viewport size: width=${width}, height=${height}`);
+    
+            // Update the browser context's viewport dynamically
+            if (this.context && this.browser) {
+                this.context = await this.browser.newContext({ viewport: { width, height } });
+                logger.log('debug', `Viewport size updated to width=${width}, height=${height} for the entire browser context`);
             }
         });
     }
@@ -280,7 +292,7 @@ export class RemoteBrowser {
         if (page) {
             await this.stopScreencast();
             this.currentPage = page;
-            await this.currentPage.setViewportSize({ height: 400, width: 900 })
+            //await this.currentPage.setViewportSize({ height: 400, width: 900 })
             this.client = await this.currentPage.context().newCDPSession(this.currentPage);
             this.socket.emit('urlChanged', this.currentPage.url());
             await this.makeAndEmitScreenshot();

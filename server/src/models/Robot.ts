@@ -1,8 +1,6 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../storage/db';
 import { WorkflowFile, Where, What, WhereWhatPair } from 'maxun-core';
-import User from './User';  // Import User model
-import Run from './Run';
 
 interface RobotMeta {
   name: string;
@@ -27,6 +25,19 @@ interface RobotAttributes {
   google_sheet_id?: string | null;
   google_access_token?: string | null;
   google_refresh_token?: string | null;
+  schedule?: ScheduleConfig | null;
+}
+
+interface ScheduleConfig {
+  runEvery: number;
+  runEveryUnit: 'MINUTES' | 'HOURS' | 'DAYS' | 'WEEKS' | 'MONTHS';
+  startFrom: 'SUNDAY' | 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY';
+  atTimeStart?: string;
+  atTimeEnd?: string;
+  timezone: string;
+  lastRunAt?: Date;
+  nextRunAt?: Date;
+  cronExpression?: string;
 }
 
 interface RobotCreationAttributes extends Optional<RobotAttributes, 'id'> { }
@@ -41,6 +52,7 @@ class Robot extends Model<RobotAttributes, RobotCreationAttributes> implements R
   public google_sheet_id?: string | null;
   public google_access_token!: string | null;
   public google_refresh_token!: string | null;
+  public schedule!: ScheduleConfig | null;
 }
 
 Robot.init(
@@ -80,6 +92,10 @@ Robot.init(
     },
     google_refresh_token: {
       type: DataTypes.STRING,
+      allowNull: true,
+    },
+    schedule: {
+      type: DataTypes.JSONB,
       allowNull: true,
     },
   },
