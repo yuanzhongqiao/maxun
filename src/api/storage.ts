@@ -152,7 +152,7 @@ export const getSchedule = async (id: string) => {
   try {
     const response = await axios.get(`http://localhost:8080/storage/schedule/${id}`);
     if (response.status === 200) {
-      return response.data;
+      return response.data.schedule;
     } else {
       throw new Error(`Couldn't retrieve schedule for recording ${id}`);
     }
