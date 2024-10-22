@@ -95,6 +95,10 @@ Robot.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    schedule: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+    },
   },
   {
     sequelize,
