@@ -85,6 +85,10 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
     handleStart(settings);
   };
 
+  const deleteSchedule = () => {
+    
+  };
+
   return (
     <GenericModal
       isOpen={isOpen}
@@ -99,19 +103,6 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
         '& > *': { marginBottom: '20px' },
       }}>
         <Typography variant="h6" sx={{ marginBottom: '20px' }}>Schedule Settings</Typography>
-
-        <FormControlLabel
-          control={
-            <Switch
-              checked={settings.enabled}
-              onChange={(e) => handleChange('enabled', e.target.checked)}
-              color="primary"
-            />
-          }
-          label="Enable Scheduling"
-        />
-
-        {settings.enabled && (
           <>
             <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
               <Typography sx={{ marginRight: '10px' }}>Run once every</Typography>
@@ -195,23 +186,25 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
               </Dropdown>
             </Box>
           </>
-        )}
 
-        {/* {settings.enabled && (
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-            {initialSettings?.nextRunAt && (
-              `Next scheduled run: ${new Date(initialSettings.nextRunAt).toLocaleString()}`
-            )}
-          </Typography>
-        )} */}
+        <Box mt={2} display="flex" justifyContent="space-between">
+          <Button
+            onClick={deleteSchedule}
+            variant="outlined"
+            color="secondary"
+          >
+            Delete Schedule
+          </Button>
+        </Box>
 
-        <Button
-          variant="contained"
-          onClick={handleSubmit}
-          color={settings.enabled ? 'primary' : 'secondary'}
-        >
-          {settings.enabled ? 'Schedule' : 'Disable Schedule'}
-        </Button>
+        <Box mt={2} display="flex" justifyContent="flex-end">
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={() => handleStart(settings)} variant="contained" color="primary" style={{ marginLeft: '10px' }}>
+            Save Schedule
+          </Button>
+        </Box>
       </Box>
     </GenericModal>
   );
