@@ -161,3 +161,17 @@ export const getSchedule = async (id: string): Promise<ScheduleSettings | null> 
     return null;
   }
 }
+
+export const deleteSchedule = async (id: string): Promise<boolean> => {
+  try {
+    const response = await axios.delete(`http://localhost:8080/storage/schedule/${id}`);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error(`Couldn't delete schedule for recording ${id}`);
+    }
+  } catch (error: any) {
+    console.log(error);
+    return false;
+  }
+}
