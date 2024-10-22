@@ -247,6 +247,7 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
   try {
     const { id } = req.params;
     const {
+      enabled = true,
       runEvery,
       runEveryUnit,
       startFrom,
@@ -254,6 +255,31 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
       atTimeEnd,
       timezone
     } = req.body;
+
+    const robot = await Robot.findOne({ where: { 'recording_meta.id': id } });
+    if (!robot) {
+      return res.status(404).json({ error: 'Robot not found' });
+    }
+
+     // If disabled, remove scheduling
+     if (!enabled) {
+      // Remove existing job from queue if it exists
+      const existingJobs = await workflowQueue.getJobs(['delayed', 'waiting']);
+      for (const job of existingJobs) {
+        if (job.data.id === id) {
+          await job.remove();
+        }
+      }
+
+      // Update robot to disable scheduling
+      await robot.update({
+        schedule: null
+      });
+
+      return res.status(200).json({
+        message: 'Schedule disabled successfully'
+      });
+    }
 
     if (!id || !runEvery || !runEveryUnit || !startFrom || !timezone || (runEveryUnit === 'HOURS' || runEveryUnit === 'MINUTES') && (!atTimeStart || !atTimeEnd)) {
       return res.status(400).json({ error: 'Missing required parameters' });
@@ -313,7 +339,16 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
     const runId = uuid();
     const userId = req.user.id;
 
-    await workflowQueue.add(
+    // Remove existing jobs for this robot
+    const existingJobs = await workflowQueue.getJobs(['delayed', 'waiting']);
+    for (const job of existingJobs) {
+      if (job.data.id === id) {
+        await job.remove();
+      }
+    }
+
+    // Add new job
+    const job = await workflowQueue.add(
       'run workflow',
       { id, runId, userId },
       {
@@ -324,9 +359,29 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
       }
     );
 
+    // Calculate next run time
+    const nextRun = job.timestamp;
+
+    // Update robot with schedule details
+    await robot.update({
+      schedule: {
+        enabled: true,
+        runEvery,
+        runEveryUnit,
+        startFrom,
+        atTimeStart,
+        atTimeEnd,
+        timezone,
+        cronExpression,
+        lastRunAt: undefined,
+        nextRunAt: new Date(nextRun)
+      }
+    });
+
     res.status(200).json({
       message: 'success',
       runId,
+      schedule: robot.schedule
     });
 
   } catch (error) {
@@ -335,6 +390,25 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
   }
 });
 
+// Add new endpoint to get schedule status
+router.get('/schedule/:id', requireSignIn, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const robot = await Robot.findOne({ where: { 'recording_meta.id': id } });
+
+    if (!robot) {
+      return res.status(404).json({ error: 'Robot not found' });
+    }
+
+    return res.status(200).json({
+      schedule: robot.schedule || { enabled: false }
+    });
+
+  } catch (error) {
+    console.error('Error getting schedule:', error);
+    res.status(500).json({ error: 'Failed to get schedule' });
+  }
+});
 
 // function getNextRunTime(cronExpression, timezone) {
 //   const schedule = cron.schedule(cronExpression, () => {}, { timezone });
