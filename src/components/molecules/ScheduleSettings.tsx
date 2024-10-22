@@ -198,11 +198,11 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
         </Box>
 
         <Box mt={2} display="flex" justifyContent="flex-end">
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
           <Button onClick={() => handleStart(settings)} variant="contained" color="primary" style={{ marginLeft: '10px' }}>
             Save Schedule
+          </Button>
+          <Button onClick={handleClose} color="primary" variant="outlined">
+            Cancel
           </Button>
         </Box>
       </Box>
