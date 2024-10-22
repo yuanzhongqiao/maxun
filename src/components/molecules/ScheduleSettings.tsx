@@ -16,7 +16,8 @@ export interface ScheduleSettings {
   runEvery: number;
   runEveryUnit: string;
   startFrom: string;
-  atTime: string;
+  atTimeStart?: string; // Start time for "In Between"
+  atTimeEnd?: string;   // End time for "In Between"
   timezone: string;
 }
 
@@ -25,15 +26,14 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
     runEvery: 1,
     runEveryUnit: 'HOURS',
     startFrom: 'MONDAY',
-    atTime: '00:00',
+    atTimeStart: '00:00',
+    atTimeEnd: '01:00', // Default end time
     timezone: 'UTC'
   });
 
   const handleChange = (field: keyof ScheduleSettings, value: string | number) => {
     setSettings(prev => ({ ...prev, [field]: value }));
   };
-
-  console.log(`Settings:`, settings);
 
   const textStyle = {
     width: '150px',
@@ -49,11 +49,12 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
   };
 
   const units = [
+    'MINUTES',
     'HOURS',
     'DAYS',
     'WEEKS',
     'MONTHS'
-  ]
+  ];
 
   const days = [
     'MONDAY',
@@ -63,7 +64,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
     'FRIDAY',
     'SATURDAY',
     'SUNDAY'
-  ]
+  ];
 
   return (
     <GenericModal
@@ -117,41 +118,59 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose }: Sche
           </Dropdown>
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-          <Box sx={{ marginRight: '20px' }}>
-            <Typography sx={{ marginBottom: '5px' }}>At around</Typography>
+        {/* Conditional rendering based on the selected runEveryUnit */}
+        {['MINUTES', 'HOURS'].includes(settings.runEveryUnit) ? (
+          <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+            <Box sx={{ marginRight: '20px' }}>
+              <Typography sx={{ marginBottom: '5px' }}>In Between</Typography>
+              <TextField
+                type="time"
+                value={settings.atTimeStart}
+                onChange={(e) => handleChange('atTimeStart', e.target.value)}
+                sx={textStyle}
+              />
+              <TextField
+                type="time"
+                value={settings.atTimeEnd}
+                onChange={(e) => handleChange('atTimeEnd', e.target.value)}
+                sx={textStyle}
+              />
+            </Box>
+          </Box>
+        ) : (
+          <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+            <Typography sx={{ marginBottom: '5px', marginRight: '10px' }}>At Around</Typography>
             <TextField
               type="time"
-              value={settings.atTime}
-              onChange={(e) => handleChange('atTime', e.target.value)}
+              value={settings.atTimeStart}
+              onChange={(e) => handleChange('atTimeStart', e.target.value)}
               sx={textStyle}
             />
           </Box>
-          <Box>
-            <Typography sx={{ marginBottom: '5px' }}>Timezone</Typography>
-            <Dropdown
-              label=""
-              id="timezone"
-              value={settings.timezone}
-              handleSelect={(e) => handleChange('timezone', e.target.value)}
-              sx={dropDownStyle}
-            >
-              {validMomentTimezones.map((tz) => (
-                <MenuItem key={tz} value={tz}>{tz}</MenuItem>
-              ))}
-            </Dropdown>
-          </Box>
+        )}
+
+        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+          <Typography sx={{ marginRight: '10px' }}>Timezone</Typography>
+          <Dropdown
+            label=""
+            id="timezone"
+            value={settings.timezone}
+            handleSelect={(e) => handleChange('timezone', e.target.value)}
+            sx={dropDownStyle}
+          >
+            {validMomentTimezones.map((tz) => (
+              <MenuItem key={tz} value={tz}>{tz}</MenuItem>
+            ))}
+          </Dropdown>
         </Box>
 
         <Button
           variant="contained"
           onClick={() => handleStart(settings)}
         >
-          Save
+          Schedule
         </Button>
       </Box>
     </GenericModal>
   );
-}
-
-export default ScheduleSettingsModal;
+};
