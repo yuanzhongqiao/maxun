@@ -12,7 +12,7 @@ import { requireSignIn } from '../middlewares/auth';
 import Robot from '../models/Robot';
 import Run from '../models/Run';
 import { BinaryOutputService } from '../storage/mino';
-// import { workflowQueue } from '../worker';
+import { workflowQueue } from '../worker';
 
 export const router = Router();
 
