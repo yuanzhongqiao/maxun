@@ -250,15 +250,16 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
       runEvery,
       runEveryUnit,
       startFrom,
-      atTime,
+      atTimeStart,
+      atTimeEnd,
       timezone
     } = req.body;
 
-    if (!id || !runEvery || !runEveryUnit || !startFrom || !atTime || !timezone) {
+    if (!id || !runEvery || !runEveryUnit || !startFrom || !timezone || (runEveryUnit === 'HOURS' || runEveryUnit === 'MINUTES') && (!atTimeStart || !atTimeEnd)) {
       return res.status(400).json({ error: 'Missing required parameters' });
     }
 
-    if (!['HOURS', 'DAYS', 'WEEKS', 'MONTHS'].includes(runEveryUnit)) {
+    if (!['HOURS', 'DAYS', 'WEEKS', 'MONTHS', 'MINUTES'].includes(runEveryUnit)) {
       return res.status(400).json({ error: 'Invalid runEvery unit' });
     }
 
@@ -266,8 +267,13 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
       return res.status(400).json({ error: 'Invalid timezone' });
     }
 
-    const [hours, minutes] = atTime.split(':').map(Number);
-    if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+    const [startHours, startMinutes] = atTimeStart.split(':').map(Number);
+    const [endHours, endMinutes] = atTimeEnd.split(':').map(Number);
+
+    // Validate the time format for In Between
+    if (isNaN(startHours) || isNaN(startMinutes) || isNaN(endHours) || isNaN(endMinutes) ||
+        startHours < 0 || startHours > 23 || startMinutes < 0 || startMinutes > 59 ||
+        endHours < 0 || endHours > 23 || endMinutes < 0 || endMinutes > 59) {
       return res.status(400).json({ error: 'Invalid time format' });
     }
 
@@ -278,18 +284,21 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
 
     let cronExpression;
     switch (runEveryUnit) {
+      case 'MINUTES':
+        cronExpression = `${startMinutes}-${endMinutes} */${runEvery} * * *`;
+        break;
       case 'HOURS':
-        cronExpression = `${minutes} */${runEvery} * * *`;
+        cronExpression = `${startMinutes}-${endMinutes} */${runEvery} * * *`;
         break;
       case 'DAYS':
-        cronExpression = `${minutes} ${hours} */${runEvery} * *`;
+        cronExpression = `${startMinutes} ${startHours} */${runEvery} * *`;
         break;
       case 'WEEKS':
         const dayIndex = days.indexOf(startFrom);
-        cronExpression = `${minutes} ${hours} * * ${dayIndex}/${7 * runEvery}`;
+        cronExpression = `${startMinutes} ${startHours} * * ${dayIndex}/${7 * runEvery}`;
         break;
       case 'MONTHS':
-        cronExpression = `${minutes} ${hours} 1-7 */${runEvery} *`;
+        cronExpression = `${startMinutes} ${startHours} 1-7 */${runEvery} *`;
         if (startFrom !== 'SUNDAY') {
           const dayIndex = days.indexOf(startFrom);
           cronExpression += ` ${dayIndex}`;
@@ -318,8 +327,6 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
     res.status(200).json({
       message: 'success',
       runId,
-      // cronExpression,
-      // nextRunTime: getNextRunTime(cronExpression, timezone)
     });
 
   } catch (error) {
@@ -327,6 +334,7 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
     res.status(500).json({ error: 'Failed to schedule workflow' });
   }
 });
+
 
 // function getNextRunTime(cronExpression, timezone) {
 //   const schedule = cron.schedule(cronExpression, () => {}, { timezone });
