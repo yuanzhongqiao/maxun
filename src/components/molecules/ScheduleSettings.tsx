@@ -76,15 +76,6 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
     'SUNDAY'
   ];
 
-  const handleSubmit = () => {
-    // If scheduling is disabled, only send the enabled flag
-    if (!settings.enabled) {
-      handleStart({ enabled: false } as ScheduleSettings);
-      return;
-    }
-    handleStart(settings);
-  };
-
   const deleteSchedule = () => {
 
   };
