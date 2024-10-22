@@ -361,7 +361,6 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
     // Update robot with schedule details
     await robot.update({
       schedule: {
-        enabled: true,
         runEvery,
         runEveryUnit,
         startFrom,
