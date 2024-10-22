@@ -5,6 +5,8 @@ import { Dropdown } from "../atoms/DropdownMui";
 import Button from "@mui/material/Button";
 import { modalStyle } from "./AddWhereCondModal";
 import { validMomentTimezones } from '../../constants/const';
+import { useGlobalInfoStore } from '../../context/globalInfo';
+import { getSchedule } from '../../api/storage';
 
 interface ScheduleSettingsProps {
   isOpen: boolean;
@@ -84,6 +86,26 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
       timezone: 'UTC'
     });
   };
+
+ const { recordingId } = useGlobalInfoStore();
+
+  const getRobotSchedule = async () => {
+    if (recordingId) {
+      const schedule = await getSchedule(recordingId);
+      if (schedule) {
+        setSettings(schedule);
+      }
+    } else {
+      console.error('No recording id provided');
+    }
+  }
+
+  useEffect(() => {
+    if (isOpen) {
+      getRobotSchedule();
+    }
+  }, [isOpen]);
+
 
   return (
     <GenericModal
@@ -182,6 +204,14 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
             </Dropdown>
           </Box>
         </>
+        <Box mt={2} display="flex" justifyContent="flex-end">
+          <Button onClick={() => handleStart(settings)} variant="contained" color="primary">
+            Save Schedule
+          </Button>
+          <Button onClick={handleClose} color="primary" variant="outlined" style={{ marginLeft: '10px' }}>
+            Cancel
+          </Button>
+        </Box>
 
         <Box mt={2} display="flex" justifyContent="space-between">
           <Button
@@ -190,15 +220,6 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
             color="secondary"
           >
             Delete Schedule
-          </Button>
-        </Box>
-
-        <Box mt={2} display="flex" justifyContent="flex-end">
-          <Button onClick={() => handleStart(settings)} variant="contained" color="primary">
-            Save Schedule
-          </Button>
-          <Button onClick={handleClose} color="primary" variant="outlined" style={{ marginLeft: '10px' }}>
-            Cancel
           </Button>
         </Box>
       </Box>
