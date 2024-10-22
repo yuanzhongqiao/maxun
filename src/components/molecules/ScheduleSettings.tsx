@@ -25,7 +25,7 @@ export interface ScheduleSettings {
 }
 
 export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initialSettings }: ScheduleSettingsProps) => {
-  const [schedule, setSchedule] = useState<any>(null);
+  const [schedule, setSchedule] = useState<ScheduleSettings | null>(null);
   const [settings, setSettings] = useState<ScheduleSettings>({
     runEvery: 1,
     runEveryUnit: 'HOURS',
@@ -101,11 +101,9 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
 
   const getRobotSchedule = async () => {
     if (recordingId) {
-      const schedule = await getSchedule(recordingId);
-      console.log(`RObot found schedule: ${schedule}`)
-      if (schedule) {
-        setSchedule(schedule);
-      }
+      const scheduleData = await getSchedule(recordingId);
+      console.log(`Robot found schedule: ${JSON.stringify(scheduleData, null, 2)}`);
+      setSchedule(scheduleData);
     } else {
       console.error('No recording id provided');
     }
@@ -113,10 +111,12 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
 
   useEffect(() => {
     if (isOpen) {
-      getRobotSchedule();
+      const fetchSchedule = async () => {
+        await getRobotSchedule();
+      };
+      fetchSchedule();
     }
-  }, [isOpen, getRobotSchedule]);
-
+  }, [isOpen]);
 
   return (
     <GenericModal
@@ -134,7 +134,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
         <Typography variant="h6" sx={{ marginBottom: '20px' }}>Schedule Settings</Typography>
         <>
           {
-            (schedule != null) ? (
+            (schedule !== null) ? (
               <>
               <Typography>Robot is scheduled to run every {schedule.runEvery} {schedule.runEveryUnit} starting from {schedule.startFrom} at {schedule.atTimeStart} to {schedule.atTimeEnd} in {schedule.timezone} timezone.</Typography>
               <Box mt={2} display="flex" justifyContent="space-between">
