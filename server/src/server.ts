@@ -58,7 +58,10 @@ readdirSync(path.join(__dirname, 'api')).forEach((r) => {
   }
 });
 
-const workerProcess = fork(path.resolve(__dirname, './worker.ts'));
+const workerProcess = fork(path.resolve(__dirname, './worker.ts'),  [], {
+  execArgv: ['--inspect=5859'],  // Specify a different debug port for the worker
+});
+
  workerProcess.on('message', (message) => {
    console.log(`Message from worker: ${message}`);
  });
