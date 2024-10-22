@@ -247,7 +247,7 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
   try {
     const { id } = req.params;
     const {
-      enabled = true,
+      // enabled = true,
       runEvery,
       runEveryUnit,
       startFrom,
@@ -261,25 +261,25 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
       return res.status(404).json({ error: 'Robot not found' });
     }
 
-     // If disabled, remove scheduling
-     if (!enabled) {
-      // Remove existing job from queue if it exists
-      const existingJobs = await workflowQueue.getJobs(['delayed', 'waiting']);
-      for (const job of existingJobs) {
-        if (job.data.id === id) {
-          await job.remove();
-        }
-      }
+    // If disabled, remove scheduling
+    // if (!enabled) {
+    //   // Remove existing job from queue if it exists
+    //   const existingJobs = await workflowQueue.getJobs(['delayed', 'waiting']);
+    //   for (const job of existingJobs) {
+    //     if (job.data.id === id) {
+    //       await job.remove();
+    //     }
+    //   }
 
-      // Update robot to disable scheduling
-      await robot.update({
-        schedule: null
-      });
+    //   // Update robot to disable scheduling
+    //   await robot.update({
+    //     schedule: null
+    //   });
 
-      return res.status(200).json({
-        message: 'Schedule disabled successfully'
-      });
-    }
+    //   return res.status(200).json({
+    //     message: 'Schedule disabled successfully'
+    //   });
+    // }
 
     if (!id || !runEvery || !runEveryUnit || !startFrom || !timezone || (runEveryUnit === 'HOURS' || runEveryUnit === 'MINUTES') && (!atTimeStart || !atTimeEnd)) {
       return res.status(400).json({ error: 'Missing required parameters' });
@@ -296,7 +296,6 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
     const [startHours, startMinutes] = atTimeStart.split(':').map(Number);
     const [endHours, endMinutes] = atTimeEnd.split(':').map(Number);
 
-    // Validate the time format for In Between
     if (isNaN(startHours) || isNaN(startMinutes) || isNaN(endHours) || isNaN(endMinutes) ||
         startHours < 0 || startHours > 23 || startMinutes < 0 || startMinutes > 59 ||
         endHours < 0 || endHours > 23 || endMinutes < 0 || endMinutes > 59) {
@@ -311,8 +310,6 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
     let cronExpression;
     switch (runEveryUnit) {
       case 'MINUTES':
-        cronExpression = `${startMinutes}-${endMinutes} */${runEvery} * * *`;
-        break;
       case 'HOURS':
         cronExpression = `${startMinutes}-${endMinutes} */${runEvery} * * *`;
         break;
@@ -339,13 +336,13 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
     const runId = uuid();
     const userId = req.user.id;
 
-    // Remove existing jobs for this robot
-    const existingJobs = await workflowQueue.getJobs(['delayed', 'waiting']);
-    for (const job of existingJobs) {
-      if (job.data.id === id) {
-        await job.remove();
-      }
-    }
+    // Remove existing jobs for this robot just in case some were left
+    // const existingJobs = await workflowQueue.getJobs(['delayed', 'waiting']);
+    // for (const job of existingJobs) {
+    //   if (job.data.id === id) {
+    //     await job.remove();
+    //   }
+    // }
 
     // Add new job
     const job = await workflowQueue.add(
@@ -359,7 +356,6 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
       }
     );
 
-    // Calculate next run time
     const nextRun = job.timestamp;
 
     // Update robot with schedule details
@@ -378,10 +374,13 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
       }
     });
 
+    // Fetch updated schedule details after setting it
+    const updatedRobot = await Robot.findOne({ where: { 'recording_meta.id': id } });
+
     res.status(200).json({
       message: 'success',
       runId,
-      schedule: robot.schedule
+      robot: updatedRobot
     });
 
   } catch (error) {
@@ -390,7 +389,7 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
   }
 });
 
-// Add new endpoint to get schedule status
+// Endpoint to get schedule details
 router.get('/schedule/:id', requireSignIn, async (req, res) => {
   try {
     const { id } = req.params;
@@ -410,12 +409,36 @@ router.get('/schedule/:id', requireSignIn, async (req, res) => {
   }
 });
 
-// function getNextRunTime(cronExpression, timezone) {
-//   const schedule = cron.schedule(cronExpression, () => {}, { timezone });
-//   const nextDate = schedule.nextDate();
-//   schedule.stop();
-//   return nextDate.toDate();
-// }
+// Endpoint to delete schedule
+router.delete('/schedule/:id', requireSignIn, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const robot = await Robot.findOne({ where: { 'recording_meta.id': id } });
+    if (!robot) {
+      return res.status(404).json({ error: 'Robot not found' });
+    }
+
+    // Remove existing job from queue if it exists
+    const existingJobs = await workflowQueue.getJobs(['delayed', 'waiting']);
+    for (const job of existingJobs) {
+      if (job.data.id === id) {
+        await job.remove();
+      }
+    }
+
+    // Delete the schedule from the robot
+    await robot.update({
+      schedule: null
+    });
+
+    res.status(200).json({ message: 'Schedule deleted successfully' });
+
+  } catch (error) {
+    console.error('Error deleting schedule:', error);
+    res.status(500).json({ error: 'Failed to delete schedule' });
+  }
+});
 
 /**
  * POST endpoint for aborting a current interpretation of the run.
