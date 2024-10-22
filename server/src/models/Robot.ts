@@ -25,6 +25,7 @@ interface RobotAttributes {
   google_sheet_id?: string | null;
   google_access_token?: string | null;
   google_refresh_token?: string | null;
+  schedule?: ScheduleConfig | null;
 }
 
 interface ScheduleConfig {
@@ -52,6 +53,7 @@ class Robot extends Model<RobotAttributes, RobotCreationAttributes> implements R
   public google_sheet_id?: string | null;
   public google_access_token!: string | null;
   public google_refresh_token!: string | null;
+  public schedule!: ScheduleConfig | null;
 }
 
 Robot.init(
