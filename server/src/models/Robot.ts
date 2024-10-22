@@ -29,7 +29,6 @@ interface RobotAttributes {
 }
 
 interface ScheduleConfig {
-  enabled: boolean;
   runEvery: number;
   runEveryUnit: 'MINUTES' | 'HOURS' | 'DAYS' | 'WEEKS' | 'MONTHS';
   startFrom: 'SUNDAY' | 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY';
