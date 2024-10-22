@@ -392,8 +392,7 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
 // Endpoint to get schedule details
 router.get('/schedule/:id', requireSignIn, async (req, res) => {
   try {
-    const { id } = req.body;
-    const robot = await Robot.findOne({ where: { 'recording_meta.id': id } });
+    const robot = await Robot.findOne({ where: { 'recording_meta.id': req.params.id }, raw: true });
 
     if (!robot) {
       return res.status(404).json({ error: 'Robot not found' });
