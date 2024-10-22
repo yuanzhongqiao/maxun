@@ -304,16 +304,16 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
     const runId = uuid();
     const userId = req.user.id;
 
-    //  await workflowQueue.add(
-    //    'run workflow',
-    //    { id, runId, userId },
-    //    {
-    //      repeat: {
-    //        pattern: cronExpression,
-    //       tz: timezone
-    //  }
-    //    }
-    //  );
+      await workflowQueue.add(
+        'run workflow',
+        { id, runId, userId },
+        {
+          repeat: {
+            pattern: cronExpression,
+           tz: timezone
+      }
+        }
+      );
 
     res.status(200).json({
       message: 'success',
