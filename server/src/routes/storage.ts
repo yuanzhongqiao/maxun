@@ -46,7 +46,7 @@ router.get('/recordings/:id', requireSignIn, async (req, res) => {
       where: { 'recording_meta.id': req.params.id },
       raw: true
     }
-  );
+    );
     return res.send(data);
   } catch (e) {
     logger.log('info', 'Error while reading recordings');
@@ -208,8 +208,8 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
     if (browser && currentPage) {
       const interpretationInfo = await browser.interpreter.InterpretRecording(
         recording.recording, currentPage, plainRun.interpreterSettings);
-        const binaryOutputService = new BinaryOutputService('maxun-run-screenshots');
-        const uploadedBinaryOutput = await binaryOutputService.uploadAndStoreBinaryOutput(run, interpretationInfo.binaryOutput);
+      const binaryOutputService = new BinaryOutputService('maxun-run-screenshots');
+      const uploadedBinaryOutput = await binaryOutputService.uploadAndStoreBinaryOutput(run, interpretationInfo.binaryOutput);
       await destroyRemoteBrowser(plainRun.browserId);
       await run.update({
         ...run,
@@ -304,16 +304,16 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
     const runId = uuid();
     const userId = req.user.id;
 
-      await workflowQueue.add(
-        'run workflow',
-        { id, runId, userId },
-        {
-          repeat: {
-            pattern: cronExpression,
-           tz: timezone
-      }
+    await workflowQueue.add(
+      'run workflow',
+      { id, runId, userId },
+      {
+        repeat: {
+          pattern: cronExpression,
+          tz: timezone
         }
-      );
+      }
+    );
 
     res.status(200).json({
       message: 'success',
