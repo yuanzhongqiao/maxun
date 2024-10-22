@@ -27,6 +27,19 @@ interface RobotAttributes {
   google_refresh_token?: string | null;
 }
 
+interface ScheduleConfig {
+  enabled: boolean;
+  runEvery: number;
+  runEveryUnit: 'MINUTES' | 'HOURS' | 'DAYS' | 'WEEKS' | 'MONTHS';
+  startFrom: 'SUNDAY' | 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY';
+  atTimeStart?: string;
+  atTimeEnd?: string;
+  timezone: string;
+  lastRunAt?: Date;
+  nextRunAt?: Date;
+  cronExpression?: string;
+}
+
 interface RobotCreationAttributes extends Optional<RobotAttributes, 'id'> { }
 
 class Robot extends Model<RobotAttributes, RobotCreationAttributes> implements RobotAttributes {
