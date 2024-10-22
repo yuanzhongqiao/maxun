@@ -148,7 +148,7 @@ export const scheduleStoredRecording = async (id: string, settings: ScheduleSett
   }
 }
 
-export const getSchedule = async (id: string): Promise<ScheduleSettings | null> => {
+export const getSchedule = async (id: string) => {
   try {
     const response = await axios.get(`http://localhost:8080/storage/schedule/${id}`);
     if (response.status === 200) {
