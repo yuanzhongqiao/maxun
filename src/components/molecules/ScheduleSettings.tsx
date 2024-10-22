@@ -140,8 +140,8 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
                 <Box mt={2} display="flex" justifyContent="space-between">
                   <Button
                     onClick={deleteRobotSchedule}
-                    variant="outlined"
-                    color="secondary"
+                    variant="contained"
+                    color="primary"
                   >
                     Delete Schedule
                   </Button>
