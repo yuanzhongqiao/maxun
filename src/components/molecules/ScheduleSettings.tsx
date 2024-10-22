@@ -14,7 +14,6 @@ interface ScheduleSettingsProps {
 }
 
 export interface ScheduleSettings {
-  enabled: boolean;
   runEvery: number;
   runEveryUnit: string;
   startFrom: string;
@@ -25,7 +24,6 @@ export interface ScheduleSettings {
 
 export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initialSettings }: ScheduleSettingsProps) => {
   const [settings, setSettings] = useState<ScheduleSettings>({
-    enabled: true,
     runEvery: 1,
     runEveryUnit: 'HOURS',
     startFrom: 'MONDAY',
@@ -78,7 +76,6 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
 
   const deleteSchedule = () => {
     setSettings({
-      enabled: false,
       runEvery: 1,
       runEveryUnit: 'HOURS',
       startFrom: 'MONDAY',
