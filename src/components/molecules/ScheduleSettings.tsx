@@ -77,7 +77,15 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
   ];
 
   const deleteSchedule = () => {
-
+    setSettings({
+      enabled: false,
+      runEvery: 1,
+      runEveryUnit: 'HOURS',
+      startFrom: 'MONDAY',
+      atTimeStart: '00:00',
+      atTimeEnd: '01:00',
+      timezone: 'UTC'
+    });
   };
 
   return (
