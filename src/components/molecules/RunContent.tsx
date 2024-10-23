@@ -153,7 +153,7 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
                     <Box key={`number-of-binary-output-${key}`} sx={{
                       width: 'max-content',
                     }}>
-                      <Typography key={`binary-output-key-${key}`} sx={{ margin: '20px 0px 20px 0px'}}>
+                      <Typography key={`binary-output-key-${key}`} sx={{ margin: '20px 0px 20px 0px' }}>
                         <a href={imageUrl} download={key} style={{ textDecoration: 'none' }}>Download Screenshot</a>
                       </Typography>
                       <img key={`image-${key}`} src={imageUrl} alt={key} height='auto' width='700px' />
