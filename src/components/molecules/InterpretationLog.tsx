@@ -65,7 +65,6 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
       prevState + '\n' + '---------- Serializable output data received ----------' + '\n'
       + JSON.stringify(data, null, 2) + '\n' + '--------------------------------------------------');
 
-    // Set table data
     if (Array.isArray(data)) {
       setTableData(data);
     }
