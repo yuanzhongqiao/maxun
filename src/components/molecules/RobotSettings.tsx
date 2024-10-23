@@ -20,9 +20,9 @@ interface RobotMeta {
 
 interface RobotWorkflow {
     workflow: WhereWhatPair[];
-  }
+}
 
-  interface ScheduleConfig {
+interface ScheduleConfig {
     runEvery: number;
     runEveryUnit: 'MINUTES' | 'HOURS' | 'DAYS' | 'WEEKS' | 'MONTHS';
     startFrom: 'SUNDAY' | 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY';
@@ -32,26 +32,26 @@ interface RobotWorkflow {
     lastRunAt?: Date;
     nextRunAt?: Date;
     cronExpression?: string;
-  }
-  
+}
+
 interface RobotSettings {
-id: string;
-userId?: number;
-recording_meta: RobotMeta;
-recording: RobotWorkflow;
-google_sheet_email?: string | null;
-google_sheet_name?: string | null;
-google_sheet_id?: string | null;
-google_access_token?: string | null;
-google_refresh_token?: string | null;
-schedule?: ScheduleConfig | null;
+    id: string;
+    userId?: number;
+    recording_meta: RobotMeta;
+    recording: RobotWorkflow;
+    google_sheet_email?: string | null;
+    google_sheet_name?: string | null;
+    google_sheet_id?: string | null;
+    google_access_token?: string | null;
+    google_refresh_token?: string | null;
+    schedule?: ScheduleConfig | null;
 }
 
 interface RobotSettingsProps {
-  isOpen: boolean;
-  handleStart: (settings: RobotSettings) => void;
-  handleClose: () => void;
-initialSettings?: RobotSettings | null;
+    isOpen: boolean;
+    handleStart: (settings: RobotSettings) => void;
+    handleClose: () => void;
+    initialSettings?: RobotSettings | null;
 
 }
 
@@ -77,29 +77,29 @@ export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSe
     }
 
 
-  return (
-    <GenericModal
-      isOpen={isOpen}
-      onClose={handleClose}
-      modalStyle={modalStyle}
-    >
-      <>
-        <Typography variant="h5" style={{ marginBottom: '20px' }}>Robot Settings</Typography>
-        <Box style={{ display: 'flex', flexDirection: 'column' }}>
-            {
-                robot && (
-                    <>
-                    <TextField
-                        label="Robot URL"
-                        value={robot.recording.workflow[0].where.url}
-                        disabled
-                        style={{ marginBottom: '20px' }}
-                        />
-                    </>
-                )
-            }
-        </Box>
-      </>
-    </GenericModal>
-  );
+    return (
+        <GenericModal
+            isOpen={isOpen}
+            onClose={handleClose}
+            modalStyle={modalStyle}
+        >
+            <>
+                <Typography variant="h5" style={{ marginBottom: '20px' }}>Robot Settings</Typography>
+                <Box style={{ display: 'flex', flexDirection: 'column' }}>
+                    {
+                        robot && (
+                            <>
+                                <TextField
+                                    label="Robot URL"
+                                    value={robot.recording.workflow[0].where.url}
+                                    disabled
+                                    style={{ marginBottom: '20px' }}
+                                />
+                            </>
+                        )
+                    }
+                </Box>
+            </>
+        </GenericModal>
+    );
 };
