@@ -33,13 +33,13 @@ export const Highlighter = ({ unmodifiedRect, displayedSelector = '', width, hei
           width={rect.width}
           height={rect.height}
         />
-        <HighlighterLabel
+        {/* <HighlighterLabel
           id="Highlighter-label"
           top={rect.top + rect.height + 8}
           left={rect.left}
         >
           {displayedSelector}
-        </HighlighterLabel>
+        </HighlighterLabel> */}
       </div>
     );
   }
