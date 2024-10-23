@@ -32,7 +32,6 @@ export const SidePanelHeader = () => {
        step
        <FastForward/>
      </Button> */}
-      <hr />
     </div>
   );
 };
