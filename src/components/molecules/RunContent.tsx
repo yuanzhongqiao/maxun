@@ -53,7 +53,7 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={tab} onChange={(e, newTab) => setTab(newTab)} aria-label="run-content-tabs">
             <Tab label="Log" value='log' />
-            <Tab label="Input" value='input' />
+            {/* <Tab label="Input" value='input' /> */}
             <Tab label="Output Data" value='output' />
           </Tabs>
         </Box>
@@ -82,7 +82,7 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
             Stop
           </Button> : null}
         </TabPanel>
-        <TabPanel value='input' sx={{ width: '700px' }}>
+        {/* <TabPanel value='input' sx={{ width: '700px' }}>
           <Typography variant='h6' sx={{ display: 'flex', alignItems: 'center' }}>
             <SettingsIcon sx={{ marginRight: '15px' }} />
             Interpreter settings
@@ -117,7 +117,7 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
               )
             })
           }
-        </TabPanel>
+        </TabPanel> */}
         <TabPanel value='output' sx={{ width: '700px' }}>
           {!row || !row.serializableOutput || !row.binaryOutput
             || (Object.keys(row.serializableOutput).length === 0 && Object.keys(row.binaryOutput).length === 0)
