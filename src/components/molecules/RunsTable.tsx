@@ -111,6 +111,9 @@ export const RunsTable = (
 
   return (
     <React.Fragment>
+      <Typography variant="h6" gutterBottom>
+          All Runs
+        </Typography>
       <TableContainer component={Paper} sx={{ width: '100%', overflow: 'hidden' }}>
         {Object.entries(groupedRows).map(([name, group]) => (
           <Accordion key={name}>
