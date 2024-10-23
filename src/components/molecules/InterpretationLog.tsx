@@ -76,16 +76,16 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
   const handleBinaryCallback = useCallback(({ data, mimetype }: any) => {
     const base64String = Buffer.from(data).toString('base64');
     const imageSrc = `data:${mimetype};base64,${base64String}`;
-    
+
     setLog((prevState) =>
       prevState + '\n' + '---------- Binary output data received ----------' + '\n'
       + `mimetype: ${mimetype}` + '\n' + 'Image is rendered below:' + '\n'
       + '------------------------------------------------');
-    
+
     setBinaryData(imageSrc);
     scrollLogToBottom();
   }, [log, scrollLogToBottom]);
-  
+
 
   const handleCustomValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCustomValue(event.target.value);
@@ -164,55 +164,54 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
               padding: '10px',
             }}
           >
-
             {
-            binaryData ? (
-              <div style={{ marginBottom: '20px' }}>
-                <Typography variant="body1" gutterBottom>Screenshot</Typography>
-                <img src={binaryData} alt="Binary Output" style={{ maxWidth: '100%' }} />
-              </div>
-            ) : tableData.length > 0 ? (
-              <>
-                <TableContainer component={Paper}>
-                  <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
-                    <TableHead>
-                      <TableRow>
-                        {columns.map((column) => (
-                          <TableCell key={column}>{column}</TableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {tableData.slice(0, Math.min(5, tableData.length)).map((row, index) => (
-                        <TableRow key={index}>
+              binaryData ? (
+                <div style={{ marginBottom: '20px' }}>
+                  <Typography variant="body1" gutterBottom>Screenshot</Typography>
+                  <img src={binaryData} alt="Binary Output" style={{ maxWidth: '100%' }} />
+                </div>
+              ) : tableData.length > 0 ? (
+                <>
+                  <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
+                      <TableHead>
+                        <TableRow>
                           {columns.map((column) => (
-                            <TableCell key={column}>{row[column]}</TableCell>
+                            <TableCell key={column}>{column}</TableCell>
                           ))}
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <span style={{ marginLeft: '15px', marginTop: '10px', fontSize: '12px' }}>Additional rows of data will be extracted once you finish recording. </span>
-              </>
-            ) : (
-              <Grid container justifyContent="center" alignItems="center" style={{ height: '100%' }}>
-                <Grid item>
-                  {hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction ? (
-                    <>
+                      </TableHead>
+                      <TableBody>
+                        {tableData.slice(0, Math.min(5, tableData.length)).map((row, index) => (
+                          <TableRow key={index}>
+                            {columns.map((column) => (
+                              <TableCell key={column}>{row[column]}</TableCell>
+                            ))}
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  <span style={{ marginLeft: '15px', marginTop: '10px', fontSize: '12px' }}>Additional rows of data will be extracted once you finish recording. </span>
+                </>
+              ) : (
+                <Grid container justifyContent="center" alignItems="center" style={{ height: '100%' }}>
+                  <Grid item>
+                    {hasScrapeListAction || hasScrapeSchemaAction || hasScreenshotAction ? (
+                      <>
+                        <Typography variant="h6" gutterBottom align="left">
+                          You've successfully trained the robot to perform actions! Click on the button below to get a preview of the data your robot will extract.
+                        </Typography>
+                        <SidePanelHeader />
+                      </>
+                    ) : (
                       <Typography variant="h6" gutterBottom align="left">
-                        You've successfully trained the robot to perform actions! Click on the button below to get a preview of the data your robot will extract.
+                        It looks like you have not selected anything for extraction yet. Once you do, the robot will show a preview of your selections here.
                       </Typography>
-                      <SidePanelHeader />
-                    </>
-                  ) : (
-                    <Typography variant="h6" gutterBottom align="left">
-                      It looks like you have not selected anything for extraction yet. Once you do, the robot will show a preview of your selections here.
-                    </Typography>
-                  )}
+                    )}
+                  </Grid>
                 </Grid>
-              </Grid>
-            )}
+              )}
             <div style={{ float: 'left', clear: 'both' }} ref={logEndRef} />
           </div>
         </SwipeableDrawer>
