@@ -55,8 +55,6 @@ interface RobotSettingsProps {
 
 }
 
-
-
 export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSettings }: RobotSettingsProps) => {
     const [robot, setRobot] = useState<RobotSettings | null>(null);
     const { recordingId } = useGlobalInfoStore();
@@ -75,7 +73,6 @@ export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSe
             console.log(`Could not find robot`)
         }
     }
-
 
     return (
         <GenericModal
