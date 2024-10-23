@@ -118,7 +118,7 @@ const ApiKeyManager = () => {
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Delete">
-                    <IconButton onClick={deleteApiKey}>
+                    <IconButton onClick={deleteApiKey} color="error">
                       <Delete />
                     </IconButton>
                   </Tooltip>
