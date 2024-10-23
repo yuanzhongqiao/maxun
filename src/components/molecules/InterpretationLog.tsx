@@ -168,7 +168,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
             {
             binaryData ? (
               <div style={{ marginBottom: '20px' }}>
-                <Typography variant="body1" gutterBottom>Binary Data:</Typography>
+                <Typography variant="body1" gutterBottom>Screenshot</Typography>
                 <img src={binaryData} alt="Binary Output" style={{ maxWidth: '100%' }} />
               </div>
             ) : tableData.length > 0 ? (
