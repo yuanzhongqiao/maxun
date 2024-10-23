@@ -34,6 +34,7 @@ const Logo = styled.img`
   transform: translateX(-50%);
   width: 60px;
   height: auto;
+  border-radius: 5px;
 `;
 
 const Content = styled.div`
