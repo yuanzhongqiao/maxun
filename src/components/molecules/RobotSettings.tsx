@@ -89,19 +89,25 @@ export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSe
                                 <TextField
                                     label="Robot Target URL"
                                     value={robot.recording.workflow[0].where.url}
-                                    disabled
+                                    InputProps={{
+                                        readOnly: true,
+                                      }}
                                     style={{ marginBottom: '20px' }}
                                 />
                                 <TextField
                                     label="Robot ID"
                                     value={robot.recording_meta.id}
-                                    disabled
+                                    InputProps={{
+                                        readOnly: true,
+                                      }}
                                     style={{ marginBottom: '20px' }}
                                 />
                                 <TextField
                                     label="Robot Created At"
                                     value={robot.recording_meta.createdAt}
-                                    disabled
+                                    InputProps={{
+                                        readOnly: true,
+                                      }}
                                     style={{ marginBottom: '20px' }}
                                 />
                             </>
