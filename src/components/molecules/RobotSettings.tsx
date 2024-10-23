@@ -57,7 +57,7 @@ interface RobotSettingsProps {
 
 export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSettings }: RobotSettingsProps) => {
     const [robot, setRobot] = useState<RobotSettings | null>(null);
-    const { recordingId } = useGlobalInfoStore();
+    const { recordingId, notify } = useGlobalInfoStore();
 
     useEffect(() => {
         if (isOpen) {
@@ -70,7 +70,7 @@ export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSe
             const robot = await getStoredRecording(recordingId);
             setRobot(robot);
         } else {
-            console.log(`Could not find robot`)
+            notify('error', 'Could not find robot details. Please try again.');
         }
     }
 
