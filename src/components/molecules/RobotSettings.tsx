@@ -91,7 +91,7 @@ export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSe
                                     value={robot.recording.workflow[0].where.url}
                                     InputProps={{
                                         readOnly: true,
-                                      }}
+                                    }}
                                     style={{ marginBottom: '20px' }}
                                 />
                                 <TextField
@@ -99,7 +99,7 @@ export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSe
                                     value={robot.recording_meta.id}
                                     InputProps={{
                                         readOnly: true,
-                                      }}
+                                    }}
                                     style={{ marginBottom: '20px' }}
                                 />
                                 <TextField
@@ -107,7 +107,7 @@ export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSe
                                     value={robot.recording_meta.createdAt}
                                     InputProps={{
                                         readOnly: true,
-                                      }}
+                                    }}
                                     style={{ marginBottom: '20px' }}
                                 />
                             </>
