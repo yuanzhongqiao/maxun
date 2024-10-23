@@ -83,7 +83,7 @@ export const RunsTable = (
       });
       setRows(parsedRows);
     } else {
-      console.log('No runs found.');
+      notify('error', 'No runs found. Please try again.')
     }
   };
 
