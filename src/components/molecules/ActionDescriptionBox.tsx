@@ -12,7 +12,7 @@ const CustomBoxContainer = styled.div`
   // border: 2px solid #ff00c3;
   border-radius: 5px;
   background-color: white;
-  margin: 70px 15px 25px 15px;
+  margin: 80px 15px 25px 15px;
 `;
 
 const Triangle = styled.div`
@@ -29,10 +29,10 @@ const Triangle = styled.div`
 
 const Logo = styled.img`
   position: absolute;
-  top: -70px;
+  top: -80px;
   left: 50%;
   transform: translateX(-50%);
-  width: 60px;
+  width: 70px;
   height: auto;
   border-radius: 5px;
 `;
