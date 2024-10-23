@@ -31,7 +31,7 @@ code {
 
 #browser-recorder {
   display: flex;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
   overflow: hidden;
   position: relative;
@@ -47,7 +47,6 @@ code {
 }
 
 #browser {
-  
 }
 
 #browser-window {
@@ -74,7 +73,7 @@ code {
 
 /* For desktops (between 1441px and 1920px) */
 @media (min-width: 1441px) and (max-width: 1500px) {
- #browser-recorder {
+  #browser-recorder {
     box-sizing: border-box;
     height: calc(100vh - 2rem);
     margin: 1rem;
@@ -82,7 +81,7 @@ code {
 }
 
 @media (min-width: 1501px) and (max-width: 1700px) {
- #browser-recorder {
+  #browser-recorder {
     box-sizing: border-box;
     height: calc(100vh - 2rem);
     margin: 1rem 8rem;
@@ -90,7 +89,7 @@ code {
 }
 
 @media (min-width: 1701px) and (max-width: 1800px) {
- #browser-recorder {
+  #browser-recorder {
     box-sizing: border-box;
     height: calc(100vh - 2rem);
     margin: 1rem 14rem;
@@ -98,7 +97,7 @@ code {
 }
 
 @media (min-width: 1801px) and (max-width: 1900px) {
- #browser-recorder {
+  #browser-recorder {
     box-sizing: border-box;
     height: calc(100vh - 2rem);
     margin: 1rem 18.5rem;
@@ -106,7 +105,7 @@ code {
 }
 
 @media (min-width: 1900px) and (max-width: 1920px) {
- #browser-recorder {
+  #browser-recorder {
     box-sizing: border-box;
     height: calc(100vh - 2rem);
     margin: 1rem 20rem;
