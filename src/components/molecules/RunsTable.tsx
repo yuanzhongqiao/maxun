@@ -76,10 +76,10 @@ export const RunsTable = (
     if (runs) {
       const parsedRows: Data[] = [];
       runs.map((run: any, index) => {
-          parsedRows.push({
-              id: index,
-              ...run,
-            });
+        parsedRows.push({
+          id: index,
+          ...run,
+        });
       });
       setRows(parsedRows);
     } else {
@@ -112,8 +112,8 @@ export const RunsTable = (
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-          All Runs
-        </Typography>
+        All Runs
+      </Typography>
       <TableContainer component={Paper} sx={{ width: '100%', overflow: 'hidden' }}>
         {Object.entries(groupedRows).map(([name, group]) => (
           <Accordion key={name}>
