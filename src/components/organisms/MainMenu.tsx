@@ -24,6 +24,7 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
         paddingTop: '2rem',
       }}
       variant="outlined"
+      square
     >
       <Box sx={{
         width: '100%',
