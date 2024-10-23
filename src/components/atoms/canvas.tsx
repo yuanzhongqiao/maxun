@@ -138,15 +138,15 @@ const Canvas = ({ width, height, onCreateRef }: CanvasProps) => {
     }, [onMouseEvent]);
 
     return (
-        <div style={{ borderRadius: '0px 0px 5px 5px', overflow: 'hidden', backgroundColor: 'white'}}>
-        <canvas
-            tabIndex={0}
-            ref={canvasRef}
-            height={400}
-            width={900}
-            style={{display: 'block' }}
+        <div style={{ borderRadius: '0px 0px 5px 5px', overflow: 'hidden', backgroundColor: 'white' }}>
+            <canvas
+                tabIndex={0}
+                ref={canvasRef}
+                height={400}
+                width={900}
+                style={{ display: 'block' }}
             />
-            </div>
+        </div>
     );
 
 };
