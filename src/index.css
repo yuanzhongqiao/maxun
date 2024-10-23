@@ -19,6 +19,13 @@ html {
   overflow-y: auto;
 }
 
+a {
+  color: #ff00c3;
+  &:hover {
+    color: #ff00c3;
+  }
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
