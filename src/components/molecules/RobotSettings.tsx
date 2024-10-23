@@ -98,6 +98,12 @@ export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSe
                                     disabled
                                     style={{ marginBottom: '20px' }}
                                 />
+                                <TextField
+                                    label="Robot Created At"
+                                    value={robot.recording_meta.createdAt}
+                                    disabled
+                                    style={{ marginBottom: '20px' }}
+                                />
                             </>
                         )
                     }
