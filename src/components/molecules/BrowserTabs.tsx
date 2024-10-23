@@ -67,7 +67,7 @@ export const BrowserTabs = (
           })}
         </Tabs>
       </Box>
-      <AddButton handleClick={handleAddNewTab} style={{ background: 'white' }} />
+      {/* <AddButton handleClick={handleAddNewTab} style={{ background: 'white' }} /> */}
     </Box>
   );
 }
