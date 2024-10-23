@@ -145,7 +145,7 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
             <div>
               <Typography variant='h6' sx={{ display: 'flex', alignItems: 'center' }}>
                 <ImageIcon sx={{ marginRight: '15px' }} />
-                Binary output</Typography>
+                Captured Screenshot</Typography>
               {Object.keys(row.binaryOutput).map((key) => {
                 try {
                   const imageUrl = row.binaryOutput[key];
