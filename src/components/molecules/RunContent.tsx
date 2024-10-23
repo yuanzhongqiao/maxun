@@ -52,9 +52,9 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
       <TabContext value={tab}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={tab} onChange={(e, newTab) => setTab(newTab)} aria-label="run-content-tabs">
+            <Tab label="Output Data" value='output' />
             <Tab label="Log" value='log' />
             {/* <Tab label="Input" value='input' /> */}
-            <Tab label="Output Data" value='output' />
           </Tabs>
         </Box>
         <TabPanel value='log'>
