@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import { Button, TextField, Grid } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSocketStore } from "../../context/socket";
+import { Buffer } from 'buffer';
 import { useBrowserDimensionsStore } from "../../context/browserDimensions";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -25,6 +26,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
   const [log, setLog] = useState<string>('');
   const [customValue, setCustomValue] = useState('');
   const [tableData, setTableData] = useState<any[]>([]);
+  const [binaryData, setBinaryData] = useState<string | null>(null);
 
   const logEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -72,12 +74,18 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
   }, [log, scrollLogToBottom]);
 
   const handleBinaryCallback = useCallback(({ data, mimetype }: any) => {
+    const base64String = Buffer.from(data).toString('base64');
+    const imageSrc = `data:${mimetype};base64,${base64String}`;
+    
     setLog((prevState) =>
       prevState + '\n' + '---------- Binary output data received ----------' + '\n'
-      + `mimetype: ${mimetype}` + '\n' + `data: ${JSON.stringify(data)}` + '\n'
+      + `mimetype: ${mimetype}` + '\n' + 'Image is rendered below:' + '\n'
       + '------------------------------------------------');
+    
+    setBinaryData(imageSrc);
     scrollLogToBottom();
   }, [log, scrollLogToBottom]);
+  
 
   const handleCustomValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCustomValue(event.target.value);
@@ -156,7 +164,14 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
               padding: '10px',
             }}
           >
-            {tableData.length > 0 ? (
+
+            {
+            binaryData ? (
+              <div style={{ marginBottom: '20px' }}>
+                <Typography variant="body1" gutterBottom>Binary Data:</Typography>
+                <img src={binaryData} alt="Binary Output" style={{ maxWidth: '100%' }} />
+              </div>
+            ) : tableData.length > 0 ? (
               <>
                 <TableContainer component={Paper}>
                   <Table sx={{ minWidth: 650 }} stickyHeader aria-label="output data table">
