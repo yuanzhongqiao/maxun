@@ -88,8 +88,8 @@ const ApiKeyManager = () => {
   if (loading) return <CircularProgress />;
 
   return (
-    <Container>
-      <Typography variant="h6" gutterBottom component="div" style={{ marginBottom: '20px', alignSelf: 'flex-start' }}>
+    <Container sx={{ alignSelf: 'flex-start' }}>
+      <Typography variant="h6" gutterBottom component="div" style={{ marginBottom: '20px' }}>
         Manage Your API Key
       </Typography>
       {apiKey ? (
