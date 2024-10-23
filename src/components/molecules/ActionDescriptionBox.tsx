@@ -12,12 +12,12 @@ const CustomBoxContainer = styled.div`
   // border: 2px solid #ff00c3;
   border-radius: 5px;
   background-color: white;
-  margin: 70px 15px 30px 15px;
+  margin: 70px 15px 25px 15px;
 `;
 
 const Triangle = styled.div`
   position: absolute;
-  top: -20px; /* Moved the triangle down */
+  top: -15px;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
