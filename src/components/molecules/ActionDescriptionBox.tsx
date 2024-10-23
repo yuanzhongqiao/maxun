@@ -10,6 +10,7 @@ const CustomBoxContainer = styled.div`
   min-height: 100px;
   height: auto;
   border: 2px solid #ff00c3;
+  border-radius: 5px;
   background-color: white;
   margin: 30px 15px;
 `;
