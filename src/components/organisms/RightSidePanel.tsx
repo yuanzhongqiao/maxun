@@ -467,24 +467,6 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
             {
               step.type === 'text' && (
                 <>
-                  {confirmedTextSteps[step.id] && hoverStates[step.id] && (
-                    <IconButton
-                      onClick={() => handlePairDelete()}
-                      sx={{
-                        position: 'absolute',
-                        top: -15,
-                        right: -15,
-                        color: 'red',
-                        p: 0,
-                        zIndex: 1,
-                        boxShadow: '5px',
-                        backgroundColor: 'white',
-                        borderRadius: '50%',
-                      }}
-                    >
-                      <DeleteIcon sx={{ fontSize: 40 }} />
-                    </IconButton>
-                  )}
                   <TextField
                     label="Label"
                     value={textLabels[step.id] || step.label || ''}
