@@ -154,7 +154,6 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
                       width: 'max-content',
                     }}>
                       <Typography key={`binary-output-key-${key}`}>
-                        {key}:
                         <a href={imageUrl} download={key} style={{ margin: '10px' }}>Download</a>
                       </Typography>
                       <img key={`image-${key}`} src={imageUrl} alt={key} height='auto' width='700px' />
