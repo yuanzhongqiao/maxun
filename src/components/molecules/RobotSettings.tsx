@@ -34,7 +34,7 @@ interface ScheduleConfig {
     cronExpression?: string;
 }
 
-interface RobotSettings {
+export interface RobotSettings {
     id: string;
     userId?: number;
     recording_meta: RobotMeta;
@@ -89,6 +89,12 @@ export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSe
                                 <TextField
                                     label="Robot Target URL"
                                     value={robot.recording.workflow[0].where.url}
+                                    disabled
+                                    style={{ marginBottom: '20px' }}
+                                />
+                                <TextField
+                                    label="Robot ID"
+                                    value={robot.recording_meta.id}
                                     disabled
                                     style={{ marginBottom: '20px' }}
                                 />
