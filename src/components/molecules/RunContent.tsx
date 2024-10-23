@@ -82,42 +82,6 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
             Stop
           </Button> : null}
         </TabPanel>
-        {/* <TabPanel value='input' sx={{ width: '700px' }}>
-          <Typography variant='h6' sx={{ display: 'flex', alignItems: 'center' }}>
-            <SettingsIcon sx={{ marginRight: '15px' }} />
-            Interpreter settings
-          </Typography>
-          {
-            Object.keys(row.interpreterSettings).map((setting, index) => {
-              if (setting === 'params') {
-                return (
-                  <div key={`settings-${setting}-${index}`}>
-                    <Typography variant='h6' sx={{ display: 'flex', alignItems: 'center' }} key={`setting-${index}`}>
-                      <AssignmentIcon sx={{ marginRight: '15px' }} />
-                      Recording parameters
-                    </Typography>
-                    {
-                      Object.keys(row.interpreterSettings.params).map((param, index) => {
-                        return (
-                          <Typography key={`recording-params-item-${index}`} sx={{ margin: '10px' }}>
-                            {/*@ts-ignore*/}
-                            {param}: {row.interpreterSettings.params[param].toString()}
-                          </Typography>
-                        )
-                      })
-                    }
-                  </div>
-                )
-              }
-              return (
-                <Typography key={`interpreter-settings-item-${index}`} sx={{ margin: '10px' }}>
-                  {/*@ts-ignore*/}
-                  {setting}: {row.interpreterSettings[setting].toString()}
-                </Typography>
-              )
-            })
-          }
-        </TabPanel> */}
         <TabPanel value='output' sx={{ width: '700px' }}>
           {!row || !row.serializableOutput || !row.binaryOutput
             || (Object.keys(row.serializableOutput).length === 0 && Object.keys(row.binaryOutput).length === 0)
