@@ -92,7 +92,7 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
             <div>
               <Typography variant='h6' sx={{ display: 'flex', alignItems: 'center' }}>
                 <ArticleIcon sx={{ marginRight: '15px' }} />
-                Serializable output
+                Captured Data
               </Typography>
               {Object.keys(row.serializableOutput).map((key) => {
                 return (
