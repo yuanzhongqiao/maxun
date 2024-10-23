@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Typography, FormControlLabel, Checkbox, Box } from '@mui/material';
 import { useActionContext } from '../../context/browserActions';
 
-// Styled components
 const CustomBoxContainer = styled.div`
   position: relative;
   min-width: 250px;
@@ -13,7 +12,7 @@ const CustomBoxContainer = styled.div`
   // border: 2px solid #ff00c3;
   border-radius: 5px;
   background-color: white;
-  margin: 70px 15px 30px 15px; /* Increased top margin to move the box down */
+  margin: 70px 15px 30px 15px;
 `;
 
 const Triangle = styled.div`
@@ -30,10 +29,10 @@ const Triangle = styled.div`
 
 const Logo = styled.img`
   position: absolute;
-  top: -70px; /* Adjusted to move the logo further above the box */
+  top: -70px;
   left: 50%;
   transform: translateX(-50%);
-  width: 60px; /* Increased logo size */
+  width: 60px;
   height: auto;
 `;
 
