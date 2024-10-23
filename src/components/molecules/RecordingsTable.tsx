@@ -10,7 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import { useEffect } from "react";
 import { WorkflowFile } from "maxun-core";
 import { IconButton, Button, Box, Typography, TextField } from "@mui/material";
-import { Schedule, DeleteForever, Edit, PlayCircle } from "@mui/icons-material";
+import { Schedule, DeleteForever, Edit, PlayCircle, Settings } from "@mui/icons-material";
 import LinkIcon from '@mui/icons-material/Link';
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
@@ -26,7 +26,7 @@ import { GenericModal } from '../atoms/GenericModal';
 */
 
 interface Column {
-  id: 'interpret' | 'name' | 'delete' | 'schedule' | 'integrate';
+  id: 'interpret' | 'name' | 'delete' | 'schedule' | 'integrate' | 'settings';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -68,6 +68,11 @@ const columns: readonly Column[] = [
     label: 'Delete',
     minWidth: 80,
   },
+  {
+    id: 'settings',
+    label: 'Settings',
+    minWidth: 80,
+  },
 ];
 
 interface Data {
@@ -84,9 +89,10 @@ interface RecordingsTableProps {
   handleRunRecording: (id: string, fileName: string, params: string[]) => void;
   handleScheduleRecording: (id: string, fileName: string, params: string[]) => void;
   handleIntegrateRecording: (id: string, fileName: string, params: string[]) => void;
+  handleSettingsRecording: (id: string, fileName: string, params: string[]) => void;
 }
 
-export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handleScheduleRecording, handleIntegrateRecording }: RecordingsTableProps) => {
+export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handleScheduleRecording, handleIntegrateRecording, handleSettingsRecording }: RecordingsTableProps) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState<Data[]>([]);
@@ -256,6 +262,12 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
                                 </IconButton>
                               </TableCell>
                             );
+                            case 'settings':
+                              return (
+                                <TableCell key={column.id} align={column.align}>
+                                  <SettingsButton handleSettings={() => handleSettingsRecording(row.id, row.name, row.params || [])} />
+                                </TableCell>
+                              );
                           default:
                             return null;
                         }
@@ -344,6 +356,21 @@ const IntegrateButton = ({ handleIntegrate }: IntegrateButtonProps) => {
     }}
     >
       <LinkIcon />
+    </IconButton>
+  )
+}
+
+interface SettingsButtonProps {
+  handleSettings: () => void;
+}
+
+const SettingsButton = ({ handleSettings }: SettingsButtonProps) => {
+  return (
+    <IconButton aria-label="add" size="small" onClick={() => {
+      handleSettings();
+    }}
+    >
+      <Settings />
     </IconButton>
   )
 }
