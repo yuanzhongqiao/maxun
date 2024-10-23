@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { GenericModal } from "../atoms/GenericModal";
-import { MenuItem, TextField, Typography, Box, Switch, FormControlLabel } from "@mui/material";
-import { Dropdown } from "../atoms/DropdownMui";
-import Button from "@mui/material/Button";
+import { TextField, Typography, Box } from "@mui/material";
 import { modalStyle } from "./AddWhereCondModal";
-import { validMomentTimezones } from '../../constants/const';
 import { useGlobalInfoStore } from '../../context/globalInfo';
-import { getSchedule, deleteSchedule, getStoredRecording } from '../../api/storage';
-import { WorkflowFile, Where, What, WhereWhatPair } from 'maxun-core';
+import { getStoredRecording } from '../../api/storage';
+import { WhereWhatPair } from 'maxun-core';
 
 interface RobotMeta {
     name: string;
