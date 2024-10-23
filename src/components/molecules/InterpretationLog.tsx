@@ -14,6 +14,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import StorageIcon from '@mui/icons-material/Storage';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { SidePanelHeader } from './SidePanelHeader';
 import { useGlobalInfoStore } from '../../context/globalInfo';
 
@@ -135,7 +136,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
             },
           }}
         >
-          Output Data Preview
+        <ArrowUpwardIcon fontSize="inherit" sx={{ marginRight: '10px'}} /> Output Data Preview 
         </Button>
         <SwipeableDrawer
           anchor="bottom"
