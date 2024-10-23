@@ -87,7 +87,7 @@ export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSe
                         robot && (
                             <>
                                 <TextField
-                                    label="Robot URL"
+                                    label="Robot Target URL"
                                     value={robot.recording.workflow[0].where.url}
                                     disabled
                                     style={{ marginBottom: '20px' }}
