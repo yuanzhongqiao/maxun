@@ -1,13 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Paper, Grid, IconButton, Button, Box } from '@mui/material';
 import { SaveRecording } from "./SaveRecording";
 import { Circle, Add, Logout, Clear } from "@mui/icons-material";
 import { useGlobalInfoStore } from '../../context/globalInfo';
 import { stopRecording } from "../../api/recording";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { GenericModal } from "../atoms/GenericModal";
 
 
 const BrowserRecordingSave = () => {
+  const [openModal, setOpenModal] = useState<boolean>(false);
     const { recordingName, browserId, setBrowserId, notify } = useGlobalInfoStore();
     const navigate = useNavigate();
 
@@ -37,9 +39,22 @@ const BrowserRecordingSave = () => {
                      display: 'flex',
                      justifyContent: 'space-between',
                 }}>
-                    <Button onClick={goToMainMenu} variant="outlined" sx={{ marginLeft: "25px" }} size="small" color="error">
+                    <Button onClick={() => setOpenModal(true)} variant="outlined" style={{ marginLeft: "25px" }} size="small" color="error">
                       Discard
                     </Button>
+                    <GenericModal isOpen={openModal} onClose={() => setOpenModal(false)} modalStyle={modalStyle}>
+                      <Box p={2}>
+                      <h2>Are you sure you want to discard the recording?</h2>
+                      <Box display="flex" justifyContent="space-between" mt={2}>
+                        <Button onClick={goToMainMenu} variant="contained" color="error">
+                        Discard
+                        </Button>
+                        <Button onClick={() => setOpenModal(false)} variant="outlined">
+                        Cancel
+                        </Button>
+                      </Box>
+                      </Box>
+                    </GenericModal>
                     <SaveRecording fileName={recordingName} />
                 </div>
             </Grid>
@@ -48,3 +63,15 @@ const BrowserRecordingSave = () => {
 }
 
 export default BrowserRecordingSave
+
+const modalStyle = {
+  top: '25%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '30%',
+  backgroundColor: 'background.paper',
+  p: 4,
+  height: 'fit-content',
+  display: 'block',
+  padding: '20px',
+};
