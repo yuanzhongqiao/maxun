@@ -75,6 +75,14 @@ export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRun
                     </IconButton>
                   </TableCell>
                 );
+              case 'runBy':
+                return (
+                  <TableCell key={column.id} align={column.align}>
+                    {
+                      row.runByUserId ? `User: ${row.runByUserId}` : row.runByScheduleId ? `Schedule ID: ${row.runByScheduleId}` : row.runByAPI ? 'API' : 'Unknown'
+                    }
+                  </TableCell>
+                )
               default:
                 return null;
             }
