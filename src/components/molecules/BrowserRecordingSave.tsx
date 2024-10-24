@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Paper, Grid, IconButton, Button, Box } from '@mui/material';
+import { Paper, Grid, IconButton, Button, Box, Typography } from '@mui/material';
 import { SaveRecording } from "./SaveRecording";
 import { Circle, Add, Logout, Clear } from "@mui/icons-material";
 import { useGlobalInfoStore } from '../../context/globalInfo';
@@ -44,7 +44,7 @@ const BrowserRecordingSave = () => {
           </Button>
           <GenericModal isOpen={openModal} onClose={() => setOpenModal(false)} modalStyle={modalStyle}>
             <Box p={2}>
-              <h2>Are you sure you want to discard the recording?</h2>
+              <Typography variant="h6">Are you sure you want to discard the recording?</Typography>
               <Box display="flex" justifyContent="space-between" mt={2}>
                 <Button onClick={goToMainMenu} variant="contained" color="error">
                   Discard
