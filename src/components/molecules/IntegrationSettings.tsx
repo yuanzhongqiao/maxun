@@ -162,22 +162,22 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                                     <Typography color="error">{error}</Typography>
                                 ) : spreadsheets.length === 0 ? (
                                     <>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={fetchSpreadsheetFiles}
-                                        style={{ marginBottom: '15px' }}
-                                    >
-                                        Fetch Google Spreadsheets
-                                    </Button>
-                                    <Button
-                            variant="outlined"
-                            color="error"
-                            onClick={removeIntegration}
-                            style={{ marginTop: '15px' }}
-                        >
-                            Remove Integration
-                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={fetchSpreadsheetFiles}
+                                            style={{ marginBottom: '15px' }}
+                                        >
+                                            Fetch Google Spreadsheets
+                                        </Button>
+                                        <Button
+                                            variant="outlined"
+                                            color="error"
+                                            onClick={removeIntegration}
+                                            style={{ marginTop: '15px' }}
+                                        >
+                                            Remove Integration
+                                        </Button>
                                     </>
                                 ) : (
                                     <>
