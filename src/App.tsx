@@ -58,9 +58,16 @@ const theme = createTheme({
         },
       },
     },
+    MuiAlert: {
+      styleOverrides: {
+        standardInfo: {
+          backgroundColor: "#fce1f4",
+          color: "#ff00c3",
+        },
+      },
+    },
   },
 });
-
 
 function App() {
   return (
