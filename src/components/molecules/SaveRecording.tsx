@@ -85,7 +85,7 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
           <Typography variant="h6">Save Robot</Typography>
           <TextField
             required
-            sx={{ width: '250px', paddingBottom: '10px', margin: '15px 0px' }}
+            sx={{ width: '300px', paddingBottom: '10px', margin: '15px 0px' }}
             onChange={handleChangeOfTitle}
             id="title"
             label="Robot Name"
@@ -120,7 +120,7 @@ const modalStyle = {
   top: '25%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '20%',
+  width: '50%',
   backgroundColor: 'background.paper',
   p: 4,
   height: 'fit-content',
