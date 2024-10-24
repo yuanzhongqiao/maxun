@@ -64,13 +64,13 @@ const columns: readonly Column[] = [
   //   //format: (value: string) => value.toLocaleString('en-US'),
   // },
   {
-    id: 'delete',
-    label: 'Delete',
+    id: 'settings',
+    label: 'Settings',
     minWidth: 80,
   },
   {
-    id: 'settings',
-    label: 'Settings',
+    id: 'delete',
+    label: 'Delete',
     minWidth: 80,
   },
 ];
@@ -291,7 +291,7 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <GenericModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+      <GenericModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} modalStyle={modalStyle}>
         <div style={{ padding: '20px' }}>
           <Typography variant="h6" gutterBottom>Enter URL To Extract Data</Typography>
           <TextField
@@ -376,3 +376,15 @@ const SettingsButton = ({ handleSettings }: SettingsButtonProps) => {
     </IconButton>
   )
 }
+
+const modalStyle = {
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '30%',
+  backgroundColor: 'background.paper',
+  p: 4,
+  height: 'fit-content',
+  display: 'block',
+  padding: '20px',
+};
