@@ -137,15 +137,15 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                     <>
                         {!recording?.google_sheet_email ? (
                             <>
-                            <p>If you enable this option, every time this robot runs a task successfully, its captured data will be appended to your Google Sheet.</p>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={authenticateWithGoogle}
-                                style={{ marginBottom: '15px' }}
-                            >
-                                Authenticate with Google
-                            </Button>
+                                <p>If you enable this option, every time this robot runs a task successfully, its captured data will be appended to your Google Sheet.</p>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={authenticateWithGoogle}
+                                    style={{ marginBottom: '15px' }}
+                                >
+                                    Authenticate with Google
+                                </Button>
                             </>
                         ) : (
                             <>
