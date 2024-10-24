@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSocketStore } from '../../context/socket';
 import { Button } from '@mui/material';
 import Canvas from "../atoms/canvas";
-import { useBrowserDimensionsStore } from "../../context/browserDimensions";
 import { Highlighter } from "../atoms/Highlighter";
 import { GenericModal } from '../atoms/GenericModal';
 import { useActionContext } from '../../context/browserActions';
@@ -87,6 +86,11 @@ export const BrowserWindow = () => {
         setListSelector(null);
         setFields({});
         setCurrentListId(null);
+        setPaginationSelector('');
+        setHighlighterData(null);
+        setShowAttributeModal(false);
+        setSelectedElement(null);
+        setAttributeOptions([]);
     }, []);
 
     useEffect(() => {
@@ -141,7 +145,7 @@ export const BrowserWindow = () => {
             // for non-list steps
             setHighlighterData(data);
         }
-    }, [highlighterData, getList, socket, listSelector, paginationMode, paginationType]);
+    }, [getList, socket, listSelector, paginationMode, paginationType]);
 
 
     useEffect(() => {
@@ -209,13 +213,12 @@ export const BrowserWindow = () => {
                     setCurrentListId(Date.now());
                     setFields({});
                 } else if (getList === true && listSelector && currentListId) {
-                    const attribute = options[0].value;
-                    const data = attribute === 'href' ? highlighterData.elementInfo?.url || '' :
-                        attribute === 'src' ? highlighterData.elementInfo?.imageUrl || '' :
-                            highlighterData.elementInfo?.innerText || '';
                     // Add fields to the list
                     if (options.length === 1) {
                         const attribute = options[0].value;
+                        const data = attribute === 'href' ? highlighterData.elementInfo?.url || '' :
+                            attribute === 'src' ? highlighterData.elementInfo?.imageUrl || '' :
+                                highlighterData.elementInfo?.innerText || '';
                         const newField: TextStep = {
                             id: Date.now(),
                             type: 'text',
