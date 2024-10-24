@@ -1,8 +1,8 @@
 {
   "name": "maxun",
-  "version": "0.1.0",
-  "author": "Karishma Shukla",
-  "license": "",
+  "version": "0.0.1",
+  "author": "Maxun",
+  "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@cliqz/adblocker-playwright": "^1.30.0",
     "@emotion/react": "^11.9.0",
