@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GenericModal } from "../atoms/GenericModal";
-import { MenuItem, Typography, CircularProgress, Alert, AlertTitle } from "@mui/material";
+import { MenuItem, Typography, CircularProgress, Alert, AlertTitle, Chip } from "@mui/material";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import axios from 'axios';
@@ -114,7 +114,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
     return (
         <GenericModal isOpen={isOpen} onClose={handleClose}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginLeft: '65px' }}>
-                <Typography variant="h6" sx={{ margin: '15px 0px' }}>Integrate with Google Sheet</Typography>
+                <Typography variant="h6" sx={{ margin: '15px 0px' }}>Integrate with Google Sheet <Chip label="beta" color="primary" variant="outlined" /></Typography>
 
                 {recording && recording.google_sheet_id ? (
                     <>
