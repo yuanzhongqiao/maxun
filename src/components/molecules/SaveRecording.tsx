@@ -82,7 +82,7 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
 
       <GenericModal isOpen={openModal} onClose={() => setOpenModal(false)} modalStyle={modalStyle}>
         <form onSubmit={handleSaveRecording} style={{ paddingTop: '20px', display: 'flex', flexDirection: 'column' }} >
-          <Typography variant="h5">Save the robot as</Typography>
+          <Typography variant="h6">Save Robot</Typography>
           <TextField
             required
             sx={{ width: '250px', paddingBottom: '10px', margin: '15px 0px' }}
