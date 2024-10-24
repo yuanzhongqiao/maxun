@@ -3,7 +3,6 @@ import { GenericModal } from "../atoms/GenericModal";
 import { MenuItem, TextField, Typography, Box, Switch, FormControlLabel } from "@mui/material";
 import { Dropdown } from "../atoms/DropdownMui";
 import Button from "@mui/material/Button";
-import { modalStyle } from "./AddWhereCondModal";
 import { validMomentTimezones } from '../../constants/const';
 import { useGlobalInfoStore } from '../../context/globalInfo';
 import { getSchedule, deleteSchedule } from '../../api/storage';
@@ -248,4 +247,16 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
       </Box>
     </GenericModal>
   );
+};
+
+const modalStyle = {
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '40%',
+  backgroundColor: 'background.paper',
+  p: 4,
+  height: 'fit-content',
+  display: 'block',
+  padding: '20px',
 };
