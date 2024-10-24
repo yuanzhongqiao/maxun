@@ -323,6 +323,7 @@ export const BrowserWindow = () => {
                         isOpen={showAttributeModal}
                         onClose={() => { }}
                         canBeClosed={false}
+                        modalStyle={modalStyle}
                     >
                         <div>
                             <h2>Select Attribute</h2>
@@ -389,3 +390,15 @@ const drawImage = (image: string, canvas: HTMLCanvasElement): void => {
     };
 
 };
+
+const modalStyle = {
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '30%',
+    backgroundColor: 'background.paper',
+    p: 4,
+    height: 'fit-content',
+    display: 'block',
+    padding: '20px',
+  };
