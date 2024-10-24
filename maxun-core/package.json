@@ -1,7 +1,7 @@
 {
   "name": "maxun-core",
   "version": "0.0.1",
-  "description": "Smart Workflow interpreter",
+  "description": "Core package for Maxun, responsible for data extraction",
   "main": "build/index.js",
   "typings": "build/index.d.ts",
   "scripts": {
@@ -14,14 +14,16 @@
     "build/*"
   ],
   "keywords": [
+    "maxun",
+    "no-code scraping",
     "web",
     "automation",
     "workflow",
-    "interpret",
+    "data extraction",
     "scraping"
   ],
-  "author": "Karishma Shukla",
-  "license": "MIT",
+  "author": "Maxun",
+  "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@cliqz/adblocker-playwright": "^1.31.3",
     "cross-fetch": "^4.0.0",
