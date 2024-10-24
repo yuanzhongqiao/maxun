@@ -144,7 +144,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
                   <Button
                     onClick={deleteRobotSchedule}
                     variant="contained"
-                    color="primary"
+                    color="error"
                   >
                     Delete Schedule
                   </Button>
