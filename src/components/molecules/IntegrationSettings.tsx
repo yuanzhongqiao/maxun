@@ -161,6 +161,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                                 ) : error ? (
                                     <Typography color="error">{error}</Typography>
                                 ) : spreadsheets.length === 0 ? (
+                                    <>
                                     <Button
                                         variant="contained"
                                         color="primary"
@@ -169,6 +170,15 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                                     >
                                         Fetch Google Spreadsheets
                                     </Button>
+                                    <Button
+                            variant="outlined"
+                            color="error"
+                            onClick={removeIntegration}
+                            style={{ marginTop: '15px' }}
+                        >
+                            Remove Integration
+                        </Button>
+                                    </>
                                 ) : (
                                     <>
                                         <TextField
