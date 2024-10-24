@@ -139,7 +139,7 @@ export const InterpretationButtons = ({ enableStepping }: InterpretationButtonsP
         disabled={info.running}
         sx={{ display: 'grid' }}
       >
-        {info.running ? 'Extracting data...almost there!' : 'Get Preview of Output Data'}
+        {info.running ? 'Extracting data...please wait' : 'Get Preview of Output Data'}
       </Button>
       <GenericModal
         onClose={() => { }}
