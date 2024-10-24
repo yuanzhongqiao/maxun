@@ -65,6 +65,7 @@ export const NavBar: React.FC<NavBarProps> = ({ recordingName, isRecording }) =>
                   <>
                     <IconButton sx={{
                       width: '140px',
+                      border: '1px solid #ff00c3',
                       borderRadius: '5px',
                       padding: '8px',
                       background: 'white',
