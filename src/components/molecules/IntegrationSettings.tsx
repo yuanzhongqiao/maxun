@@ -184,7 +184,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                                         <TextField
                                             sx={{ marginBottom: '15px' }}
                                             select
-                                            label="Select Google Spreadsheet"
+                                            label="Select Google Sheet"
                                             required
                                             value={settings.spreadsheetId}
                                             onChange={handleSpreadsheetSelect}
