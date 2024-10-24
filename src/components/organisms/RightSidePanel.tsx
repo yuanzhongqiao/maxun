@@ -435,6 +435,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                       marginLeft: '10px',
                       '& input': {
                         padding: '10px',
+                        background: 'white',
                       },
                     }}
                   />
