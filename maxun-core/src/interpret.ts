@@ -111,6 +111,7 @@ export default class Interpreter extends EventEmitter {
     * @returns {PageState} State of the current page.
     */
   private async getState(page: Page, workflow: Workflow): Promise<PageState> {
+    await page.setViewportSize({ width: 900, height: 400 }); 
     /**
      * All the selectors present in the current Workflow
      */
