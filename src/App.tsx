@@ -63,11 +63,24 @@ const theme = createTheme({
         standardInfo: {
           backgroundColor: "#fce1f4",
           color: "#ff00c3",
+          '& .MuiAlert-icon': {
+            color: "#ff00c3",
+          },
+        },
+      },
+    },
+    MuiAlertTitle: {
+      styleOverrides: {
+        root: {
+          '& .MuiAlert-icon': {
+            color: "#ffffff",
+          },
         },
       },
     },
   },
 });
+
 
 function App() {
   return (
