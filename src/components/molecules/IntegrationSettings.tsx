@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GenericModal } from "../atoms/GenericModal";
-import { MenuItem, Typography, CircularProgress } from "@mui/material";
+import { MenuItem, Typography, CircularProgress, Alert, AlertTitle } from "@mui/material";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import axios from 'axios';
@@ -119,7 +119,10 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                 {recording && recording.google_sheet_id ? (
                     <>
                         <Typography sx={{ marginBottom: '10px' }}>
-                            Google Sheet Integrated Successfully!
+                        <Alert severity="info">
+                            <AlertTitle>Google Sheet Integrated Successfully.</AlertTitle>
+                            Every time this robot creates a successful run, its captured data is appended to your {recording.google_sheet_name} Google Sheet.
+                        </Alert>
                             <br />
                             Sheet Name: {recording.google_sheet_name}
                             <br />
