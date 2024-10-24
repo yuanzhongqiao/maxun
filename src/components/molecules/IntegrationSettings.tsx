@@ -28,7 +28,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const { recordingId } = useGlobalInfoStore();
+    const { recordingId, notify } = useGlobalInfoStore();
     const [recording, setRecording] = useState<any>(null);
 
     const authenticateWithGoogle = () => {
@@ -52,6 +52,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
             setSpreadsheets(response.data);
         } catch (error: any) {
             console.error('Error fetching spreadsheet files:', error.response?.data?.message || error.message);
+            notify('error', `Error fetching spreadsheet files: ${error.response?.data?.message || error.message}`);
         }
     };
 
