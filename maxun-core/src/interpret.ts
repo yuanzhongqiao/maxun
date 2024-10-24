@@ -287,6 +287,7 @@ export default class Interpreter extends EventEmitter {
           this.concurrency.addJob(async () => {
             try {
               const newPage = await context.newPage();
+              await newPage.setViewportSize({ width: 900, height: 400 });
               await newPage.goto(link);
               await newPage.waitForLoadState('networkidle');
               await this.runLoop(newPage, this.initializedWorkflow!);
