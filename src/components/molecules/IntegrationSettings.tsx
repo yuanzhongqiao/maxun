@@ -121,6 +121,8 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                         <Alert severity="info">
                             <AlertTitle>Google Sheet Integrated Successfully.</AlertTitle>
                             Every time this robot creates a successful run, its captured data is appended to your {recording.google_sheet_name} Google Sheet. You can check the data updates <a href={`https://docs.google.com/spreadsheets/d/${recording.google_sheet_id}`} target="_blank" rel="noreferrer">here</a>.
+                            <br />
+                            <strong>Note:</strong> The data extracted before integrating with Google Sheets will not be synced in the Google Sheet. Only the data extracted after the integration will be synced.
                         </Alert>
                         <Button
                             variant="outlined"
