@@ -118,16 +118,10 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
 
                 {recording && recording.google_sheet_id ? (
                     <>
-                        <Typography sx={{ marginBottom: '10px' }}>
                         <Alert severity="info">
                             <AlertTitle>Google Sheet Integrated Successfully.</AlertTitle>
                             Every time this robot creates a successful run, its captured data is appended to your {recording.google_sheet_name} Google Sheet.
                         </Alert>
-                            <br />
-                            Sheet Name: {recording.google_sheet_name}
-                            <br />
-                            Sheet ID: {recording.google_sheet_id}
-                        </Typography>
                         <Button
                             variant="outlined"
                             color="error"
