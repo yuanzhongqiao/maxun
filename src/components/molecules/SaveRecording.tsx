@@ -81,7 +81,7 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
       </Button>
 
       <GenericModal isOpen={openModal} onClose={() => setOpenModal(false)} modalStyle={modalStyle}>
-        <form onSubmit={handleSaveRecording} style={{ paddingTop: '20px', display: 'flex', flexDirection: 'column' }} >
+        <form onSubmit={handleSaveRecording}>
           <Typography variant="h6">Save Robot</Typography>
           <TextField
             required
@@ -120,7 +120,7 @@ const modalStyle = {
   top: '25%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '50%',
+  width: '30%',
   backgroundColor: 'background.paper',
   p: 4,
   height: 'fit-content',
