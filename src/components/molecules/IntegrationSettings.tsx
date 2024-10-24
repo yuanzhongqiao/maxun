@@ -6,13 +6,11 @@ import TextField from "@mui/material/TextField";
 import axios from 'axios';
 import { useGlobalInfoStore } from '../../context/globalInfo';
 import { getStoredRecording } from '../../api/storage';
-
 interface IntegrationProps {
     isOpen: boolean;
     handleStart: (data: IntegrationSettings) => void;
     handleClose: () => void;
 }
-
 export interface IntegrationSettings {
     spreadsheetId: string;
     spreadsheetName: string;
