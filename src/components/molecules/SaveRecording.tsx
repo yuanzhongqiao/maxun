@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useContext } from 'react';
-import { IconButton, Button, Box, LinearProgress, Tooltip } from "@mui/material";
+import { Button, Box, LinearProgress, Tooltip } from "@mui/material";
 import { GenericModal } from "../atoms/GenericModal";
 import { stopRecording } from "../../api/recording";
 import { useGlobalInfoStore } from "../../context/globalInfo";
@@ -8,8 +8,6 @@ import { useSocketStore } from "../../context/socket";
 import { TextField, Typography } from "@mui/material";
 import { WarningText } from "../atoms/texts";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
-import FlagIcon from '@mui/icons-material/Flag';
-import { DoneAll } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom';
 
 interface SaveRecordingProps {
