@@ -49,29 +49,29 @@ export const PageWrapper = () => {
     <div>
       <AuthProvider>
         <SocketProvider>
-            <React.Fragment>
+          <React.Fragment>
             {!browserId && <NavBar recordingName={recordingName} isRecording={!!browserId} />}
             <Routes>
               <Route element={<UserRoute />}>
-              <Route path="/" element={<MainPage handleEditRecording={handleEditRecording} />} />
+                <Route path="/" element={<MainPage handleEditRecording={handleEditRecording} />} />
               </Route>
               <Route element={<UserRoute />}>
-              <Route path="/recording" element={
-                <BrowserDimensionsProvider>
-                <RecordingPage recordingName={recordingName} />
-                </BrowserDimensionsProvider>
-              } />
+                <Route path="/recording" element={
+                  <BrowserDimensionsProvider>
+                    <RecordingPage recordingName={recordingName} />
+                  </BrowserDimensionsProvider>
+                } />
               </Route>
               <Route
-              path="/login"
-              element={<Login />}
+                path="/login"
+                element={<Login />}
               />
               <Route
-              path="/register"
-              element={<Register />}
+                path="/register"
+                element={<Register />}
               />
             </Routes>
-            </React.Fragment>
+          </React.Fragment>
         </SocketProvider>
       </AuthProvider>
       {isNotification() ?
