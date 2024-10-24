@@ -43,7 +43,12 @@ const Content = styled.div`
 `;
 
 const ActionDescriptionBox = () => {
-  const { getText, getScreenshot, getList, captureStage } = useActionContext();
+  const { getText, getScreenshot, getList, captureStage } = useActionContext() as {
+    getText: boolean;
+    getScreenshot: boolean;
+    getList: boolean;
+    captureStage: 'initial' | 'pagination' | 'limit' | 'complete';
+  };
 
   const messages = [
     { stage: 'initial' as const, text: 'Select the list you want to extract along with the texts inside it' },
@@ -51,6 +56,9 @@ const ActionDescriptionBox = () => {
     { stage: 'limit' as const, text: 'Choose the number of items to extract' },
     { stage: 'complete' as const, text: 'Capture is complete' },
   ];
+
+  const stages = messages.map(({ stage }) => stage); // Create a list of stages
+  const currentStageIndex = stages.indexOf(captureStage); // Get the index of the current stage
 
   const renderActionDescription = () => {
     if (getText) {
@@ -75,17 +83,12 @@ const ActionDescriptionBox = () => {
             Hover over the list you want to extract. Once selected, you can hover over all texts inside the list you selected. Click to select them.
           </Typography>
           <Box>
-            {messages.map(({ stage, text }) => (
+            {messages.map(({ stage, text }, index) => (
               <FormControlLabel
                 key={stage}
                 control={
                   <Checkbox
-                    checked={
-                      (stage === 'initial' && captureStage !== '') ||
-                      (stage === 'pagination' && (captureStage === 'pagination' || captureStage === 'limit' || captureStage === 'complete')) ||
-                      (stage === 'limit' && (captureStage === 'limit' || captureStage === 'complete')) ||
-                      (stage === 'complete' && captureStage === 'complete')
-                    }
+                    checked={index < currentStageIndex} // Check the box if we are past this stage
                     disabled
                   />
                 }
