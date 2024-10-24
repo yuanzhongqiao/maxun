@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
-import { Paper, Grid, IconButton, Button, Box, Typography } from '@mui/material';
+import { Grid, Button, Box, Typography } from '@mui/material';
 import { SaveRecording } from "./SaveRecording";
-import { Circle, Add, Logout, Clear } from "@mui/icons-material";
 import { useGlobalInfoStore } from '../../context/globalInfo';
 import { stopRecording } from "../../api/recording";
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { GenericModal } from "../atoms/GenericModal";
-
 
 const BrowserRecordingSave = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
