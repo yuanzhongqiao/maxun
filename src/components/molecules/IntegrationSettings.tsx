@@ -164,7 +164,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                                     <>
                                         <div style={{ display: 'flex', gap: '10px' }}>
                                             <Button
-                                                variant="contained"
+                                                variant="outlined"
                                                 color="primary"
                                                 onClick={fetchSpreadsheetFiles}
                                             >
