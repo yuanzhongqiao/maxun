@@ -264,12 +264,12 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
                                 </IconButton>
                               </TableCell>
                             );
-                            case 'settings':
-                              return (
-                                <TableCell key={column.id} align={column.align}>
-                                  <SettingsButton handleSettings={() => handleSettingsRecording(row.id, row.name, row.params || [])} />
-                                </TableCell>
-                              );
+                          case 'settings':
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                <SettingsButton handleSettings={() => handleSettingsRecording(row.id, row.name, row.params || [])} />
+                              </TableCell>
+                            );
                           default:
                             return null;
                         }
