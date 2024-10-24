@@ -113,7 +113,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
     return (
         <GenericModal isOpen={isOpen} onClose={handleClose}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginLeft: '65px' }}>
-                <Typography sx={{ margin: '20px 0px' }}>Integrate with Google Sheet</Typography>
+                <Typography variant="h6" sx={{ margin: '20px 0px' }}>Integrate with Google Sheet</Typography>
 
                 {recording && recording.google_sheet_id ? (
                     <>
