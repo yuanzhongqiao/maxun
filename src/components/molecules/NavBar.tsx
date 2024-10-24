@@ -50,7 +50,7 @@ export const NavBar: React.FC<NavBarProps> = ({ recordingName, isRecording }) =>
         display: 'flex',
         justifyContent: 'flex-start',
       }}>
-        <img src="../../../public/img/maxunlogo.png" width={60} height='auto' />
+        <img src="../../../public/img/maxunlogo.png" width={57} height='auto' style={{ borderRadius: '5px'}} />
         <div style={{ padding: '11px' }}><ProjectName>Maxun</ProjectName></div>
       </div>
       {
