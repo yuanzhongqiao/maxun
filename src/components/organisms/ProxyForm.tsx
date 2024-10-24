@@ -159,10 +159,15 @@ const ProxyForm: React.FC = () => {
                 </Box>
             )}
             {tabIndex === 1 && (
-                <Box sx={{ maxWidth: 400, width: '100%', textAlign: 'center', marginTop: '20px' }}>
-                    <Button variant="contained" color="primary">
-                        Join Our Cloud Waitlist
+                <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
+                    <>
+                    <Typography variant="body1" gutterBottom component="div">
+                        Coming Soon. Join our Cloud Waitlist to get early access.
+                    </Typography>
+                    <Button variant="contained" color="primary" sx={{ marginTop: '20px'}}>
+                        Join Maxun Cloud Waitlist
                     </Button>
+                    </>
                 </Box>
             )}
         </FormContainer>
