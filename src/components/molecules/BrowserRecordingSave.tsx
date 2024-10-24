@@ -10,56 +10,56 @@ import { GenericModal } from "../atoms/GenericModal";
 
 const BrowserRecordingSave = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
-    const { recordingName, browserId, setBrowserId, notify } = useGlobalInfoStore();
-    const navigate = useNavigate();
+  const { recordingName, browserId, setBrowserId, notify } = useGlobalInfoStore();
+  const navigate = useNavigate();
 
-    const goToMainMenu = async () => {
-        if (browserId) {
-          await stopRecording(browserId);
-          notify('warning', 'Current Recording was terminated');
-          setBrowserId(null);
-        }
-        navigate('/');
-      };
+  const goToMainMenu = async () => {
+    if (browserId) {
+      await stopRecording(browserId);
+      notify('warning', 'Current Recording was terminated');
+      setBrowserId(null);
+    }
+    navigate('/');
+  };
 
-      return (
-        <Grid container>
-            <Grid item xs={12} md={3} lg={3}>
-                <div style={{
-                     marginTop: '10px',
-                    //  marginLeft: '10px',
-                     color: 'white',
-                     position: 'absolute',
-                     background: '#ff00c3',
-                     border: 'none',
-                     borderRadius: '5px',
-                     padding: '7.5px',
-                     width: 'calc(100% - 20px)',  // Ensure it takes full width but with padding
-                     overflow: 'hidden',
-                     display: 'flex',
-                     justifyContent: 'space-between',
-                }}>
-                    <Button onClick={() => setOpenModal(true)} variant="outlined" style={{ marginLeft: "25px" }} size="small" color="error">
-                      Discard
-                    </Button>
-                    <GenericModal isOpen={openModal} onClose={() => setOpenModal(false)} modalStyle={modalStyle}>
-                      <Box p={2}>
-                      <h2>Are you sure you want to discard the recording?</h2>
-                      <Box display="flex" justifyContent="space-between" mt={2}>
-                        <Button onClick={goToMainMenu} variant="contained" color="error">
-                        Discard
-                        </Button>
-                        <Button onClick={() => setOpenModal(false)} variant="outlined">
-                        Cancel
-                        </Button>
-                      </Box>
-                      </Box>
-                    </GenericModal>
-                    <SaveRecording fileName={recordingName} />
-                </div>
-            </Grid>
-        </Grid>
-    );
+  return (
+    <Grid container>
+      <Grid item xs={12} md={3} lg={3}>
+        <div style={{
+          marginTop: '10px',
+          //  marginLeft: '10px',
+          color: 'white',
+          position: 'absolute',
+          background: '#ff00c3',
+          border: 'none',
+          borderRadius: '5px',
+          padding: '7.5px',
+          width: 'calc(100% - 20px)',  // Ensure it takes full width but with padding
+          overflow: 'hidden',
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}>
+          <Button onClick={() => setOpenModal(true)} variant="outlined" style={{ marginLeft: "25px" }} size="small" color="error">
+            Discard
+          </Button>
+          <GenericModal isOpen={openModal} onClose={() => setOpenModal(false)} modalStyle={modalStyle}>
+            <Box p={2}>
+              <h2>Are you sure you want to discard the recording?</h2>
+              <Box display="flex" justifyContent="space-between" mt={2}>
+                <Button onClick={goToMainMenu} variant="contained" color="error">
+                  Discard
+                </Button>
+                <Button onClick={() => setOpenModal(false)} variant="outlined">
+                  Cancel
+                </Button>
+              </Box>
+            </Box>
+          </GenericModal>
+          <SaveRecording fileName={recordingName} />
+        </div>
+      </Grid>
+    </Grid>
+  );
 }
 
 export default BrowserRecordingSave
