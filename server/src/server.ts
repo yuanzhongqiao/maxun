@@ -18,7 +18,7 @@ import { fork } from 'child_process';
 
 const app = express();
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'http://localhost:5173',
   credentials: true,
 }));
 app.use(express.json());

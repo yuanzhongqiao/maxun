@@ -146,7 +146,12 @@ router.get('/api-key', requireSignIn, async (req: AuthenticatedRequest, res) => 
     }
 });
 
-router.delete('/delete-api-key', requireSignIn, async (req, res) => {
+router.delete('/delete-api-key', requireSignIn, async (req: AuthenticatedRequest, res) => {
+
+    if (!req.user) {
+        return res.status(401).send({ error: 'Unauthorized' });
+    }
+
     try {
         const user = await User.findByPk(req.user.id, { raw: true });
 
@@ -193,7 +198,7 @@ router.get('/google', (req, res) => {
 });
 
 // Step 2: Handle Google OAuth callback
-router.get('/google/callback', requireSignIn, async (req, res) => {
+router.get('/google/callback', requireSignIn, async (req: AuthenticatedRequest, res) => {
     const { code, state } = req.query;
     try {
         if (!state) {
@@ -216,6 +221,10 @@ router.get('/google/callback', requireSignIn, async (req, res) => {
         if (!email) {
             return res.status(400).json({ message: 'Email not found' });
         }
+
+        if (!req.user) {
+            return res.status(401).send({ error: 'Unauthorized' });
+          }
 
         // Get the currently authenticated user (from `requireSignIn`)
         let user = await User.findOne({ where: { id: req.user.id } });
@@ -264,8 +273,11 @@ router.get('/google/callback', requireSignIn, async (req, res) => {
 });
 
 // Step 3: Get data from Google Sheets
-router.post('/gsheets/data', requireSignIn, async (req, res) => {
+router.post('/gsheets/data', requireSignIn, async (req: AuthenticatedRequest, res) => {
     const { spreadsheetId, robotId } = req.body;
+    if (!req.user) {
+        return res.status(401).send({ error: 'Unauthorized' });
+      }
     const user = await User.findByPk(req.user.id, { raw: true });
 
     if (!user) {

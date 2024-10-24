@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import User from "../models/User";
+import { AuthenticatedRequest } from "../routes/record"
 
-export const requireAPIKey = async (req: Request, res: Response, next: any) => {
+export const requireAPIKey = async (req: AuthenticatedRequest, res: Response, next: any) => {
     const apiKey = req.headers['x-api-key'];
     if (!apiKey) {
         return res.status(401).json({ error: "API key is missing" });

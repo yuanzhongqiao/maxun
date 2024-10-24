@@ -13,6 +13,7 @@ import Robot from '../models/Robot';
 import Run from '../models/Run';
 import { BinaryOutputService } from '../storage/mino';
 import { workflowQueue } from '../worker';
+import { AuthenticatedRequest } from './record';
 
 export const router = Router();
 
@@ -101,7 +102,7 @@ router.delete('/runs/:id', requireSignIn, async (req, res) => {
  * PUT endpoint for starting a remote browser instance and saving run metadata to the storage.
  * Making it ready for interpretation and returning a runId.
  */
-router.put('/runs/:id', requireSignIn, async (req, res) => {
+router.put('/runs/:id', requireSignIn, async (req: AuthenticatedRequest, res) => {
   try {
     const recording = await Robot.findOne({
       where: {
@@ -112,6 +113,10 @@ router.put('/runs/:id', requireSignIn, async (req, res) => {
 
     if (!recording || !recording.recording_meta || !recording.recording_meta.id) {
       return res.status(404).send({ error: 'Recording not found' });
+    }
+
+    if (!req.user) {
+      return res.status(401).send({ error: 'Unauthorized' });
     }
 
     const proxyConfig = await getDecryptedProxyConfig(req.user.id);
@@ -242,7 +247,7 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
   }
 });
 
-router.put('/schedule/:id/', requireSignIn, async (req, res) => {
+router.put('/schedule/:id/', requireSignIn, async (req: AuthenticatedRequest, res) => {
   console.log(req.body);
   try {
     const { id } = req.params;
@@ -331,6 +336,10 @@ router.put('/schedule/:id/', requireSignIn, async (req, res) => {
 
     if (!cronExpression || !cron.validate(cronExpression)) {
       return res.status(400).json({ error: 'Invalid cron expression generated' });
+    }
+
+    if (!req.user) {
+      return res.status(401).send({ error: 'Unauthorized' });
     }
 
     const runId = uuid();

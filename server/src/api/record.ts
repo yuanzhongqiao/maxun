@@ -12,6 +12,7 @@ import logger from "../logger";
 import { browserPool } from "../server";
 import { io, Socket } from "socket.io-client";
 import { BinaryOutputService } from "../storage/mino";
+import { AuthenticatedRequest } from "../routes/record"
 
 const formatRecording = (recordingData: any) => {
     const recordingMeta = recordingData.recording_meta;
@@ -388,8 +389,11 @@ async function waitForRunCompletion(runId: string, interval: number = 2000) {
     }
 }
 
-router.post("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response) => {
+router.post("/robots/:id/runs", requireAPIKey, async (req: AuthenticatedRequest, res: Response) => {
     try {
+        if (!req.user) {
+            return res.status(401).json({ ok: false, error: 'Unauthorized' });
+        }
         const runId = await handleRunRecording(req.params.id, req.user.dataValues.id);
         console.log(`Result`, runId);
 
