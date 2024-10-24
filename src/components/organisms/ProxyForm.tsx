@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/system';
-import { TextField, Button, Switch, FormControlLabel, Box, Typography } from '@mui/material';
+import { TextField, Button, Switch, FormControlLabel, Box, Typography, Tabs, Tab } from '@mui/material';
 import { sendProxyConfig } from '../../api/proxy';
 import { useGlobalInfoStore } from '../../context/globalInfo';
 
@@ -27,6 +27,7 @@ const ProxyForm: React.FC = () => {
         username: '',
         password: '',
     });
+    const [tabIndex, setTabIndex] = useState(0);
 
     const { notify } = useGlobalInfoStore();
 
@@ -82,71 +83,88 @@ const ProxyForm: React.FC = () => {
         });
     };
 
+    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+        setTabIndex(newValue);
+    };
+
     return (
         <FormContainer>
             <Typography variant="h6" gutterBottom component="div" style={{ marginTop: '20px' }}>
                 Proxy Configuration
             </Typography>
-            <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, width: '100%' }}>
-                <FormControl>
-                    <TextField
-                        label="Proxy Server URL"
-                        name="server_url"
-                        value={proxyConfig.server_url}
-                        onChange={handleChange}
+            <Tabs value={tabIndex} onChange={handleTabChange}>
+                <Tab label="Standard Proxy" />
+                <Tab label="Automatic Proxy Rotation" />
+            </Tabs>
+            {tabIndex === 0 && (
+                <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, width: '100%' }}>
+                    <FormControl>
+                        <TextField
+                            label="Proxy Server URL"
+                            name="server_url"
+                            value={proxyConfig.server_url}
+                            onChange={handleChange}
+                            fullWidth
+                            required
+                            error={!!errors.server_url}
+                            helperText={errors.server_url || `Proxy to be used for all robots. HTTP and SOCKS proxies are supported. 
+                            Example http://myproxy.com:3128 or socks5://myproxy.com:3128. 
+                            Short form myproxy.com:3128 is considered an HTTP proxy.`}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <FormControlLabel
+                            control={<Switch checked={requiresAuth} onChange={handleAuthToggle} />}
+                            label="Requires Authentication?"
+                        />
+                    </FormControl>
+                    {requiresAuth && (
+                        <>
+                            <FormControl>
+                                <TextField
+                                    label="Username"
+                                    name="username"
+                                    value={proxyConfig.username}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    required={requiresAuth}
+                                    error={!!errors.username}
+                                    helperText={errors.username || ''}
+                                />
+                            </FormControl>
+                            <FormControl>
+                                <TextField
+                                    label="Password"
+                                    name="password"
+                                    value={proxyConfig.password}
+                                    onChange={handleChange}
+                                    type="password"
+                                    fullWidth
+                                    required={requiresAuth}
+                                    error={!!errors.password}
+                                    helperText={errors.password || ''}
+                                />
+                            </FormControl>
+                        </>
+                    )}
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        type="submit"
                         fullWidth
-                        required
-                        error={!!errors.server_url}
-                        helperText={errors.server_url || `Proxy to be used for all robots. HTTP and SOCKS proxies are supported. 
-                        Example http://myproxy.com:3128 or socks5://myproxy.com:3128. 
-                        Short form myproxy.com:3128 is considered an HTTP proxy.`}
-                    />
-                </FormControl>
-                <FormControl>
-                    <FormControlLabel
-                        control={<Switch checked={requiresAuth} onChange={handleAuthToggle} />}
-                        label="Requires Authentication?"
-                    />
-                </FormControl>
-                {requiresAuth && (
-                    <>
-                        <FormControl>
-                            <TextField
-                                label="Username"
-                                name="username"
-                                value={proxyConfig.username}
-                                onChange={handleChange}
-                                fullWidth
-                                required={requiresAuth}
-                                error={!!errors.username}
-                                helperText={errors.username || ''}
-                            />
-                        </FormControl>
-                        <FormControl>
-                            <TextField
-                                label="Password"
-                                name="password"
-                                value={proxyConfig.password}
-                                onChange={handleChange}
-                                type="password"
-                                fullWidth
-                                required={requiresAuth}
-                                error={!!errors.password}
-                                helperText={errors.password || ''}
-                            />
-                        </FormControl>
-                    </>
-                )}
-                <Button
-                    variant="contained"
-                    color="primary"
-                    type="submit"
-                    fullWidth
-                    disabled={!proxyConfig.server_url || (requiresAuth && (!proxyConfig.username || !proxyConfig.password))}
-                >
-                    Add Proxy
-                </Button>
-            </Box>
+                        disabled={!proxyConfig.server_url || (requiresAuth && (!proxyConfig.username || !proxyConfig.password))}
+                    >
+                        Add Proxy
+                    </Button>
+                </Box>
+            )}
+            {tabIndex === 1 && (
+                <Box sx={{ maxWidth: 400, width: '100%', textAlign: 'center', marginTop: '20px' }}>
+                    <Button variant="contained" color="primary">
+                        Join Our Cloud Waitlist
+                    </Button>
+                </Box>
+            )}
         </FormContainer>
     );
 };
