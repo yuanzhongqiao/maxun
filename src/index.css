@@ -69,8 +69,16 @@ code {
   position: relative;
 }
 
+@media (min-width: 1024px) and (max-width: 1211px) {
+  #browser-recorder {
+    box-sizing: border-box;
+    height: 100vh;
+    margin: 0;
+  }
+}
+
 /* For laptops (between 1024px and 1440px) */
-@media (min-width: 1024px) and (max-width: 1440px) {
+@media (min-width: 1211px) and (max-width: 1440px) {
   #browser-recorder {
     box-sizing: border-box;
     height: calc(100vh - 0.6rem);
