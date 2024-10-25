@@ -97,9 +97,9 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
               {Object.keys(row.serializableOutput).map((key) => {
                 return (
                   <div key={`number-of-serializable-output-${key}`}>
-                    <Typography>
+                    <Typography sx={{ margin: '20px 0px 20px 0px' }}>
                       <a href={`data:application/json;utf8,${JSON.stringify(row.serializableOutput[key], null, 2)}`}
-                        download={key} style={{ margin: '10px' }}>Download as JSON</a>
+                        download={key}>Download as JSON</a>
                     </Typography>
                   </div>
                 )
