@@ -33,21 +33,21 @@ const worker = new Worker('workflow', async job => {
 worker.on('completed', async (job: any) => {
     logger.log(`info`, `Job ${job.id} completed for ${job.data.runId}`);
     const robot = await Robot.findOne({ where: { 'recording_meta.id': job.data.id } });
-  if (robot) {
-    // Update `lastRunAt` to the current time
-    const lastRunAt = new Date();
+    if (robot) {
+        // Update `lastRunAt` to the current time
+        const lastRunAt = new Date();
 
-    // Compute the next run date
-    const nextRunAt = computeNextRun(robot.schedule.cronExpression, robot.schedule.timezone);
+        // Compute the next run date
+        const nextRunAt = computeNextRun(robot.schedule.cronExpression, robot.schedule.timezone);
 
-    await robot.update({
-      schedule: {
-        ...robot.schedule,
-        lastRunAt,
-        nextRunAt,
-      },
-    });
-  }
+        await robot.update({
+            schedule: {
+                ...robot.schedule,
+                lastRunAt,
+                nextRunAt,
+            },
+        });
+    }
 });
 });
 
