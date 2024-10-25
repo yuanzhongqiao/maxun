@@ -2,7 +2,7 @@ import { Queue, Worker } from 'bullmq';
 import IORedis from 'ioredis';
 import logger from './logger';
 import { handleRunRecording } from "./workflow-management/scheduler";
-import Robot from './models/robot';
+import Robot from './models/Robot';
 import { computeNextRun } from './utils/schedule';
 
 const connection = new IORedis({
@@ -40,15 +40,18 @@ worker.on('completed', async (job: any) => {
         const lastRunAt = new Date();
 
         // Compute the next run date
-        const nextRunAt = computeNextRun(robot.schedule.cronExpression, robot.schedule.timezone);
-
-        await robot.update({
-            schedule: {
-                ...robot.schedule,
-                lastRunAt,
-                nextRunAt,
-            },
-        });
+        if (robot.schedule && robot.schedule.cronExpression && robot.schedule.timezone) {
+            const nextRunAt = computeNextRun(robot.schedule.cronExpression, robot.schedule.timezone) || undefined;
+            await robot.update({
+                schedule: {
+                    ...robot.schedule,
+                    lastRunAt,
+                    nextRunAt,
+                },
+            });
+        } else {
+            logger.error('Robot schedule, cronExpression, or timezone is missing.');
+        }
     }
 });
 
