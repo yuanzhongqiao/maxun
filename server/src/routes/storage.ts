@@ -14,6 +14,7 @@ import Run from '../models/Run';
 import { BinaryOutputService } from '../storage/mino';
 import { workflowQueue } from '../worker';
 import { AuthenticatedRequest } from './record';
+import computeNextRun from '../utils/schedule';
 
 export const router = Router();
 
@@ -248,59 +249,29 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
 });
 
 router.put('/schedule/:id/', requireSignIn, async (req: AuthenticatedRequest, res) => {
-  console.log(req.body);
   try {
     const { id } = req.params;
-    const {
-      // enabled = true,
-      runEvery,
-      runEveryUnit,
-      startFrom,
-      atTimeStart,
-      atTimeEnd,
-      timezone
-    } = req.body;
+    const { runEvery, runEveryUnit, startFrom, atTimeStart, atTimeEnd, timezone } = req.body;
 
     const robot = await Robot.findOne({ where: { 'recording_meta.id': id } });
     if (!robot) {
       return res.status(404).json({ error: 'Robot not found' });
     }
 
-    // If disabled, remove scheduling
-    // if (!enabled) {
-    //   // Remove existing job from queue if it exists
-    //   const existingJobs = await workflowQueue.getJobs(['delayed', 'waiting']);
-    //   for (const job of existingJobs) {
-    //     if (job.data.id === id) {
-    //       await job.remove();
-    //     }
-    //   }
-
-    //   // Update robot to disable scheduling
-    //   await robot.update({
-    //     schedule: null
-    //   });
-
-    //   return res.status(200).json({
-    //     message: 'Schedule disabled successfully'
-    //   });
-    // }
-
-    if (!id || !runEvery || !runEveryUnit || !startFrom || !timezone || (runEveryUnit === 'HOURS' || runEveryUnit === 'MINUTES') && (!atTimeStart || !atTimeEnd)) {
+    // Validate required parameters
+    if (!runEvery || !runEveryUnit || !startFrom || !atTimeStart || !atTimeEnd || !timezone) {
       return res.status(400).json({ error: 'Missing required parameters' });
     }
 
-    if (!['HOURS', 'DAYS', 'WEEKS', 'MONTHS', 'MINUTES'].includes(runEveryUnit)) {
-      return res.status(400).json({ error: 'Invalid runEvery unit' });
-    }
-
+    // Validate time zone
     if (!moment.tz.zone(timezone)) {
       return res.status(400).json({ error: 'Invalid timezone' });
     }
 
+    // Validate and parse start and end times
     const [startHours, startMinutes] = atTimeStart.split(':').map(Number);
     const [endHours, endMinutes] = atTimeEnd.split(':').map(Number);
-
+    
     if (isNaN(startHours) || isNaN(startMinutes) || isNaN(endHours) || isNaN(endMinutes) ||
         startHours < 0 || startHours > 23 || startMinutes < 0 || startMinutes > 59 ||
         endHours < 0 || endHours > 23 || endMinutes < 0 || endMinutes > 59) {
@@ -312,62 +283,56 @@ router.put('/schedule/:id/', requireSignIn, async (req: AuthenticatedRequest, re
       return res.status(400).json({ error: 'Invalid start day' });
     }
 
+    // Build cron expression based on run frequency and starting day
     let cronExpression;
+    const dayIndex = days.indexOf(startFrom);
+
     switch (runEveryUnit) {
       case 'MINUTES':
-      case 'HOURS':
         cronExpression = `${startMinutes}-${endMinutes} */${runEvery} * * *`;
+        break;
+      case 'HOURS':
+        cronExpression = `${startMinutes} ${startHours}-${endHours} */${runEvery} * *`;
         break;
       case 'DAYS':
         cronExpression = `${startMinutes} ${startHours} */${runEvery} * *`;
         break;
       case 'WEEKS':
-        const dayIndex = days.indexOf(startFrom);
-        cronExpression = `${startMinutes} ${startHours} * * ${dayIndex}/${7 * runEvery}`;
+        cronExpression = `${startMinutes} ${startHours} * * ${dayIndex}`;
         break;
       case 'MONTHS':
-        cronExpression = `${startMinutes} ${startHours} 1-7 */${runEvery} *`;
+        cronExpression = `${startMinutes} ${startHours} 1-7 * *`;
         if (startFrom !== 'SUNDAY') {
-          const dayIndex = days.indexOf(startFrom);
           cronExpression += ` ${dayIndex}`;
         }
         break;
+      default:
+        return res.status(400).json({ error: 'Invalid runEveryUnit' });
     }
 
+    // Validate cron expression
     if (!cronExpression || !cron.validate(cronExpression)) {
       return res.status(400).json({ error: 'Invalid cron expression generated' });
     }
 
     if (!req.user) {
-      return res.status(401).send({ error: 'Unauthorized' });
+      return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const runId = uuid();
-    const userId = req.user.id;
-
-    // Remove existing jobs for this robot just in case some were left
-    // const existingJobs = await workflowQueue.getJobs(['delayed', 'waiting']);
-    // for (const job of existingJobs) {
-    //   if (job.data.id === id) {
-    //     await job.remove();
-    //   }
-    // }
-
-    // Add new job
+    // Create the job in the queue with the cron expression
     const job = await workflowQueue.add(
       'run workflow',
-      { id, runId, userId },
+      { id, runId: uuid(), userId: req.user.id },
       {
         repeat: {
           pattern: cronExpression,
-          tz: timezone
-        }
+          tz: timezone,
+        },
       }
     );
 
-    const nextRun = job.timestamp;
+    const nextRunAt = computeNextRun(cronExpression, timezone);
 
-    // Update robot with schedule details
     await robot.update({
       schedule: {
         runEvery,
@@ -378,8 +343,8 @@ router.put('/schedule/:id/', requireSignIn, async (req: AuthenticatedRequest, re
         timezone,
         cronExpression,
         lastRunAt: undefined,
-        nextRunAt: new Date(nextRun)
-      }
+        nextRunAt,
+      },
     });
 
     // Fetch updated schedule details after setting it
@@ -387,15 +352,14 @@ router.put('/schedule/:id/', requireSignIn, async (req: AuthenticatedRequest, re
 
     res.status(200).json({
       message: 'success',
-      runId,
-      robot: updatedRobot
+      robot: updatedRobot,
     });
-
   } catch (error) {
     console.error('Error scheduling workflow:', error);
     res.status(500).json({ error: 'Failed to schedule workflow' });
   }
 });
+
 
 // Endpoint to get schedule details
 router.get('/schedule/:id', requireSignIn, async (req, res) => {
