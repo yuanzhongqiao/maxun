@@ -108,10 +108,14 @@ router.get('/config', requireSignIn, async (req: AuthenticatedRequest, res: Resp
         return res.status(404).json({ message: 'User not found' });
     }
 
+    const decryptedProxyUrl = user.proxy_url ? decrypt(user.proxy_url) : null;
+    const decryptedProxyUsername = user.proxy_username ? decrypt(user.proxy_username) : null;
+    const decryptedProxyPassword = user.proxy_password ? decrypt(user.proxy_password) : null;
+
     res.status(200).json({
-        proxy_url,
-        proxy_username,
-        proxy_password,
+        proxy_url: decryptedProxyUrl,
+        proxy_username: decryptedProxyUsername,
+        proxy_password: decryptedProxyPassword,
     });
 });
 
@@ -127,12 +131,11 @@ export const getDecryptedProxyConfig = async (userId: string) => {
     }
 
     const decryptedProxyUrl = user.proxy_url ? decrypt(user.proxy_url) : null;
-    const decryptedProxyUsername = user.proxy_username ? decrypt(user.proxy_username) : null;
-    const decryptedProxyPassword = user.proxy_password ? decrypt(user.proxy_password) : null;
+
+    const auth = user.proxy_username && user.proxy_password ? true : false;
 
     return {
         proxy_url: decryptedProxyUrl,
-        proxy_username: decryptedProxyUsername,
-        proxy_password: decryptedProxyPassword,
+        auth: auth,
     };
 };
