@@ -24,7 +24,7 @@ const BrowserRecordingSave = () => {
     <Grid container>
       <Grid item xs={12} md={3} lg={3}>
         <div style={{
-          marginTop: '10px',
+          marginTop: '12px',
           //  marginLeft: '10px',
           color: 'white',
           position: 'absolute',
