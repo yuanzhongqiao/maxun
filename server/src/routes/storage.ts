@@ -14,7 +14,7 @@ import Run from '../models/Run';
 import { BinaryOutputService } from '../storage/mino';
 import { workflowQueue } from '../worker';
 import { AuthenticatedRequest } from './record';
-import computeNextRun from '../utils/schedule';
+import { computeNextRun } from '../utils/schedule';
 
 export const router = Router();
 
@@ -343,7 +343,7 @@ router.put('/schedule/:id/', requireSignIn, async (req: AuthenticatedRequest, re
         timezone,
         cronExpression,
         lastRunAt: undefined,
-        nextRunAt,
+        nextRunAt: nextRunAt || undefined,
       },
     });
 
