@@ -6,6 +6,7 @@ import { Highlighter } from "../atoms/Highlighter";
 import { GenericModal } from '../atoms/GenericModal';
 import { useActionContext } from '../../context/browserActions';
 import { useBrowserSteps, TextStep } from '../../context/browserSteps';
+import { useGlobalInfoStore } from "../../context/globalInfo"
 
 interface ElementInfo {
     tagName: string;
@@ -63,6 +64,7 @@ export const BrowserWindow = () => {
     const [paginationSelector, setPaginationSelector] = useState<string>('');
 
     const { socket } = useSocketStore();
+    const { notify } = useGlobalInfoStore()
     //const { width, height } = useBrowserDimensionsStore();
     const { getText, getList, paginationMode, paginationType, limitMode } = useActionContext();
     const { addTextStep, addListStep } = useBrowserSteps();
@@ -83,6 +85,8 @@ export const BrowserWindow = () => {
     };
 
     const resetListState = useCallback(() => {
+        socket?.emit('listSelector', { selector: null });
+        notify(`info`, 'listSelector reset');
         setListSelector(null);
         setFields({});
         setCurrentListId(null);
@@ -91,7 +95,7 @@ export const BrowserWindow = () => {
         setShowAttributeModal(false);
         setSelectedElement(null);
         setAttributeOptions([]);
-    }, []);
+    }, [socket]);
 
     useEffect(() => {
         if (!getList) {
@@ -117,10 +121,19 @@ export const BrowserWindow = () => {
         }
     }, [screenShot, canvasRef, socket, screencastHandler]);
 
+    // Watch for changes in listSelector
+    useEffect(() => {
+        if (listSelector) {
+            notify(`info`,`List selector updated to: ${listSelector}`);
+            // socket?.emit('listSelector', { selector: listSelector });
+        }
+    }, [listSelector, socket]);
+
     const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: ElementInfo | null, childSelectors?: string[] }) => {
         if (getList === true) {
             if (listSelector) {
                 socket?.emit('listSelector', { selector: listSelector });
+                notify(`info`, `Setting new list selector to: ${listSelector}`);
                 if (limitMode) {
                     setHighlighterData(null);
                 } else if (paginationMode) {
@@ -138,14 +151,16 @@ export const BrowserWindow = () => {
                     setHighlighterData(null);
                 }
             } else {
-                // set highlighterData for the initial listSelector selection
-                setHighlighterData(data);
+               // Clear any existing highlighter data before setting new data
+                // This ensures we start fresh when selecting a new list selector
+                setHighlighterData(null);
+                setTimeout(() => setHighlighterData(data), 0);
             }
         } else {
             // for non-list steps
             setHighlighterData(data);
         }
-    }, [getList, socket, listSelector, paginationMode, paginationType]);
+    }, [getList, socket, listSelector, paginationMode, paginationType, limitMode]);
 
 
     useEffect(() => {
@@ -207,11 +222,12 @@ export const BrowserWindow = () => {
                     }
                     return;
                 }
-
-                if (getList === true && !listSelector) {
+                if (getList === true) {
+                if (!listSelector) {
+                    setFields({});
+                    setPaginationSelector('');
                     setListSelector(highlighterData.selector);
                     setCurrentListId(Date.now());
-                    setFields({});
                 } else if (getList === true && listSelector && currentListId) {
                     // Add fields to the list
                     if (options.length === 1) {
@@ -252,7 +268,7 @@ export const BrowserWindow = () => {
                         setShowAttributeModal(true);
                     }
                 }
-            }
+            } }
         }
     };
 
