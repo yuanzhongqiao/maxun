@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import { chromium } from "playwright";
 import User from '../models/User';
 import { encrypt, decrypt } from '../utils/auth';
 import { requireSignIn } from '../middlewares/auth';
@@ -52,6 +53,49 @@ router.post('/config', requireSignIn, async (req: AuthenticatedRequest, res: Res
         res.status(500).send(`Could not save proxy configuration - ${error.message}`);
     }
 });
+
+router.post('/proxy/test', requireSignIn, async (req: AuthenticatedRequest, res: Response) => {
+    const { server_url, username, password } = req.body;
+
+    try {
+        if (!req.user) {
+            return res.status(401).json({ ok: false, error: 'Unauthorized' });
+        }
+
+        const user = await User.findByPk(req.user.id, {
+            attributes: ['proxy_url', 'proxy_username', 'proxy_password'],
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const decryptedProxyUrl = user.proxy_url ? decrypt(user.proxy_url) : null;
+        const decryptedProxyUsername = user.proxy_username ? decrypt(user.proxy_username) : null;
+        const decryptedProxyPassword = user.proxy_password ? decrypt(user.proxy_password) : null;
+
+        const proxyOptions: any = {
+            server: decryptedProxyUrl,
+            ...(decryptedProxyUsername && decryptedProxyPassword && {
+                username: decryptedProxyUsername,
+                password: decryptedProxyPassword,
+            }),
+        };
+
+        const browser = await chromium.launch({
+            headless: true,
+            proxy: proxyOptions,
+        });
+        const page = await browser.newPage();
+        await page.goto('https://example.com');
+        await browser.close();
+
+        res.status(200).send({ success: true });
+    } catch (error) {
+        res.status(500).send({ success: false, error: 'Proxy connection failed' });
+    }
+});
+
 
 // TODO: Move this from here
 export const getDecryptedProxyConfig = async (userId: string) => {
