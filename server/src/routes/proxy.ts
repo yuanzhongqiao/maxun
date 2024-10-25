@@ -54,7 +54,7 @@ router.post('/config', requireSignIn, async (req: AuthenticatedRequest, res: Res
     }
 });
 
-router.post('/proxy/test', requireSignIn, async (req: AuthenticatedRequest, res: Response) => {
+router.post('/test', requireSignIn, async (req: AuthenticatedRequest, res: Response) => {
     const { server_url, username, password } = req.body;
 
     try {
@@ -94,6 +94,27 @@ router.post('/proxy/test', requireSignIn, async (req: AuthenticatedRequest, res:
     } catch (error) {
         res.status(500).send({ success: false, error: 'Proxy connection failed' });
     }
+});
+
+// get proxy configuration of user
+router.get('/config', requireSignIn, async (req: AuthenticatedRequest, res: Response) => {
+    if (!req.user) {
+        return res.status(401).json({ ok: false, error: 'Unauthorized' });
+    }
+
+    const user = await User.findByPk(req.user.id, {
+        attributes: ['proxy_url', 'proxy_username', 'proxy_password'],
+    });
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({
+        proxy_url,
+        proxy_username,
+        proxy_password,
+    });
 });
 
 
