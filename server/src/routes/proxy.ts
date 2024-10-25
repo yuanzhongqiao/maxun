@@ -54,9 +54,7 @@ router.post('/config', requireSignIn, async (req: AuthenticatedRequest, res: Res
     }
 });
 
-router.post('/test', requireSignIn, async (req: AuthenticatedRequest, res: Response) => {
-    const { server_url, username, password } = req.body;
-
+router.get('/test', requireSignIn, async (req: AuthenticatedRequest, res: Response) => {
     try {
         if (!req.user) {
             return res.status(401).json({ ok: false, error: 'Unauthorized' });
