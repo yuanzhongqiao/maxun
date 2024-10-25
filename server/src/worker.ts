@@ -2,6 +2,8 @@ import { Queue, Worker } from 'bullmq';
 import IORedis from 'ioredis';
 import logger from './logger';
 import { handleRunRecording } from "./workflow-management/scheduler";
+import Robot from './models/robot';
+import { computeNextRun } from './utils/schedule';
 
 const connection = new IORedis({
     host: 'localhost',
@@ -48,7 +50,6 @@ worker.on('completed', async (job: any) => {
             },
         });
     }
-});
 });
 
 worker.on('failed', async (job: any, err) => {
