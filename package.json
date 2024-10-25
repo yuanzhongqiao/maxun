@@ -28,6 +28,7 @@
     "bullmq": "^5.12.15",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "cron-parser": "^4.9.0",
     "cross-fetch": "^4.0.0",
     "csurf": "^1.11.0",
     "dotenv": "^16.0.0",
@@ -68,13 +69,13 @@
     "winston": "^3.5.1"
   },
   "scripts": {
-  "start": "concurrently -k \"npm run server\" \"npm run client\"",
-  "server": "./node_modules/.bin/nodemon server/src/server.ts",
-  "client": "vite",
-  "build": "vite build",
-  "test": "vite preview",
-  "lint": "./node_modules/.bin/eslint ."
-},
+    "start": "concurrently -k \"npm run server\" \"npm run client\"",
+    "server": "./node_modules/.bin/nodemon server/src/server.ts",
+    "client": "vite",
+    "build": "vite build",
+    "test": "vite preview",
+    "lint": "./node_modules/.bin/eslint ."
+  },
   "eslintConfig": {
     "extends": [
       "react-app"
