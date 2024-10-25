@@ -2,7 +2,7 @@ import cronParser from 'cron-parser';
 import moment from 'moment-timezone';
 
 // Function to compute next run date based on the cron pattern and timezone
-function computeNextRun(cronExpression: string, timezone: string) {
+export function computeNextRun(cronExpression: string, timezone: string) {
   try {
     const interval = cronParser.parseExpression(cronExpression, { tz: timezone });
     return interval.next().toDate();
