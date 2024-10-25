@@ -71,6 +71,11 @@ export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSe
         }
     }
 
+    const lastPair = robot?.recording.workflow[robot?.recording.workflow.length - 1];
+
+    // Find the `goto` action in `what` and retrieve its arguments
+    const targetUrl = lastPair?.what.find(action => action.action === "goto")?.args?.[0];
+
     return (
         <GenericModal
             isOpen={isOpen}
@@ -85,7 +90,7 @@ export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSe
                             <>
                                 <TextField
                                     label="Robot Target URL"
-                                    value={robot.recording.workflow[0].where.url}
+                                    value={targetUrl}
                                     InputProps={{
                                         readOnly: true,
                                     }}
