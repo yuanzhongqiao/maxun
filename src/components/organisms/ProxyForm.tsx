@@ -159,10 +159,10 @@ const ProxyForm: React.FC = () => {
                                 </tbody>
                             </table>
                         </Box>
-                        <Button variant="contained" color="primary" onClick={testProxy} sx={{ marginTop: '20px' }}>
+                        <Button variant="outlined" color="primary" onClick={testProxy} sx={{ marginTop: '20px' }}>
                             Test Proxy Configuration
                         </Button>
-                        <Button variant="contained" color="secondary" onClick={removeProxy} sx={{ marginTop: '20px' }}>
+                        <Button variant="outlined" color="secondary" onClick={removeProxy} sx={{ marginTop: '20px' }}>
                             Remove Proxy Configuration
                         </Button>
                     </Box>
