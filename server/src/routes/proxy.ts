@@ -63,6 +63,7 @@ router.get('/test', requireSignIn, async (req: AuthenticatedRequest, res: Respon
 
         const user = await User.findByPk(req.user.id, {
             attributes: ['proxy_url', 'proxy_username', 'proxy_password'],
+            raw: true
         });
 
         if (!user) {
@@ -72,6 +73,8 @@ router.get('/test', requireSignIn, async (req: AuthenticatedRequest, res: Respon
         const decryptedProxyUrl = user.proxy_url ? decrypt(user.proxy_url) : null;
         const decryptedProxyUsername = user.proxy_username ? decrypt(user.proxy_username) : null;
         const decryptedProxyPassword = user.proxy_password ? decrypt(user.proxy_password) : null;
+
+        console.log(`Decrypted vals: ${decryptedProxyPassword}, ${decryptedProxyUrl}, ${decryptedProxyUsername}`);
 
         const proxyOptions: any = {
             server: decryptedProxyUrl,
@@ -128,19 +131,17 @@ router.delete('/config', requireSignIn, async (req: AuthenticatedRequest, res: R
         return res.status(401).json({ ok: false, error: 'Unauthorized' });
     }
 
-    const user = await User.findByPk(req.user.id, {
-        attributes: ['proxy_url', 'proxy_username', 'proxy_password'],
-    });
+    const user = await User.findByPk(req.user.id);
 
     if (!user) {
         return res.status(404).json({ message: 'User not found' });
     }
 
-    user.proxy_url = null;
-    user.proxy_username = null;
-    user.proxy_password = null;
-
-    await user.save();
+    await user.update({
+        proxy_url: null,
+        proxy_username: null,
+        proxy_password: null,
+    });
 
     res.status(200).json({ ok: true });
 });
