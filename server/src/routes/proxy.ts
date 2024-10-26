@@ -149,7 +149,11 @@ const maskProxyUrl = (url: string) => {
     const urlWithoutProtocol = url.replace(/^https?:\/\//, '').replace(/^socks5?:\/\//, ''); // Remove protocols
     const [domain, port] = urlWithoutProtocol.split(':');
     const maskedDomain = `${domain.slice(0, 3)}****${domain.slice(-3)}`; // Shows first and last 3 characters
-    return `${maskedDomain}:${port}`;
+    if (port) {
+        return `${maskedDomain}:${port}`;
+    } else {
+        return maskedDomain;
+    }
 };
 
 // TODO: Move this from here
