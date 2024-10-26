@@ -115,102 +115,102 @@ const ProxyForm: React.FC = () => {
 
     return (
         <>
-        {
-            isProxyConfigured ? (
-                <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
-                    <Typography variant="body1" gutterBottom component="div">
-                        Proxy is already configured. You can test the configuration below.
-                    </Typography>
-                    <Button variant="contained" color="primary" onClick={testProxy} sx={{ marginTop: '20px'}}>
-                        Test Proxy Configuration
-                    </Button>
-                </Box>
-            ) : (
-                <FormContainer>
-            <Typography variant="h6" gutterBottom component="div" style={{ marginTop: '20px' }}>
-                Proxy Configuration
-            </Typography>
-            <Tabs value={tabIndex} onChange={handleTabChange}>
-                <Tab label="Standard Proxy" />
-                <Tab label="Automatic Proxy Rotation" />
-            </Tabs>
-            {tabIndex === 0 && (
-                <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, width: '100%' }}>
-                    <FormControl>
-                        <TextField
-                            label="Proxy Server URL"
-                            name="server_url"
-                            value={proxyConfig.server_url}
-                            onChange={handleChange}
-                            fullWidth
-                            required
-                            error={!!errors.server_url}
-                            helperText={errors.server_url || `Proxy to be used for all robots. HTTP and SOCKS proxies are supported. 
+            {
+                isProxyConfigured ? (
+                    <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
+                        <Typography variant="body1" gutterBottom component="div">
+                            Proxy is already configured. You can test the configuration below.
+                        </Typography>
+                        <Button variant="contained" color="primary" onClick={testProxy} sx={{ marginTop: '20px' }}>
+                            Test Proxy Configuration
+                        </Button>
+                    </Box>
+                ) : (
+                    <FormContainer>
+                        <Typography variant="h6" gutterBottom component="div" style={{ marginTop: '20px' }}>
+                            Proxy Configuration
+                        </Typography>
+                        <Tabs value={tabIndex} onChange={handleTabChange}>
+                            <Tab label="Standard Proxy" />
+                            <Tab label="Automatic Proxy Rotation" />
+                        </Tabs>
+                        {tabIndex === 0 && (
+                            <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, width: '100%' }}>
+                                <FormControl>
+                                    <TextField
+                                        label="Proxy Server URL"
+                                        name="server_url"
+                                        value={proxyConfig.server_url}
+                                        onChange={handleChange}
+                                        fullWidth
+                                        required
+                                        error={!!errors.server_url}
+                                        helperText={errors.server_url || `Proxy to be used for all robots. HTTP and SOCKS proxies are supported. 
                             Example http://myproxy.com:3128 or socks5://myproxy.com:3128. 
                             Short form myproxy.com:3128 is considered an HTTP proxy.`}
-                        />
-                    </FormControl>
-                    <FormControl>
-                        <FormControlLabel
-                            control={<Switch checked={requiresAuth} onChange={handleAuthToggle} />}
-                            label="Requires Authentication?"
-                        />
-                    </FormControl>
-                    {requiresAuth && (
-                        <>
-                            <FormControl>
-                                <TextField
-                                    label="Username"
-                                    name="username"
-                                    value={proxyConfig.username}
-                                    onChange={handleChange}
+                                    />
+                                </FormControl>
+                                <FormControl>
+                                    <FormControlLabel
+                                        control={<Switch checked={requiresAuth} onChange={handleAuthToggle} />}
+                                        label="Requires Authentication?"
+                                    />
+                                </FormControl>
+                                {requiresAuth && (
+                                    <>
+                                        <FormControl>
+                                            <TextField
+                                                label="Username"
+                                                name="username"
+                                                value={proxyConfig.username}
+                                                onChange={handleChange}
+                                                fullWidth
+                                                required={requiresAuth}
+                                                error={!!errors.username}
+                                                helperText={errors.username || ''}
+                                            />
+                                        </FormControl>
+                                        <FormControl>
+                                            <TextField
+                                                label="Password"
+                                                name="password"
+                                                value={proxyConfig.password}
+                                                onChange={handleChange}
+                                                type="password"
+                                                fullWidth
+                                                required={requiresAuth}
+                                                error={!!errors.password}
+                                                helperText={errors.password || ''}
+                                            />
+                                        </FormControl>
+                                    </>
+                                )}
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    type="submit"
                                     fullWidth
-                                    required={requiresAuth}
-                                    error={!!errors.username}
-                                    helperText={errors.username || ''}
-                                />
-                            </FormControl>
-                            <FormControl>
-                                <TextField
-                                    label="Password"
-                                    name="password"
-                                    value={proxyConfig.password}
-                                    onChange={handleChange}
-                                    type="password"
-                                    fullWidth
-                                    required={requiresAuth}
-                                    error={!!errors.password}
-                                    helperText={errors.password || ''}
-                                />
-                            </FormControl>
-                        </>
-                    )}
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        type="submit"
-                        fullWidth
-                        disabled={!proxyConfig.server_url || (requiresAuth && (!proxyConfig.username || !proxyConfig.password))}
-                    >
-                        Add Proxy
-                    </Button>
-                </Box>
-            )}
-            {tabIndex === 1 && (
-                <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
-                    <>
-                    <Typography variant="body1" gutterBottom component="div">
-                        Coming Soon. Join our Cloud Waitlist to get early access.
-                    </Typography>
-                    <Button variant="contained" color="primary" sx={{ marginTop: '20px'}}>
-                        Join Maxun Cloud Waitlist
-                    </Button>
-                    </>
-                </Box>
-            )}
-        </FormContainer>
-            )
-        }
+                                    disabled={!proxyConfig.server_url || (requiresAuth && (!proxyConfig.username || !proxyConfig.password))}
+                                >
+                                    Add Proxy
+                                </Button>
+                            </Box>
+                        )}
+                        {tabIndex === 1 && (
+                            <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
+                                <>
+                                    <Typography variant="body1" gutterBottom component="div">
+                                        Coming Soon. Join our Cloud Waitlist to get early access.
+                                    </Typography>
+                                    <Button variant="contained" color="primary" sx={{ marginTop: '20px' }}>
+                                        Join Maxun Cloud Waitlist
+                                    </Button>
+                                </>
+                            </Box>
+                        )}
+                    </FormContainer>
+                )
+            }
         </>
     );
 };
