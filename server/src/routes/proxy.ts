@@ -96,25 +96,32 @@ router.get('/test', requireSignIn, async (req: AuthenticatedRequest, res: Respon
 });
 
 router.get('/config', requireSignIn, async (req: AuthenticatedRequest, res: Response) => {
-    if (!req.user) {
-        return res.status(401).json({ ok: false, error: 'Unauthorized' });
+    try {
+        if (!req.user) {
+            return res.status(401).json({ ok: false, error: 'Unauthorized' });
+        }
+
+        const user = await User.findByPk(req.user.id, {
+            attributes: ['proxy_url', 'proxy_username', 'proxy_password'],
+            raw: true,
+        });
+
+        console.log(`found user:`, user);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const maskedProxyUrl = user.proxy_url ? maskProxyUrl(decrypt(user.proxy_url)) : null;
+        const auth = user.proxy_username && user.proxy_password ? true : false;
+
+        res.status(200).json({
+            proxy_url: maskedProxyUrl,
+            auth: auth,
+        });
+    } catch (error) {
+        res.status(500).json({ ok: false, error: 'Could not retrieve proxy configuration' });
     }
-
-    const user = await User.findByPk(req.user.id, {
-        attributes: ['proxy_url', 'proxy_username', 'proxy_password'],
-    });
-
-    if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-    }
-
-    const maskedProxyUrl = user.proxy_url ? maskProxyUrl(decrypt(user.proxy_url)) : null;
-    const auth = user.proxy_username && user.proxy_password ? true : false
-
-    res.status(200).json({
-        proxy_url: maskedProxyUrl,
-        auth: auth,
-    });
 });
 
 // delete proxy configuration
