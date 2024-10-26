@@ -94,7 +94,6 @@ router.get('/test', requireSignIn, async (req: AuthenticatedRequest, res: Respon
     }
 });
 
-// get proxy configuration of user
 router.get('/config', requireSignIn, async (req: AuthenticatedRequest, res: Response) => {
     if (!req.user) {
         return res.status(401).json({ ok: false, error: 'Unauthorized' });
