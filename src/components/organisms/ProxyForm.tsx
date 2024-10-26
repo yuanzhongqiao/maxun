@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/system';
-import { TextField, Button, Switch, FormControlLabel, Box, Typography, Tabs, Tab } from '@mui/material';
+import { TextField, Button, Switch, FormControlLabel, Box, Typography, Tabs, Tab, Table, TableContainer, TableHead, TableRow, TableBody, TableCell, Paper } from '@mui/material';
 import { sendProxyConfig, getProxyConfig, testProxyConfig, deleteProxyConfig } from '../../api/proxy';
 import { useGlobalInfoStore } from '../../context/globalInfo';
 
@@ -144,20 +144,22 @@ const ProxyForm: React.FC = () => {
                             <Typography variant="h6" gutterBottom component="div">
                                 Current Proxy Configuration
                             </Typography>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', margin: '30px' }}>
-                                <thead>
-                                    <tr>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px' }}>Proxy URL</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px' }}>Requires Authentication</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style={{ border: '1px solid #ddd', padding: '8px' }}>{proxy.proxy_url}</td>
-                                        <td style={{ border: '1px solid #ddd', padding: '8px' }}>{proxy.auth ? 'Yes' : 'No'}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <TableContainer component={Paper} sx={{ margin: '30px' }}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Proxy URL</TableCell>
+                                            <TableCell>Requires Authentication</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        <TableRow>
+                                            <TableCell>{proxy.proxy_url}</TableCell>
+                                            <TableCell>{proxy.auth ? 'Yes' : 'No'}</TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
                         </Box>
                         <Button variant="outlined" color="primary" onClick={testProxy}>
                             Test Proxy
