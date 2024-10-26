@@ -116,6 +116,29 @@ router.get('/config', requireSignIn, async (req: AuthenticatedRequest, res: Resp
     });
 });
 
+// delete proxy configuration
+router.delete('/config', requireSignIn, async (req: AuthenticatedRequest, res: Response) => {
+    if (!req.user) {
+        return res.status(401).json({ ok: false, error: 'Unauthorized' });
+    }
+
+    const user = await User.findByPk(req.user.id, {
+        attributes: ['proxy_url', 'proxy_username', 'proxy_password'],
+    });
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.proxy_url = null;
+    user.proxy_username = null;
+    user.proxy_password = null;
+
+    await user.save();
+
+    res.status(200).json({ message: 'Proxy configuration deleted successfully' });
+});
+
 const maskProxyUrl = (url: string) => {
     const urlWithoutProtocol = url.replace(/^https?:\/\//, '').replace(/^socks5?:\/\//, ''); // Remove protocols
     const [domain, port] = urlWithoutProtocol.split(':');
