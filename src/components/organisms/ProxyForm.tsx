@@ -134,121 +134,121 @@ const ProxyForm: React.FC = () => {
 
     return (
         <>
-                    <FormContainer>
-                        <Typography variant="h6" gutterBottom component="div" style={{ marginTop: '20px' }}>
-                            Proxy Configuration
-                        </Typography>
-                        <Tabs value={tabIndex} onChange={handleTabChange}>
-                            <Tab label="Standard Proxy" />
-                            <Tab label="Automatic Proxy Rotation" />
-                        </Tabs>
-                        {tabIndex === 0 && (
-                            isProxyConfigured ? (
-                                <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
-                                    <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
-                                        <Typography variant="h6" gutterBottom component="div">
-                                            Current Proxy Configuration
-                                        </Typography>
-                                        <TableContainer component={Paper} sx={{ margin: '30px' }}>
-                                            <Table>
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell><strong>Proxy URL</strong></TableCell>
-                                                        <TableCell><strong>Requires Authentication</strong></TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    <TableRow>
-                                                        <TableCell>{proxy.proxy_url}</TableCell>
-                                                        <TableCell>{proxy.auth ? 'Yes' : 'No'}</TableCell>
-                                                    </TableRow>
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                    </Box>
-                                    <Button variant="outlined" color="primary" onClick={testProxy}>
-                                        Test Proxy
-                                    </Button>
-                                    <Button variant="outlined" color="error" onClick={removeProxy} sx={{ marginLeft: '10px' }}>
-                                        Remove Proxy
-                                    </Button>
-                                </Box>
-                            ) : (
-                            <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, width: '100%' }}>
-                                <FormControl>
-                                    <TextField
-                                        label="Proxy Server URL"
-                                        name="server_url"
-                                        value={proxyConfigForm.server_url}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        required
-                                        error={!!errors.server_url}
-                                        helperText={errors.server_url || `Proxy to be used for all robots. HTTP and SOCKS proxies are supported. 
+            <FormContainer>
+                <Typography variant="h6" gutterBottom component="div" style={{ marginTop: '20px' }}>
+                    Proxy Configuration
+                </Typography>
+                <Tabs value={tabIndex} onChange={handleTabChange}>
+                    <Tab label="Standard Proxy" />
+                    <Tab label="Automatic Proxy Rotation" />
+                </Tabs>
+                {tabIndex === 0 && (
+                    isProxyConfigured ? (
+                        <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
+                            <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
+                                <Typography variant="h6" gutterBottom component="div">
+                                    Current Proxy Configuration
+                                </Typography>
+                                <TableContainer component={Paper} sx={{ margin: '30px' }}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell><strong>Proxy URL</strong></TableCell>
+                                                <TableCell><strong>Requires Authentication</strong></TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            <TableRow>
+                                                <TableCell>{proxy.proxy_url}</TableCell>
+                                                <TableCell>{proxy.auth ? 'Yes' : 'No'}</TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Box>
+                            <Button variant="outlined" color="primary" onClick={testProxy}>
+                                Test Proxy
+                            </Button>
+                            <Button variant="outlined" color="error" onClick={removeProxy} sx={{ marginLeft: '10px' }}>
+                                Remove Proxy
+                            </Button>
+                        </Box>
+                    ) : (
+                        <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, width: '100%' }}>
+                            <FormControl>
+                                <TextField
+                                    label="Proxy Server URL"
+                                    name="server_url"
+                                    value={proxyConfigForm.server_url}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    required
+                                    error={!!errors.server_url}
+                                    helperText={errors.server_url || `Proxy to be used for all robots. HTTP and SOCKS proxies are supported. 
                             Example http://myproxy.com:3128 or socks5://myproxy.com:3128. 
                             Short form myproxy.com:3128 is considered an HTTP proxy.`}
-                                    />
-                                </FormControl>
-                                <FormControl>
-                                    <FormControlLabel
-                                        control={<Switch checked={requiresAuth} onChange={handleAuthToggle} />}
-                                        label="Requires Authentication?"
-                                    />
-                                </FormControl>
-                                {requiresAuth && (
-                                    <>
-                                        <FormControl>
-                                            <TextField
-                                                label="Username"
-                                                name="username"
-                                                value={proxyConfigForm.username}
-                                                onChange={handleChange}
-                                                fullWidth
-                                                required={requiresAuth}
-                                                error={!!errors.username}
-                                                helperText={errors.username || ''}
-                                            />
-                                        </FormControl>
-                                        <FormControl>
-                                            <TextField
-                                                label="Password"
-                                                name="password"
-                                                value={proxyConfigForm.password}
-                                                onChange={handleChange}
-                                                type="password"
-                                                fullWidth
-                                                required={requiresAuth}
-                                                error={!!errors.password}
-                                                helperText={errors.password || ''}
-                                            />
-                                        </FormControl>
-                                    </>
-                                )}
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    type="submit"
-                                    fullWidth
-                                    disabled={!proxyConfigForm.server_url || (requiresAuth && (!proxyConfigForm.username || !proxyConfigForm.password))}
-                                >
-                                    Add Proxy
-                                </Button>
-                            </Box>
-                        ))}
-                        {tabIndex === 1 && (
-                            <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
+                                />
+                            </FormControl>
+                            <FormControl>
+                                <FormControlLabel
+                                    control={<Switch checked={requiresAuth} onChange={handleAuthToggle} />}
+                                    label="Requires Authentication?"
+                                />
+                            </FormControl>
+                            {requiresAuth && (
                                 <>
-                                    <Typography variant="body1" gutterBottom component="div">
-                                        Coming Soon. Join our Cloud Waitlist to get early access.
-                                    </Typography>
-                                    <Button variant="contained" color="primary" sx={{ marginTop: '20px' }}>
-                                        Join Maxun Cloud Waitlist
-                                    </Button>
+                                    <FormControl>
+                                        <TextField
+                                            label="Username"
+                                            name="username"
+                                            value={proxyConfigForm.username}
+                                            onChange={handleChange}
+                                            fullWidth
+                                            required={requiresAuth}
+                                            error={!!errors.username}
+                                            helperText={errors.username || ''}
+                                        />
+                                    </FormControl>
+                                    <FormControl>
+                                        <TextField
+                                            label="Password"
+                                            name="password"
+                                            value={proxyConfigForm.password}
+                                            onChange={handleChange}
+                                            type="password"
+                                            fullWidth
+                                            required={requiresAuth}
+                                            error={!!errors.password}
+                                            helperText={errors.password || ''}
+                                        />
+                                    </FormControl>
                                 </>
-                            </Box>
-                        )}
-                    </FormContainer>
-                )
+                            )}
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                type="submit"
+                                fullWidth
+                                disabled={!proxyConfigForm.server_url || (requiresAuth && (!proxyConfigForm.username || !proxyConfigForm.password))}
+                            >
+                                Add Proxy
+                            </Button>
+                        </Box>
+                    ))}
+                {tabIndex === 1 && (
+                    <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
+                        <>
+                            <Typography variant="body1" gutterBottom component="div">
+                                Coming Soon. Join our Cloud Waitlist to get early access.
+                            </Typography>
+                            <Button variant="contained" color="primary" sx={{ marginTop: '20px' }}>
+                                Join Maxun Cloud Waitlist
+                            </Button>
+                        </>
+                    </Box>
+                )}
+            </FormContainer>
+            )
         </>
     );
 };
