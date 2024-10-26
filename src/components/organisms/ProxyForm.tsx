@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/system';
 import { TextField, Button, Switch, FormControlLabel, Box, Typography, Tabs, Tab } from '@mui/material';
-import { sendProxyConfig } from '../../api/proxy';
+import { sendProxyConfig, getProxyConfig, testProxyConfig } from '../../api/proxy';
 import { useGlobalInfoStore } from '../../context/globalInfo';
 
 const FormContainer = styled(Box)({
@@ -28,6 +28,7 @@ const ProxyForm: React.FC = () => {
         password: '',
     });
     const [tabIndex, setTabIndex] = useState(0);
+    const [isProxyConfigured, setIsProxyConfigured] = useState(false);
 
     const { notify } = useGlobalInfoStore();
 
@@ -85,6 +86,17 @@ const ProxyForm: React.FC = () => {
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabIndex(newValue);
+    };
+
+    // test proxy config
+    const testProxy = async () => {
+        await testProxyConfig().then((response) => {
+            if (response.success) {
+                notify('success', 'Proxy configuration is working');
+            } else {
+                notify('error', 'Failed to test proxy configuration. Try again.');
+            }
+        });
     };
 
     return (
