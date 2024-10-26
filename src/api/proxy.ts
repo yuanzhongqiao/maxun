@@ -28,7 +28,7 @@ export const getProxyConfig = async (): Promise<{ proxy_url: string, auth: boole
     }
 }
 
-export const testProxyConfig = async (): Promise<{ success: boolean}> => {
+export const testProxyConfig = async (): Promise<{ success: boolean }> => {
     try {
         const response = await axios.get(`http://localhost:8080/proxy/test`);
         if (response.status === 200) {
