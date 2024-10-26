@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/system';
 import { TextField, Button, Switch, FormControlLabel, Box, Typography, Tabs, Tab } from '@mui/material';
-import { sendProxyConfig, getProxyConfig, testProxyConfig } from '../../api/proxy';
+import { sendProxyConfig, getProxyConfig, testProxyConfig, deleteProxyConfig } from '../../api/proxy';
 import { useGlobalInfoStore } from '../../context/globalInfo';
 
 const FormContainer = styled(Box)({
@@ -109,6 +109,17 @@ const ProxyForm: React.FC = () => {
         });
     };
 
+    const removeProxy = async () => {
+        await deleteProxyConfig().then((response) => {
+            if (response) {
+                notify('success', 'Proxy configuration removed successfully');
+                setIsProxyConfigured(false);
+            } else {
+                notify('error', 'Failed to remove proxy configuration. Try again.');
+            }
+        });
+    }
+
     useEffect(() => {
         fetchProxyConfig();
     }, []);
@@ -121,6 +132,7 @@ const ProxyForm: React.FC = () => {
                         <Typography variant="body1" gutterBottom component="div">
                             Proxy is already configured. You can test the configuration below.
                         </Typography>
+                        <br />
                         <Button variant="contained" color="primary" onClick={testProxy} sx={{ marginTop: '20px' }}>
                             Test Proxy Configuration
                         </Button>
