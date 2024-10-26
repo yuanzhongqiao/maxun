@@ -149,7 +149,7 @@ const ProxyForm: React.FC = () => {
                                 <Typography variant="h6" gutterBottom component="div">
                                     Current Proxy Configuration
                                 </Typography>
-                                <TableContainer component={Paper} sx={{ margin: '30px' }}>
+                                <TableContainer component={Paper} sx={{ margin: '30px 0px' }}>
                                     <Table>
                                         <TableHead>
                                             <TableRow>
