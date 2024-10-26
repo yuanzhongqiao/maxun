@@ -88,7 +88,6 @@ const ProxyForm: React.FC = () => {
         setTabIndex(newValue);
     };
 
-    // test proxy config
     const testProxy = async () => {
         await testProxyConfig().then((response) => {
             if (response.success) {
@@ -99,7 +98,6 @@ const ProxyForm: React.FC = () => {
         });
     };
 
-    // get proxy config
     const fetchProxyConfig = async () => {
         await getProxyConfig().then((response) => {
             if (response.proxy_url) {
