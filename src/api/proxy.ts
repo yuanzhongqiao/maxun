@@ -41,3 +41,17 @@ export const testProxyConfig = async (): Promise<{ success: boolean }> => {
         return { success: false };
     }
 }
+
+export const deleteProxyConfig = async (): Promise<boolean> => {
+    try {
+        const response = await axios.delete(`http://localhost:8080/proxy/config`);
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            throw new Error(`Failed to delete proxy configuration. Try again.`);
+        }
+    } catch (error: any) {
+        console.log(error);
+        return false;
+    }
+}
