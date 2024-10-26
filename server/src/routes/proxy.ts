@@ -131,11 +131,12 @@ export const getDecryptedProxyConfig = async (userId: string) => {
     }
 
     const decryptedProxyUrl = user.proxy_url ? decrypt(user.proxy_url) : null;
-
-    const auth = user.proxy_username && user.proxy_password ? true : false;
+    const decryptedProxyUsername = user.proxy_username ? decrypt(user.proxy_username) : null;
+    const decryptedProxyPassword = user.proxy_password ? decrypt(user.proxy_password) : null;
 
     return {
         proxy_url: decryptedProxyUrl,
-        auth: auth,
+        proxy_username: decryptedProxyUsername,
+        proxy_password: decryptedProxyPassword,
     };
 };
