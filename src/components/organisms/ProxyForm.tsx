@@ -148,8 +148,8 @@ const ProxyForm: React.FC = () => {
                                 <Table>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell>Proxy URL</TableCell>
-                                            <TableCell>Requires Authentication</TableCell>
+                                            <TableCell><strong>Proxy URL</strong></TableCell>
+                                            <TableCell><strong>Requires Authentication</strong></TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
