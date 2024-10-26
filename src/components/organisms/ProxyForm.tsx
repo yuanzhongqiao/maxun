@@ -144,8 +144,8 @@ const ProxyForm: React.FC = () => {
                 </Tabs>
                 {tabIndex === 0 && (
                     isProxyConfigured ? (
-                        <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
-                            <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
+                        <Box sx={{ maxWidth: 600, width: '100%', marginTop: '20px' }}>
+                            <Box sx={{ maxWidth: 600, width: '100%', marginTop: '20px' }}>
                                 <Typography variant="h6" gutterBottom component="div">
                                     Current Proxy Configuration
                                 </Typography>
