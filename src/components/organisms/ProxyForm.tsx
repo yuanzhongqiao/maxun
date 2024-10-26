@@ -99,6 +99,18 @@ const ProxyForm: React.FC = () => {
         });
     };
 
+    // get proxy config
+    const fetchProxyConfig = async () => {
+        await getProxyConfig().then((response) => {
+            if (response.proxy_url) {
+                setIsProxyConfigured(true);
+                notify('success', 'Proxy configuration fetched successfully');
+            } else {
+                notify('error', 'Failed to fetch proxy configuration. Try again.');
+            }
+        });
+    };
+
     return (
         <FormContainer>
             <Typography variant="h6" gutterBottom component="div" style={{ marginTop: '20px' }}>
