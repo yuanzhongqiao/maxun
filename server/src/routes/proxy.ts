@@ -42,11 +42,11 @@ router.post('/config', requireSignIn, async (req: AuthenticatedRequest, res: Res
             return res.status(400).send('Proxy password is required when proxy username is provided');
         }
 
-        user.proxy_url = encryptedProxyUrl;
-        user.proxy_username = encryptedProxyUsername;
-        user.proxy_password = encryptedProxyPassword;
-
-        await user.save();
+        await user.update({
+            proxy_url: encryptedProxyUrl,
+            proxy_username: encryptedProxyUsername,
+            proxy_password: encryptedProxyPassword,
+        });
 
         res.status(200).send('Proxy configuration saved successfully');
     } catch (error: any) {
@@ -107,7 +107,7 @@ router.get('/config', requireSignIn, async (req: AuthenticatedRequest, res: Resp
         return res.status(404).json({ message: 'User not found' });
     }
 
-    const maskedProxyUrl = user.proxy_url ? maskProxyUrl(user.proxy_url) : null;
+    const maskedProxyUrl = user.proxy_url ? maskProxyUrl(decrypt(user.proxy_url)) : null;
     const auth = user.proxy_username && user.proxy_password ? true : false
 
     res.status(200).json({
@@ -136,7 +136,7 @@ router.delete('/config', requireSignIn, async (req: AuthenticatedRequest, res: R
 
     await user.save();
 
-    res.status(200).json({ message: 'Proxy configuration deleted successfully' });
+    res.status(200).json({ ok: true });
 });
 
 const maskProxyUrl = (url: string) => {
