@@ -248,7 +248,6 @@ const ProxyForm: React.FC = () => {
                     </Box>
                 )}
             </FormContainer>
-            )
         </>
     );
 };
