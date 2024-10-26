@@ -48,9 +48,10 @@ router.post('/config', requireSignIn, async (req: AuthenticatedRequest, res: Res
             proxy_password: encryptedProxyPassword,
         });
 
-        res.status(200).send('Proxy configuration saved successfully');
+        res.status(200).json({ ok: true });
     } catch (error: any) {
-        res.status(500).send(`Could not save proxy configuration - ${error.message}`);
+        console.log(`Could not save proxy configuration - ${error}`);
+        res.status(500).json({ ok: false, error: 'Could not save proxy configuration' });
     }
 });
 
