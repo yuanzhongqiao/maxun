@@ -144,7 +144,7 @@ const ProxyForm: React.FC = () => {
                             <Typography variant="h6" gutterBottom component="div">
                                 Current Proxy Configuration
                             </Typography>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', margin: '30px' }}>
                                 <thead>
                                     <tr>
                                         <th style={{ border: '1px solid #ddd', padding: '8px' }}>Proxy URL</th>
