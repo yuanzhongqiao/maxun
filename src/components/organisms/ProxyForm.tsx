@@ -239,7 +239,7 @@ const ProxyForm: React.FC = () => {
                     <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
                         <>
                             <Typography variant="body1" gutterBottom component="div">
-                                Coming Soon. Join our Cloud Waitlist to get early access.
+                                Coming Soon - In Open Source & Cloud. If you don't want to manage the infrastructure, join our cloud waitlist to get early access.
                             </Typography>
                             <Button variant="contained" color="primary" sx={{ marginTop: '20px' }}>
                                 Join Maxun Cloud Waitlist
