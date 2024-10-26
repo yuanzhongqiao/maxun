@@ -16,7 +16,7 @@ const FormControl = styled(Box)({
 });
 
 const ProxyForm: React.FC = () => {
-    const [proxyConfig, setProxyConfig] = useState({
+    const [proxyConfigForm, setProxyConfigForm] = useState({
         server_url: '',
         username: '',
         password: '',
@@ -29,6 +29,7 @@ const ProxyForm: React.FC = () => {
     });
     const [tabIndex, setTabIndex] = useState(0);
     const [isProxyConfigured, setIsProxyConfigured] = useState(false);
+    const [proxy, setProxy] = useState({ proxy_url: '', auth: false });
 
     const { notify } = useGlobalInfoStore();
 
@@ -36,17 +37,17 @@ const ProxyForm: React.FC = () => {
         let valid = true;
         let errorMessages = { server_url: '', username: '', password: '' };
 
-        if (!proxyConfig.server_url) {
+        if (!proxyConfigForm.server_url) {
             errorMessages.server_url = 'Server URL is required';
             valid = false;
         }
 
         if (requiresAuth) {
-            if (!proxyConfig.username) {
+            if (!proxyConfigForm.username) {
                 errorMessages.username = 'Username is required for authenticated proxies';
                 valid = false;
             }
-            if (!proxyConfig.password) {
+            if (!proxyConfigForm.password) {
                 errorMessages.password = 'Password is required for authenticated proxies';
                 valid = false;
             }
@@ -58,13 +59,13 @@ const ProxyForm: React.FC = () => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setProxyConfig({ ...proxyConfig, [name]: value });
+        setProxyConfigForm({ ...proxyConfigForm, [name]: value });
     };
 
     const handleAuthToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
         setRequiresAuth(e.target.checked);
         if (!e.target.checked) {
-            setProxyConfig({ ...proxyConfig, username: '', password: '' });
+            setProxyConfigForm({ ...proxyConfigForm, username: '', password: '' });
             setErrors({ ...errors, username: '', password: '' });
         }
     };
@@ -75,13 +76,14 @@ const ProxyForm: React.FC = () => {
             return;
         }
 
-        await sendProxyConfig(proxyConfig).then((response) => {
+        try {
+            const response = await sendProxyConfig(proxyConfigForm);
             if (response) {
-                notify('success', 'Proxy configuration submitted successfully');
-            } else {
-                notify('error', 'Failed to submit proxy configuration. Try again.');
+            notify('success', 'Proxy configuration submitted successfully');
             }
-        });
+        } catch (error: any) {
+            notify('error', error);
+        }
     };
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -99,14 +101,16 @@ const ProxyForm: React.FC = () => {
     };
 
     const fetchProxyConfig = async () => {
-        await getProxyConfig().then((response) => {
+        try {
+            const response = await getProxyConfig();
             if (response.proxy_url) {
-                setIsProxyConfigured(true);
-                notify('success', 'Proxy configuration fetched successfully');
-            } else {
-                notify('error', 'Failed to fetch proxy configuration. Try again.');
+            setIsProxyConfigured(true);
+            setProxy(response);
+            notify('success', 'Proxy configuration fetched successfully');
             }
-        });
+        } catch (error:any) {
+            notify('error', error);
+        }
     };
 
     const removeProxy = async () => {
@@ -114,6 +118,7 @@ const ProxyForm: React.FC = () => {
             if (response) {
                 notify('success', 'Proxy configuration removed successfully');
                 setIsProxyConfigured(false);
+                setProxy({ proxy_url: '', auth: false });
             } else {
                 notify('error', 'Failed to remove proxy configuration. Try again.');
             }
@@ -132,9 +137,30 @@ const ProxyForm: React.FC = () => {
                         <Typography variant="body1" gutterBottom component="div">
                             Proxy is already configured. You can test the configuration below.
                         </Typography>
-                        <br />
+                        <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
+                            <Typography variant="h6" gutterBottom component="div">
+                                Current Proxy Configuration
+                            </Typography>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px' }}>Proxy URL</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px' }}>Requires Authentication</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style={{ border: '1px solid #ddd', padding: '8px' }}>{proxy.proxy_url}</td>
+                                        <td style={{ border: '1px solid #ddd', padding: '8px' }}>{proxy.auth ? 'Yes' : 'No'}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </Box>
                         <Button variant="contained" color="primary" onClick={testProxy} sx={{ marginTop: '20px' }}>
                             Test Proxy Configuration
+                        </Button>
+                        <Button variant="contained" color="secondary" onClick={removeProxy} sx={{ marginTop: '20px' }}>
+                            Remove Proxy Configuration
                         </Button>
                     </Box>
                 ) : (
@@ -152,7 +178,7 @@ const ProxyForm: React.FC = () => {
                                     <TextField
                                         label="Proxy Server URL"
                                         name="server_url"
-                                        value={proxyConfig.server_url}
+                                        value={proxyConfigForm.server_url}
                                         onChange={handleChange}
                                         fullWidth
                                         required
@@ -174,7 +200,7 @@ const ProxyForm: React.FC = () => {
                                             <TextField
                                                 label="Username"
                                                 name="username"
-                                                value={proxyConfig.username}
+                                                value={proxyConfigForm.username}
                                                 onChange={handleChange}
                                                 fullWidth
                                                 required={requiresAuth}
@@ -186,7 +212,7 @@ const ProxyForm: React.FC = () => {
                                             <TextField
                                                 label="Password"
                                                 name="password"
-                                                value={proxyConfig.password}
+                                                value={proxyConfigForm.password}
                                                 onChange={handleChange}
                                                 type="password"
                                                 fullWidth
@@ -202,7 +228,7 @@ const ProxyForm: React.FC = () => {
                                     color="primary"
                                     type="submit"
                                     fullWidth
-                                    disabled={!proxyConfig.server_url || (requiresAuth && (!proxyConfig.username || !proxyConfig.password))}
+                                    disabled={!proxyConfigForm.server_url || (requiresAuth && (!proxyConfigForm.username || !proxyConfigForm.password))}
                                 >
                                     Add Proxy
                                 </Button>
