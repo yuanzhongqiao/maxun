@@ -137,9 +137,6 @@ const ProxyForm: React.FC = () => {
             {
                 isProxyConfigured ? (
                     <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
-                        <Typography variant="body1" gutterBottom component="div">
-                            Proxy is already configured. You can test the configuration below.
-                        </Typography>
                         <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
                             <Typography variant="h6" gutterBottom component="div">
                                 Current Proxy Configuration
