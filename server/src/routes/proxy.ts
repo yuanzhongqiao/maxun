@@ -107,6 +107,7 @@ router.get('/config', requireSignIn, async (req: AuthenticatedRequest, res: Resp
         return res.status(404).json({ message: 'User not found' });
     }
 
+    const decryptedProxyUrl = user.proxy_url ? decrypt(user.proxy_url) : null;
     const auth = user.proxy_username && user.proxy_password ? true : false
 
     res.status(200).json({
