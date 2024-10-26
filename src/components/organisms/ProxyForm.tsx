@@ -134,38 +134,6 @@ const ProxyForm: React.FC = () => {
 
     return (
         <>
-            {
-                isProxyConfigured ? (
-                    <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
-                        <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
-                            <Typography variant="h6" gutterBottom component="div">
-                                Current Proxy Configuration
-                            </Typography>
-                            <TableContainer component={Paper} sx={{ margin: '30px' }}>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell><strong>Proxy URL</strong></TableCell>
-                                            <TableCell><strong>Requires Authentication</strong></TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell>{proxy.proxy_url}</TableCell>
-                                            <TableCell>{proxy.auth ? 'Yes' : 'No'}</TableCell>
-                                        </TableRow>
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </Box>
-                        <Button variant="outlined" color="primary" onClick={testProxy}>
-                            Test Proxy
-                        </Button>
-                        <Button variant="outlined" color="error" onClick={removeProxy} sx={{ marginLeft: '10px' }}>
-                            Remove Proxy
-                        </Button>
-                    </Box>
-                ) : (
                     <FormContainer>
                         <Typography variant="h6" gutterBottom component="div" style={{ marginTop: '20px' }}>
                             Proxy Configuration
@@ -175,6 +143,37 @@ const ProxyForm: React.FC = () => {
                             <Tab label="Automatic Proxy Rotation" />
                         </Tabs>
                         {tabIndex === 0 && (
+                            isProxyConfigured ? (
+                                <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
+                                    <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
+                                        <Typography variant="h6" gutterBottom component="div">
+                                            Current Proxy Configuration
+                                        </Typography>
+                                        <TableContainer component={Paper} sx={{ margin: '30px' }}>
+                                            <Table>
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell><strong>Proxy URL</strong></TableCell>
+                                                        <TableCell><strong>Requires Authentication</strong></TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    <TableRow>
+                                                        <TableCell>{proxy.proxy_url}</TableCell>
+                                                        <TableCell>{proxy.auth ? 'Yes' : 'No'}</TableCell>
+                                                    </TableRow>
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </Box>
+                                    <Button variant="outlined" color="primary" onClick={testProxy}>
+                                        Test Proxy
+                                    </Button>
+                                    <Button variant="outlined" color="error" onClick={removeProxy} sx={{ marginLeft: '10px' }}>
+                                        Remove Proxy
+                                    </Button>
+                                </Box>
+                            ) : (
                             <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, width: '100%' }}>
                                 <FormControl>
                                     <TextField
@@ -235,7 +234,7 @@ const ProxyForm: React.FC = () => {
                                     Add Proxy
                                 </Button>
                             </Box>
-                        )}
+                        ))}
                         {tabIndex === 1 && (
                             <Box sx={{ maxWidth: 600, width: '100%', textAlign: 'center', marginTop: '20px' }}>
                                 <>
@@ -250,7 +249,6 @@ const ProxyForm: React.FC = () => {
                         )}
                     </FormContainer>
                 )
-            }
         </>
     );
 };
