@@ -79,10 +79,10 @@ const ProxyForm: React.FC = () => {
         try {
             const response = await sendProxyConfig(proxyConfigForm);
             if (response) {
-            notify('success', 'Proxy configuration submitted successfully');
+                notify('success', 'Proxy configuration submitted successfully');
             } else {
-            notify('error', `Failed to submit proxy configuration. Try again. ${response}`);
-            console.log(`Failed to submit proxy configuration. Try again. ${response}`)
+                notify('error', `Failed to submit proxy configuration. Try again. ${response}`);
+                console.log(`Failed to submit proxy configuration. Try again. ${response}`)
             }
         } catch (error: any) {
             notify('error', `${error} : Failed to submit proxy configuration`);
@@ -107,11 +107,11 @@ const ProxyForm: React.FC = () => {
         try {
             const response = await getProxyConfig();
             if (response.proxy_url) {
-            setIsProxyConfigured(true);
-            setProxy(response);
-            notify('success', 'Proxy configuration fetched successfully');
+                setIsProxyConfigured(true);
+                setProxy(response);
+                notify('success', 'Proxy configuration fetched successfully');
             }
-        } catch (error:any) {
+        } catch (error: any) {
             notify('error', error);
         }
     };
@@ -164,7 +164,7 @@ const ProxyForm: React.FC = () => {
                         <Button variant="outlined" color="primary" onClick={testProxy}>
                             Test Proxy
                         </Button>
-                        <Button variant="outlined" color="error" onClick={removeProxy} sx={{ marginLeft: '10px'}}>
+                        <Button variant="outlined" color="error" onClick={removeProxy} sx={{ marginLeft: '10px' }}>
                             Remove Proxy
                         </Button>
                     </Box>
