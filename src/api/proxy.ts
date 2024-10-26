@@ -6,10 +6,10 @@ export const sendProxyConfig = async (proxyConfig: { server_url: string, usernam
         if (response.status === 200) {
             return response.data;
         } else {
-            throw new Error(`Failed to submit proxy configuration. Try again.`);
+            throw new Error(`Failed to submit proxy configuration. Status code: ${response.status}`);
         }
     } catch (error: any) {
-        console.log(error);
+        console.error('Error sending proxy configuration:', error.message || error);
         return false;
     }
 }
