@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/system';
 import { TextField, Button, Switch, FormControlLabel, Box, Typography, Tabs, Tab } from '@mui/material';
 import { sendProxyConfig, getProxyConfig, testProxyConfig } from '../../api/proxy';
@@ -109,7 +109,12 @@ const ProxyForm: React.FC = () => {
         });
     };
 
+    useEffect(() => {
+        fetchProxyConfig();
+    }, []);
+
     return (
+        <>
         <FormContainer>
             <Typography variant="h6" gutterBottom component="div" style={{ marginTop: '20px' }}>
                 Proxy Configuration
@@ -193,6 +198,7 @@ const ProxyForm: React.FC = () => {
                 </Box>
             )}
         </FormContainer>
+        </>
     );
 };
 
