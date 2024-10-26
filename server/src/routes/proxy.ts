@@ -107,15 +107,21 @@ router.get('/config', requireSignIn, async (req: AuthenticatedRequest, res: Resp
         return res.status(404).json({ message: 'User not found' });
     }
 
-    const decryptedProxyUrl = user.proxy_url ? decrypt(user.proxy_url) : null;
+    const maskedProxyUrl = user.proxy_url ? maskProxyUrl(user.proxy_url) : null;
     const auth = user.proxy_username && user.proxy_password ? true : false
 
     res.status(200).json({
-        proxy_url: decryptedProxyUrl,
+        proxy_url: maskedProxyUrl,
         auth: auth,
     });
 });
 
+const maskProxyUrl = (url: string) => {
+    const urlWithoutProtocol = url.replace(/^https?:\/\//, '').replace(/^socks5?:\/\//, ''); // Remove protocols
+    const [domain, port] = urlWithoutProtocol.split(':');
+    const maskedDomain = `${domain.slice(0, 3)}****${domain.slice(-3)}`; // Shows first and last 3 characters
+    return `${maskedDomain}:${port}`;
+};
 
 // TODO: Move this from here
 export const getDecryptedProxyConfig = async (userId: string) => {
