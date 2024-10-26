@@ -162,7 +162,7 @@ const ProxyForm: React.FC = () => {
                         <Button variant="outlined" color="primary" onClick={testProxy}>
                             Test Proxy Configuration
                         </Button>
-                        <Button variant="outlined" color="secondary" onClick={removeProxy}>
+                        <Button variant="outlined" color="error" onClick={removeProxy}>
                             Remove Proxy Configuration
                         </Button>
                     </Box>
