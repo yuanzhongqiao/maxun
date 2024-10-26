@@ -146,7 +146,7 @@ const ProxyForm: React.FC = () => {
                     isProxyConfigured ? (
                         <Box sx={{ maxWidth: 600, width: '100%', marginTop: '20px' }}>
                             <Box sx={{ maxWidth: 600, width: '100%', marginTop: '20px' }}>
-                                <Typography variant="h6" gutterBottom component="div">
+                                <Typography variant="subtitle1" gutterBottom component="div">
                                     Current Proxy Configuration
                                 </Typography>
                                 <TableContainer component={Paper} sx={{ margin: '30px 0px' }}>
