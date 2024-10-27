@@ -207,7 +207,7 @@ async function createWorkflowAndStoreMetadata(id: string, userId: string) {
                 headless: true,
                 proxy: proxyOptions.server ? proxyOptions : undefined,
             }
-        });
+        }, userId);
 
         const runId = uuid();
 
