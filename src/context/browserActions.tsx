@@ -3,7 +3,7 @@ import { useSocketStore } from './socket';
 
 export type PaginationType = 'scrollDown' | 'scrollUp' | 'clickNext' | 'clickLoadMore' | 'none' | '';
 export type LimitType = '10' | '100' | 'custom' | '';
-export type CaptureStage = 'initial' | 'pagination' | 'limit' | 'complete';
+export type CaptureStage = 'initial' | 'pagination' | 'limit' | 'complete' | '';
 
 interface ActionContextProps {
     getText: boolean;
@@ -42,7 +42,7 @@ export const ActionProvider = ({ children }: { children: ReactNode }) => {
     const [paginationType, setPaginationType] = useState<PaginationType>('');
     const [limitType, setLimitType] = useState<LimitType>('');
     const [customLimit, setCustomLimit] = useState<string>('');
-    const [captureStage, setCaptureStage] = useState<CaptureStage>('initial'); // New captureStage state
+    const [captureStage, setCaptureStage] = useState<CaptureStage>('initial');
 
     const { socket } = useSocketStore();
 
@@ -70,6 +70,7 @@ export const ActionProvider = ({ children }: { children: ReactNode }) => {
     const startGetList = () => {
         setGetList(true);
         socket?.emit('setGetList', { getList: true });
+        setCaptureStage('initial');
     }
 
     const stopGetList = () => {
@@ -78,7 +79,7 @@ export const ActionProvider = ({ children }: { children: ReactNode }) => {
         setPaginationType('');
         setLimitType('');
         setCustomLimit('');
-        setCaptureStage('initial'); // Reset captureStage when stopping getList
+        setCaptureStage('complete');
     };
 
     const startGetScreenshot = () => setGetScreenshot(true);
