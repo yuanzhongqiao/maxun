@@ -62,7 +62,7 @@ router.get('/start', requireSignIn, async (req: AuthenticatedRequest, res: Respo
             headless: true,
             proxy: proxyOptions.server ? proxyOptions : undefined,
         }
-    });
+    }, req.user.id);
     return res.send(id);
 });
 
@@ -70,11 +70,14 @@ router.get('/start', requireSignIn, async (req: AuthenticatedRequest, res: Respo
  * POST endpoint for starting the remote browser recording session accepting browser launch options.
  * returns session's id
  */
-router.post('/start', requireSignIn, (req, res) => {
+router.post('/start', requireSignIn, (req: AuthenticatedRequest, res:Response) => {
+    if (!req.user) {
+        return res.status(401).send('User not authenticated');
+    }
     const id = initializeRemoteBrowserForRecording({
         browser: chromium,
         launchOptions: req.body,
-    });
+    }, req.user.id);
     return res.send(id);
 });
 
