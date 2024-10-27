@@ -326,7 +326,7 @@ async function executeRun(id: string) {
         });
 
         let totalRowsExtracted = 0;
-        updatedRun.serializableOutput['item-0'].forEach((item: any) => {
+        updatedRun.dataValues.serializableOutput['item-0'].forEach((item: any) => {
             totalRowsExtracted += Object.keys(item).length;
         }
         );
@@ -338,9 +338,9 @@ async function executeRun(id: string) {
                 runId: id,
                 created_at: new Date().toISOString(),
                 status: 'success',
-                extractedItemsCount: updatedRun.serializableOutput['item-0'].length,
+                extractedItemsCount: updatedRun.dataValues.serializableOutput['item-0'].length,
                 extractedRowsCount: totalRowsExtracted,
-                extractedScreenshotsCount: updatedRun.binaryOutput['item-0'].length,
+                extractedScreenshotsCount: updatedRun.dataValues.binaryOutput['item-0'].length,
             }
         })
 

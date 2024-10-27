@@ -255,7 +255,7 @@ router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, re
       });
 
       let totalRowsExtracted = 0;
-      run.serializableOutput['item-0'].forEach((item: any) => {
+      run.dataValues.serializableOutput['item-0'].forEach((item: any) => {
         totalRowsExtracted += Object.keys(item).length;
       }
       );
@@ -268,9 +268,9 @@ router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, re
           user_id: req.user?.id,
           created_at: new Date().toISOString(),
           status: 'success',
-          extractedItemsCount: run.serializableOutput['item-0'].length,
+          extractedItemsCount: run.dataValues.serializableOutput['item-0'].length,
           extractedRowsCount: totalRowsExtracted,
-          extractedScreenshotsCount: run.binaryOutput['item-0'].length,
+          extractedScreenshotsCount: run.dataValues.binaryOutput['item-0'].length,
         }
       })
       try {
