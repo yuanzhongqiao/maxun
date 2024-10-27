@@ -104,17 +104,20 @@ export class RemoteBrowser {
                 }),
             };
         }
-        this.context = await this.browser.newContext(
-            {
-                viewport: { height: 400, width: 900 },
-                // recordVideo: { dir: 'videos/' }
-                proxy: {
-                    server: proxyOptions.server,
-                    username: proxyOptions.username ? proxyOptions.username : undefined,
-                    password: proxyOptions.password ? proxyOptions.password : undefined,
-                }
-            }
-        );
+        const contextOptions: any = {
+            viewport: { height: 400, width: 900 },
+            // recordVideo: { dir: 'videos/' }
+        };
+
+        if (proxyOptions.server) {
+            contextOptions.proxy = {
+            server: proxyOptions.server,
+            username: proxyOptions.username ? proxyOptions.username : undefined,
+            password: proxyOptions.password ? proxyOptions.password : undefined,
+            };
+        }
+
+        this.context = await this.browser.newContext(contextOptions);
         this.currentPage = await this.context.newPage();
         const blocker = await PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch);
         await blocker.enableBlockingInPage(this.currentPage);
