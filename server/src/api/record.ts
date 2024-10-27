@@ -329,11 +329,11 @@ async function executeRun(id: string) {
             distinctId: id,
             event: 'maxun-oss-run-created-api',
             properties: {
-              runId: id,
-              created_at: new Date().toISOString(),
-              status: 'success',
+                runId: id,
+                created_at: new Date().toISOString(),
+                status: 'success',
             }
-          })
+        })
 
         return {
             success: true,
@@ -344,20 +344,20 @@ async function executeRun(id: string) {
         logger.log('info', `Error while running a recording with id: ${id} - ${error.message}`);
         const run = await Run.findOne({ where: { runId: id } });
         if (run) {
-          await run.update({
-            status: 'failed',
-            finishedAt: new Date().toLocaleString(),
-          });
+            await run.update({
+                status: 'failed',
+                finishedAt: new Date().toLocaleString(),
+            });
         }
         captureServerAnalytics.capture({
             distinctId: id,
             event: 'maxun-oss-run-created-api',
             properties: {
-              runId: id,
-              created_at: new Date().toISOString(),
-              status: 'failed',
+                runId: id,
+                created_at: new Date().toISOString(),
+                status: 'failed',
             }
-          });
+        });
         return {
             success: false,
             error: error.message,
