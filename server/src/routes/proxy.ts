@@ -3,7 +3,6 @@ import { chromium } from "playwright";
 import User from '../models/User';
 import { encrypt, decrypt } from '../utils/auth';
 import { requireSignIn } from '../middlewares/auth';
-import { configureProxy } from 'maxun-core';
 
 export const router = Router();
 
