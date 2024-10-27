@@ -133,13 +133,15 @@ router.put('/runs/:id', requireSignIn, async (req: AuthenticatedRequest, res) =>
       };
     }
 
+    console.log(`Proxy config for run: ${JSON.stringify(proxyOptions)}`)
+
     const id = createRemoteBrowserForRun({
       browser: chromium,
       launchOptions: {
         headless: true,
         proxy: proxyOptions.server ? proxyOptions : undefined,
       }
-    });
+    }, req.user.id);
 
     const runId = uuid();
 
