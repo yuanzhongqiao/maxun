@@ -33,7 +33,7 @@ router.post('/register', async (req, res) => {
             httpOnly: true
         })
         captureServerAnalytics.capture({
-            distinctId: user.id,
+            distinctId: user.id.toString(),
             event: 'maxun-oss-user-registered',
             properties: {
                 email: user.email,
@@ -123,6 +123,15 @@ router.post('/generate-api-key', requireSignIn, async (req: AuthenticatedRequest
 
         await user.update({ api_key: apiKey });
 
+        captureServerAnalytics.capture({
+            distinctId: user.id.toString(),
+            event: 'maxun-oss-api-key-created',
+            properties: {
+                user_id: user.id,
+                created_at: new Date().toISOString()
+            }
+        })
+
         return res.status(200).json({
             message: 'API key generated successfully',
             api_key: apiKey,
@@ -174,6 +183,15 @@ router.delete('/delete-api-key', requireSignIn, async (req: AuthenticatedRequest
         }
 
         await User.update({ api_key: null }, { where: { id: req.user.id } });
+
+        captureServerAnalytics.capture({
+            distinctId: user.id.toString(),
+            event: 'maxun-oss-api-key-deleted',
+            properties: {
+                user_id: user.id,
+                deleted_at: new Date().toISOString()
+            }
+        })
 
         return res.status(200).json({ message: 'API Key deleted successfully' });
     } catch (error: any) {
@@ -254,6 +272,16 @@ router.get('/google/callback', requireSignIn, async (req: AuthenticatedRequest, 
             google_access_token: tokens.access_token,
             google_refresh_token: tokens.refresh_token,
         });
+
+        captureServerAnalytics.capture({
+            distinctId: user.id.toString(),
+            event: 'maxun-oss-google-sheet-integration-created',
+            properties: {
+                user_id: user.id,
+                robot_id: robot.recording_meta.id,
+                created_at: new Date().toISOString()
+            }
+        })
 
         // List user's Google Sheets from their Google Drive
         const drive = google.drive({ version: 'v3', auth: oauth2Client });
@@ -377,10 +405,14 @@ router.post('/gsheets/update', requireSignIn, async (req, res) => {
     }
 });
 
-router.post('/gsheets/remove', requireSignIn, async (req, res) => {
+router.post('/gsheets/remove', requireSignIn, async (req: AuthenticatedRequest, res) => {
     const { robotId } = req.body;
     if (!robotId) {
         return res.status(400).json({ message: 'Robot ID is required' });
+    }
+
+    if (!req.user) {
+        return res.status(401).send({ error: 'Unauthorized' });
     }
 
     try {
@@ -397,6 +429,16 @@ router.post('/gsheets/remove', requireSignIn, async (req, res) => {
             google_access_token: null,
             google_refresh_token: null
         });
+
+        captureServerAnalytics.capture({
+            distinctId: req.user.id.toString(),
+            event: 'maxun-oss-google-sheet-integration-removed',
+            properties: {
+                user_id: req.user.id,
+                robot_id: robotId,
+                deleted_at: new Date().toISOString()
+            }
+        })
 
         res.json({ message: 'Google Sheets integration removed successfully' });
     } catch (error: any) {
