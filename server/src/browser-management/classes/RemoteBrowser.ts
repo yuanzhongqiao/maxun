@@ -91,9 +91,9 @@ export class RemoteBrowser {
      * @param options remote browser options to be used when launching the browser
      * @returns {Promise<void>}
      */
-    public initialize = async (options: RemoteBrowserOptions): Promise<void> => {
+    public initialize = async (options: RemoteBrowserOptions, userId: string): Promise<void> => {
         this.browser = <Browser>(await options.browser.launch(options.launchOptions));
-        const proxyConfig = await getDecryptedProxyConfig('1');
+        const proxyConfig = await getDecryptedProxyConfig(userId);
         let proxyOptions: { server: string, username?: string, password?: string } = { server: '' };
         if (proxyConfig.proxy_url) {
             proxyOptions = {
