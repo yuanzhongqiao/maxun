@@ -9,6 +9,7 @@ import Robot from "../../models/Robot";
 import Run from "../../models/Run";
 import { getDecryptedProxyConfig } from "../../routes/proxy";
 import { BinaryOutputService } from "../../storage/mino";
+import captureServerAnalytics from "../../utils/analytics";
 
 async function createWorkflowAndStoreMetadata(id: string, userId: string) {
   try {
@@ -132,6 +133,16 @@ async function executeRun(id: string) {
       binaryOutput: uploadedBinaryOutput,
     });
 
+    captureServerAnalytics.capture({
+      distinctId: id,
+      event: 'maxun-oss-run-created-scheduled',
+      properties: {
+        runId: id,
+        created_at: new Date().toISOString(),
+        status: 'success',
+      }
+    });
+
     googleSheetUpdateTasks[id] = {
       robotId: plainRun.robotMetaId,
       runId: id,
@@ -143,6 +154,22 @@ async function executeRun(id: string) {
   } catch (error: any) {
     logger.log('info', `Error while running a recording with id: ${id} - ${error.message}`);
     console.log(error.message);
+    const run = await Run.findOne({ where: { runId: id } });
+    if (run) {
+      await run.update({
+        status: 'failed',
+        finishedAt: new Date().toLocaleString(),
+      });
+    }
+    captureServerAnalytics.capture({
+      distinctId: id,
+      event: 'maxun-oss-run-created-scheduled',
+      properties: {
+        runId: id,
+        created_at: new Date().toISOString(),
+        status: 'failed',
+      }
+    });
     return false;
   }
 }

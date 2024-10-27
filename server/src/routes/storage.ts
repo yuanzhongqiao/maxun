@@ -255,11 +255,12 @@ router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, re
       });
       captureServerAnalytics.capture({
         distinctId: req.user?.id,
-        event: 'maxun-oss-run-created',
+        event: 'maxun-oss-run-created-manual',
         properties: {
           runId: req.params.id,
           user_id: req.user?.id,
           created_at: new Date().toISOString(),
+          status: 'success',
         }
       })
       try {
@@ -279,7 +280,26 @@ router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, re
     }
   } catch (e) {
     const { message } = e as Error;
+        // If error occurs, set run status to failed
+        const run = await Run.findOne({ where: { runId: req.params.id } });
+        if (run) {
+          await run.update({
+            status: 'failed',
+            finishedAt: new Date().toLocaleString(),
+          });
+        }
     logger.log('info', `Error while running a recording with id: ${req.params.id} - ${message}`);
+    captureServerAnalytics.capture({
+      distinctId: req.user?.id,
+      event: 'maxun-oss-run-created-manual',
+      properties: {
+        runId: req.params.id,
+        user_id: req.user?.id,
+        created_at: new Date().toISOString(),
+        status: 'failed',
+        error_message: message,
+      }
+    });
     return res.send(false);
   }
 });
