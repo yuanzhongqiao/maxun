@@ -15,6 +15,7 @@ import { BinaryOutputService } from '../storage/mino';
 import { workflowQueue } from '../worker';
 import { AuthenticatedRequest } from './record';
 import { computeNextRun } from '../utils/schedule';
+import captureServerAnalytics from "../utils/analytics";
 
 export const router = Router();
 
@@ -59,11 +60,23 @@ router.get('/recordings/:id', requireSignIn, async (req, res) => {
 /**
  * DELETE endpoint for deleting a recording from the storage.
  */
-router.delete('/recordings/:id', requireSignIn, async (req, res) => {
+router.delete('/recordings/:id', requireSignIn, async (req: AuthenticatedRequest, res) => {
+  if (!req.user) {
+    return res.status(401).send({ error: 'Unauthorized' });
+  }
   try {
     await Robot.destroy({
       where: { 'recording_meta.id': req.params.id }
     });
+    captureServerAnalytics.capture({
+      distinctId: req.user?.id,
+      event: 'maxun-oss-robot-deleted',
+      properties: {
+        robotId: req.params.id,
+        user_id: req.user?.id,
+        deleted_at: new Date().toISOString(),
+      }
+    })
     return res.send(true);
   } catch (e) {
     const { message } = e as Error;
@@ -88,9 +101,21 @@ router.get('/runs', requireSignIn, async (req, res) => {
 /**
  * DELETE endpoint for deleting a run from the storage.
  */
-router.delete('/runs/:id', requireSignIn, async (req, res) => {
+router.delete('/runs/:id', requireSignIn, async (req: AuthenticatedRequest, res) => {
+  if (!req.user) {
+    return res.status(401).send({ error: 'Unauthorized' });
+  }
   try {
     await Run.destroy({ where: { runId: req.params.id } });
+    captureServerAnalytics.capture({
+      distinctId: req.user?.id,
+      event: 'maxun-oss-run-deleted',
+      properties: {
+        runId: req.params.id,
+        user_id: req.user?.id,
+        deleted_at: new Date().toISOString(),
+      }
+    })
     return res.send(true);
   } catch (e) {
     const { message } = e as Error;
@@ -194,9 +219,9 @@ router.get('/runs/run/:id', requireSignIn, async (req, res) => {
 /**
  * PUT endpoint for finishing a run and saving it to the storage.
  */
-router.post('/runs/run/:id', requireSignIn, async (req, res) => {
+router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, res) => {
   try {
-    console.log(`Params for POST /runs/run/:id`, req.params.id)
+    if (!req.user) { return res.status(401).send({ error: 'Unauthorized' }); }
 
     const run = await Run.findOne({ where: { runId: req.params.id } });
     if (!run) {
@@ -228,6 +253,15 @@ router.post('/runs/run/:id', requireSignIn, async (req, res) => {
         serializableOutput: interpretationInfo.serializableOutput,
         binaryOutput: uploadedBinaryOutput,
       });
+      captureServerAnalytics.capture({
+        distinctId: req.user?.id,
+        event: 'maxun-oss-run-created',
+        properties: {
+          runId: req.params.id,
+          user_id: req.user?.id,
+          created_at: new Date().toISOString(),
+        }
+      })
       try {
         googleSheetUpdateTasks[plainRun.runId] = {
           robotId: plainRun.robotMetaId,
@@ -349,6 +383,16 @@ router.put('/schedule/:id/', requireSignIn, async (req: AuthenticatedRequest, re
       },
     });
 
+    captureServerAnalytics.capture({
+      distinctId: req.user.id,
+      event: 'maxun-oss-robot-scheduled',
+      properties: {
+        robotId: id,
+        user_id: req.user.id,
+        scheduled_at: new Date().toISOString(),
+      }
+    })
+
     // Fetch updated schedule details after setting it
     const updatedRobot = await Robot.findOne({ where: { 'recording_meta.id': id } });
 
@@ -383,9 +427,13 @@ router.get('/schedule/:id', requireSignIn, async (req, res) => {
 });
 
 // Endpoint to delete schedule
-router.delete('/schedule/:id', requireSignIn, async (req, res) => {
+router.delete('/schedule/:id', requireSignIn, async (req: AuthenticatedRequest, res) => {
   try {
     const { id } = req.params;
+
+    if (!req.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
 
     const robot = await Robot.findOne({ where: { 'recording_meta.id': id } });
     if (!robot) {
@@ -404,6 +452,16 @@ router.delete('/schedule/:id', requireSignIn, async (req, res) => {
     await robot.update({
       schedule: null
     });
+
+    captureServerAnalytics.capture({
+      distinctId: req.user?.id,
+      event: 'maxun-oss-robot-schedule-deleted',
+      properties: {
+        robotId: id,
+        user_id: req.user?.id,
+        unscheduled_at: new Date().toISOString(),
+      }
+    })
 
     res.status(200).json({ message: 'Schedule deleted successfully' });
 
