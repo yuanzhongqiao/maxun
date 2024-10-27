@@ -121,12 +121,12 @@ export const BrowserWindow = () => {
     }, [screenShot, canvasRef, socket, screencastHandler]);
 
     // Watch for changes in listSelector
-    useEffect(() => {
-        if (listSelector) {
-            notify(`info`,`List selector updated to: ${listSelector}`);
-            // socket?.emit('listSelector', { selector: listSelector });
-        }
-    }, [listSelector, socket]);
+    // useEffect(() => {
+    //     if (listSelector) {
+    //         notify(`info`,`List selector updated to: ${listSelector}`);
+    //         // socket?.emit('listSelector', { selector: listSelector });
+    //     }
+    // }, [listSelector, socket]);
 
     const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: ElementInfo | null, childSelectors?: string[] }) => {
         if (getList === true) {
