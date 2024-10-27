@@ -126,7 +126,6 @@ router.get('/config', requireSignIn, async (req: AuthenticatedRequest, res: Resp
     }
 });
 
-// delete proxy configuration
 router.delete('/config', requireSignIn, async (req: AuthenticatedRequest, res: Response) => {
     if (!req.user) {
         return res.status(401).json({ ok: false, error: 'Unauthorized' });
