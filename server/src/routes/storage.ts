@@ -253,6 +253,13 @@ router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, re
         serializableOutput: interpretationInfo.serializableOutput,
         binaryOutput: uploadedBinaryOutput,
       });
+
+      let totalRowsExtracted = 0;
+      run.serializableOutput['item-0'].forEach((item: any) => {
+        totalRowsExtracted += Object.keys(item).length;
+      }
+      );
+
       captureServerAnalytics.capture({
         distinctId: req.user?.id,
         event: 'maxun-oss-run-created-manual',
@@ -261,6 +268,9 @@ router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, re
           user_id: req.user?.id,
           created_at: new Date().toISOString(),
           status: 'success',
+          extractedItemsCount: run.serializableOutput['item-0'].length,
+          extractedRowsCount: totalRowsExtracted,
+          extractedScreenshotsCount: run.binaryOutput['item-0'].length,
         }
       })
       try {
@@ -280,14 +290,14 @@ router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, re
     }
   } catch (e) {
     const { message } = e as Error;
-        // If error occurs, set run status to failed
-        const run = await Run.findOne({ where: { runId: req.params.id } });
-        if (run) {
-          await run.update({
-            status: 'failed',
-            finishedAt: new Date().toLocaleString(),
-          });
-        }
+    // If error occurs, set run status to failed
+    const run = await Run.findOne({ where: { runId: req.params.id } });
+    if (run) {
+      await run.update({
+        status: 'failed',
+        finishedAt: new Date().toLocaleString(),
+      });
+    }
     logger.log('info', `Error while running a recording with id: ${req.params.id} - ${message}`);
     captureServerAnalytics.capture({
       distinctId: req.user?.id,
@@ -327,10 +337,10 @@ router.put('/schedule/:id/', requireSignIn, async (req: AuthenticatedRequest, re
     // Validate and parse start and end times
     const [startHours, startMinutes] = atTimeStart.split(':').map(Number);
     const [endHours, endMinutes] = atTimeEnd.split(':').map(Number);
-    
+
     if (isNaN(startHours) || isNaN(startMinutes) || isNaN(endHours) || isNaN(endMinutes) ||
-        startHours < 0 || startHours > 23 || startMinutes < 0 || startMinutes > 59 ||
-        endHours < 0 || endHours > 23 || endMinutes < 0 || endMinutes > 59) {
+      startHours < 0 || startHours > 23 || startMinutes < 0 || startMinutes > 59 ||
+      endHours < 0 || endHours > 23 || endMinutes < 0 || endMinutes > 59) {
       return res.status(400).json({ error: 'Invalid time format' });
     }
 

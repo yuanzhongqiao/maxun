@@ -133,6 +133,12 @@ async function executeRun(id: string) {
       binaryOutput: uploadedBinaryOutput,
     });
 
+    let totalRowsExtracted = 0;
+    run.serializableOutput['item-0'].forEach((item: any) => {
+      totalRowsExtracted += Object.keys(item).length;
+    }
+    );
+
     captureServerAnalytics.capture({
       distinctId: id,
       event: 'maxun-oss-run-created-scheduled',
@@ -140,6 +146,9 @@ async function executeRun(id: string) {
         runId: id,
         created_at: new Date().toISOString(),
         status: 'success',
+        extractedItemsCount: run.serializableOutput['item-0'].length,
+        extractedRowsCount: totalRowsExtracted,
+        extractedScreenshotsCount: run.binaryOutput['item-0'].length,
       }
     });
 
