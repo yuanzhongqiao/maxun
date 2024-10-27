@@ -12,6 +12,7 @@ import logger from '../../logger';
 import { InterpreterSettings, RemoteBrowserOptions } from "../../types";
 import { WorkflowGenerator } from "../../workflow-management/classes/Generator";
 import { WorkflowInterpreter } from "../../workflow-management/classes/Interpreter";
+import { getDecryptedProxyConfig } from '../../routes/proxy';
 
 
 
@@ -92,10 +93,26 @@ export class RemoteBrowser {
      */
     public initialize = async (options: RemoteBrowserOptions): Promise<void> => {
         this.browser = <Browser>(await options.browser.launch(options.launchOptions));
+        const proxyConfig = await getDecryptedProxyConfig('1');
+        let proxyOptions: { server: string, username?: string, password?: string } = { server: '' };
+        if (proxyConfig.proxy_url) {
+            proxyOptions = {
+                server: proxyConfig.proxy_url,
+                ...(proxyConfig.proxy_username && proxyConfig.proxy_password && {
+                    username: proxyConfig.proxy_username,
+                    password: proxyConfig.proxy_password,
+                }),
+            };
+        }
         this.context = await this.browser.newContext(
             {
                 viewport: { height: 400, width: 900 },
                 // recordVideo: { dir: 'videos/' }
+                proxy: {
+                    server: proxyOptions.server,
+                    username: proxyOptions.username ? proxyOptions.username : undefined,
+                    password: proxyOptions.password ? proxyOptions.password : undefined,
+                }
             }
         );
         this.currentPage = await this.context.newPage();
