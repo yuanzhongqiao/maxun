@@ -3,6 +3,7 @@ import { chromium } from "playwright";
 import User from '../models/User';
 import { encrypt, decrypt } from '../utils/auth';
 import { requireSignIn } from '../middlewares/auth';
+import { configureProxy } from 'maxun-core';
 
 export const router = Router();
 
@@ -160,7 +161,7 @@ const maskProxyUrl = (url: string) => {
 // TODO: Move this from here
 export const getDecryptedProxyConfig = async (userId: string) => {
     const user = await User.findByPk(userId, {
-        attributes: ['proxy_url', 'proxy_username', 'proxy_password'],
+        raw: true,
     });
 
     if (!user) {
@@ -170,6 +171,8 @@ export const getDecryptedProxyConfig = async (userId: string) => {
     const decryptedProxyUrl = user.proxy_url ? decrypt(user.proxy_url) : null;
     const decryptedProxyUsername = user.proxy_username ? decrypt(user.proxy_username) : null;
     const decryptedProxyPassword = user.proxy_password ? decrypt(user.proxy_password) : null;
+
+    console.log(`Decrypting ${decryptedProxyUrl}, ${decryptedProxyUsername}, ${decryptedProxyPassword}`);
 
     return {
         proxy_url: decryptedProxyUrl,
