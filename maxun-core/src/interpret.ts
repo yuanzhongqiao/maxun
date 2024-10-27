@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop, no-restricted-syntax */
-import { Page, PageScreenshotOptions, Browser, BrowserContext } from 'playwright';
+import { Page, PageScreenshotOptions } from 'playwright';
 import { PlaywrightBlocker } from '@cliqz/adblocker-playwright';
 import fetch from 'cross-fetch';
 import path from 'path';
@@ -15,7 +15,6 @@ import { arrayToObject } from './utils/utils';
 import Concurrency from './utils/concurrency';
 import Preprocessor from './preprocessor';
 import log, { Level } from './utils/logger';
-import { ProxyConfig } from './proxy';
 
 /**
  * Defines optional intepreter options (passed in constructor)
@@ -30,8 +29,6 @@ interface InterpreterOptions {
     activeId: Function,
     debugMessage: Function,
   }>
-  proxy?: ProxyConfig | null;
-  onProxyError?: (error: Error, proxy: ProxyConfig) => Promise<ProxyConfig | null>;
 }
 
 
@@ -53,12 +50,6 @@ export default class Interpreter extends EventEmitter {
 
   private blocker: PlaywrightBlocker | null = null;
 
-  private browser: Browser | null = null;
-
-  private contexts: BrowserContext[] = [];
-
-  private currentProxy: ProxyConfig | null = null;
-
   constructor(workflow: WorkflowFile, options?: Partial<InterpreterOptions>) {
     super();
     this.workflow = workflow.workflow;
@@ -70,15 +61,8 @@ export default class Interpreter extends EventEmitter {
       binaryCallback: () => { log('Received binary data, thrashing them.', Level.WARN); },
       debug: false,
       debugChannel: {},
-      proxy: null,
-      onProxyError: async (error: Error, proxy: ProxyConfig) => {
-        this.log(`Proxy error: ${error.message}`, Level.ERROR);
-        return null;
-      },
-
       ...options,
     };
-    this.currentProxy = this.options.proxy;
     this.concurrency = new Concurrency(this.options.maxConcurrency);
     this.log = (...args) => log(...args);
 
@@ -105,41 +89,6 @@ export default class Interpreter extends EventEmitter {
     })
   }
 
-  public updateProxy(proxyConfig: ProxyConfig | null): void {
-    this.currentProxy = proxyConfig;
-    this.log(`Proxy configuration updated`, Level.LOG);
-  }
-
-  private async createProxyContext(browser: Browser): Promise<BrowserContext> {
-    if (!this.currentProxy) {
-      return browser.newContext();
-    }
-
-    try {
-      const context = await browser.newContext({
-        proxy: this.currentProxy
-      });
-      this.contexts.push(context);
-      return context;
-    } catch (error) {
-      if (this.options.onProxyError) {
-        const newProxy = await this.options.onProxyError(error as Error, this.currentProxy);
-        if (newProxy) {
-          this.currentProxy = newProxy;
-          return this.createProxyContext(browser);
-        }
-      }
-      throw error;
-    }
-  }
-
-  // create a new page with proxy
-  private async createProxyPage(context: BrowserContext): Promise<Page> {
-    const page = await context.newPage();
-    await page.setViewportSize({ width: 900, height: 400 });
-    return page;
-  }
-
   private async applyAdBlocker(page: Page): Promise<void> {
     if (this.blocker) {
       await this.blocker.enableBlockingInPage(page);
@@ -162,7 +111,6 @@ export default class Interpreter extends EventEmitter {
     * @returns {PageState} State of the current page.
     */
   private async getState(page: Page, workflow: Workflow): Promise<PageState> {
-    await page.setViewportSize({ width: 900, height: 400 }); 
     /**
      * All the selectors present in the current Workflow
      */
@@ -331,14 +279,13 @@ export default class Interpreter extends EventEmitter {
             // @ts-ignore
             (elements) => elements.map((a) => a.href).filter((x) => x),
           );
-          const context = await this.createProxyContext(page.context().browser()!);
+        const context = page.context();
 
         for (const link of links) {
           // eslint-disable-next-line
           this.concurrency.addJob(async () => {
             try {
-              const newPage = await this.createProxyPage(context);
-              await newPage.setViewportSize({ width: 900, height: 400 });
+              const newPage = await context.newPage();
               await newPage.goto(link);
               await newPage.waitForLoadState('networkidle');
               await this.runLoop(newPage, this.initializedWorkflow!);
@@ -635,6 +582,20 @@ export default class Interpreter extends EventEmitter {
    *  for the `{$param: nameofparam}` fields.
    */
   public async run(page: Page, params?: ParamType): Promise<void> {
+    this.log('Starting the workflow.', Level.LOG);
+    const context = page.context();
+    
+    // Check proxy settings from context options
+    const contextOptions = (context as any)._options;
+    const hasProxy = !!contextOptions?.proxy;
+    
+    this.log(`Proxy settings: ${hasProxy ? `Proxy is configured...` : 'No proxy configured...'}`);
+    
+    if (hasProxy) {
+        if (contextOptions.proxy.username) {
+            this.log(`Proxy authenticated...`);
+        }
+    }
     if (this.stopper) {
       throw new Error('This Interpreter is already running a workflow. To run another workflow, please, spawn another Interpreter.');
     }
@@ -643,28 +604,16 @@ export default class Interpreter extends EventEmitter {
      */
     this.initializedWorkflow = Preprocessor.initWorkflow(this.workflow, params);
 
-    // Create a new context with proxy configuration
-    const context = await this.createProxyContext(page.context().browser()!);
-    
-    // Create a new page with proxy
-    const proxyPage = await this.createProxyPage(context);
-
-    // Copy over the current page's URL and state
-    await proxyPage.goto(page.url());
-
-    await this.ensureScriptsLoaded(proxyPage);
+    await this.ensureScriptsLoaded(page);
 
     this.stopper = () => {
       this.stopper = null;
     };
 
-    this.concurrency.addJob(() => this.runLoop(proxyPage, this.initializedWorkflow!));
+    this.concurrency.addJob(() => this.runLoop(page, this.initializedWorkflow!));
 
     await this.concurrency.waitForCompletion();
 
-    await Promise.all(this.contexts.map(ctx => ctx.close()));
-    this.contexts = [];
-    
     this.stopper = null;
   }
 
