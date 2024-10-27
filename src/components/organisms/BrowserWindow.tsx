@@ -86,7 +86,6 @@ export const BrowserWindow = () => {
 
     const resetListState = useCallback(() => {
         socket?.emit('listSelector', { selector: null });
-        notify(`info`, 'listSelector reset');
         setListSelector(null);
         setFields({});
         setCurrentListId(null);
