@@ -111,9 +111,9 @@ export class RemoteBrowser {
 
         if (proxyOptions.server) {
             contextOptions.proxy = {
-            server: proxyOptions.server,
-            username: proxyOptions.username ? proxyOptions.username : undefined,
-            password: proxyOptions.password ? proxyOptions.password : undefined,
+                server: proxyOptions.server,
+                username: proxyOptions.username ? proxyOptions.username : undefined,
+                password: proxyOptions.password ? proxyOptions.password : undefined,
             };
         }
 
@@ -163,7 +163,7 @@ export class RemoteBrowser {
         this.socket.on('setViewportSize', async (data: { width: number, height: number }) => {
             const { width, height } = data;
             logger.log('debug', `Received viewport size: width=${width}, height=${height}`);
-    
+
             // Update the browser context's viewport dynamically
             if (this.context && this.browser) {
                 this.context = await this.browser.newContext({ viewport: { width, height } });
