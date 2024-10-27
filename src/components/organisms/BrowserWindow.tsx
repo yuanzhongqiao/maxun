@@ -132,7 +132,7 @@ export const BrowserWindow = () => {
         if (getList === true) {
             if (listSelector) {
                 socket?.emit('listSelector', { selector: listSelector });
-                notify(`info`, `Setting new list selector to: ${listSelector}`);
+                notify(`info`, `List Selected. Proceed to select text you want to extract.`);
                 if (limitMode) {
                     setHighlighterData(null);
                 } else if (paginationMode) {
