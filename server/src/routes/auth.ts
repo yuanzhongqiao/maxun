@@ -234,7 +234,7 @@ router.get('/google/callback', requireSignIn, async (req: AuthenticatedRequest, 
 
         if (!req.user) {
             return res.status(401).send({ error: 'Unauthorized' });
-          }
+        }
 
         // Get the currently authenticated user (from `requireSignIn`)
         let user = await User.findOne({ where: { id: req.user.id } });
@@ -287,7 +287,7 @@ router.post('/gsheets/data', requireSignIn, async (req: AuthenticatedRequest, re
     const { spreadsheetId, robotId } = req.body;
     if (!req.user) {
         return res.status(401).send({ error: 'Unauthorized' });
-      }
+    }
     const user = await User.findByPk(req.user.id, { raw: true });
 
     if (!user) {
