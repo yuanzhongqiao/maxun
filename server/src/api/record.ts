@@ -13,6 +13,7 @@ import { browserPool } from "../server";
 import { io, Socket } from "socket.io-client";
 import { BinaryOutputService } from "../storage/mino";
 import { AuthenticatedRequest } from "../routes/record"
+import captureServerAnalytics from "../utils/analytics";
 
 const formatRecording = (recordingData: any) => {
     const recordingMeta = recordingData.recording_meta;
@@ -324,6 +325,16 @@ async function executeRun(id: string) {
             binaryOutput: uploadedBinaryOutput,
         });
 
+        captureServerAnalytics.capture({
+            distinctId: id,
+            event: 'maxun-oss-run-created-api',
+            properties: {
+              runId: id,
+              created_at: new Date().toISOString(),
+              status: 'success',
+            }
+          })
+
         return {
             success: true,
             interpretationInfo: updatedRun.toJSON()
@@ -331,6 +342,22 @@ async function executeRun(id: string) {
 
     } catch (error: any) {
         logger.log('info', `Error while running a recording with id: ${id} - ${error.message}`);
+        const run = await Run.findOne({ where: { runId: id } });
+        if (run) {
+          await run.update({
+            status: 'failed',
+            finishedAt: new Date().toLocaleString(),
+          });
+        }
+        captureServerAnalytics.capture({
+            distinctId: id,
+            event: 'maxun-oss-run-created-api',
+            properties: {
+              runId: id,
+              created_at: new Date().toISOString(),
+              status: 'failed',
+            }
+          });
         return {
             success: false,
             error: error.message,
@@ -380,7 +407,7 @@ async function waitForRunCompletion(runId: string, interval: number = 2000) {
 
         if (run.status === 'success') {
             return run;
-        } else if (run.status === 'error') {
+        } else if (run.status === 'failed') {
             throw new Error('Run failed');
         }
 
