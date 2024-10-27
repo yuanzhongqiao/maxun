@@ -6,6 +6,7 @@ import { hashPassword, comparePassword } from '../utils/auth';
 import { requireSignIn } from '../middlewares/auth';
 import { genAPIKey } from '../utils/api';
 import { google } from 'googleapis';
+import captureServerAnalytics from "../utils/analytics"
 export const router = Router();
 
 interface AuthenticatedRequest extends Request {
@@ -30,6 +31,15 @@ router.post('/register', async (req, res) => {
         user.password = undefined as unknown as string
         res.cookie('token', token, {
             httpOnly: true
+        })
+        captureServerAnalytics.capture({
+            distinctId: user.id,
+            event: 'maxun-oss-user-registered',
+            properties: {
+                email: user.email,
+                userId: user.id,
+                registeredAt: new Date().toISOString()
+            }
         })
         res.json(user)
     } catch (error: any) {
