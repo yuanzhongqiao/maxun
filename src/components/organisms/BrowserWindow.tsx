@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSocketStore } from '../../context/socket';
 import { Button } from '@mui/material';
 import Canvas from "../atoms/canvas";
+import { useBrowserDimensionsStore } from "../../context/browserDimensions";
 import { Highlighter } from "../atoms/Highlighter";
 import { GenericModal } from '../atoms/GenericModal';
 import { useActionContext } from '../../context/browserActions';
 import { useBrowserSteps, TextStep } from '../../context/browserSteps';
-import { useGlobalInfoStore } from "../../context/globalInfo"
 
 interface ElementInfo {
     tagName: string;
@@ -64,7 +64,6 @@ export const BrowserWindow = () => {
     const [paginationSelector, setPaginationSelector] = useState<string>('');
 
     const { socket } = useSocketStore();
-    const { notify } = useGlobalInfoStore()
     //const { width, height } = useBrowserDimensionsStore();
     const { getText, getList, paginationMode, paginationType, limitMode } = useActionContext();
     const { addTextStep, addListStep } = useBrowserSteps();
@@ -85,16 +84,10 @@ export const BrowserWindow = () => {
     };
 
     const resetListState = useCallback(() => {
-        socket?.emit('listSelector', { selector: null });
         setListSelector(null);
         setFields({});
         setCurrentListId(null);
-        setPaginationSelector('');
-        setHighlighterData(null);
-        setShowAttributeModal(false);
-        setSelectedElement(null);
-        setAttributeOptions([]);
-    }, [socket]);
+    }, []);
 
     useEffect(() => {
         if (!getList) {
@@ -120,19 +113,10 @@ export const BrowserWindow = () => {
         }
     }, [screenShot, canvasRef, socket, screencastHandler]);
 
-    // Watch for changes in listSelector
-    // useEffect(() => {
-    //     if (listSelector) {
-    //         notify(`info`,`List selector updated to: ${listSelector}`);
-    //         // socket?.emit('listSelector', { selector: listSelector });
-    //     }
-    // }, [listSelector, socket]);
-
     const highlighterHandler = useCallback((data: { rect: DOMRect, selector: string, elementInfo: ElementInfo | null, childSelectors?: string[] }) => {
         if (getList === true) {
             if (listSelector) {
                 socket?.emit('listSelector', { selector: listSelector });
-                notify(`info`, `List Selected. Proceed to select text you want to extract.`);
                 if (limitMode) {
                     setHighlighterData(null);
                 } else if (paginationMode) {
@@ -150,16 +134,14 @@ export const BrowserWindow = () => {
                     setHighlighterData(null);
                 }
             } else {
-               // Clear any existing highlighter data before setting new data
-                // This ensures we start fresh when selecting a new list selector
-                setHighlighterData(null);
-                setTimeout(() => setHighlighterData(data), 0);
+                // set highlighterData for the initial listSelector selection
+                setHighlighterData(data);
             }
         } else {
             // for non-list steps
             setHighlighterData(data);
         }
-    }, [getList, socket, listSelector, paginationMode, paginationType, limitMode]);
+    }, [highlighterData, getList, socket, listSelector, paginationMode, paginationType]);
 
 
     useEffect(() => {
@@ -221,19 +203,19 @@ export const BrowserWindow = () => {
                     }
                     return;
                 }
-                if (getList === true) {
-                if (!listSelector) {
-                    setFields({});
-                    setPaginationSelector('');
+
+                if (getList === true && !listSelector) {
                     setListSelector(highlighterData.selector);
                     setCurrentListId(Date.now());
+                    setFields({});
                 } else if (getList === true && listSelector && currentListId) {
+                    const attribute = options[0].value;
+                    const data = attribute === 'href' ? highlighterData.elementInfo?.url || '' :
+                        attribute === 'src' ? highlighterData.elementInfo?.imageUrl || '' :
+                            highlighterData.elementInfo?.innerText || '';
                     // Add fields to the list
                     if (options.length === 1) {
                         const attribute = options[0].value;
-                        const data = attribute === 'href' ? highlighterData.elementInfo?.url || '' :
-                            attribute === 'src' ? highlighterData.elementInfo?.imageUrl || '' :
-                                highlighterData.elementInfo?.innerText || '';
                         const newField: TextStep = {
                             id: Date.now(),
                             type: 'text',
@@ -267,7 +249,7 @@ export const BrowserWindow = () => {
                         setShowAttributeModal(true);
                     }
                 }
-            } }
+            }
         }
     };
 
@@ -334,7 +316,7 @@ export const BrowserWindow = () => {
 
 
     return (
-        <div onClick={handleClick} style={{ width: '900px'}} id="browser-window">
+        <div onClick={handleClick} style={{ width: '900px' }} id="browser-window">
             {
                 getText === true || getList === true ? (
                     <GenericModal
@@ -376,20 +358,20 @@ export const BrowserWindow = () => {
                 ) : null
             }
             <div style={{ height: '400px', overflow: 'hidden' }}>
-            {((getText === true || getList === true) && !showAttributeModal && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
-                <Highlighter
-                    unmodifiedRect={highlighterData?.rect}
-                    displayedSelector={highlighterData?.selector}
+                {((getText === true || getList === true) && !showAttributeModal && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
+                    <Highlighter
+                        unmodifiedRect={highlighterData?.rect}
+                        displayedSelector={highlighterData?.selector}
+                        width={900}
+                        height={400}
+                        canvasRect={canvasRef.current.getBoundingClientRect()}
+                    />
+                    : null}
+                <Canvas
+                    onCreateRef={setCanvasReference}
                     width={900}
                     height={400}
-                    canvasRect={canvasRef.current.getBoundingClientRect()}
                 />
-                : null}
-            <Canvas
-                onCreateRef={setCanvasReference}
-                width={900}
-                height={400}
-            />
             </div>
         </div>
     );
@@ -419,4 +401,4 @@ const modalStyle = {
     height: 'fit-content',
     display: 'block',
     padding: '20px',
-  };
+};
