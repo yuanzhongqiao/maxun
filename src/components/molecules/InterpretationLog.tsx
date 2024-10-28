@@ -154,9 +154,9 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
             },
           }}
         >
-          <Typography variant="h6" gutterBottom>
-            <StorageIcon /> Output Data Preview
-          </Typography>
+            <Typography variant="h6" gutterBottom style={{ display: 'flex', alignItems: 'center' }}>
+            <StorageIcon style={{ marginRight: '8px' }} /> Output Data Preview
+            </Typography>
           <div
             style={{
               height: '50vh',
