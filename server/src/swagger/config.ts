@@ -9,6 +9,21 @@ const options = {
       version: '1.0.0',
       description: 'API documentation for robot management',
     },
+    components: {
+      securitySchemes: {
+        ApiKeyAuth: {
+          type: 'apiKey',
+          in: 'header',
+          name: 'x-api-key',
+          description: 'API key for authorization. You can find your API key in the "API Key" section on Maxun Dashboard.',
+        },
+      },
+    },
+    security: [
+      {
+        ApiKeyAuth: [], // Apply this security scheme globally
+      },
+    ],
   },
   apis: [path.join(__dirname, '../api/*.ts')],
 };
