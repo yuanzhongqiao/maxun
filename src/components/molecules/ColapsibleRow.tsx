@@ -135,7 +135,7 @@ export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRun
                       <>
                         <Typography variant="h5" style={{ marginBottom: '20px' }}>Run Settings</Typography>
                         <Box style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        <TextField
+                          <TextField
                             label="Run ID"
                             value={row.runId}
                             InputProps={{ readOnly: true }}
