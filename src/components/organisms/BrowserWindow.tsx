@@ -198,18 +198,6 @@ export const BrowserWindow = () => {
                 }
 
                 if (getList === true) {
-                    // Handle pagination mode logic only when a list is being processed
-                    if (paginationMode) {
-                        // Only allow selection in pagination mode if type is not empty, 'scrollDown', or 'scrollUp'
-                        if (paginationType !== '' && paginationType !== 'scrollDown' && paginationType !== 'scrollUp' && paginationType !== 'none') {
-                            setPaginationSelector(highlighterData.selector);
-                            notify(`info`, `Pagination element selected successfully.`);
-                            addListStep(listSelector!, fields, currentListId || 0, { type: paginationType, selector: highlighterData.selector });
-                        }
-                        return;
-                    }
-                
-                    // If no listSelector is set yet, set the listSelector
                     if (!listSelector) {
                         setListSelector(highlighterData.selector);
                         notify(`info`, `List selected successfully. Select the text data for extraction.`);
@@ -242,10 +230,20 @@ export const BrowserWindow = () => {
                                 };
                                 return updatedFields;
                             });
+
+                            if (paginationMode) {
+                                // Only allow selection in pagination mode if type is not empty, 'scrollDown', or 'scrollUp'
+                                if (paginationType !== '' && paginationType !== 'scrollDown' && paginationType !== 'scrollUp' && paginationType !== 'none') {
+                                    setPaginationSelector(highlighterData.selector);
+                                    notify(`info`, `Pagination element selected successfully.`);
+                                    addListStep(listSelector!, fields, currentListId || 0, { type: paginationType, selector: highlighterData.selector });
+                                }
+                                return;
+                            }
                 
                             // Add new field and update the list step
                             if (listSelector) {
-                                addListStep(listSelector, { ...fields, [newField.id]: newField }, currentListId, { type: '', selector: paginationSelector });
+                                addListStep(listSelector, { ...fields, [newField.id]: newField }, currentListId, { type: paginationType, selector: paginationSelector });
                             }
                 
                         } else {
