@@ -15,7 +15,7 @@ import { SERVER_PORT } from "./constants/config";
 import { Server } from "socket.io";
 import { readdirSync } from "fs"
 import { fork } from 'child_process';
-import captureServerAnalytics from "./utils/analytics";
+import { capture } from "./utils/analytics";
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './swagger/config';
 
@@ -77,10 +77,11 @@ workerProcess.on('exit', (code) => {
 });
 
 app.get('/', function (req, res) {
-  captureServerAnalytics.capture({
-    distinctId: 'maxun-oss-server-run',
-    event: 'server_started',
-  });
+  capture(
+    'maxun-oss-server-run', {
+      event: 'server_started',
+    }
+  );
   return res.send('Maxun server started 🚀');
 });
 
