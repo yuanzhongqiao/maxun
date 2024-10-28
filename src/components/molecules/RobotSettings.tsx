@@ -105,6 +105,14 @@ export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSe
                                     style={{ marginBottom: '20px' }}
                                 />
                                 <TextField
+                                    label="Created By User ID"
+                                    value={robot.userId}
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
+                                    style={{ marginBottom: '20px' }}
+                                />
+                                <TextField
                                     label="Robot Created At"
                                     value={robot.recording_meta.createdAt}
                                     InputProps={{
