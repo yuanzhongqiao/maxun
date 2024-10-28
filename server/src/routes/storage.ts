@@ -171,7 +171,7 @@ router.put('/runs/:id', requireSignIn, async (req: AuthenticatedRequest, res) =>
     const runId = uuid();
 
     const run = await Run.create({
-      status: 'RUNNING',
+      status: 'running',
       name: recording.recording_meta.name,
       robotId: recording.id,
       robotMetaId: recording.recording_meta.id,
@@ -255,10 +255,17 @@ router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, re
       });
 
       let totalRowsExtracted = 0;
-      run.dataValues.serializableOutput['item-0'].forEach((item: any) => {
-        totalRowsExtracted += Object.keys(item).length;
+      let extractedScreenshotsCount = 0;
+      let extractedItemsCount = 0;
+
+      if (run.dataValues.binaryOutput) {
+        extractedScreenshotsCount = run.dataValues.binaryOutput['item-0'].length; 
       }
-      );
+      if (run.dataValues.serializableOutput) {
+        extractedItemsCount = run.dataValues.serializableOutput['item-0'].length;
+      }
+
+      console.log(`${extractedItemsCount} ${extractedScreenshotsCount}`)
 
       captureServerAnalytics.capture({
         distinctId: req.user?.id,
@@ -268,9 +275,8 @@ router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, re
           user_id: req.user?.id,
           created_at: new Date().toISOString(),
           status: 'success',
-          extractedItemsCount: run.dataValues.serializableOutput['item-0'].length,
-          extractedRowsCount: totalRowsExtracted,
-          extractedScreenshotsCount: run.dataValues.binaryOutput['item-0'].length,
+          extractedItemsCount,
+          extractedScreenshotsCount,
         }
       })
       try {
@@ -355,10 +361,10 @@ router.put('/schedule/:id/', requireSignIn, async (req: AuthenticatedRequest, re
 
     switch (runEveryUnit) {
       case 'MINUTES':
-        cronExpression = `${startMinutes}-${endMinutes} */${runEvery} * * *`;
+        cronExpression = `${startMinutes} */${runEvery} * * *`;
         break;
       case 'HOURS':
-        cronExpression = `${startMinutes} ${startHours}-${endHours} */${runEvery} * *`;
+        cronExpression = `${startMinutes} */${runEvery} * * *`;
         break;
       case 'DAYS':
         cronExpression = `${startMinutes} ${startHours} */${runEvery} * *`;
@@ -367,7 +373,7 @@ router.put('/schedule/:id/', requireSignIn, async (req: AuthenticatedRequest, re
         cronExpression = `${startMinutes} ${startHours} * * ${dayIndex}`;
         break;
       case 'MONTHS':
-        cronExpression = `${startMinutes} ${startHours} 1-7 * *`;
+        cronExpression = `${startMinutes} ${startHours} ${startFrom === '1' ? '1' : '1-7'} * *`;
         if (startFrom !== 'SUNDAY') {
           cronExpression += ` ${dayIndex}`;
         }
