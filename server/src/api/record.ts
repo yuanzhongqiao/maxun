@@ -92,7 +92,7 @@ const formatRecording = (recordingData: any) => {
  *                   example: error
  *                 message:
  *                   type: string
- *                   example: "Failed to retrieve recordings"
+ *                   example: "Failed to retrieve robots"
  */
 router.get("/robots", requireAPIKey, async (req: Request, res: Response) => {
     try {
@@ -110,11 +110,11 @@ router.get("/robots", requireAPIKey, async (req: Request, res: Response) => {
 
         res.status(200).json(response);
     } catch (error) {
-        console.error("Error fetching recordings:", error);
+        console.error("Error fetching robots:", error);
         res.status(500).json({
             statusCode: 500,
             messageCode: "error",
-            message: "Failed to retrieve recordings",
+            message: "Failed to retrieve robots",
         });
     }
 });
@@ -217,11 +217,11 @@ router.get("/robots/:id", requireAPIKey, async (req: Request, res: Response) => 
 
         res.status(200).json(response);
     } catch (error) {
-        console.error("Error fetching recording:", error);
+        console.error("Error fetching robot:", error);
         res.status(404).json({
             statusCode: 404,
             messageCode: "not_found",
-            message: `Recording with name "${req.params.fileName}" not found.`,
+            message: `Robot with ID "${req.params.id}" not found.`,
         });
     }
 });
