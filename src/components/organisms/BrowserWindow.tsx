@@ -203,6 +203,7 @@ export const BrowserWindow = () => {
                         // Only allow selection in pagination mode if type is not empty, 'scrollDown', or 'scrollUp'
                         if (paginationType !== '' && paginationType !== 'scrollDown' && paginationType !== 'scrollUp' && paginationType !== 'none') {
                             setPaginationSelector(highlighterData.selector);
+                            notify(`info`, `Pagination element selected successfully.`);
                             addListStep(listSelector!, fields, currentListId || 0, { type: paginationType, selector: highlighterData.selector });
                         }
                         return;
