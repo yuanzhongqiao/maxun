@@ -5,6 +5,7 @@ import { modalStyle } from "./AddWhereCondModal";
 import { useGlobalInfoStore } from '../../context/globalInfo';
 import { getStoredRecording } from '../../api/storage';
 import { WhereWhatPair } from 'maxun-core';
+import { getUserById } from "../../api/auth";
 
 interface RobotMeta {
     name: string;
@@ -54,6 +55,7 @@ interface RobotSettingsProps {
 
 export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSettings }: RobotSettingsProps) => {
     const [robot, setRobot] = useState<RobotSettings | null>(null);
+    const [userEmail, setUserEmail] = useState<string | null>(null);
     const { recordingId, notify } = useGlobalInfoStore();
 
     useEffect(() => {
@@ -75,6 +77,18 @@ export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSe
 
     // Find the `goto` action in `what` and retrieve its arguments
     const targetUrl = lastPair?.what.find(action => action.action === "goto")?.args?.[0];
+
+    useEffect(() => {
+        const fetchUserEmail = async () => {
+            if (robot && robot.userId) {
+                const userData = await getUserById(robot.userId.toString());
+                if (userData && userData.user) {
+                    setUserEmail(userData.user.email);
+                }
+            }
+        };
+        fetchUserEmail();
+    }, [robot?.userId]);
 
     return (
         <GenericModal
@@ -105,8 +119,8 @@ export const RobotSettingsModal = ({ isOpen, handleStart, handleClose, initialSe
                                     style={{ marginBottom: '20px' }}
                                 />
                                 <TextField
-                                    label="Created By User ID"
-                                    value={robot.userId}
+                                    label="Created By User"
+                                    value={userEmail}
                                     InputProps={{
                                         readOnly: true,
                                     }}
