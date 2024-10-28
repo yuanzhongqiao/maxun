@@ -131,7 +131,6 @@ export const BrowserWindow = () => {
                 } else if (data.childSelectors && data.childSelectors.includes(data.selector)) {
                     // highlight only valid child elements within the listSelector
                     setHighlighterData(data);
-                    notify(`info`, `chidlren are${data.childSelectors}`);
                 } else {
                     // if !valid child in normal mode, clear the highlighter
                     setHighlighterData(null);
