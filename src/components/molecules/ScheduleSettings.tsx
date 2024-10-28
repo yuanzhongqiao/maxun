@@ -135,7 +135,9 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
             <>
               <Typography>Run every: {schedule.runEvery} {schedule.runEveryUnit.toLowerCase()}</Typography>
               <Typography>{['MONTHS', 'WEEKS'].includes(settings.runEveryUnit) ? "Start From" : "On"} {schedule.startFrom.charAt(0).toUpperCase() + schedule.startFrom.slice(1).toLowerCase()}</Typography>
-              <Typography>On day: {schedule.dayOfMonth}</Typography>
+              {schedule.runEveryUnit === 'MONTHS' && (
+                <Typography>On day: {schedule.dayOfMonth}{['1', '21', '31'].includes(schedule.dayOfMonth || '') ? 'st' : ['2', '22'].includes(schedule.dayOfMonth || '') ? 'nd' : ['3', '23'].includes(schedule.dayOfMonth || '') ? 'rd' : 'th'} of the month</Typography>
+              )}
               <Typography>At around: {schedule.atTimeStart}, {schedule.timezone} Timezone</Typography>
               <Box mt={2} display="flex" justifyContent="space-between">
                 <Button
