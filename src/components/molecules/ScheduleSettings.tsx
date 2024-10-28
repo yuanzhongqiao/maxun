@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GenericModal } from "../atoms/GenericModal";
-import { MenuItem, TextField, Typography, Box, Switch, FormControlLabel } from "@mui/material";
+import { MenuItem, TextField, Typography, Box } from "@mui/material";
 import { Dropdown } from "../atoms/DropdownMui";
 import Button from "@mui/material/Button";
 import { validMomentTimezones } from '../../constants/const';
@@ -17,7 +17,8 @@ interface ScheduleSettingsProps {
 export interface ScheduleSettings {
   runEvery: number;
   runEveryUnit: string;
-  startFrom: string;
+  startFrom: string; 
+  dayOfMonth?: string;
   atTimeStart?: string;
   atTimeEnd?: string;
   timezone: string;
@@ -28,13 +29,13 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
   const [settings, setSettings] = useState<ScheduleSettings>({
     runEvery: 1,
     runEveryUnit: 'HOURS',
-    startFrom: 'MONDAY',
+    startFrom: 'MONDAY', 
+    dayOfMonth: '', 
     atTimeStart: '00:00',
     atTimeEnd: '01:00',
     timezone: 'UTC'
   });
 
-  // Load initial settings if provided
   useEffect(() => {
     if (initialSettings) {
       setSettings(initialSettings);
@@ -66,19 +67,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
     'MONTHS'
   ];
 
-  const days = [
-    'MONDAY',
-    'TUESDAY',
-    'WEDNESDAY',
-    'THURSDAY',
-    'FRIDAY',
-    'SATURDAY',
-    'SUNDAY'
-  ];
-
   const { recordingId } = useGlobalInfoStore();
-
-  console.log(`Recoridng ID Shculde: ${recordingId}`);
 
   const deleteRobotSchedule = () => {
     if (recordingId) {
@@ -92,6 +81,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
       runEvery: 1,
       runEveryUnit: 'HOURS',
       startFrom: 'MONDAY',
+      dayOfMonth: '', 
       atTimeStart: '00:00',
       atTimeEnd: '01:00',
       timezone: 'UTC'
@@ -101,7 +91,6 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
   const getRobotSchedule = async () => {
     if (recordingId) {
       const scheduleData = await getSchedule(recordingId);
-      console.log(`Robot found schedule: ${JSON.stringify(scheduleData, null, 2)}`);
       setSchedule(scheduleData);
     } else {
       console.error('No recording id provided');
@@ -132,116 +121,113 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
       }}>
         <Typography variant="h6" sx={{ marginBottom: '20px' }}>Schedule Settings</Typography>
         <>
-          {
-            (schedule !== null) ? (
-              <>
-                <Typography>Run every: {schedule.runEvery} {schedule.runEveryUnit.toLowerCase()}</Typography>
-                <Typography>Start from: {schedule.startFrom.charAt(0).toUpperCase() + schedule.startFrom.slice(1).toLowerCase()}</Typography>
-                <Typography>At around: {schedule.atTimeStart}, {schedule.timezone} Timezone</Typography>
-                <Box mt={2} display="flex" justifyContent="space-between">
-                  <Button
-                    onClick={deleteRobotSchedule}
-                    variant="outlined"
-                    color="error"
-                  >
-                    Delete Schedule
-                  </Button>
-                </Box>
-              </>
-            ) : (
-              <>
+          {schedule !== null ? (
+            <>
+              <Typography>Run every: {schedule.runEvery} {schedule.runEveryUnit.toLowerCase()}</Typography>
+              <Typography>Start from: {schedule.startFrom.charAt(0).toUpperCase() + schedule.startFrom.slice(1).toLowerCase()}</Typography>
+              <Typography>On day: {schedule.dayOfMonth}</Typography>
+              <Typography>At around: {schedule.atTimeStart}, {schedule.timezone} Timezone</Typography>
+              <Box mt={2} display="flex" justifyContent="space-between">
+                <Button
+                  onClick={deleteRobotSchedule}
+                  variant="outlined"
+                  color="error"
+                >
+                  Delete Schedule
+                </Button>
+              </Box>
+            </>
+          ) : (
+            <>
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <Typography sx={{ marginRight: '10px' }}>Run once every</Typography>
+                <TextField
+                  type="number"
+                  value={settings.runEvery}
+                  onChange={(e) => handleChange('runEvery', parseInt(e.target.value))}
+                  sx={textStyle}
+                  inputProps={{ min: 1 }}
+                />
+                <Dropdown
+                  label=""
+                  id="runEveryUnit"
+                  value={settings.runEveryUnit}
+                  handleSelect={(e) => handleChange('runEveryUnit', e.target.value)}
+                  sx={dropDownStyle}
+                >
+                  {units.map((unit) => (
+                    <MenuItem key={unit} value={unit}>{unit}</MenuItem>
+                  ))}
+                </Dropdown>
+              </Box>
+
+                {settings.runEveryUnit === 'MONTHS' && (
                 <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                  <Typography sx={{ marginRight: '10px' }}>Run once every</Typography>
+                  <Typography sx={{ marginBottom: '5px', marginRight: '25px' }}>On Day of the Month</Typography>
                   <TextField
-                    type="number"
-                    value={settings.runEvery}
-                    onChange={(e) => handleChange('runEvery', parseInt(e.target.value))}
-                    sx={textStyle}
-                    inputProps={{ min: 1 }}
+                  type="number"
+                  value={settings.dayOfMonth}
+                  onChange={(e) => handleChange('dayOfMonth', e.target.value)}
+                  sx={textStyle}
+                  inputProps={{ min: 1, max: 31 }}
                   />
-                  <Dropdown
-                    label=""
-                    id="runEveryUnit"
-                    value={settings.runEveryUnit}
-                    handleSelect={(e) => handleChange('runEveryUnit', e.target.value)}
-                    sx={dropDownStyle}
-                  >
-                    {units.map((unit) => (
-                      <MenuItem key={unit} value={unit}>{unit}</MenuItem>
-                    ))}
-                  </Dropdown>
                 </Box>
+                )}
 
+              {['MINUTES', 'HOURS'].includes(settings.runEveryUnit) ? (
                 <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                  <Typography sx={{ marginBottom: '5px', marginRight: '25px' }}>Start from / On</Typography>
-                  <Dropdown
-                    label=""
-                    id="startFrom"
-                    value={settings.startFrom}
-                    handleSelect={(e) => handleChange('startFrom', e.target.value)}
-                    sx={dropDownStyle}
-                  >
-                    {days.map((day) => (
-                      <MenuItem key={day} value={day}>{day}</MenuItem>
-                    ))}
-                  </Dropdown>
-                </Box>
-
-                {['MINUTES', 'HOURS'].includes(settings.runEveryUnit) ? (
-                  <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                    <Box sx={{ marginRight: '20px' }}>
-                      <Typography sx={{ marginBottom: '5px' }}>In Between</Typography>
-                      <TextField
-                        type="time"
-                        value={settings.atTimeStart}
-                        onChange={(e) => handleChange('atTimeStart', e.target.value)}
-                        sx={textStyle}
-                      />
-                      <TextField
-                        type="time"
-                        value={settings.atTimeEnd}
-                        onChange={(e) => handleChange('atTimeEnd', e.target.value)}
-                        sx={textStyle}
-                      />
-                    </Box>
-                  </Box>
-                ) : (
-                  <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                    <Typography sx={{ marginBottom: '5px', marginRight: '10px' }}>At Around</Typography>
+                  <Box sx={{ marginRight: '20px' }}>
+                    <Typography sx={{ marginBottom: '5px' }}>In Between</Typography>
                     <TextField
                       type="time"
                       value={settings.atTimeStart}
                       onChange={(e) => handleChange('atTimeStart', e.target.value)}
                       sx={textStyle}
                     />
+                    <TextField
+                      type="time"
+                      value={settings.atTimeEnd}
+                      onChange={(e) => handleChange('atTimeEnd', e.target.value)}
+                      sx={textStyle}
+                    />
                   </Box>
-                )}
-
+                </Box>
+              ) : (
                 <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                  <Typography sx={{ marginRight: '10px' }}>Timezone</Typography>
-                  <Dropdown
-                    label=""
-                    id="timezone"
-                    value={settings.timezone}
-                    handleSelect={(e) => handleChange('timezone', e.target.value)}
-                    sx={dropDownStyle}
-                  >
-                    {validMomentTimezones.map((tz) => (
-                      <MenuItem key={tz} value={tz}>{tz}</MenuItem>
-                    ))}
-                  </Dropdown>
+                  <Typography sx={{ marginBottom: '5px', marginRight: '10px' }}>At Around</Typography>
+                  <TextField
+                    type="time"
+                    value={settings.atTimeStart}
+                    onChange={(e) => handleChange('atTimeStart', e.target.value)}
+                    sx={textStyle}
+                  />
                 </Box>
-                <Box mt={2} display="flex" justifyContent="flex-end">
-                  <Button onClick={() => handleStart(settings)} variant="contained" color="primary">
-                    Save Schedule
-                  </Button>
-                  <Button onClick={handleClose} color="primary" variant="outlined" style={{ marginLeft: '10px' }}>
-                    Cancel
-                  </Button>
-                </Box>
-              </>
-            )
-          }
+              )}
+
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <Typography sx={{ marginRight: '10px' }}>Timezone</Typography>
+                <Dropdown
+                  label=""
+                  id="timezone"
+                  value={settings.timezone}
+                  handleSelect={(e) => handleChange('timezone', e.target.value)}
+                  sx={dropDownStyle}
+                >
+                  {validMomentTimezones.map((tz) => (
+                    <MenuItem key={tz} value={tz}>{tz}</MenuItem>
+                  ))}
+                </Dropdown>
+              </Box>
+              <Box mt={2} display="flex" justifyContent="flex-end">
+                <Button onClick={() => handleStart(settings)} variant="contained" color="primary">
+                  Save Schedule
+                </Button>
+                <Button onClick={handleClose} color="primary" variant="outlined" style={{ marginLeft: '10px' }}>
+                  Cancel
+                </Button>
+              </Box>
+            </>
+          )}
         </>
       </Box>
     </GenericModal>
