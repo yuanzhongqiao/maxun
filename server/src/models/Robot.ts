@@ -37,6 +37,7 @@ interface ScheduleConfig {
   timezone: string;
   lastRunAt?: Date;
   nextRunAt?: Date;
+  dayOfMonth?: string;
   cronExpression?: string;
 }
 
