@@ -144,12 +144,8 @@ const ProxyForm: React.FC = () => {
                 </Tabs>
                 {tabIndex === 0 && (
                     isProxyConfigured ? (
-                        <Box sx={{ maxWidth: 600, width: '100%', marginTop: '20px' }}>
-                            <Box sx={{ maxWidth: 600, width: '100%', marginTop: '20px' }}>
-                                <Typography variant="subtitle1" gutterBottom component="div">
-                                    Current Proxy Configuration
-                                </Typography>
-                                <TableContainer component={Paper} sx={{ margin: '30px 0px' }}>
+                        <Box sx={{ maxWidth: 600, width: '100%', marginTop: '5px' }}>
+                                <TableContainer component={Paper} sx={{ marginBottom: '20px' }}>
                                     <Table>
                                         <TableHead>
                                             <TableRow>
@@ -165,7 +161,6 @@ const ProxyForm: React.FC = () => {
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
-                            </Box>
                             <Button variant="outlined" color="primary" onClick={testProxy}>
                                 Test Proxy
                             </Button>
