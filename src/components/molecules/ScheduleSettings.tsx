@@ -17,7 +17,7 @@ interface ScheduleSettingsProps {
 export interface ScheduleSettings {
   runEvery: number;
   runEveryUnit: string;
-  startFrom: string; 
+  startFrom: string;
   dayOfMonth?: string;
   atTimeStart?: string;
   atTimeEnd?: string;
@@ -29,8 +29,8 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
   const [settings, setSettings] = useState<ScheduleSettings>({
     runEvery: 1,
     runEveryUnit: 'HOURS',
-    startFrom: 'MONDAY', 
-    dayOfMonth: '1', 
+    startFrom: 'MONDAY',
+    dayOfMonth: '1',
     atTimeStart: '00:00',
     atTimeEnd: '01:00',
     timezone: 'UTC'
@@ -67,6 +67,16 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
     'MONTHS'
   ];
 
+  const days = [
+    'MONDAY',
+    'TUESDAY',
+    'WEDNESDAY',
+    'THURSDAY',
+    'FRIDAY',
+    'SATURDAY',
+    'SUNDAY'
+  ];
+
   const { recordingId } = useGlobalInfoStore();
 
   const deleteRobotSchedule = () => {
@@ -81,7 +91,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
       runEvery: 1,
       runEveryUnit: 'HOURS',
       startFrom: 'MONDAY',
-      dayOfMonth: '', 
+      dayOfMonth: '',
       atTimeStart: '00:00',
       atTimeEnd: '01:00',
       timezone: 'UTC'
@@ -124,7 +134,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
           {schedule !== null ? (
             <>
               <Typography>Run every: {schedule.runEvery} {schedule.runEveryUnit.toLowerCase()}</Typography>
-              <Typography>Start from: {schedule.startFrom.charAt(0).toUpperCase() + schedule.startFrom.slice(1).toLowerCase()}</Typography>
+              <Typography>{['MONTHS', 'WEEKS'].includes(settings.runEveryUnit) ? "Start From" : "On"} {schedule.startFrom.charAt(0).toUpperCase() + schedule.startFrom.slice(1).toLowerCase()}</Typography>
               <Typography>On day: {schedule.dayOfMonth}</Typography>
               <Typography>At around: {schedule.atTimeStart}, {schedule.timezone} Timezone</Typography>
               <Box mt={2} display="flex" justifyContent="space-between">
@@ -161,18 +171,33 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
                 </Dropdown>
               </Box>
 
-                {settings.runEveryUnit === 'MONTHS' && (
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <Typography sx={{ marginBottom: '5px', marginRight: '25px' }}>{['MONTHS', 'WEEKS'].includes(settings.runEveryUnit) ? "Start From" : "On"}</Typography>
+                <Dropdown
+                  label=""
+                  id="startFrom"
+                  value={settings.startFrom}
+                  handleSelect={(e) => handleChange('startFrom', e.target.value)}
+                  sx={dropDownStyle}
+                >
+                  {days.map((day) => (
+                    <MenuItem key={day} value={day}>{day}</MenuItem>
+                  ))}
+                </Dropdown>
+              </Box>
+
+              {settings.runEveryUnit === 'MONTHS' && (
                 <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                   <Typography sx={{ marginBottom: '5px', marginRight: '25px' }}>On Day of the Month</Typography>
                   <TextField
-                  type="number"
-                  value={settings.dayOfMonth}
-                  onChange={(e) => handleChange('dayOfMonth', e.target.value)}
-                  sx={textStyle}
-                  inputProps={{ min: 1, max: 31 }}
+                    type="number"
+                    value={settings.dayOfMonth}
+                    onChange={(e) => handleChange('dayOfMonth', e.target.value)}
+                    sx={textStyle}
+                    inputProps={{ min: 1, max: 31 }}
                   />
                 </Box>
-                )}
+              )}
 
               {['MINUTES', 'HOURS'].includes(settings.runEveryUnit) ? (
                 <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
