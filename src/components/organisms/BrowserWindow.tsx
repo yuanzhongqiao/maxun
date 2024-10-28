@@ -131,6 +131,7 @@ export const BrowserWindow = () => {
                 } else if (data.childSelectors && data.childSelectors.includes(data.selector)) {
                     // highlight only valid child elements within the listSelector
                     setHighlighterData(data);
+                    notify(`info`, `chidlren are${data.childSelectors}`);
                 } else {
                     // if !valid child in normal mode, clear the highlighter
                     setHighlighterData(null);
@@ -197,66 +198,62 @@ export const BrowserWindow = () => {
                     }
                 }
 
-                if (getList === true) {
-                    if (!listSelector) {
-                        setListSelector(highlighterData.selector);
-                        notify(`info`, `List selected successfully. Select the text data for extraction.`);
-                        setCurrentListId(Date.now());
-                        setFields({});
-                    } else if (listSelector && currentListId) {
-                        const attribute = options[0].value;
-                        const data = attribute === 'href' ? highlighterData.elementInfo?.url || '' :
-                            attribute === 'src' ? highlighterData.elementInfo?.imageUrl || '' :
-                                highlighterData.elementInfo?.innerText || '';
-                
-                        // Add fields to the list
-                        if (options.length === 1) {
-                            const newField: TextStep = {
-                                id: Date.now(),
-                                type: 'text',
-                                label: `Label ${Object.keys(fields).length + 1}`,
-                                data: data,
-                                selectorObj: {
-                                    selector: highlighterData.selector,
-                                    tag: highlighterData.elementInfo?.tagName,
-                                    attribute
-                                }
-                            };
-                
-                            setFields(prevFields => {
-                                const updatedFields = {
-                                    ...prevFields,
-                                    [newField.id]: newField
-                                };
-                                return updatedFields;
-                            });
+                if (paginationMode && getList) {
+                    // Only allow selection in pagination mode if type is not empty, 'scrollDown', or 'scrollUp'
+                    if (paginationType !== '' && paginationType !== 'scrollDown' && paginationType !== 'scrollUp' && paginationType !== 'none') {
+                        setPaginationSelector(highlighterData.selector);
+                        notify(`info`, `Pagination element selected successfully.`);
+                        addListStep(listSelector!, fields, currentListId || 0, { type: paginationType, selector: highlighterData.selector });
+                    }
+                    return;
+                }
 
-                            if (paginationMode) {
-                                // Only allow selection in pagination mode if type is not empty, 'scrollDown', or 'scrollUp'
-                                if (paginationType !== '' && paginationType !== 'scrollDown' && paginationType !== 'scrollUp' && paginationType !== 'none') {
-                                    setPaginationSelector(highlighterData.selector);
-                                    notify(`info`, `Pagination element selected successfully.`);
-                                    addListStep(listSelector!, fields, currentListId || 0, { type: paginationType, selector: highlighterData.selector });
-                                }
-                                return;
-                            }
-                
-                            // Add new field and update the list step
-                            if (listSelector) {
-                                addListStep(listSelector, { ...fields, [newField.id]: newField }, currentListId, { type: paginationType, selector: paginationSelector });
-                            }
-                
-                        } else {
-                            setAttributeOptions(options);
-                            setSelectedElement({
+                if (getList === true && !listSelector) {
+                    setListSelector(highlighterData.selector);
+                    notify(`info`, `List selected succesfully. Select the text data for extraction.`)
+                    setCurrentListId(Date.now());
+                    setFields({});
+                } else if (getList === true && listSelector && currentListId) {
+                    const attribute = options[0].value;
+                    const data = attribute === 'href' ? highlighterData.elementInfo?.url || '' :
+                        attribute === 'src' ? highlighterData.elementInfo?.imageUrl || '' :
+                            highlighterData.elementInfo?.innerText || '';
+                    // Add fields to the list
+                    if (options.length === 1) {
+                        const attribute = options[0].value;
+                        const newField: TextStep = {
+                            id: Date.now(),
+                            type: 'text',
+                            label: `Label ${Object.keys(fields).length + 1}`,
+                            data: data,
+                            selectorObj: {
                                 selector: highlighterData.selector,
-                                info: highlighterData.elementInfo
-                            });
-                            setShowAttributeModal(true);
+                                tag: highlighterData.elementInfo?.tagName,
+                                attribute
+                            }
+                        };
+
+                        setFields(prevFields => {
+                            const updatedFields = {
+                                ...prevFields,
+                                [newField.id]: newField
+                            };
+                            return updatedFields;
+                        });
+
+                        if (listSelector) {
+                            addListStep(listSelector, { ...fields, [newField.id]: newField }, currentListId, { type: '', selector: paginationSelector });
                         }
+
+                    } else {
+                        setAttributeOptions(options);
+                        setSelectedElement({
+                            selector: highlighterData.selector,
+                            info: highlighterData.elementInfo
+                        });
+                        setShowAttributeModal(true);
                     }
                 }
-                
             }
         }
     };
