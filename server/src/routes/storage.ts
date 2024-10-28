@@ -15,7 +15,7 @@ import { BinaryOutputService } from '../storage/mino';
 import { workflowQueue } from '../worker';
 import { AuthenticatedRequest } from './record';
 import { computeNextRun } from '../utils/schedule';
-import captureServerAnalytics from "../utils/analytics";
+import { capture } from "../utils/analytics";
 
 export const router = Router();
 
@@ -68,15 +68,14 @@ router.delete('/recordings/:id', requireSignIn, async (req: AuthenticatedRequest
     await Robot.destroy({
       where: { 'recording_meta.id': req.params.id }
     });
-    captureServerAnalytics.capture({
-      distinctId: req.user?.id,
-      event: 'maxun-oss-robot-deleted',
-      properties: {
+    capture(
+      'maxun-oss-robot-deleted',
+      {
         robotId: req.params.id,
         user_id: req.user?.id,
         deleted_at: new Date().toISOString(),
       }
-    })
+    )
     return res.send(true);
   } catch (e) {
     const { message } = e as Error;
@@ -107,15 +106,14 @@ router.delete('/runs/:id', requireSignIn, async (req: AuthenticatedRequest, res)
   }
   try {
     await Run.destroy({ where: { runId: req.params.id } });
-    captureServerAnalytics.capture({
-      distinctId: req.user?.id,
-      event: 'maxun-oss-run-deleted',
-      properties: {
+    capture(
+      'maxun-oss-run-deleted',
+      {
         runId: req.params.id,
         user_id: req.user?.id,
         deleted_at: new Date().toISOString(),
       }
-    })
+    )
     return res.send(true);
   } catch (e) {
     const { message } = e as Error;
@@ -259,7 +257,7 @@ router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, re
       let extractedItemsCount = 0;
 
       if (run.dataValues.binaryOutput) {
-        extractedScreenshotsCount = run.dataValues.binaryOutput['item-0'].length; 
+        extractedScreenshotsCount = run.dataValues.binaryOutput['item-0'].length;
       }
       if (run.dataValues.serializableOutput) {
         extractedItemsCount = run.dataValues.serializableOutput['item-0'].length;
@@ -267,10 +265,9 @@ router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, re
 
       console.log(`${extractedItemsCount} ${extractedScreenshotsCount}`)
 
-      captureServerAnalytics.capture({
-        distinctId: req.user?.id,
-        event: 'maxun-oss-run-created-manual',
-        properties: {
+      capture(
+        'maxun-oss-run-created-manual',
+        {
           runId: req.params.id,
           user_id: req.user?.id,
           created_at: new Date().toISOString(),
@@ -278,7 +275,7 @@ router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, re
           extractedItemsCount,
           extractedScreenshotsCount,
         }
-      })
+      )
       try {
         googleSheetUpdateTasks[plainRun.runId] = {
           robotId: plainRun.robotMetaId,
@@ -305,17 +302,16 @@ router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, re
       });
     }
     logger.log('info', `Error while running a recording with id: ${req.params.id} - ${message}`);
-    captureServerAnalytics.capture({
-      distinctId: req.user?.id,
-      event: 'maxun-oss-run-created-manual',
-      properties: {
+    capture(
+      'maxun-oss-run-created-manual',
+      {
         runId: req.params.id,
         user_id: req.user?.id,
         created_at: new Date().toISOString(),
         status: 'failed',
         error_message: message,
       }
-    });
+    );
     return res.send(false);
   }
 });
@@ -421,15 +417,14 @@ router.put('/schedule/:id/', requireSignIn, async (req: AuthenticatedRequest, re
       },
     });
 
-    captureServerAnalytics.capture({
-      distinctId: req.user.id,
-      event: 'maxun-oss-robot-scheduled',
-      properties: {
+    capture(
+      'maxun-oss-robot-scheduled',
+      {
         robotId: id,
         user_id: req.user.id,
         scheduled_at: new Date().toISOString(),
       }
-    })
+    )
 
     // Fetch updated schedule details after setting it
     const updatedRobot = await Robot.findOne({ where: { 'recording_meta.id': id } });
@@ -491,15 +486,14 @@ router.delete('/schedule/:id', requireSignIn, async (req: AuthenticatedRequest, 
       schedule: null
     });
 
-    captureServerAnalytics.capture({
-      distinctId: req.user?.id,
-      event: 'maxun-oss-robot-schedule-deleted',
-      properties: {
+    capture(
+      'maxun-oss-robot-schedule-deleted',
+      {
         robotId: id,
         user_id: req.user?.id,
         unscheduled_at: new Date().toISOString(),
       }
-    })
+    )
 
     res.status(200).json({ message: 'Schedule deleted successfully' });
 
