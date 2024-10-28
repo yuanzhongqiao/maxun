@@ -30,7 +30,7 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
     runEvery: 1,
     runEveryUnit: 'HOURS',
     startFrom: 'MONDAY', 
-    dayOfMonth: '', 
+    dayOfMonth: '1', 
     atTimeStart: '00:00',
     atTimeEnd: '01:00',
     timezone: 'UTC'
