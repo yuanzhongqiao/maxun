@@ -242,7 +242,7 @@ const ProxyForm: React.FC = () => {
                                 Coming Soon - In Open Source (Basic Rotation) & Cloud (Advanced Rotation). If you don't want to manage the infrastructure, join our cloud waitlist to get early access.
                             </Typography>
                             <Button variant="contained" color="primary" sx={{ marginTop: '20px' }}>
-                                Join Maxun Cloud Waitlist
+                                <a style={{color: 'white', textDecoration: 'none'}} href="https://forms.gle/hXjgqDvkEhPcaBW76">Join Maxun Cloud Waitlist</a>
                             </Button>
                         </>
                     </Box>
