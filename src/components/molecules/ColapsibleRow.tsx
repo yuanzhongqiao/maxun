@@ -9,6 +9,7 @@ import { columns, Data } from "./RunsTable";
 import { RunContent } from "./RunContent";
 import { GenericModal } from "../atoms/GenericModal";
 import { modalStyle } from "./AddWhereCondModal";
+import { getUserById } from "../../api/auth";
 
 interface RunTypeChipProps {
   runByUserId?: string;
@@ -34,8 +35,9 @@ interface CollapsibleRowProps {
 export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRunHandler, runningRecordingName }: CollapsibleRowProps) => {
   const [open, setOpen] = useState(isOpen);
   const [openSettingsModal, setOpenSettingsModal] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const runByLabel = row.runByUserId
-    ? `${row.runByUserId}`
+    ? `${userEmail}`
     : row.runByScheduleId
       ? `${row.runByScheduleId}`
       : row.runByAPI
@@ -57,6 +59,18 @@ export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRun
   useEffect(() => {
     scrollToLogBottom();
   }, [currentLog])
+
+  useEffect(() => {
+    const fetchUserEmail = async () => {
+      if (row.runByUserId) {
+        const userData = await getUserById(row.runByUserId);
+        if (userData && userData.user) {
+          setUserEmail(userData.user.email);
+        }
+      }
+    };
+    fetchUserEmail();
+  }, [row.runByUserId]);
 
   return (
     <React.Fragment>
