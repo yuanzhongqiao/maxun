@@ -151,6 +151,7 @@ export const InterpretationLog: React.FC<InterpretationLogProps> = ({ isOpen, se
               height: 500,
               width: width - 10,
               display: 'flex',
+              borderRadius: '10px 10px 0 0',
             },
           }}
         >
