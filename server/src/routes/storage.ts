@@ -256,14 +256,22 @@ router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, re
       let extractedScreenshotsCount = 0;
       let extractedItemsCount = 0;
 
-      if (run.dataValues.binaryOutput) {
-        extractedScreenshotsCount = run.dataValues.binaryOutput['item-0'].length;
-      }
-      if (run.dataValues.serializableOutput) {
-        extractedItemsCount = run.dataValues.serializableOutput['item-0'].length;
+      if (run.dataValues.binaryOutput && run.dataValues.binaryOutput["item-0"]) {
+        extractedScreenshotsCount = 1;
       }
 
-      console.log(`${extractedItemsCount} ${extractedScreenshotsCount}`)
+      if (run.dataValues.serializableOutput && run.dataValues.serializableOutput["item-0"]) {
+        const itemsArray = run.dataValues.serializableOutput["item-0"];
+        extractedItemsCount = itemsArray.length;
+
+        totalRowsExtracted = itemsArray.reduce((total, item) => {
+          return total + Object.keys(item).length;
+        }, 0);
+      }
+
+      console.log(`Extracted Items Count: ${extractedItemsCount}`);
+      console.log(`Extracted Screenshots Count: ${extractedScreenshotsCount}`);
+      console.log(`Total Rows Extracted: ${totalRowsExtracted}`);
 
       capture(
         'maxun-oss-run-created-manual',
@@ -272,6 +280,7 @@ router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, re
           user_id: req.user?.id,
           created_at: new Date().toISOString(),
           status: 'success',
+          totalRowsExtracted,
           extractedItemsCount,
           extractedScreenshotsCount,
         }
