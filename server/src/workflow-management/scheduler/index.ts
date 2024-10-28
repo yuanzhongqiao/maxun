@@ -134,25 +134,25 @@ async function executeRun(id: string) {
     });
 
     let totalRowsExtracted = 0;
-      let extractedScreenshotsCount = 0;
-      let extractedItemsCount = 0;
+    let extractedScreenshotsCount = 0;
+    let extractedItemsCount = 0;
 
-      if (run.dataValues.binaryOutput && run.dataValues.binaryOutput["item-0"]) {
-        extractedScreenshotsCount = 1;
-      }
+    if (run.dataValues.binaryOutput && run.dataValues.binaryOutput["item-0"]) {
+      extractedScreenshotsCount = 1;
+    }
 
-      if (run.dataValues.serializableOutput && run.dataValues.serializableOutput["item-0"]) {
-        const itemsArray = run.dataValues.serializableOutput["item-0"];
-        extractedItemsCount = itemsArray.length;
+    if (run.dataValues.serializableOutput && run.dataValues.serializableOutput["item-0"]) {
+      const itemsArray = run.dataValues.serializableOutput["item-0"];
+      extractedItemsCount = itemsArray.length;
 
-        totalRowsExtracted = itemsArray.reduce((total, item) => {
-          return total + Object.keys(item).length;
-        }, 0);
-      }
+      totalRowsExtracted = itemsArray.reduce((total, item) => {
+        return total + Object.keys(item).length;
+      }, 0);
+    }
 
-      console.log(`Extracted Items Count: ${extractedItemsCount}`);
-      console.log(`Extracted Screenshots Count: ${extractedScreenshotsCount}`);
-      console.log(`Total Rows Extracted: ${totalRowsExtracted}`);
+    console.log(`Extracted Items Count: ${extractedItemsCount}`);
+    console.log(`Extracted Screenshots Count: ${extractedScreenshotsCount}`);
+    console.log(`Total Rows Extracted: ${totalRowsExtracted}`);
 
     capture(
       'maxun-oss-run-created-scheduled',
@@ -161,8 +161,8 @@ async function executeRun(id: string) {
         created_at: new Date().toISOString(),
         status: 'success',
         totalRowsExtracted,
-          extractedItemsCount,
-          extractedScreenshotsCount,
+        extractedItemsCount,
+        extractedScreenshotsCount,
       }
     );
 
