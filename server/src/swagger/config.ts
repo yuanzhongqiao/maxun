@@ -11,7 +11,7 @@ const options = {
     },
     components: {
       securitySchemes: {
-        ApiKeyAuth: {
+        api_key: {
           type: 'apiKey',
           in: 'header',
           name: 'x-api-key',
@@ -21,7 +21,7 @@ const options = {
     },
     security: [
       {
-        ApiKeyAuth: [], // Apply this security scheme globally
+        api_key: [], // Apply this security scheme globally
       },
     ],
   },
