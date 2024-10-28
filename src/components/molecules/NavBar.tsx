@@ -19,7 +19,7 @@ export const NavBar: React.FC<NavBarProps> = ({ recordingName, isRecording }) =>
   const { state, dispatch } = useContext(AuthContext);
   const { user } = state;
   const navigate = useNavigate();
-  
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
