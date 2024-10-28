@@ -13,7 +13,7 @@ import { browserPool } from "../server";
 import { io, Socket } from "socket.io-client";
 import { BinaryOutputService } from "../storage/mino";
 import { AuthenticatedRequest } from "../routes/record"
-import captureServerAnalytics from "../utils/analytics";
+import {capture} from "../utils/analytics";
 
 const formatRecording = (recordingData: any) => {
     const recordingMeta = recordingData.recording_meta;
@@ -565,10 +565,7 @@ async function executeRun(id: string) {
         }
         );
 
-        captureServerAnalytics.capture({
-            distinctId: id,
-            event: 'maxun-oss-run-created-api',
-            properties: {
+        capture('maxun-oss-run-created-api',{
                 runId: id,
                 created_at: new Date().toISOString(),
                 status: 'success',
@@ -576,7 +573,7 @@ async function executeRun(id: string) {
                 extractedRowsCount: totalRowsExtracted,
                 extractedScreenshotsCount: updatedRun.dataValues.binaryOutput['item-0'].length,
             }
-        })
+        )
 
         return {
             success: true,
@@ -592,15 +589,14 @@ async function executeRun(id: string) {
                 finishedAt: new Date().toLocaleString(),
             });
         }
-        captureServerAnalytics.capture({
-            distinctId: id,
-            event: 'maxun-oss-run-created-api',
-            properties: {
+        capture(
+           'maxun-oss-run-created-api',
+           {
                 runId: id,
                 created_at: new Date().toISOString(),
                 status: 'failed',
             }
-        });
+        );
         return {
             success: false,
             error: error.message,
