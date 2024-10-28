@@ -20,7 +20,7 @@ const RunTypeChip: React.FC<RunTypeChipProps> = ({ runByUserId, runByScheduledId
   if (runByUserId) return <Chip label="Manual Run" color="primary" variant="outlined" />;
   if (runByScheduledId) return <Chip label="Scheduled Run" color="primary" variant="outlined" />;
   if (runByAPI) return <Chip label="API" color="primary" variant="outlined" />;
-  return <Chip label="Unknown Run Type" color="primary" variant="outlined"/>;
+  return <Chip label="Unknown Run Type" color="primary" variant="outlined" />;
 };
 
 interface CollapsibleRowProps {
@@ -35,12 +35,12 @@ export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRun
   const [open, setOpen] = useState(isOpen);
   const [openSettingsModal, setOpenSettingsModal] = useState(false);
   const runByLabel = row.runByUserId
-  ? `User ID: ${row.runByUserId}`
-  : row.runByScheduleId
-  ? `Schedule ID: ${row.runByScheduleId}`
-  : row.runByAPI
-  ? 'API'
-  : 'Unknown';
+    ? `User ID: ${row.runByUserId}`
+    : row.runByScheduleId
+      ? `Schedule ID: ${row.runByScheduleId}`
+      : row.runByAPI
+        ? 'API'
+        : 'Unknown';
 
   const logEndRef = useRef<HTMLDivElement | null>(null);
 
