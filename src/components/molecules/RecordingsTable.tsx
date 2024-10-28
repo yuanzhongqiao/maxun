@@ -150,7 +150,7 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
   const startRecording = () => {
     setModalOpen(false);
     handleStartRecording();
-    notify('info', 'New Recording started for ' + recordingUrl);
+    // notify('info', 'New Recording started for ' + recordingUrl);
   };
 
   useEffect(() => {
