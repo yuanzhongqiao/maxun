@@ -6,7 +6,7 @@ import { hashPassword, comparePassword } from '../utils/auth';
 import { requireSignIn } from '../middlewares/auth';
 import { genAPIKey } from '../utils/api';
 import { google } from 'googleapis';
-import captureServerAnalytics from "../utils/analytics"
+import { capture } from "../utils/analytics"
 export const router = Router();
 
 interface AuthenticatedRequest extends Request {
@@ -32,15 +32,14 @@ router.post('/register', async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true
         })
-        captureServerAnalytics.capture({
-            distinctId: user.id.toString(),
-            event: 'maxun-oss-user-registered',
-            properties: {
+        capture(
+            'maxun-oss-user-registered',
+            {
                 email: user.email,
                 userId: user.id,
                 registeredAt: new Date().toISOString()
             }
-        })
+        )
         res.json(user)
     } catch (error: any) {
         res.status(500).send(`Could not register user - ${error.message}`)
@@ -144,14 +143,13 @@ router.post('/generate-api-key', requireSignIn, async (req: AuthenticatedRequest
 
         await user.update({ api_key: apiKey });
 
-        captureServerAnalytics.capture({
-            distinctId: user.id.toString(),
-            event: 'maxun-oss-api-key-created',
-            properties: {
+        capture(
+            'maxun-oss-api-key-created',
+            {
                 user_id: user.id,
                 created_at: new Date().toISOString()
             }
-        })
+        )
 
         return res.status(200).json({
             message: 'API key generated successfully',
@@ -205,14 +203,13 @@ router.delete('/delete-api-key', requireSignIn, async (req: AuthenticatedRequest
 
         await User.update({ api_key: null }, { where: { id: req.user.id } });
 
-        captureServerAnalytics.capture({
-            distinctId: user.id.toString(),
-            event: 'maxun-oss-api-key-deleted',
-            properties: {
+        capture(
+            'maxun-oss-api-key-deleted',
+            {
                 user_id: user.id,
                 deleted_at: new Date().toISOString()
             }
-        })
+        )
 
         return res.status(200).json({ message: 'API Key deleted successfully' });
     } catch (error: any) {
@@ -293,16 +290,14 @@ router.get('/google/callback', requireSignIn, async (req: AuthenticatedRequest, 
             google_access_token: tokens.access_token,
             google_refresh_token: tokens.refresh_token,
         });
-
-        captureServerAnalytics.capture({
-            distinctId: user.id.toString(),
-            event: 'maxun-oss-google-sheet-integration-created',
-            properties: {
+        capture(
+            'maxun-oss-google-sheet-integration-created',
+            {
                 user_id: user.id,
                 robot_id: robot.recording_meta.id,
                 created_at: new Date().toISOString()
             }
-        })
+        )
 
         // List user's Google Sheets from their Google Drive
         const drive = google.drive({ version: 'v3', auth: oauth2Client });
@@ -451,15 +446,14 @@ router.post('/gsheets/remove', requireSignIn, async (req: AuthenticatedRequest, 
             google_refresh_token: null
         });
 
-        captureServerAnalytics.capture({
-            distinctId: req.user.id.toString(),
-            event: 'maxun-oss-google-sheet-integration-removed',
-            properties: {
+        capture(
+            'maxun-oss-google-sheet-integration-removed',
+            {
                 user_id: req.user.id,
                 robot_id: robotId,
                 deleted_at: new Date().toISOString()
             }
-        })
+        )
 
         res.json({ message: 'Google Sheets integration removed successfully' });
     } catch (error: any) {
