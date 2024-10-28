@@ -64,11 +64,8 @@ export const NavBar: React.FC<NavBarProps> = ({ recordingName, isRecording }) =>
                 <IconButton onClick={handleMenuOpen} sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  border: '1px solid #ff00c3',
                   borderRadius: '5px',
                   padding: '8px',
-                  background: 'white',
-                  color: '#ff00c3',
                   marginRight: '10px',
                   '&:hover': { backgroundColor: 'white', color: '#ff00c3' }
                 }}>
