@@ -39,7 +39,8 @@ export const UrlForm = ({
             setCurrentAddress(url);
             lastSubmittedRef.current = url;  // Update the last submitted URL
         } catch (e) {
-            alert(`ERROR: ${url} is not a valid url!`);
+            //alert(`ERROR: ${url} is not a valid url!`);
+            console.log(e)
         }
     }, [setCurrentAddress]);
 
