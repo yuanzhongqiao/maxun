@@ -40,7 +40,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
 
   const { setId, socket } = useSocketStore();
   const { setWidth } = useBrowserDimensionsStore();
-  const { browserId, setBrowserId, recordingId } = useGlobalInfoStore();
+  const { browserId, setBrowserId, recordingId, recordingUrl } = useGlobalInfoStore();
 
   const handleShowOutputData = useCallback(() => {
     setShowOutputData(true);
@@ -145,7 +145,7 @@ export const RecordingPage = ({ recordingName }: RecordingPageProps) => {
               </Grid>
             </>
           ) : (
-            <Loader text={'Spinning up a browser just for you...'} />
+            <Loader text={`Spinning up a browser...Navigating to ${recordingUrl}`} />
           )}
         </div>
       </BrowserStepsProvider>
