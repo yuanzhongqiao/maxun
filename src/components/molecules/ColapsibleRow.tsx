@@ -35,9 +35,9 @@ export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRun
   const [open, setOpen] = useState(isOpen);
   const [openSettingsModal, setOpenSettingsModal] = useState(false);
   const runByLabel = row.runByUserId
-    ? `User ID: ${row.runByUserId}`
+    ? `${row.runByUserId}`
     : row.runByScheduleId
-      ? `Schedule ID: ${row.runByScheduleId}`
+      ? `${row.runByScheduleId}`
       : row.runByAPI
         ? 'API'
         : 'Unknown';
