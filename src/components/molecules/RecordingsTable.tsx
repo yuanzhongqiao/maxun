@@ -10,7 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import { useEffect } from "react";
 import { WorkflowFile } from "maxun-core";
 import { IconButton, Button, Box, Typography, TextField } from "@mui/material";
-import { Schedule, DeleteForever, Edit, PlayCircle, Settings } from "@mui/icons-material";
+import { Schedule, DeleteForever, Edit, PlayCircle, Settings, Power } from "@mui/icons-material";
 import LinkIcon from '@mui/icons-material/Link';
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
@@ -357,7 +357,7 @@ const IntegrateButton = ({ handleIntegrate }: IntegrateButtonProps) => {
       handleIntegrate();
     }}
     >
-      <LinkIcon />
+      <Power />
     </IconButton>
   )
 }
