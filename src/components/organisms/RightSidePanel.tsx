@@ -427,17 +427,18 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                 <FormControlLabel value="custom" control={<Radio />} label="Custom" />
                 {limitType === 'custom' && (
                   <TextField
-                    type="number"
-                    value={customLimit}
-                    onChange={(e) => updateCustomLimit(e.target.value)}
-                    placeholder="Enter number"
-                    sx={{
-                      marginLeft: '10px',
-                      '& input': {
-                        padding: '10px',
-                        background: 'white',
-                      },
-                    }}
+                  type="number"
+                  value={customLimit}
+                  onChange={(e) => updateCustomLimit(e.target.value)}
+                  placeholder="Enter number"
+                  sx={{
+                    marginLeft: '10px',
+                    '& input': {
+                    padding: '10px',
+                    background: 'white',
+                    },
+                    width: '150px', // Ensure the text field does not go outside the panel
+                  }}
                   />
                 )}
               </div>
