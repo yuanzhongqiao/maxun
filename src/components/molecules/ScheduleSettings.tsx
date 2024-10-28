@@ -135,7 +135,6 @@ export const ScheduleSettingsModal = ({ isOpen, handleStart, handleClose, initia
           {
             (schedule !== null) ? (
               <>
-                <Typography variant='h6' gutterBottom>Robot has a schedule set up</Typography>
                 <Typography>Run every: {schedule.runEvery} {schedule.runEveryUnit.toLowerCase()}</Typography>
                 <Typography>Start from: {schedule.startFrom.charAt(0).toUpperCase() + schedule.startFrom.slice(1).toLowerCase()}</Typography>
                 <Typography>At around: {schedule.atTimeStart}, {schedule.timezone} Timezone</Typography>
