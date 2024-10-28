@@ -2,7 +2,8 @@ import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import { Paper } from "@mui/material";
+import { Paper, Button } from "@mui/material";
+import { AutoAwesome, FormatListBulleted, VpnKey, Usb } from "@mui/icons-material";
 
 interface MainMenuProps {
   value: string;
@@ -40,20 +41,25 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
           <Tab sx={{
             alignItems: 'baseline',
             fontSize: 'medium',
-          }} value="recordings" label="Robots" />
+          }} value="recordings" label="Robots" icon={<AutoAwesome />} iconPosition="start" />
           <Tab sx={{
             alignItems: 'baseline',
             fontSize: 'medium',
-          }} value="runs" label="Runs" />
+          }} value="runs" label="Runs" icon={<FormatListBulleted />} iconPosition="start" />
           <Tab sx={{
             alignItems: 'baseline',
             fontSize: 'medium',
-          }} value="proxy" label="Proxy" />
+          }} value="proxy" label="Proxy" icon={<Usb />} iconPosition="start" />
           <Tab sx={{
             alignItems: 'baseline',
             fontSize: 'medium',
-          }} value="apikey" label="API Key" />
+          }} value="apikey" label="API Key" icon={<VpnKey />} iconPosition="start" />
         </Tabs>
+        <hr />
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'left' }}>
+          <Button>Documentation</Button>
+          <Button>Support</Button>
+        </Box>
       </Box>
     </Paper>
   );
