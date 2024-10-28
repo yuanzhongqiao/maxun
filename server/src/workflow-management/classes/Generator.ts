@@ -21,7 +21,7 @@ import fs from "fs";
 import { getBestSelectorForAction } from "../utils";
 import { browserPool } from "../../server";
 import { uuid } from "uuidv4";
-import captureServerAnalytics from "../../utils/analytics"
+import { capture } from "../../utils/analytics"
 
 interface PersistedGeneratedData {
   lastUsedSelector: string;
@@ -496,14 +496,13 @@ export class WorkflowGenerator {
         recording_meta: this.recordingMeta,
         recording: recording,
       });
-      captureServerAnalytics.capture({
-        distinctId: userId.toString(),
-        event: 'maxun-oss-robot-created',
-        properties: {
+      capture(
+        'maxun-oss-robot-created',
+        {
           robot_meta: robot.recording_meta,
           recording: robot.recording,
         }
-      })
+      )
 
       logger.log('info', `Robot saved with id: ${robot.id}`);
     }

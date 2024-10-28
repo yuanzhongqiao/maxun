@@ -9,7 +9,7 @@ import Robot from "../../models/Robot";
 import Run from "../../models/Run";
 import { getDecryptedProxyConfig } from "../../routes/proxy";
 import { BinaryOutputService } from "../../storage/mino";
-import captureServerAnalytics from "../../utils/analytics";
+import { capture } from "../../utils/analytics";
 
 async function createWorkflowAndStoreMetadata(id: string, userId: string) {
   try {
@@ -50,7 +50,7 @@ async function createWorkflowAndStoreMetadata(id: string, userId: string) {
     const runId = uuid();
 
     const run = await Run.create({
-      status: 'Scheduled',
+      status: 'scheduled',
       name: recording.recording_meta.name,
       robotId: recording.id,
       robotMetaId: recording.recording_meta.id,
@@ -139,10 +139,9 @@ async function executeRun(id: string) {
     }
     );
 
-    captureServerAnalytics.capture({
-      distinctId: id,
-      event: 'maxun-oss-run-created-scheduled',
-      properties: {
+    capture(
+      'maxun-oss-run-created-scheduled',
+      {
         runId: id,
         created_at: new Date().toISOString(),
         status: 'success',
@@ -150,7 +149,7 @@ async function executeRun(id: string) {
         extractedRowsCount: totalRowsExtracted,
         extractedScreenshotsCount: run.dataValues.binaryOutput['item-0'].length,
       }
-    });
+    );
 
     googleSheetUpdateTasks[id] = {
       robotId: plainRun.robotMetaId,
@@ -170,15 +169,14 @@ async function executeRun(id: string) {
         finishedAt: new Date().toLocaleString(),
       });
     }
-    captureServerAnalytics.capture({
-      distinctId: id,
-      event: 'maxun-oss-run-created-scheduled',
-      properties: {
+    capture(
+      'maxun-oss-run-created-scheduled',
+      {
         runId: id,
         created_at: new Date().toISOString(),
         status: 'failed',
       }
-    });
+    );
     return false;
   }
 }

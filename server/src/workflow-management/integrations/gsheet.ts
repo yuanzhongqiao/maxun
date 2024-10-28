@@ -24,8 +24,18 @@ export async function updateGoogleSheet(robotId: string, runId: string) {
 
     const plainRun = run.toJSON();
 
-    if (plainRun.status === 'success' && plainRun.serializableOutput) {
-      const data = plainRun.serializableOutput['item-0'] as { [key: string]: any }[];
+    if (plainRun.status === 'success') {
+      let data: { [key: string]: any }[] = [];
+      if (plainRun.serializableOutput && Object.keys(plainRun.serializableOutput).length > 0) {
+        data = plainRun.serializableOutput['item-0'] as { [key: string]: any }[];
+    
+      } else if (plainRun.binaryOutput && plainRun.binaryOutput['item-0']) {
+        // Handle binaryOutput by setting the URL as a data entry
+        const binaryUrl = plainRun.binaryOutput['item-0'] as string;
+    
+        // Create a placeholder object with the binary URL
+        data = [{ "Screenshot URL": binaryUrl }];
+      }
 
       const robot = await Robot.findOne({ where: { 'recording_meta.id': robotId } });
 
