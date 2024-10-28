@@ -81,11 +81,11 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
       </Button>
 
       <GenericModal isOpen={openModal} onClose={() => setOpenModal(false)} modalStyle={modalStyle}>
-        <form onSubmit={handleSaveRecording}>
+        <form onSubmit={handleSaveRecording} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
           <Typography variant="h6">Save Robot</Typography>
           <TextField
             required
-            sx={{ width: '300px', paddingBottom: '10px', margin: '15px 0px' }}
+            sx={{ width: '300px', margin: '15px 0px' }}
             onChange={handleChangeOfTitle}
             id="title"
             label="Robot Name"
@@ -95,17 +95,17 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
           {needConfirm
             ?
             (<React.Fragment>
-              <Button color="error" variant="contained" onClick={saveRecording}>Confirm</Button>
+              <Button color="error" variant="contained" onClick={saveRecording} sx={{ marginTop: '10px' }}>Confirm</Button>
               <WarningText>
                 <NotificationImportantIcon color="warning" />
                 Robot with this name already exists, please confirm the Robot's overwrite.
               </WarningText>
             </React.Fragment>)
-            : <Button type="submit" variant="contained">Save</Button>
+            : <Button type="submit" variant="contained" sx={{ marginTop: '10px' }}>Save</Button>
           }
           {waitingForSave &&
             <Tooltip title='Optimizing and saving the workflow' placement={"bottom"}>
-              <Box sx={{ width: '100%' }}>
+              <Box sx={{ width: '100%', marginTop: '10px' }}>
                 <LinearProgress />
               </Box>
             </Tooltip>
