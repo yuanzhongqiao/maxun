@@ -66,13 +66,12 @@ export const RunSettingsModal = ({ isOpen, handleStart, handleClose, isTask, par
 
         <FormControlLabel
           control={<Switch checked={showInterpreterSettings} onChange={() => setShowInterpreterSettings(!showInterpreterSettings)} />}
-          label="Show Interpreter Settings"
+          label="Developer Mode Settings"
           sx={{ margin: '20px 0px' }}
         />
 
         {showInterpreterSettings && (
           <React.Fragment>
-            <Typography sx={{ margin: '20px 0px' }}>Interpreter settings:</Typography>
             <TextField
               sx={{ marginBottom: '15px' }}
               type="number"
@@ -116,7 +115,7 @@ export const RunSettingsModal = ({ isOpen, handleStart, handleClose, isTask, par
           </React.Fragment>
         )}
 
-        <Button onClick={() => handleStart(settings)} sx={{ marginTop: '20px' }}>Start</Button>
+        <Button variant="contained" onClick={() => handleStart(settings)} sx={{ marginTop: '20px' }}>Run Robot</Button>
       </div>
     </GenericModal>
   );
