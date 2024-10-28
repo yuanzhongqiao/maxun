@@ -323,7 +323,7 @@ router.post('/runs/run/:id', requireSignIn, async (req: AuthenticatedRequest, re
 router.put('/schedule/:id/', requireSignIn, async (req: AuthenticatedRequest, res) => {
   try {
     const { id } = req.params;
-    const { runEvery, runEveryUnit, startFrom, atTimeStart, atTimeEnd, timezone } = req.body;
+    const { runEvery, runEveryUnit, startFrom, dayOfMonth, atTimeStart, atTimeEnd, timezone } = req.body;
 
     const robot = await Robot.findOne({ where: { 'recording_meta.id': id } });
     if (!robot) {
@@ -373,7 +373,8 @@ router.put('/schedule/:id/', requireSignIn, async (req: AuthenticatedRequest, re
         cronExpression = `${startMinutes} ${startHours} * * ${dayIndex}`;
         break;
       case 'MONTHS':
-        cronExpression = `${startMinutes} ${startHours} ${startFrom === '1' ? '1' : '1-7'} * *`;
+        // todo: handle leap year
+        cronExpression = `0 ${settings.atTimeStart} ${settings.dayOfMonth} * *`;
         if (startFrom !== 'SUNDAY') {
           cronExpression += ` ${dayIndex}`;
         }
@@ -410,6 +411,7 @@ router.put('/schedule/:id/', requireSignIn, async (req: AuthenticatedRequest, re
         runEvery,
         runEveryUnit,
         startFrom,
+        dayOfMonth,
         atTimeStart,
         atTimeEnd,
         timezone,
