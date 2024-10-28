@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as React from "react";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
-import { Box, Collapse, IconButton, Typography } from "@mui/material";
+import { Box, Collapse, IconButton, Typography, Chip } from "@mui/material";
 import { DeleteForever, KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { deleteRunFromStorage } from "../../api/storage";
 import { columns, Data } from "./RunsTable";
@@ -56,11 +56,20 @@ export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRun
           if (value !== undefined) {
             return (
               <TableCell key={column.id} align={column.align}>
-                {value}
+                 {value} 
               </TableCell>
             );
           } else {
             switch (column.id) {
+              case 'robotStatus': 
+                return (
+                  <TableCell key={column.id} align={column.align}>
+                    {row.status === 'success' && <Chip label="Success" color="success" variant="outlined" />}
+                    {row.status === 'running' && <Chip label="Running" color="warning" variant="outlined" />}
+                    {row.status === 'scheduled' && <Chip label="Scheduled" variant="outlined" />}
+                    {row.status === 'failed' && <Chip label="Failed" color="error" variant="outlined" />}
+                  </TableCell>
+                )
               case 'delete':
                 return (
                   <TableCell key={column.id} align={column.align}>
