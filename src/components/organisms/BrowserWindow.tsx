@@ -7,6 +7,7 @@ import { Highlighter } from "../atoms/Highlighter";
 import { GenericModal } from '../atoms/GenericModal';
 import { useActionContext } from '../../context/browserActions';
 import { useBrowserSteps, TextStep } from '../../context/browserSteps';
+import { useGlobalInfoStore } from '../../context/globalInfo';
 
 interface ElementInfo {
     tagName: string;
@@ -64,6 +65,7 @@ export const BrowserWindow = () => {
     const [paginationSelector, setPaginationSelector] = useState<string>('');
 
     const { socket } = useSocketStore();
+    const { notify } = useGlobalInfoStore();
     //const { width, height } = useBrowserDimensionsStore();
     const { getText, getList, paginationMode, paginationType, limitMode } = useActionContext();
     const { addTextStep, addListStep } = useBrowserSteps();
@@ -206,6 +208,7 @@ export const BrowserWindow = () => {
 
                 if (getList === true && !listSelector) {
                     setListSelector(highlighterData.selector);
+                    notify(`info`, `List selected succesfully. Select the text data for extraction.`)
                     setCurrentListId(Date.now());
                     setFields({});
                 } else if (getList === true && listSelector && currentListId) {
