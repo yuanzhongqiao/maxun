@@ -15,7 +15,7 @@ export const GenericModal: FC<ModalProps> = (
 
   return (
     <Modal open={isOpen} onClose={canBeClosed ? onClose : () => { }} >
-      <Box sx={modalStyle ? { ...modalStyle, boxShadow: 24, position: 'absolute', } : defaultModalStyle}>
+      <Box sx={modalStyle ? { ...modalStyle, boxShadow: 24, position: 'absolute', borderRadius: 5 } : defaultModalStyle}>
         {canBeClosed ?
           <IconButton onClick={onClose} sx={{ float: "right" }}>
             <Clear sx={{ fontSize: 20 }} />
@@ -42,4 +42,5 @@ const defaultModalStyle = {
   overflow: 'scroll',
   padding: '5px 25px 10px 25px',
   zIndex: 3147483647,
+  borderRadius: 4, // Added borderRadius for rounded corners
 };
