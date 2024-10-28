@@ -107,14 +107,6 @@ export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRun
                     </IconButton>
                   </TableCell>
                 );
-              case 'runBy':
-                return (
-                  <TableCell key={column.id} align={column.align}>
-                    {
-                      row.runByUserId ? `User: ${row.runByUserId}` : row.runByScheduleId ? `Schedule ID: ${row.runByScheduleId}` : row.runByAPI ? 'API' : 'Unknown'
-                    }
-                  </TableCell>
-                )
               case 'settings':
                 return (
                   <TableCell key={column.id} align={column.align}>
@@ -130,7 +122,7 @@ export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRun
                         <Typography variant="h5" style={{ marginBottom: '20px' }}>Run Settings</Typography>
                         <Box style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                           <TextField
-                            label={row.runByUserId ? "Run by User" : row.runByScheduleId ? "Run by Schedule" : "Run by API"}
+                            label={row.runByUserId ? "Run by User" : row.runByScheduleId ? "Run by Schedule ID" : "Run by API"}
                             value={runByLabel}
                             InputProps={{ readOnly: true }}
                           />
