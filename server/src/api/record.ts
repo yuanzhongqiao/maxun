@@ -664,7 +664,7 @@ async function waitForRunCompletion(runId: string, interval: number = 2000) {
  * /api/robots/{id}/runs:
  *   post:
  *     summary: Run a robot by ID
- *     description: When you need to run a robot and get its captured data, you can use this endpoint to run the task. For now, you can poll the GET endpoint to retrieve a task's details as soon as it is finished. We are working on adding a webhook feature to notify you when a task is finished.
+ *     description: When you need to run a robot and get its captured data, you can use this endpoint to create a run for the robot. For now, you can poll the GET endpoint to retrieve a run's details as soon as it is finished. We are working on adding a webhook feature to notify you when a run is finished.
  *     security:
  *       - api_key: []
  *     parameters:
