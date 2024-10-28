@@ -86,8 +86,8 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
         </Tabs>
         <hr />
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'left' }}>
-          <Button>Documentation</Button>
-          <Button>Support</Button>
+          <Button sx={{ justifyContent: 'flex-start' }}>Documentation</Button>
+          <Button sx={{ justifyContent: 'flex-start' }}>Support</Button>
         </Box>
       </Box>
     </Paper>
