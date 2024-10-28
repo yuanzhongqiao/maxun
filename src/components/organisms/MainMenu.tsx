@@ -37,23 +37,52 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
           textColor="primary"
           indicatorColor="primary"
           orientation="vertical"
+          sx={{ alignItems: 'flex-start' }}
         >
-          <Tab sx={{
-            alignItems: 'baseline',
-            fontSize: 'medium',
-          }} value="recordings" label="Robots" icon={<AutoAwesome />} iconPosition="start" />
-          <Tab sx={{
-            alignItems: 'baseline',
-            fontSize: 'medium',
-          }} value="runs" label="Runs" icon={<FormatListBulleted />} iconPosition="start" />
-          <Tab sx={{
-            alignItems: 'baseline',
-            fontSize: 'medium',
-          }} value="proxy" label="Proxy" icon={<Usb />} iconPosition="start" />
-          <Tab sx={{
-            alignItems: 'baseline',
-            fontSize: 'medium',
-          }} value="apikey" label="API Key" icon={<VpnKey />} iconPosition="start" />
+          <Tab
+            sx={{
+              justifyContent: 'flex-start',
+              textAlign: 'left',
+              fontSize: 'medium',
+            }}
+            value="recordings"
+            label="Robots"
+            icon={<AutoAwesome />}
+            iconPosition="start"
+          />
+          <Tab
+            sx={{
+              justifyContent: 'flex-start',
+              textAlign: 'left',
+              fontSize: 'medium',
+            }}
+            value="runs"
+            label="Runs"
+            icon={<FormatListBulleted />}
+            iconPosition="start"
+          />
+          <Tab
+            sx={{
+              justifyContent: 'flex-start',
+              textAlign: 'left',
+              fontSize: 'medium',
+            }}
+            value="proxy"
+            label="Proxy"
+            icon={<Usb />}
+            iconPosition="start"
+          />
+          <Tab
+            sx={{
+              justifyContent: 'flex-start',
+              textAlign: 'left',
+              fontSize: 'medium',
+            }}
+            value="apikey"
+            label="API Key"
+            icon={<VpnKey />}
+            iconPosition="start"
+          />
         </Tabs>
         <hr />
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'left' }}>
