@@ -559,19 +559,34 @@ async function executeRun(id: string) {
             binaryOutput: uploadedBinaryOutput,
         });
 
-        let totalRowsExtracted = 0;
-        updatedRun.dataValues.serializableOutput['item-0'].forEach((item: any) => {
-            totalRowsExtracted += Object.keys(item).length;
-        }
-        );
+      let totalRowsExtracted = 0;
+      let extractedScreenshotsCount = 0;
+      let extractedItemsCount = 0;
+
+      if (updatedRun.dataValues.binaryOutput && updatedRun.dataValues.binaryOutput["item-0"]) {
+        extractedScreenshotsCount = 1;
+      }
+
+      if (updatedRun.dataValues.serializableOutput && updatedRun.dataValues.serializableOutput["item-0"]) {
+        const itemsArray = run.dataValues.serializableOutput["item-0"];
+        extractedItemsCount = itemsArray.length;
+
+        totalRowsExtracted = itemsArray.reduce((total, item) => {
+          return total + Object.keys(item).length;
+        }, 0);
+      }
+
+      console.log(`Extracted Items Count: ${extractedItemsCount}`);
+      console.log(`Extracted Screenshots Count: ${extractedScreenshotsCount}`);
+      console.log(`Total Rows Extracted: ${totalRowsExtracted}`);
 
         capture('maxun-oss-run-created-api',{
                 runId: id,
                 created_at: new Date().toISOString(),
                 status: 'success',
-                extractedItemsCount: updatedRun.dataValues.serializableOutput['item-0'].length,
-                extractedRowsCount: totalRowsExtracted,
-                extractedScreenshotsCount: updatedRun.dataValues.binaryOutput['item-0'].length,
+                extractedItemsCount,
+                totalRowsExtracted,
+                extractedScreenshotsCount,
             }
         )
 
