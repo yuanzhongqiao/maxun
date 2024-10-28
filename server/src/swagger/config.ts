@@ -7,7 +7,7 @@ const options = {
     info: {
       title: 'Maxun API Documentation',
       version: '1.0.0',
-      description: 'API documentation for robot management',
+      description: 'API documentation for Maxun (https://github.com/getmaxun/maxun)',
     },
     components: {
       securitySchemes: {
