@@ -38,7 +38,62 @@ const formatRecording = (recordingData: any) => {
     };
 };
 
-
+/**
+ * @swagger
+ * /api/robots:
+ *   get:
+ *     summary: Get all robots
+ *     description: Retrieve a list of all robots.
+ *     security:
+ *       - api_key: []
+ *     responses:
+ *       200:
+ *         description: A list of robots.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 messageCode:
+ *                   type: string
+ *                   example: success
+ *                 robots:
+ *                   type: object
+ *                   properties:
+ *                     totalCount:
+ *                       type: integer
+ *                       example: 5
+ *                     items:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                             example: "12345"
+ *                           name:
+ *                             type: string
+ *                             example: "Sample Robot"
+ *       500:
+ *         description: Error retrieving robots.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 500
+ *                 messageCode:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: "Failed to retrieve recordings"
+ */
 router.get("/robots", requireAPIKey, async (req: Request, res: Response) => {
     try {
         const robots = await Robot.findAll({ raw: true });
@@ -88,6 +143,61 @@ const formatRecordingById = (recordingData: any) => {
     };
 };
 
+/**
+ * @swagger
+ * /api/robots/{id}:
+ *   get:
+ *     summary: Get robot by ID
+ *     description: Retrieve a robot by its ID.
+ *     security:
+ *       - api_key: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the robot to retrieve.
+ *     responses:
+ *       200:
+ *         description: Robot details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 messageCode:
+ *                   type: string
+ *                   example: success
+ *                 robot:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: "12345"
+ *                     name:
+ *                       type: string
+ *                       example: "Sample Robot"
+ *       404:
+ *         description: Robot not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 404
+ *                 messageCode:
+ *                   type: string
+ *                   example: not_found
+ *                 message:
+ *                   type: string
+ *                   example: "Recording with ID not found."
+ */
 router.get("/robots/:id", requireAPIKey, async (req: Request, res: Response) => {
     try {
         const robot = await Robot.findOne({
@@ -116,6 +226,69 @@ router.get("/robots/:id", requireAPIKey, async (req: Request, res: Response) => 
     }
 });
 
+/**
+ * @swagger
+ * /api/robots/{id}/runs:
+ *   get:
+ *     summary: Get all runs for a robot
+ *     description: Retrieve all runs associated with a specific robot.
+ *     security:
+ *       - api_key: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the robot.
+ *     responses:
+ *       200:
+ *         description: A list of runs for the robot.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 messageCode:
+ *                   type: string
+ *                   example: success
+ *                 runs:
+ *                   type: object
+ *                   properties:
+ *                     totalCount:
+ *                       type: integer
+ *                       example: 5
+ *                     items:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           runId:
+ *                             type: string
+ *                             example: "67890"
+ *                           status:
+ *                             type: string
+ *                             example: "completed"
+ *       500:
+ *         description: Error retrieving runs.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 500
+ *                 messageCode:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: "Failed to retrieve runs"
+ */
 router.get("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response) => {
     try {
         const runs = await Run.findAll({
@@ -146,6 +319,67 @@ router.get("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response
 }
 );
 
+/**
+ * @swagger
+ * /api/robots/{id}/runs/{runId}:
+ *   get:
+ *     summary: Get a specific run by ID for a robot
+ *     description: Retrieve details of a specific run by its ID.
+ *     security:
+ *       - api_key: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the robot.
+ *       - in: path
+ *         name: runId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the run.
+ *     responses:
+ *       200:
+ *         description: Run details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 messageCode:
+ *                   type: string
+ *                   example: success
+ *                 run:
+ *                   type: object
+ *                   properties:
+ *                     runId:
+ *                       type: string
+ *                       example: "67890"
+ *                     status:
+ *                       type: string
+ *                       example: "completed"
+ *       404:
+ *         description: Run not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 404
+ *                 messageCode:
+ *                   type: string
+ *                   example: not_found
+ *                 message:
+ *                   type: string
+ *                   example: "Run with id not found."
+ */
 router.get("/robots/:id/runs/:runId", requireAPIKey, async (req: Request, res: Response) => {
     try {
         const run = await Run.findOne({
@@ -213,7 +447,7 @@ async function createWorkflowAndStoreMetadata(id: string, userId: string) {
         const runId = uuid();
 
         const run = await Run.create({
-            status: 'Running',
+            status: 'running',
             name: recording.recording_meta.name,
             robotId: recording.id,
             robotMetaId: recording.recording_meta.id,
@@ -425,6 +659,74 @@ async function waitForRunCompletion(runId: string, interval: number = 2000) {
     }
 }
 
+/**
+ * @swagger
+ * /api/robots/{id}/runs:
+ *   post:
+ *     summary: Run a robot by ID
+ *     description: Start a new run for a specific robot.
+ *     security:
+ *       - api_key: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the robot to run.
+ *     responses:
+ *       200:
+ *         description: Robot run started successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 messageCode:
+ *                   type: string
+ *                   example: success
+ *                 run:
+ *                   type: object
+ *                   properties:
+ *                     runId:
+ *                       type: string
+ *                       example: "67890"
+ *                     status:
+ *                       type: string
+ *                       example: "in_progress"
+ *       401:
+ *         description: Unauthorized access.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 ok:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Unauthorized"
+ *       500:
+ *         description: Error running robot.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 500
+ *                 messageCode:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: "Failed to run robot"
+ */
 router.post("/robots/:id/runs", requireAPIKey, async (req: AuthenticatedRequest, res: Response) => {
     try {
         if (!req.user) {
