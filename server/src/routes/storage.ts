@@ -374,7 +374,7 @@ router.put('/schedule/:id/', requireSignIn, async (req: AuthenticatedRequest, re
         break;
       case 'MONTHS':
         // todo: handle leap year
-        cronExpression = `0 ${settings.atTimeStart} ${settings.dayOfMonth} * *`;
+        cronExpression = `0 ${atTimeStart} ${dayOfMonth} * *`;
         if (startFrom !== 'SUNDAY') {
           cronExpression += ` ${dayIndex}`;
         }
