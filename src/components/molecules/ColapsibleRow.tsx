@@ -2,11 +2,26 @@ import { useEffect, useRef, useState } from "react";
 import * as React from "react";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
-import { Box, Collapse, IconButton, Typography, Chip } from "@mui/material";
-import { DeleteForever, KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
+import { Box, Collapse, IconButton, Typography, Chip, TextField } from "@mui/material";
+import { DeleteForever, KeyboardArrowDown, KeyboardArrowUp, Settings } from "@mui/icons-material";
 import { deleteRunFromStorage } from "../../api/storage";
 import { columns, Data } from "./RunsTable";
 import { RunContent } from "./RunContent";
+import { GenericModal } from "../atoms/GenericModal";
+import { modalStyle } from "./AddWhereCondModal";
+
+interface RunTypeChipProps {
+  runByUserId?: string;
+  runByScheduledId?: string;
+  runByAPI: boolean;
+}
+
+const RunTypeChip: React.FC<RunTypeChipProps> = ({ runByUserId, runByScheduledId, runByAPI }) => {
+  if (runByUserId) return <Chip label="Manual Run" color="primary" variant="outlined" />;
+  if (runByScheduledId) return <Chip label="Scheduled Run" color="primary" variant="outlined" />;
+  if (runByAPI) return <Chip label="API" color="primary" variant="outlined" />;
+  return <Chip label="Unknown Run Type" color="primary" variant="outlined"/>;
+};
 
 interface CollapsibleRowProps {
   row: Data;
@@ -18,6 +33,14 @@ interface CollapsibleRowProps {
 }
 export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRunHandler, runningRecordingName }: CollapsibleRowProps) => {
   const [open, setOpen] = useState(isOpen);
+  const [openSettingsModal, setOpenSettingsModal] = useState(false);
+  const runByLabel = row.runByUserId
+  ? `User ID: ${row.runByUserId}`
+  : row.runByScheduleId
+  ? `Schedule ID: ${row.runByScheduleId}`
+  : row.runByAPI
+  ? 'API'
+  : 'Unknown';
 
   const logEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -56,12 +79,12 @@ export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRun
           if (value !== undefined) {
             return (
               <TableCell key={column.id} align={column.align}>
-                 {value} 
+                {value}
               </TableCell>
             );
           } else {
             switch (column.id) {
-              case 'robotStatus': 
+              case 'runStatus':
                 return (
                   <TableCell key={column.id} align={column.align}>
                     {row.status === 'success' && <Chip label="Success" color="success" variant="outlined" />}
@@ -90,6 +113,34 @@ export const CollapsibleRow = ({ row, handleDelete, isOpen, currentLog, abortRun
                     {
                       row.runByUserId ? `User: ${row.runByUserId}` : row.runByScheduleId ? `Schedule ID: ${row.runByScheduleId}` : row.runByAPI ? 'API' : 'Unknown'
                     }
+                  </TableCell>
+                )
+              case 'settings':
+                return (
+                  <TableCell key={column.id} align={column.align}>
+                    <IconButton aria-label="settings" size="small" onClick={() => setOpenSettingsModal(true)}>
+                      <Settings />
+                    </IconButton>
+                    <GenericModal
+                      isOpen={openSettingsModal}
+                      onClose={() => setOpenSettingsModal(false)}
+                      modalStyle={modalStyle}
+                    >
+                      <>
+                        <Typography variant="h5" style={{ marginBottom: '20px' }}>Run Settings</Typography>
+                        <Box style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                          <TextField
+                            label={row.runByUserId ? "Run by User" : row.runByScheduleId ? "Run by Schedule" : "Run by API"}
+                            value={runByLabel}
+                            InputProps={{ readOnly: true }}
+                          />
+                          <Box style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <Typography variant="body1">Run Type:</Typography>
+                            <RunTypeChip runByUserId={row.runByUserId} runByScheduledId={row.runByScheduleId} runByAPI={row.runByAPI ?? false} />
+                          </Box>
+                        </Box>
+                      </>
+                    </GenericModal>
                   </TableCell>
                 )
               default:
