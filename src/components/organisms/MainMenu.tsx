@@ -86,10 +86,33 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
         </Tabs>
         <hr />
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'left' }}>
-          <Button sx={{ justifyContent: 'flex-start' }}>Documentation</Button>
-          <Button sx={{ justifyContent: 'flex-start' }}>Support</Button>
+            <Button sx={buttonStyles}>
+              <a href="" style={linkStyles}>Documentation</a>
+            </Button>
+            <Button sx={buttonStyles}>
+                <a href="http://localhost:8080/api-docs/" target="_blank" rel="noopener noreferrer" style={linkStyles}>API Docs</a>
+            </Button>
+            <Button sx={buttonStyles}>
+              <a href="" style={linkStyles}>Join Discord</a>
+            </Button>
         </Box>
       </Box>
     </Paper>
   );
+}
+
+const buttonStyles = {
+  justifyContent: 'flex-start',
+  textAlign: 'left',
+  fontSize: 'medium',
+  padding: '6px 16px',
+  minHeight: '48px',
+  minWidth: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  textTransform: 'none',
+};
+
+const linkStyles = {
+  textDecoration: 'none'
 }
