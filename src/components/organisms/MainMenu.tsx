@@ -105,7 +105,7 @@ const buttonStyles = {
   justifyContent: 'flex-start',
   textAlign: 'left',
   fontSize: 'medium',
-  padding: '6px 16px',
+  padding: '6px 16px 6px 22px', 
   minHeight: '48px',
   minWidth: '100%',
   display: 'flex',
