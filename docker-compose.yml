@@ -1,67 +1,40 @@
 version: '3.8'
+
 services:
-  # Frontend
-  frontend:
+  app:
     build:
       context: .
-      dockerfile: ./Dockerfile.frontend
+      dockerfile: Dockerfile
+    env_file: .env
     ports:
-      - "3000:3000"  # Map host port 3000 to container port 3000
+      - "5173:80"
+      - "8080:8080"
     depends_on:
-      - backend
-    networks:
-      - app-network
-
-  # Backend
-  backend:
-    build:
-      context: .
-      dockerfile: ./Dockerfile.backend
-    ports:
-      - "8080:8080"  # Map host port 8080 to container port 8080
-    environment:
-      POSTGRES_HOST: postgres
-      POSTGRES_DB: mydb
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-      MINIO_ENDPOINT: minio
-      MINIO_PORT: 9000
-    depends_on:
-      - postgres
+      - db
       - minio
-    networks:
-      - app-network
 
-  # Postgres Database
-  postgres:
-    image: postgres:15
+  db:
+    image: postgres:13
     environment:
-      POSTGRES_DB: mydb
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - app-network
 
-  # MinIO for Storage
   minio:
     image: minio/minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
     command: server /data
     ports:
       - "9000:9000"
-    environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin123
     volumes:
       - minio_data:/data
-    networks:
-      - app-network
 
 volumes:
   postgres_data:
   minio_data:
-
-networks:
-  app-network:
-    driver: bridge
