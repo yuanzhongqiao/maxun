@@ -298,12 +298,14 @@ router.get("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response
             raw: true
         });
 
+        const formattedRuns = runs.map(formatRunResponse);
+
         const response = {
             statusCode: 200,
             messageCode: "success",
             runs: {
-                totalCount: runs.length,
-                items: formatRunResponse(runs),
+            totalCount: formattedRuns.length,
+            items: formattedRuns,
             },
         };
 
