@@ -76,6 +76,8 @@
     "server": "./node_modules/.bin/nodemon server/src/server.ts",
     "client": "vite",
     "build": "vite build",
+    "build:server": "tsc -p server/tsconfig.json",
+    "start:server": "node server/dist/server/src/server.js",
     "preview": "vite preview",
     "lint": "./node_modules/.bin/eslint ."
   },
