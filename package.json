@@ -76,7 +76,7 @@
     "server": "./node_modules/.bin/nodemon server/src/server.ts",
     "client": "vite",
     "build": "vite build",
-    "test": "vite preview",
+    "preview": "vite preview",
     "lint": "./node_modules/.bin/eslint ."
   },
   "eslintConfig": {
