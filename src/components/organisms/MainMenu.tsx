@@ -86,10 +86,7 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
         </Tabs>
         <hr />
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'left' }}>
-          <Button href="https://docs.maxun.io/" target="_blank" rel="noopener noreferrer" sx={buttonStyles} startIcon={<Article />}>
-            Documentation
-          </Button>
-          <Button href="http://localhost:8080/api-docs/" target="_blank" rel="noopener noreferrer" sx={buttonStyles} startIcon={<Link />}>
+          <Button href="http://localhost:8080/api-docs/" target="_blank" rel="noopener noreferrer" sx={buttonStyles} startIcon={<Article />}>
             API Docs
           </Button>
           <Button href="https://forms.gle/hXjgqDvkEhPcaBW76" target="_blank" rel="noopener noreferrer" sx={buttonStyles} startIcon={<CloudQueue />}>
