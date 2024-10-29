@@ -3,13 +3,30 @@
     "target": "es2018",
     "module": "commonjs",
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "../",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "baseUrl": "../",
+    "paths": {
+      "*": ["*"],
+      "src/*": ["src/*"]
+    },
+    "jsx": "react-jsx",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*",
+    "../src/shared/**/*",
+    "../src/helpers/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "../src/components/**/*",  // Exclude frontend components
+    "../src/pages/**/*",       // Exclude frontend pages
+    "../src/app/**/*"          // Exclude other frontend-specific code
+  ]
 }
