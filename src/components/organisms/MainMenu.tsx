@@ -3,7 +3,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { Paper, Button } from "@mui/material";
-import { AutoAwesome, FormatListBulleted, VpnKey, Usb } from "@mui/icons-material";
+import { AutoAwesome, FormatListBulleted, VpnKey, Usb, Article, Link, CloudQueue } from "@mui/icons-material";
 
 interface MainMenuProps {
   value: string;
@@ -22,14 +22,14 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
         height: 'auto',
         width: '250px',
         backgroundColor: 'white',
-        paddingTop: '2rem',
+        paddingTop: '0.5rem',
       }}
       variant="outlined"
       square
     >
       <Box sx={{
         width: '100%',
-        paddingBottom: '22rem',
+        paddingBottom: '1rem',
       }}>
         <Tabs
           value={value}
@@ -86,17 +86,14 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
         </Tabs>
         <hr />
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'left' }}>
-          <Button sx={buttonStyles}>
-            <a href="https://docs.maxun.io/" target="_blank" rel="noopener noreferrer" style={linkStyles}>Documentation</a>
+          <Button href="https://docs.maxun.io/" target="_blank" rel="noopener noreferrer" sx={buttonStyles} startIcon={<Article />}>
+            Documentation
           </Button>
-          <Button sx={buttonStyles}>
-            <a href="http://localhost:8080/api-docs/" target="_blank" rel="noopener noreferrer" style={linkStyles}>API Docs</a>
+          <Button href="http://localhost:8080/api-docs/" target="_blank" rel="noopener noreferrer" sx={buttonStyles} startIcon={<Link />}>
+            API Docs
           </Button>
-          <Button sx={buttonStyles}>
-            <a href="https://discord.gg/NFhWDCdb" target="_blank" rel="noopener noreferrer" style={linkStyles}>Join Discord</a>
-          </Button>
-          <Button sx={buttonStyles}>
-            <a href="https://forms.gle/hXjgqDvkEhPcaBW76" target="_blank" rel="noopener noreferrer" style={linkStyles}>Join Maxun Cloud</a>
+          <Button href="https://forms.gle/hXjgqDvkEhPcaBW76" target="_blank" rel="noopener noreferrer" sx={buttonStyles} startIcon={<CloudQueue />}>
+            Join Maxun Cloud
           </Button>
         </Box>
       </Box>
@@ -114,10 +111,10 @@ const buttonStyles = {
   display: 'flex',
   alignItems: 'center',
   textTransform: 'none',
-  color: 'rgba(0, 0, 0, 0.87) !important',
+  color: '#6C6C6C !important',
 };
 
 const linkStyles = {
   textDecoration: 'none',
-  color: 'rgba(0, 0, 0, 0.87) !important'
+  color: '#6C6C6C !important'
 }
