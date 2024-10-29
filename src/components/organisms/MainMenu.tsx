@@ -93,7 +93,7 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
                 <a href="http://localhost:8080/api-docs/" target="_blank" rel="noopener noreferrer" style={linkStyles}>API Docs</a>
             </Button>
             <Button sx={buttonStyles}>
-              <a href="" style={linkStyles}>Join Discord</a>
+              <a href="https://discord.gg/NFhWDCdb" target="_blank" rel="noopener noreferrer" style={linkStyles}>Join Discord</a>
             </Button>
         </Box>
       </Box>
@@ -111,8 +111,10 @@ const buttonStyles = {
   display: 'flex',
   alignItems: 'center',
   textTransform: 'none',
+  color: 'rgba(0, 0, 0, 0.87) !important',
 };
 
 const linkStyles = {
-  textDecoration: 'none'
+  textDecoration: 'none',
+  color: 'rgba(0, 0, 0, 0.87) !important'
 }
