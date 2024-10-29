@@ -95,6 +95,9 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
           <Button sx={buttonStyles}>
             <a href="https://discord.gg/NFhWDCdb" target="_blank" rel="noopener noreferrer" style={linkStyles}>Join Discord</a>
           </Button>
+          <Button sx={buttonStyles}>
+            <a href="https://forms.gle/hXjgqDvkEhPcaBW76" target="_blank" rel="noopener noreferrer" style={linkStyles}>Join Maxun Cloud</a>
+          </Button>
         </Box>
       </Box>
     </Paper>
