@@ -35,7 +35,7 @@ async function createBucketWithPolicy(bucketName: string, policy?: 'public-read'
           Statement: [
             {
               Effect: "Allow",
-              Principal: "*",
+              Principal: "",
               Action: ["s3:GetObject"],
               Resource: [`arn:aws:s3:::${bucketName}/*`]
             }
@@ -130,6 +130,7 @@ class BinaryOutputService {
   }
 
   async uploadBinaryOutputToMinioBucket(run: Run, key: string, data: Buffer): Promise<void> {
+    await createBucketWithPolicy('maxun-run-screenshots', 'public-read');
     const bucketName = 'maxun-run-screenshots';
     try {
       console.log(`Uploading to bucket ${bucketName} with key ${key}`);
