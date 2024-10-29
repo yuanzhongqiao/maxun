@@ -86,15 +86,15 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
         </Tabs>
         <hr />
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'left' }}>
-            <Button sx={buttonStyles}>
-              <a href="" style={linkStyles}>Documentation</a>
-            </Button>
-            <Button sx={buttonStyles}>
-                <a href="http://localhost:8080/api-docs/" target="_blank" rel="noopener noreferrer" style={linkStyles}>API Docs</a>
-            </Button>
-            <Button sx={buttonStyles}>
-              <a href="https://discord.gg/NFhWDCdb" target="_blank" rel="noopener noreferrer" style={linkStyles}>Join Discord</a>
-            </Button>
+          <Button sx={buttonStyles}>
+            <a href="" style={linkStyles}>Documentation</a>
+          </Button>
+          <Button sx={buttonStyles}>
+            <a href="http://localhost:8080/api-docs/" target="_blank" rel="noopener noreferrer" style={linkStyles}>API Docs</a>
+          </Button>
+          <Button sx={buttonStyles}>
+            <a href="https://discord.gg/NFhWDCdb" target="_blank" rel="noopener noreferrer" style={linkStyles}>Join Discord</a>
+          </Button>
         </Box>
       </Box>
     </Paper>
