@@ -21,6 +21,38 @@ minioClient.bucketExists('maxun-test')
     console.error('Error connecting to MinIO:', err);
   })
 
+async function createBucketWithPolicy(bucketName: string, policy?: 'public-read' | 'private') {
+  try {
+    const bucketExists = await minioClient.bucketExists(bucketName);
+    if (!bucketExists) {
+      await minioClient.makeBucket(bucketName);
+      console.log(`Bucket ${bucketName} created successfully.`);
+      
+      if (policy === 'public-read') {
+        // Define a public-read policy
+        const policyJSON = {
+          Version: "2012-10-17",
+          Statement: [
+            {
+              Effect: "Allow",
+              Principal: "*",
+              Action: ["s3:GetObject"],
+              Resource: [`arn:aws:s3:::${bucketName}/*`]
+            }
+          ]
+        };
+        await minioClient.setBucketPolicy(bucketName, JSON.stringify(policyJSON));
+        console.log(`Public-read policy applied to bucket ${bucketName}.`);
+      }
+    } else {
+      console.log(`Bucket ${bucketName} already exists.`);
+    }
+  } catch (error) {
+    console.error('Error in bucket creation or policy application:', error);
+  }
+}
+
+
 class BinaryOutputService {
   private bucketName: string;
 
