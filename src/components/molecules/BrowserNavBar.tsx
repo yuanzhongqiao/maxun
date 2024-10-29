@@ -19,6 +19,7 @@ const StyledNavBar = styled.div<{ browserWidth: number }>`
     padding: 12px 0px;
     background-color: #f6f6f6;
     width: ${({ browserWidth }) => browserWidth}px;
+    border-radius: 0px 5px 0px 0px;
 `;
 
 interface NavBarProps {

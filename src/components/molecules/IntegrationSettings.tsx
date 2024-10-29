@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { GenericModal } from "../atoms/GenericModal";
-import { MenuItem, Typography, CircularProgress } from "@mui/material";
+import { MenuItem, Typography, CircularProgress, Alert, AlertTitle, Chip } from "@mui/material";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import axios from 'axios';
 import { useGlobalInfoStore } from '../../context/globalInfo';
 import { getStoredRecording } from '../../api/storage';
-
 interface IntegrationProps {
     isOpen: boolean;
     handleStart: (data: IntegrationSettings) => void;
     handleClose: () => void;
 }
-
 export interface IntegrationSettings {
     spreadsheetId: string;
     spreadsheetName: string;
@@ -30,7 +28,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const { recordingId } = useGlobalInfoStore();
+    const { recordingId, notify } = useGlobalInfoStore();
     const [recording, setRecording] = useState<any>(null);
 
     const authenticateWithGoogle = () => {
@@ -54,6 +52,7 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
             setSpreadsheets(response.data);
         } catch (error: any) {
             console.error('Error fetching spreadsheet files:', error.response?.data?.message || error.message);
+            notify('error', `Error fetching spreadsheet files: ${error.response?.data?.message || error.message}`);
         }
     };
 
@@ -115,17 +114,16 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
     return (
         <GenericModal isOpen={isOpen} onClose={handleClose}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginLeft: '65px' }}>
-                <Typography sx={{ margin: '20px 0px' }}>Google Sheets Integration</Typography>
+                <Typography variant="h6" sx={{ margin: '15px 0px' }}>Integrate with Google Sheet <Chip label="beta" color="primary" variant="outlined" /></Typography>
 
                 {recording && recording.google_sheet_id ? (
                     <>
-                        <Typography sx={{ marginBottom: '10px' }}>
-                            Google Sheet Integrated Successfully!
+                        <Alert severity="info">
+                            <AlertTitle>Google Sheet Integrated Successfully.</AlertTitle>
+                            Every time this robot creates a successful run, its captured data is appended to your {recording.google_sheet_name} Google Sheet. You can check the data updates <a href={`https://docs.google.com/spreadsheets/d/${recording.google_sheet_id}`} target="_blank" rel="noreferrer">here</a>.
                             <br />
-                            Sheet Name: {recording.google_sheet_name}
-                            <br />
-                            Sheet ID: {recording.google_sheet_id}
-                        </Typography>
+                            <strong>Note:</strong> The data extracted before integrating with Google Sheets will not be synced in the Google Sheet. Only the data extracted after the integration will be synced.
+                        </Alert>
                         <Button
                             variant="outlined"
                             color="error"
@@ -138,19 +136,22 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                 ) : (
                     <>
                         {!recording?.google_sheet_email ? (
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={authenticateWithGoogle}
-                                style={{ marginBottom: '15px' }}
-                            >
-                                Authenticate with Google
-                            </Button>
+                            <>
+                                <p>If you enable this option, every time this robot runs a task successfully, its captured data will be appended to your Google Sheet.</p>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={authenticateWithGoogle}
+                                    style={{ marginBottom: '15px' }}
+                                >
+                                    Authenticate with Google
+                                </Button>
+                            </>
                         ) : (
                             <>
                                 {recording.google_sheet_email && (
-                                    <Typography sx={{ marginBottom: '10px' }}>
-                                        Logged in as: {recording.google_sheet_email}
+                                    <Typography sx={{ margin: '20px 0px 30px 0px' }}>
+                                        Authenticated as: {recording.google_sheet_email}
                                     </Typography>
                                 )}
 
@@ -159,20 +160,30 @@ export const IntegrationSettingsModal = ({ isOpen, handleStart, handleClose }: I
                                 ) : error ? (
                                     <Typography color="error">{error}</Typography>
                                 ) : spreadsheets.length === 0 ? (
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={fetchSpreadsheetFiles}
-                                        style={{ marginBottom: '15px' }}
-                                    >
-                                        Fetch Google Spreadsheets
-                                    </Button>
+                                    <>
+                                        <div style={{ display: 'flex', gap: '10px' }}>
+                                            <Button
+                                                variant="outlined"
+                                                color="primary"
+                                                onClick={fetchSpreadsheetFiles}
+                                            >
+                                                Fetch Google Spreadsheets
+                                            </Button>
+                                            <Button
+                                                variant="outlined"
+                                                color="error"
+                                                onClick={removeIntegration}
+                                            >
+                                                Remove Integration
+                                            </Button>
+                                        </div>
+                                    </>
                                 ) : (
                                     <>
                                         <TextField
                                             sx={{ marginBottom: '15px' }}
                                             select
-                                            label="Select Google Spreadsheet"
+                                            label="Select Google Sheet"
                                             required
                                             value={settings.spreadsheetId}
                                             onChange={handleSpreadsheetSelect}

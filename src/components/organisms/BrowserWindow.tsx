@@ -7,6 +7,7 @@ import { Highlighter } from "../atoms/Highlighter";
 import { GenericModal } from '../atoms/GenericModal';
 import { useActionContext } from '../../context/browserActions';
 import { useBrowserSteps, TextStep } from '../../context/browserSteps';
+import { useGlobalInfoStore } from '../../context/globalInfo';
 
 interface ElementInfo {
     tagName: string;
@@ -64,6 +65,7 @@ export const BrowserWindow = () => {
     const [paginationSelector, setPaginationSelector] = useState<string>('');
 
     const { socket } = useSocketStore();
+    const { notify } = useGlobalInfoStore();
     //const { width, height } = useBrowserDimensionsStore();
     const { getText, getList, paginationMode, paginationType, limitMode } = useActionContext();
     const { addTextStep, addListStep } = useBrowserSteps();
@@ -199,6 +201,7 @@ export const BrowserWindow = () => {
                     // Only allow selection in pagination mode if type is not empty, 'scrollDown', or 'scrollUp'
                     if (paginationType !== '' && paginationType !== 'scrollDown' && paginationType !== 'scrollUp' && paginationType !== 'none') {
                         setPaginationSelector(highlighterData.selector);
+                        notify(`info`, `Pagination element selected successfully.`);
                         addListStep(listSelector!, fields, currentListId || 0, { type: paginationType, selector: highlighterData.selector });
                     }
                     return;
@@ -206,6 +209,7 @@ export const BrowserWindow = () => {
 
                 if (getList === true && !listSelector) {
                     setListSelector(highlighterData.selector);
+                    notify(`info`, `List selected succesfully. Select the text data for extraction.`)
                     setCurrentListId(Date.now());
                     setFields({});
                 } else if (getList === true && listSelector && currentListId) {
@@ -316,13 +320,14 @@ export const BrowserWindow = () => {
 
 
     return (
-        <div onClick={handleClick} style={{ width: '900px'}} id="browser-window">
+        <div onClick={handleClick} style={{ width: '900px' }} id="browser-window">
             {
                 getText === true || getList === true ? (
                     <GenericModal
                         isOpen={showAttributeModal}
                         onClose={() => { }}
                         canBeClosed={false}
+                        modalStyle={modalStyle}
                     >
                         <div>
                             <h2>Select Attribute</h2>
@@ -357,20 +362,20 @@ export const BrowserWindow = () => {
                 ) : null
             }
             <div style={{ height: '400px', overflow: 'hidden' }}>
-            {((getText === true || getList === true) && !showAttributeModal && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
-                <Highlighter
-                    unmodifiedRect={highlighterData?.rect}
-                    displayedSelector={highlighterData?.selector}
+                {((getText === true || getList === true) && !showAttributeModal && highlighterData?.rect != null && highlighterData?.rect.top != null) && canvasRef?.current ?
+                    <Highlighter
+                        unmodifiedRect={highlighterData?.rect}
+                        displayedSelector={highlighterData?.selector}
+                        width={900}
+                        height={400}
+                        canvasRect={canvasRef.current.getBoundingClientRect()}
+                    />
+                    : null}
+                <Canvas
+                    onCreateRef={setCanvasReference}
                     width={900}
                     height={400}
-                    canvasRect={canvasRef.current.getBoundingClientRect()}
                 />
-                : null}
-            <Canvas
-                onCreateRef={setCanvasReference}
-                width={900}
-                height={400}
-            />
             </div>
         </div>
     );
@@ -388,4 +393,16 @@ const drawImage = (image: string, canvas: HTMLCanvasElement): void => {
         ctx?.drawImage(img, 0, 0, 900, 400);
     };
 
+};
+
+const modalStyle = {
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '30%',
+    backgroundColor: 'background.paper',
+    p: 4,
+    height: 'fit-content',
+    display: 'block',
+    padding: '20px',
 };

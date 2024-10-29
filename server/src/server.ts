@@ -15,10 +15,13 @@ import { SERVER_PORT } from "./constants/config";
 import { Server } from "socket.io";
 import { readdirSync } from "fs"
 import { fork } from 'child_process';
+import { capture } from "./utils/analytics";
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './swagger/config';
 
 const app = express();
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'http://localhost:5173',
   credentials: true,
 }));
 app.use(express.json());
@@ -47,6 +50,7 @@ app.use('/storage', storage);
 app.use('/auth', auth);
 app.use('/integration', integration);
 app.use('/proxy', proxy);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 readdirSync(path.join(__dirname, 'api')).forEach((r) => {
   const route = require(path.join(__dirname, 'api', r));
@@ -73,6 +77,11 @@ workerProcess.on('exit', (code) => {
 });
 
 app.get('/', function (req, res) {
+  capture(
+    'maxun-oss-server-run', {
+      event: 'server_started',
+    }
+  );
   return res.send('Maxun server started 🚀');
 });
 

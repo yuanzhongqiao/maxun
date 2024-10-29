@@ -1,7 +1,7 @@
 /**
  * RESTful API endpoints handling remote browser recording sessions.
  */
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 
 import {
     initializeRemoteBrowserForRecording,
@@ -20,6 +20,11 @@ import { requireSignIn } from '../middlewares/auth';
 export const router = Router();
 chromium.use(stealthPlugin());
 
+
+export interface AuthenticatedRequest extends Request {
+    user?: any;
+}
+
 /**
  * Logs information about remote browser recording session.
  */
@@ -32,7 +37,10 @@ router.all('/', requireSignIn, (req, res, next) => {
  * GET endpoint for starting the remote browser recording session.
  * returns session's id
  */
-router.get('/start', requireSignIn, async (req, res) => {
+router.get('/start', requireSignIn, async (req: AuthenticatedRequest, res: Response) => {
+    if (!req.user) {
+        return res.status(401).send('User not authenticated');
+    }
     const proxyConfig = await getDecryptedProxyConfig(req.user.id);
     // Prepare the proxy options dynamically based on the user's proxy configuration
     let proxyOptions: any = {}; // Default to no proxy
@@ -54,7 +62,7 @@ router.get('/start', requireSignIn, async (req, res) => {
             headless: true,
             proxy: proxyOptions.server ? proxyOptions : undefined,
         }
-    });
+    }, req.user.id);
     return res.send(id);
 });
 
@@ -62,11 +70,14 @@ router.get('/start', requireSignIn, async (req, res) => {
  * POST endpoint for starting the remote browser recording session accepting browser launch options.
  * returns session's id
  */
-router.post('/start', requireSignIn, (req, res) => {
+router.post('/start', requireSignIn, (req: AuthenticatedRequest, res:Response) => {
+    if (!req.user) {
+        return res.status(401).send('User not authenticated');
+    }
     const id = initializeRemoteBrowserForRecording({
         browser: chromium,
         launchOptions: req.body,
-    });
+    }, req.user.id);
     return res.send(id);
 });
 

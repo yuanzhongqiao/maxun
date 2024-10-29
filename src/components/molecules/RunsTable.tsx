@@ -16,7 +16,7 @@ import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface Column {
-  id: 'status' | 'name' | 'startedAt' | 'finishedAt' | 'runId' | 'delete';
+  id: 'runStatus' | 'name' | 'startedAt' | 'finishedAt' | 'delete' | 'settings';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -24,12 +24,12 @@ interface Column {
 }
 
 export const columns: readonly Column[] = [
-  { id: 'status', label: 'Status', minWidth: 80 },
+  { id: 'runStatus', label: 'Status', minWidth: 80 },
   { id: 'name', label: 'Robot Name', minWidth: 80 },
   { id: 'startedAt', label: 'Started at', minWidth: 80 },
   { id: 'finishedAt', label: 'Finished at', minWidth: 80 },
-  { id: 'runId', label: 'Run ID', minWidth: 80 },
   // { id: 'task', label: 'Task', minWidth: 80 },
+  { id: 'settings', label: 'Settings', minWidth: 80 },
   { id: 'delete', label: 'Delete', minWidth: 80 },
 ];
 
@@ -39,6 +39,9 @@ export interface Data {
   name: string;
   startedAt: string;
   finishedAt: string;
+  runByUserId?: string;
+  runByScheduleId?: string;
+  runByAPI?: boolean;
   // task: string;
   log: string;
   runId: string;
@@ -60,6 +63,8 @@ export const RunsTable = (
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState<Data[]>([]);
 
+  console.log(`rows runs: ${JSON.stringify(rows)}`);
+
   const { notify, rerenderRuns, setRerenderRuns } = useGlobalInfoStore();
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -76,14 +81,14 @@ export const RunsTable = (
     if (runs) {
       const parsedRows: Data[] = [];
       runs.map((run: any, index) => {
-          parsedRows.push({
-              id: index,
-              ...run,
-            });
+        parsedRows.push({
+          id: index,
+          ...run,
+        });
       });
       setRows(parsedRows);
     } else {
-      console.log('No runs found.');
+      notify('error', 'No runs found. Please try again.')
     }
   };
 
@@ -111,6 +116,9 @@ export const RunsTable = (
 
   return (
     <React.Fragment>
+      <Typography variant="h6" gutterBottom>
+        All Runs
+      </Typography>
       <TableContainer component={Paper} sx={{ width: '100%', overflow: 'hidden' }}>
         {Object.entries(groupedRows).map(([name, group]) => (
           <Accordion key={name}>

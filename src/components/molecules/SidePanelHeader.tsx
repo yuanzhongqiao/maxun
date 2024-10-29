@@ -1,14 +1,6 @@
 import React, { FC, useState } from 'react';
 import { InterpretationButtons } from "./InterpretationButtons";
-import { AddButton } from "../atoms/buttons/AddButton";
-import { GenericModal } from "../atoms/GenericModal";
-import { PairEditForm } from "./PairEditForm";
-import { WhereWhatPair, WorkflowFile } from "maxun-core";
-import { AddPair } from "../../api/workflow";
-import { Button, Stack } from "@mui/material";
-import { FastForward } from "@mui/icons-material";
 import { useSocketStore } from "../../context/socket";
-import { useGlobalInfoStore } from "../../context/globalInfo";
 
 export const SidePanelHeader = () => {
 
@@ -32,7 +24,6 @@ export const SidePanelHeader = () => {
        step
        <FastForward/>
      </Button> */}
-      <hr />
     </div>
   );
 };

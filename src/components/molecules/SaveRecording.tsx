@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useContext } from 'react';
-import { IconButton, Button, Box, LinearProgress, Tooltip } from "@mui/material";
+import { Button, Box, LinearProgress, Tooltip } from "@mui/material";
 import { GenericModal } from "../atoms/GenericModal";
 import { stopRecording } from "../../api/recording";
 import { useGlobalInfoStore } from "../../context/globalInfo";
@@ -8,8 +8,6 @@ import { useSocketStore } from "../../context/socket";
 import { TextField, Typography } from "@mui/material";
 import { WarningText } from "../atoms/texts";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
-import FlagIcon from '@mui/icons-material/Flag';
-import { DoneAll } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom';
 
 interface SaveRecordingProps {
@@ -83,11 +81,11 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
       </Button>
 
       <GenericModal isOpen={openModal} onClose={() => setOpenModal(false)} modalStyle={modalStyle}>
-        <form onSubmit={handleSaveRecording} style={{ paddingTop: '20px', display: 'flex', flexDirection: 'column' }} >
-          <Typography variant="h5">Save the robot as</Typography>
+        <form onSubmit={handleSaveRecording} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+          <Typography variant="h6">Save Robot</Typography>
           <TextField
             required
-            sx={{ width: '250px', paddingBottom: '10px', margin: '15px 0px' }}
+            sx={{ width: '300px', margin: '15px 0px' }}
             onChange={handleChangeOfTitle}
             id="title"
             label="Robot Name"
@@ -97,17 +95,17 @@ export const SaveRecording = ({ fileName }: SaveRecordingProps) => {
           {needConfirm
             ?
             (<React.Fragment>
-              <Button color="error" variant="contained" onClick={saveRecording}>Confirm</Button>
+              <Button color="error" variant="contained" onClick={saveRecording} sx={{ marginTop: '10px' }}>Confirm</Button>
               <WarningText>
                 <NotificationImportantIcon color="warning" />
                 Robot with this name already exists, please confirm the Robot's overwrite.
               </WarningText>
             </React.Fragment>)
-            : <Button type="submit" variant="contained">Save</Button>
+            : <Button type="submit" variant="contained" sx={{ marginTop: '10px' }}>Save</Button>
           }
           {waitingForSave &&
             <Tooltip title='Optimizing and saving the workflow' placement={"bottom"}>
-              <Box sx={{ width: '100%' }}>
+              <Box sx={{ width: '100%', marginTop: '10px' }}>
                 <LinearProgress />
               </Box>
             </Tooltip>
@@ -122,7 +120,7 @@ const modalStyle = {
   top: '25%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '20%',
+  width: '30%',
   backgroundColor: 'background.paper',
   p: 4,
   height: 'fit-content',

@@ -374,12 +374,12 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
   };
 
   return (
-    <Paper variant="outlined" sx={{ height: '520px', width: 'auto', alignItems: "center", background: 'inherit' }} id="browser-actions">
+    <Paper sx={{ height: '520px', width: 'auto', alignItems: "center", background: 'inherit' }} id="browser-actions" elevation={0}>
       {/* <SimpleBox height={60} width='100%' background='lightGray' radius='0%'>
         <Typography sx={{ padding: '10px' }}>Last action: {` ${lastAction}`}</Typography>
       </SimpleBox> */}
       <ActionDescriptionBox />
-      <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
+      <Box display="flex" flexDirection="column" gap={2} style={{ margin: '13px' }}>
         {!getText && !getScreenshot && !getList && showCaptureList && <Button variant="contained" onClick={startGetList}>Capture List</Button>}
         {getList && (
           <>
@@ -398,7 +398,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
           </>
         )}
         {showPaginationOptions && (
-          <Box display="flex" flexDirection="column" gap={2} style={{ margin: '15px' }}>
+          <Box display="flex" flexDirection="column" gap={2} style={{ margin: '13px' }}>
             <Typography>How can we find the next list item on the page?</Typography>
             <Button variant={paginationType === 'clickNext' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('clickNext')}>Click on next to navigate to the next page</Button>
             <Button variant={paginationType === 'clickLoadMore' ? "contained" : "outlined"} onClick={() => handlePaginationSettingSelect('clickLoadMore')}>Click on load more to load more items</Button>
@@ -427,16 +427,18 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
                 <FormControlLabel value="custom" control={<Radio />} label="Custom" />
                 {limitType === 'custom' && (
                   <TextField
-                    type="number"
-                    value={customLimit}
-                    onChange={(e) => updateCustomLimit(e.target.value)}
-                    placeholder="Enter number"
-                    sx={{
-                      marginLeft: '10px',
-                      '& input': {
-                        padding: '10px',
-                      },
-                    }}
+                  type="number"
+                  value={customLimit}
+                  onChange={(e) => updateCustomLimit(e.target.value)}
+                  placeholder="Enter number"
+                  sx={{
+                    marginLeft: '10px',
+                    '& input': {
+                    padding: '10px',
+                    background: 'white',
+                    },
+                    width: '150px', // Ensure the text field does not go outside the panel
+                  }}
                   />
                 )}
               </div>
@@ -463,33 +465,16 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       </Box>
       <Box>
         {browserSteps.map(step => (
-          <Box key={step.id} onMouseEnter={() => handleMouseEnter(step.id)} onMouseLeave={() => handleMouseLeave(step.id)} sx={{ boxShadow: 5, padding: '10px', margin: '13px', borderRadius: '4px', position: 'relative', background: 'white' }}>
+          <Box key={step.id} onMouseEnter={() => handleMouseEnter(step.id)} onMouseLeave={() => handleMouseLeave(step.id)} sx={{ padding: '10px', margin: '11px', borderRadius: '5px', position: 'relative', background: 'white' }}>
             {
               step.type === 'text' && (
                 <>
-                  {confirmedTextSteps[step.id] && hoverStates[step.id] && (
-                    <IconButton
-                      onClick={() => handlePairDelete()}
-                      sx={{
-                        position: 'absolute',
-                        top: -15,
-                        right: -15,
-                        color: 'red',
-                        p: 0,
-                        zIndex: 1,
-                        boxShadow: '5px',
-                        backgroundColor: 'white',
-                        borderRadius: '50%',
-                      }}
-                    >
-                      <DeleteIcon sx={{ fontSize: 40 }} />
-                    </IconButton>
-                  )}
                   <TextField
                     label="Label"
                     value={textLabels[step.id] || step.label || ''}
                     onChange={(e) => handleTextLabelChange(step.id, e.target.value)}
                     fullWidth
+                    size="small"
                     margin="normal"
                     error={!!errors[step.id]}
                     helperText={errors[step.id]}

@@ -193,8 +193,8 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
           attr: (name: string, value: string) => false,
           seedMinLength: 1,
           optimizedMinLength: 2,
-          threshold: 1000,
-          maxNumberOfTries: 10000,
+          threshold: 900,
+          maxNumberOfTries: 9000,
         };
 
         config = { ...defaults, ...options };
@@ -535,12 +535,12 @@ export const getSelectors = async (page: Page, coordinates: Coordinates) => {
           let value: string | undefined = void 0;
           // If it’s not a printable ASCII character…
           if (codePoint < 0x20 || codePoint > 0x7e) {
-            if (codePoint >= 0xd800 && codePoint <= 0xdbff && counter < length) {
+            if (codePoint >= 0xd900 && codePoint <= 0xdbff && counter < length) {
               // It’s a high surrogate, and there is a next character.
               const extra = string.charCodeAt(counter++);
               if ((extra & 0xfc00) == 0xdc00) {
                 // next character is low surrogate
-                codePoint = ((codePoint & 0x3ff) << 10) + (extra & 0x3ff) + 0x10000;
+                codePoint = ((codePoint & 0x3ff) << 10) + (extra & 0x3ff) + 0x9000;
               } else {
                 // It’s an unmatched surrogate; only append this code unit, in case
                 // the next code unit is the high surrogate of a surrogate pair.

@@ -1,13 +1,11 @@
 import { Request, Response } from "express";
-import { verify } from "jsonwebtoken";
+import { verify, JwtPayload } from "jsonwebtoken";
 
-declare module "express-serve-static-core" {
-    interface Request {
-        user?: any;
-    }
+interface UserRequest extends Request {
+    user?: JwtPayload | string;
 }
 
-export const requireSignIn = (req: Request, res: Response, next: any) => {
+export const requireSignIn = (req: UserRequest, res: Response, next: any) => {
     const token = req.cookies && req.cookies.token ? req.cookies.token : null;
 
     if (token === null) return res.sendStatus(401);

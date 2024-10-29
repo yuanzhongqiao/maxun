@@ -6,6 +6,7 @@ import { hashPassword, comparePassword } from '../utils/auth';
 import { requireSignIn } from '../middlewares/auth';
 import { genAPIKey } from '../utils/api';
 import { google } from 'googleapis';
+import { capture } from "../utils/analytics"
 export const router = Router();
 
 interface AuthenticatedRequest extends Request {
@@ -31,6 +32,14 @@ router.post('/register', async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true
         })
+        capture(
+            'maxun-oss-user-registered',
+            {
+                email: user.email,
+                userId: user.id,
+                registeredAt: new Date().toISOString()
+            }
+        )
         res.json(user)
     } catch (error: any) {
         res.status(500).send(`Could not register user - ${error.message}`)
@@ -93,6 +102,27 @@ router.get('/current-user', requireSignIn, async (req: AuthenticatedRequest, res
     }
 });
 
+router.get('/user/:id', requireSignIn, async (req: AuthenticatedRequest, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ message: 'User ID is required' });
+        }
+
+        const user = await User.findByPk(id, {
+            attributes: { exclude: ['password'] },
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        return res.status(200).json({ message: 'User fetched successfully', user });
+    } catch (error: any) {
+        return res.status(500).json({ message: 'Error fetching user', error: error.message });
+    }
+});
+
 router.post('/generate-api-key', requireSignIn, async (req: AuthenticatedRequest, res) => {
     try {
         if (!req.user) {
@@ -112,6 +142,14 @@ router.post('/generate-api-key', requireSignIn, async (req: AuthenticatedRequest
         const apiKey = genAPIKey();
 
         await user.update({ api_key: apiKey });
+
+        capture(
+            'maxun-oss-api-key-created',
+            {
+                user_id: user.id,
+                created_at: new Date().toISOString()
+            }
+        )
 
         return res.status(200).json({
             message: 'API key generated successfully',
@@ -146,7 +184,12 @@ router.get('/api-key', requireSignIn, async (req: AuthenticatedRequest, res) => 
     }
 });
 
-router.delete('/delete-api-key', requireSignIn, async (req, res) => {
+router.delete('/delete-api-key', requireSignIn, async (req: AuthenticatedRequest, res) => {
+
+    if (!req.user) {
+        return res.status(401).send({ error: 'Unauthorized' });
+    }
+
     try {
         const user = await User.findByPk(req.user.id, { raw: true });
 
@@ -159,6 +202,14 @@ router.delete('/delete-api-key', requireSignIn, async (req, res) => {
         }
 
         await User.update({ api_key: null }, { where: { id: req.user.id } });
+
+        capture(
+            'maxun-oss-api-key-deleted',
+            {
+                user_id: user.id,
+                deleted_at: new Date().toISOString()
+            }
+        )
 
         return res.status(200).json({ message: 'API Key deleted successfully' });
     } catch (error: any) {
@@ -193,7 +244,7 @@ router.get('/google', (req, res) => {
 });
 
 // Step 2: Handle Google OAuth callback
-router.get('/google/callback', requireSignIn, async (req, res) => {
+router.get('/google/callback', requireSignIn, async (req: AuthenticatedRequest, res) => {
     const { code, state } = req.query;
     try {
         if (!state) {
@@ -217,6 +268,10 @@ router.get('/google/callback', requireSignIn, async (req, res) => {
             return res.status(400).json({ message: 'Email not found' });
         }
 
+        if (!req.user) {
+            return res.status(401).send({ error: 'Unauthorized' });
+        }
+
         // Get the currently authenticated user (from `requireSignIn`)
         let user = await User.findOne({ where: { id: req.user.id } });
 
@@ -235,6 +290,14 @@ router.get('/google/callback', requireSignIn, async (req, res) => {
             google_access_token: tokens.access_token,
             google_refresh_token: tokens.refresh_token,
         });
+        capture(
+            'maxun-oss-google-sheet-integration-created',
+            {
+                user_id: user.id,
+                robot_id: robot.recording_meta.id,
+                created_at: new Date().toISOString()
+            }
+        )
 
         // List user's Google Sheets from their Google Drive
         const drive = google.drive({ version: 'v3', auth: oauth2Client });
@@ -264,8 +327,11 @@ router.get('/google/callback', requireSignIn, async (req, res) => {
 });
 
 // Step 3: Get data from Google Sheets
-router.post('/gsheets/data', requireSignIn, async (req, res) => {
+router.post('/gsheets/data', requireSignIn, async (req: AuthenticatedRequest, res) => {
     const { spreadsheetId, robotId } = req.body;
+    if (!req.user) {
+        return res.status(401).send({ error: 'Unauthorized' });
+    }
     const user = await User.findByPk(req.user.id, { raw: true });
 
     if (!user) {
@@ -355,10 +421,14 @@ router.post('/gsheets/update', requireSignIn, async (req, res) => {
     }
 });
 
-router.post('/gsheets/remove', requireSignIn, async (req, res) => {
+router.post('/gsheets/remove', requireSignIn, async (req: AuthenticatedRequest, res) => {
     const { robotId } = req.body;
     if (!robotId) {
         return res.status(400).json({ message: 'Robot ID is required' });
+    }
+
+    if (!req.user) {
+        return res.status(401).send({ error: 'Unauthorized' });
     }
 
     try {
@@ -375,6 +445,15 @@ router.post('/gsheets/remove', requireSignIn, async (req, res) => {
             google_access_token: null,
             google_refresh_token: null
         });
+
+        capture(
+            'maxun-oss-google-sheet-integration-removed',
+            {
+                user_id: req.user.id,
+                robot_id: robotId,
+                deleted_at: new Date().toISOString()
+            }
+        )
 
         res.json({ message: 'Google Sheets integration removed successfully' });
     } catch (error: any) {

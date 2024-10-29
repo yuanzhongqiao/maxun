@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { GenericModal } from "../atoms/GenericModal";
-import { MenuItem, TextField, Typography } from "@mui/material";
+import { MenuItem, TextField, Typography, Switch, FormControlLabel } from "@mui/material";
 import { Dropdown } from "../atoms/DropdownMui";
 import Button from "@mui/material/Button";
 import { modalStyle } from "./AddWhereCondModal";
@@ -21,12 +21,13 @@ export interface RunSettings {
 }
 
 export const RunSettingsModal = ({ isOpen, handleStart, handleClose, isTask, params }: RunSettingsProps) => {
-
-  const [settings, setSettings] = React.useState<RunSettings>({
+  const [settings, setSettings] = useState<RunSettings>({
     maxConcurrency: 1,
     maxRepeats: 1,
     debug: true,
   });
+
+  const [showInterpreterSettings, setShowInterpreterSettings] = useState(false);
 
   return (
     <GenericModal
@@ -40,75 +41,82 @@ export const RunSettingsModal = ({ isOpen, handleStart, handleClose, isTask, par
         alignItems: 'flex-start',
         marginLeft: '65px',
       }}>
-        {isTask
-          ?
-          (
-            <React.Fragment>
-              <Typography sx={{ margin: '20px 0px' }} >Recording parameters:</Typography>
-              {params?.map((item, index) => {
-                return <TextField
-                  sx={{ marginBottom: '15px' }}
-                  key={`param-${index}`}
-                  type="string"
-                  label={item}
-                  required
-                  onChange={(e) => setSettings(
-                    {
-                      ...settings,
-                      params: settings.params
-                        ? {
-                          ...settings.params,
-                          [item]: e.target.value,
-                        }
-                        : {
-                          [item]: e.target.value,
-                        },
-                    })}
-                />
-              })}
-            </React.Fragment>)
-          : null
-        }
-        <Typography sx={{ margin: '20px 0px' }} >Interpreter settings:</Typography>
-        <TextField
-          sx={{ marginBottom: '15px' }}
-          type="number"
-          label="maxConcurrency"
-          required
-          onChange={(e) => setSettings(
-            {
-              ...settings,
-              maxConcurrency: parseInt(e.target.value),
-            })}
-          defaultValue={settings.maxConcurrency}
+        {isTask && (
+          <React.Fragment>
+            <Typography sx={{ margin: '20px 0px' }}>Recording parameters:</Typography>
+            {params?.map((item, index) => (
+              <TextField
+                sx={{ marginBottom: '15px' }}
+                key={`param-${index}`}
+                type="string"
+                label={item}
+                required
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    params: settings.params
+                      ? { ...settings.params, [item]: e.target.value }
+                      : { [item]: e.target.value },
+                  })
+                }
+              />
+            ))}
+          </React.Fragment>
+        )}
+
+        <FormControlLabel
+          control={<Switch checked={showInterpreterSettings} onChange={() => setShowInterpreterSettings(!showInterpreterSettings)} />}
+          label="Developer Mode Settings"
+          sx={{ margin: '20px 0px' }}
         />
-        <TextField
-          sx={{ marginBottom: '15px' }}
-          type="number"
-          label="maxRepeats"
-          required
-          onChange={(e) => setSettings(
-            {
-              ...settings,
-              maxRepeats: parseInt(e.target.value),
-            })}
-          defaultValue={settings.maxRepeats}
-        />
-        <Dropdown
-          id="debug"
-          label="debug"
-          value={settings.debug?.toString()}
-          handleSelect={(e) => setSettings(
-            {
-              ...settings,
-              debug: e.target.value === "true",
-            })}
-        >
-          <MenuItem value="true">true</MenuItem>
-          <MenuItem value="false">false</MenuItem>
-        </Dropdown>
-        <Button onClick={() => handleStart(settings)}>Start</Button>
+
+        {showInterpreterSettings && (
+          <React.Fragment>
+            <TextField
+              sx={{ marginBottom: '15px' }}
+              type="number"
+              label="Max Concurrency"
+              required
+              onChange={(e) =>
+                setSettings({
+                  ...settings,
+                  maxConcurrency: parseInt(e.target.value, 10),
+                })
+              }
+              defaultValue={settings.maxConcurrency}
+            />
+            <TextField
+              sx={{ marginBottom: '15px' }}
+              type="number"
+              label="Max Repeats"
+              required
+              onChange={(e) =>
+                setSettings({
+                  ...settings,
+                  maxRepeats: parseInt(e.target.value, 10),
+                })
+              }
+              defaultValue={settings.maxRepeats}
+            />
+            <Dropdown
+              id="debug"
+              label="Debug Mode"
+              value={settings.debug?.toString()}
+              handleSelect={(e) =>
+                setSettings({
+                  ...settings,
+                  debug: e.target.value === "true",
+                })
+              }
+            >
+              <MenuItem value="true">true</MenuItem>
+              <MenuItem value="false">false</MenuItem>
+            </Dropdown>
+          </React.Fragment>
+        )}
+
+        <Button variant="contained" onClick={() => handleStart(settings)} sx={{ marginTop: '20px' }}>Run Robot</Button>
       </div>
     </GenericModal>
   );
-}
+};

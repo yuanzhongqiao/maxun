@@ -2,7 +2,8 @@ import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import { Paper } from "@mui/material";
+import { Paper, Button } from "@mui/material";
+import { AutoAwesome, FormatListBulleted, VpnKey, Usb, Article, Link, CloudQueue } from "@mui/icons-material";
 
 interface MainMenuProps {
   value: string;
@@ -21,13 +22,14 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
         height: 'auto',
         width: '250px',
         backgroundColor: 'white',
-        paddingTop: '2rem',
+        paddingTop: '0.5rem',
       }}
       variant="outlined"
+      square
     >
       <Box sx={{
         width: '100%',
-        paddingBottom: '22rem',
+        paddingBottom: '1rem',
       }}>
         <Tabs
           value={value}
@@ -35,25 +37,76 @@ export const MainMenu = ({ value = 'recordings', handleChangeContent }: MainMenu
           textColor="primary"
           indicatorColor="primary"
           orientation="vertical"
+          sx={{ alignItems: 'flex-start' }}
         >
-          <Tab sx={{
-            alignItems: 'baseline',
-            fontSize: 'medium',
-          }} value="recordings" label="Robots" />
-          <Tab sx={{
-            alignItems: 'baseline',
-            fontSize: 'medium',
-          }} value="runs" label="Runs" />
-          <Tab sx={{
-            alignItems: 'baseline',
-            fontSize: 'medium',
-          }} value="proxy" label="Proxy" />
-          <Tab sx={{
-            alignItems: 'baseline',
-            fontSize: 'medium',
-          }} value="apikey" label="API Key" />
+          <Tab
+            sx={{
+              justifyContent: 'flex-start',
+              textAlign: 'left',
+              fontSize: 'medium',
+            }}
+            value="recordings"
+            label="Robots"
+            icon={<AutoAwesome />}
+            iconPosition="start"
+          />
+          <Tab
+            sx={{
+              justifyContent: 'flex-start',
+              textAlign: 'left',
+              fontSize: 'medium',
+            }}
+            value="runs"
+            label="Runs"
+            icon={<FormatListBulleted />}
+            iconPosition="start"
+          />
+          <Tab
+            sx={{
+              justifyContent: 'flex-start',
+              textAlign: 'left',
+              fontSize: 'medium',
+            }}
+            value="proxy"
+            label="Proxy"
+            icon={<Usb />}
+            iconPosition="start"
+          />
+          <Tab
+            sx={{
+              justifyContent: 'flex-start',
+              textAlign: 'left',
+              fontSize: 'medium',
+            }}
+            value="apikey"
+            label="API Key"
+            icon={<VpnKey />}
+            iconPosition="start"
+          />
         </Tabs>
+        <hr />
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'left' }}>
+          <Button href="http://localhost:8080/api-docs/" target="_blank" rel="noopener noreferrer" sx={buttonStyles} startIcon={<Article />}>
+            API Docs
+          </Button>
+          <Button href="https://forms.gle/hXjgqDvkEhPcaBW76" target="_blank" rel="noopener noreferrer" sx={buttonStyles} startIcon={<CloudQueue />}>
+            Join Maxun Cloud
+          </Button>
+        </Box>
       </Box>
     </Paper>
   );
 }
+
+const buttonStyles = {
+  justifyContent: 'flex-start',
+  textAlign: 'left',
+  fontSize: 'medium',
+  padding: '6px 16px 6px 22px', 
+  minHeight: '48px',
+  minWidth: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  textTransform: 'none',
+  color: '#6C6C6C !important',
+};

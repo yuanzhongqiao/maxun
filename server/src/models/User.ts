@@ -61,13 +61,13 @@ User.init(
         proxy_username: {
             type: DataTypes.STRING,
             allowNull: true,
-            validate: {
-                isProxyPasswordRequired(value: string | null) {
-                    if (value && !this.proxy_password) {
-                        throw new Error('Proxy password is required when proxy username is provided');
-                    }
-                },
-            },
+            // validate: {
+            //     isProxyPasswordRequired(value: string | null) {
+            //         if (value && !this.proxy_password) {
+            //             throw new Error('Proxy password is required when proxy username is provided');
+            //         }
+            //     },
+            // },
         },
         proxy_password: {
             type: DataTypes.STRING,

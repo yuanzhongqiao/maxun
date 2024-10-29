@@ -12,6 +12,8 @@ import logger from "../logger";
 import { browserPool } from "../server";
 import { io, Socket } from "socket.io-client";
 import { BinaryOutputService } from "../storage/mino";
+import { AuthenticatedRequest } from "../routes/record"
+import {capture} from "../utils/analytics";
 
 const formatRecording = (recordingData: any) => {
     const recordingMeta = recordingData.recording_meta;
@@ -36,7 +38,62 @@ const formatRecording = (recordingData: any) => {
     };
 };
 
-
+/**
+ * @swagger
+ * /api/robots:
+ *   get:
+ *     summary: Get all robots
+ *     description: Retrieve a list of all robots.
+ *     security:
+ *       - api_key: []
+ *     responses:
+ *       200:
+ *         description: A list of robots.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 messageCode:
+ *                   type: string
+ *                   example: success
+ *                 robots:
+ *                   type: object
+ *                   properties:
+ *                     totalCount:
+ *                       type: integer
+ *                       example: 5
+ *                     items:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                             example: "12345"
+ *                           name:
+ *                             type: string
+ *                             example: "Sample Robot"
+ *       500:
+ *         description: Error retrieving robots.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 500
+ *                 messageCode:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: "Failed to retrieve robots"
+ */
 router.get("/robots", requireAPIKey, async (req: Request, res: Response) => {
     try {
         const robots = await Robot.findAll({ raw: true });
@@ -53,11 +110,11 @@ router.get("/robots", requireAPIKey, async (req: Request, res: Response) => {
 
         res.status(200).json(response);
     } catch (error) {
-        console.error("Error fetching recordings:", error);
+        console.error("Error fetching robots:", error);
         res.status(500).json({
             statusCode: 500,
             messageCode: "error",
-            message: "Failed to retrieve recordings",
+            message: "Failed to retrieve robots",
         });
     }
 });
@@ -86,6 +143,61 @@ const formatRecordingById = (recordingData: any) => {
     };
 };
 
+/**
+ * @swagger
+ * /api/robots/{id}:
+ *   get:
+ *     summary: Get robot by ID
+ *     description: Retrieve a robot by its ID.
+ *     security:
+ *       - api_key: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the robot to retrieve.
+ *     responses:
+ *       200:
+ *         description: Robot details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 messageCode:
+ *                   type: string
+ *                   example: success
+ *                 robot:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: "12345"
+ *                     name:
+ *                       type: string
+ *                       example: "Sample Robot"
+ *       404:
+ *         description: Robot not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 404
+ *                 messageCode:
+ *                   type: string
+ *                   example: not_found
+ *                 message:
+ *                   type: string
+ *                   example: "Recording with ID not found."
+ */
 router.get("/robots/:id", requireAPIKey, async (req: Request, res: Response) => {
     try {
         const robot = await Robot.findOne({
@@ -105,15 +217,78 @@ router.get("/robots/:id", requireAPIKey, async (req: Request, res: Response) => 
 
         res.status(200).json(response);
     } catch (error) {
-        console.error("Error fetching recording:", error);
+        console.error("Error fetching robot:", error);
         res.status(404).json({
             statusCode: 404,
             messageCode: "not_found",
-            message: `Recording with name "${req.params.fileName}" not found.`,
+            message: `Robot with ID "${req.params.id}" not found.`,
         });
     }
 });
 
+/**
+ * @swagger
+ * /api/robots/{id}/runs:
+ *   get:
+ *     summary: Get all runs for a robot
+ *     description: Retrieve all runs associated with a specific robot.
+ *     security:
+ *       - api_key: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the robot.
+ *     responses:
+ *       200:
+ *         description: A list of runs for the robot.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 messageCode:
+ *                   type: string
+ *                   example: success
+ *                 runs:
+ *                   type: object
+ *                   properties:
+ *                     totalCount:
+ *                       type: integer
+ *                       example: 5
+ *                     items:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           runId:
+ *                             type: string
+ *                             example: "67890"
+ *                           status:
+ *                             type: string
+ *                             example: "completed"
+ *       500:
+ *         description: Error retrieving runs.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 500
+ *                 messageCode:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: "Failed to retrieve runs"
+ */
 router.get("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response) => {
     try {
         const runs = await Run.findAll({
@@ -144,6 +319,67 @@ router.get("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response
 }
 );
 
+/**
+ * @swagger
+ * /api/robots/{id}/runs/{runId}:
+ *   get:
+ *     summary: Get a specific run by ID for a robot
+ *     description: Retrieve details of a specific run by its ID.
+ *     security:
+ *       - api_key: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the robot.
+ *       - in: path
+ *         name: runId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the run.
+ *     responses:
+ *       200:
+ *         description: Run details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 messageCode:
+ *                   type: string
+ *                   example: success
+ *                 run:
+ *                   type: object
+ *                   properties:
+ *                     runId:
+ *                       type: string
+ *                       example: "67890"
+ *                     status:
+ *                       type: string
+ *                       example: "completed"
+ *       404:
+ *         description: Run not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 404
+ *                 messageCode:
+ *                   type: string
+ *                   example: not_found
+ *                 message:
+ *                   type: string
+ *                   example: "Run with id not found."
+ */
 router.get("/robots/:id/runs/:runId", requireAPIKey, async (req: Request, res: Response) => {
     try {
         const run = await Run.findOne({
@@ -206,12 +442,12 @@ async function createWorkflowAndStoreMetadata(id: string, userId: string) {
                 headless: true,
                 proxy: proxyOptions.server ? proxyOptions : undefined,
             }
-        });
+        }, userId);
 
         const runId = uuid();
 
         const run = await Run.create({
-            status: 'Running',
+            status: 'running',
             name: recording.recording_meta.name,
             robotId: recording.id,
             robotMetaId: recording.recording_meta.id,
@@ -323,6 +559,37 @@ async function executeRun(id: string) {
             binaryOutput: uploadedBinaryOutput,
         });
 
+      let totalRowsExtracted = 0;
+      let extractedScreenshotsCount = 0;
+      let extractedItemsCount = 0;
+
+      if (updatedRun.dataValues.binaryOutput && updatedRun.dataValues.binaryOutput["item-0"]) {
+        extractedScreenshotsCount = 1;
+      }
+
+      if (updatedRun.dataValues.serializableOutput && updatedRun.dataValues.serializableOutput["item-0"]) {
+        const itemsArray = run.dataValues.serializableOutput["item-0"];
+        extractedItemsCount = itemsArray.length;
+
+        totalRowsExtracted = itemsArray.reduce((total, item) => {
+          return total + Object.keys(item).length;
+        }, 0);
+      }
+
+      console.log(`Extracted Items Count: ${extractedItemsCount}`);
+      console.log(`Extracted Screenshots Count: ${extractedScreenshotsCount}`);
+      console.log(`Total Rows Extracted: ${totalRowsExtracted}`);
+
+        capture('maxun-oss-run-created-api',{
+                runId: id,
+                created_at: new Date().toISOString(),
+                status: 'success',
+                extractedItemsCount,
+                totalRowsExtracted,
+                extractedScreenshotsCount,
+            }
+        )
+
         return {
             success: true,
             interpretationInfo: updatedRun.toJSON()
@@ -330,6 +597,21 @@ async function executeRun(id: string) {
 
     } catch (error: any) {
         logger.log('info', `Error while running a recording with id: ${id} - ${error.message}`);
+        const run = await Run.findOne({ where: { runId: id } });
+        if (run) {
+            await run.update({
+                status: 'failed',
+                finishedAt: new Date().toLocaleString(),
+            });
+        }
+        capture(
+           'maxun-oss-run-created-api',
+           {
+                runId: id,
+                created_at: new Date().toISOString(),
+                status: 'failed',
+            }
+        );
         return {
             success: false,
             error: error.message,
@@ -379,7 +661,7 @@ async function waitForRunCompletion(runId: string, interval: number = 2000) {
 
         if (run.status === 'success') {
             return run;
-        } else if (run.status === 'error') {
+        } else if (run.status === 'failed') {
             throw new Error('Run failed');
         }
 
@@ -388,8 +670,79 @@ async function waitForRunCompletion(runId: string, interval: number = 2000) {
     }
 }
 
-router.post("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response) => {
+/**
+ * @swagger
+ * /api/robots/{id}/runs:
+ *   post:
+ *     summary: Run a robot by ID
+ *     description: When you need to run a robot and get its captured data, you can use this endpoint to create a run for the robot. For now, you can poll the GET endpoint to retrieve a run's details as soon as it is finished. We are working on adding a webhook feature to notify you when a run is finished.
+ *     security:
+ *       - api_key: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the robot to run.
+ *     responses:
+ *       200:
+ *         description: Robot run started successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 messageCode:
+ *                   type: string
+ *                   example: success
+ *                 run:
+ *                   type: object
+ *                   properties:
+ *                     runId:
+ *                       type: string
+ *                       example: "67890"
+ *                     status:
+ *                       type: string
+ *                       example: "in_progress"
+ *       401:
+ *         description: Unauthorized access.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 ok:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Unauthorized"
+ *       500:
+ *         description: Error running robot.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 500
+ *                 messageCode:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: "Failed to run robot"
+ */
+router.post("/robots/:id/runs", requireAPIKey, async (req: AuthenticatedRequest, res: Response) => {
     try {
+        if (!req.user) {
+            return res.status(401).json({ ok: false, error: 'Unauthorized' });
+        }
         const runId = await handleRunRecording(req.params.id, req.user.dataValues.id);
         console.log(`Result`, runId);
 

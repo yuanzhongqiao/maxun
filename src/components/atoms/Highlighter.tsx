@@ -33,13 +33,13 @@ export const Highlighter = ({ unmodifiedRect, displayedSelector = '', width, hei
           width={rect.width}
           height={rect.height}
         />
-        <HighlighterLabel
+        {/* <HighlighterLabel
           id="Highlighter-label"
           top={rect.top + rect.height + 8}
           left={rect.left}
         >
           {displayedSelector}
-        </HighlighterLabel>
+        </HighlighterLabel> */}
       </div>
     );
   }
@@ -50,7 +50,7 @@ const HighlighterOutline = styled.div<HighlighterOutlineProps>`
   pointer-events: none !important;
   position: fixed !important;
   background: #ff5d5b26 !important;
-  outline: 4px solid red !important;
+  outline: 4px solid #ff00c3 !important;
   //border: 4px solid #ff5d5b !important;
   z-index: 2147483647 !important;
   //border-radius: 5px;

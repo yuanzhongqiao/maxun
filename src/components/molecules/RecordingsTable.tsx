@@ -10,7 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import { useEffect } from "react";
 import { WorkflowFile } from "maxun-core";
 import { IconButton, Button, Box, Typography, TextField } from "@mui/material";
-import { Schedule, DeleteForever, Edit, PlayCircle } from "@mui/icons-material";
+import { Schedule, DeleteForever, Edit, PlayCircle, Settings, Power } from "@mui/icons-material";
 import LinkIcon from '@mui/icons-material/Link';
 import { useGlobalInfoStore } from "../../context/globalInfo";
 import { deleteRecordingFromStorage, getStoredRecordings } from "../../api/storage";
@@ -26,7 +26,7 @@ import { GenericModal } from '../atoms/GenericModal';
 */
 
 interface Column {
-  id: 'interpret' | 'name' | 'delete' | 'schedule' | 'integrate';
+  id: 'interpret' | 'name' | 'delete' | 'schedule' | 'integrate' | 'settings';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -64,6 +64,11 @@ const columns: readonly Column[] = [
   //   //format: (value: string) => value.toLocaleString('en-US'),
   // },
   {
+    id: 'settings',
+    label: 'Settings',
+    minWidth: 80,
+  },
+  {
     id: 'delete',
     label: 'Delete',
     minWidth: 80,
@@ -84,13 +89,16 @@ interface RecordingsTableProps {
   handleRunRecording: (id: string, fileName: string, params: string[]) => void;
   handleScheduleRecording: (id: string, fileName: string, params: string[]) => void;
   handleIntegrateRecording: (id: string, fileName: string, params: string[]) => void;
+  handleSettingsRecording: (id: string, fileName: string, params: string[]) => void;
 }
 
-export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handleScheduleRecording, handleIntegrateRecording }: RecordingsTableProps) => {
+export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handleScheduleRecording, handleIntegrateRecording, handleSettingsRecording }: RecordingsTableProps) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState<Data[]>([]);
   const [isModalOpen, setModalOpen] = React.useState(false);
+
+  console.log('rows', rows);
 
   const { notify, setRecordings, browserId, setBrowserId, recordingUrl, setRecordingUrl, recordingName, setRecordingName, recordingId, setRecordingId } = useGlobalInfoStore();
   const navigate = useNavigate();
@@ -142,7 +150,7 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
   const startRecording = () => {
     setModalOpen(false);
     handleStartRecording();
-    notify('info', 'New Recording started for ' + recordingUrl);
+    // notify('info', 'New Recording started for ' + recordingUrl);
   };
 
   useEffect(() => {
@@ -256,6 +264,12 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
                                 </IconButton>
                               </TableCell>
                             );
+                          case 'settings':
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                <SettingsButton handleSettings={() => handleSettingsRecording(row.id, row.name, row.params || [])} />
+                              </TableCell>
+                            );
                           default:
                             return null;
                         }
@@ -277,7 +291,7 @@ export const RecordingsTable = ({ handleEditRecording, handleRunRecording, handl
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <GenericModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+      <GenericModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} modalStyle={modalStyle}>
         <div style={{ padding: '20px' }}>
           <Typography variant="h6" gutterBottom>Enter URL To Extract Data</Typography>
           <TextField
@@ -343,7 +357,34 @@ const IntegrateButton = ({ handleIntegrate }: IntegrateButtonProps) => {
       handleIntegrate();
     }}
     >
-      <LinkIcon />
+      <Power />
     </IconButton>
   )
 }
+
+interface SettingsButtonProps {
+  handleSettings: () => void;
+}
+
+const SettingsButton = ({ handleSettings }: SettingsButtonProps) => {
+  return (
+    <IconButton aria-label="add" size="small" onClick={() => {
+      handleSettings();
+    }}
+    >
+      <Settings />
+    </IconButton>
+  )
+}
+
+const modalStyle = {
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '30%',
+  backgroundColor: 'background.paper',
+  p: 4,
+  height: 'fit-content',
+  display: 'block',
+  padding: '20px',
+};

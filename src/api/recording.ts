@@ -1,7 +1,4 @@
-import { AxiosResponse } from "axios";
-
-const axios = require('axios').default;
-
+import { default as axios, AxiosResponse } from "axios";
 
 export const startRecording = async() : Promise<string> => {
   try {

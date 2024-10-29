@@ -19,6 +19,13 @@ html {
   overflow-y: auto;
 }
 
+a {
+  color: #ff00c3;
+  &:hover {
+    color: #ff00c3;
+  }
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -31,7 +38,7 @@ code {
 
 #browser-recorder {
   display: flex;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
   overflow: hidden;
   position: relative;
@@ -47,7 +54,6 @@ code {
 }
 
 #browser {
-  
 }
 
 #browser-window {
@@ -63,8 +69,16 @@ code {
   position: relative;
 }
 
+@media (min-width: 1024px) and (max-width: 1211px) {
+  #browser-recorder {
+    box-sizing: border-box;
+    height: 100vh;
+    margin: 0;
+  }
+}
+
 /* For laptops (between 1024px and 1440px) */
-@media (min-width: 1024px) and (max-width: 1440px) {
+@media (min-width: 1211px) and (max-width: 1440px) {
   #browser-recorder {
     box-sizing: border-box;
     height: calc(100vh - 0.6rem);
@@ -74,7 +88,7 @@ code {
 
 /* For desktops (between 1441px and 1920px) */
 @media (min-width: 1441px) and (max-width: 1500px) {
- #browser-recorder {
+  #browser-recorder {
     box-sizing: border-box;
     height: calc(100vh - 2rem);
     margin: 1rem;
@@ -82,7 +96,7 @@ code {
 }
 
 @media (min-width: 1501px) and (max-width: 1700px) {
- #browser-recorder {
+  #browser-recorder {
     box-sizing: border-box;
     height: calc(100vh - 2rem);
     margin: 1rem 8rem;
@@ -90,7 +104,7 @@ code {
 }
 
 @media (min-width: 1701px) and (max-width: 1800px) {
- #browser-recorder {
+  #browser-recorder {
     box-sizing: border-box;
     height: calc(100vh - 2rem);
     margin: 1rem 14rem;
@@ -98,7 +112,7 @@ code {
 }
 
 @media (min-width: 1801px) and (max-width: 1900px) {
- #browser-recorder {
+  #browser-recorder {
     box-sizing: border-box;
     height: calc(100vh - 2rem);
     margin: 1rem 18.5rem;
@@ -106,7 +120,7 @@ code {
 }
 
 @media (min-width: 1900px) and (max-width: 1920px) {
- #browser-recorder {
+  #browser-recorder {
     box-sizing: border-box;
     height: calc(100vh - 2rem);
     margin: 1rem 20rem;

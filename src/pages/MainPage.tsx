@@ -7,12 +7,12 @@ import ProxyForm from '../components/organisms/ProxyForm';
 import ApiKey from '../components/organisms/ApiKey';
 import { useGlobalInfoStore } from "../context/globalInfo";
 import { createRunForStoredRecording, interpretStoredRecording, notifyAboutAbort, scheduleStoredRecording } from "../api/storage";
-import { handleUploadCredentials } from "../api/integration"
 import { io, Socket } from "socket.io-client";
 import { stopRecording } from "../api/recording";
 import { RunSettings } from "../components/molecules/RunSettings";
 import { ScheduleSettings } from "../components/molecules/ScheduleSettings";
 import { IntegrationSettings } from "../components/molecules/IntegrationSettings";
+import { RobotSettings } from "../components/molecules/RobotSettings";
 
 interface MainPageProps {
   handleEditRecording: (id: string, fileName: string) => void;
@@ -119,18 +119,6 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
       });
   }
 
-  // todo: use runningRecordingId here (first change in backend)
-  const handleIntegrateRecording = (settings: IntegrationSettings) => {
-    handleUploadCredentials(runningRecordingName, settings.credentials, settings.spreadsheetId, settings.range)
-      .then((response) => {
-        if (response) {
-          notify('success', `Service Account credentials saved successfully.`);
-        } else {
-          notify('error', `Failed to save credentials.`);
-        }
-      })
-  }
-
   const DisplayContent = () => {
     switch (content) {
       case 'recordings':
@@ -139,7 +127,6 @@ export const MainPage = ({ handleEditRecording }: MainPageProps) => {
           handleRunRecording={handleRunRecording}
           setRecordingInfo={setRecordingInfo}
           handleScheduleRecording={handleScheduleRecording}
-          handleIntegrateRecording={handleIntegrateRecording}
         />;
       case 'runs':
         return <Runs

@@ -88,8 +88,8 @@ const ApiKeyManager = () => {
   if (loading) return <CircularProgress />;
 
   return (
-    <Container>
-      <Typography variant="h6" gutterBottom component="div" style={{ marginBottom: '20px', alignSelf: 'flex-start' }}>
+    <Container sx={{ alignSelf: 'flex-start' }}>
+      <Typography variant="h6" gutterBottom component="div" style={{ marginBottom: '20px' }}>
         Manage Your API Key
       </Typography>
       {apiKey ? (
@@ -118,7 +118,7 @@ const ApiKeyManager = () => {
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Delete">
-                    <IconButton onClick={deleteApiKey}>
+                    <IconButton onClick={deleteApiKey} color="error">
                       <Delete />
                     </IconButton>
                   </Tooltip>

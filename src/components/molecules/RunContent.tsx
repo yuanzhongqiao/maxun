@@ -15,6 +15,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import 'highlight.js/styles/github.css';
 
 interface RunContentProps {
   row: Data,
@@ -51,9 +52,9 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
       <TabContext value={tab}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={tab} onChange={(e, newTab) => setTab(newTab)} aria-label="run-content-tabs">
-            {/* <Tab label="Log" value='log' /> */}
-            <Tab label="Input" value='input' />
             <Tab label="Output Data" value='output' />
+            <Tab label="Log" value='log' />
+            {/* <Tab label="Input" value='input' /> */}
           </Tabs>
         </Box>
         <TabPanel value='log'>
@@ -81,42 +82,6 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
             Stop
           </Button> : null}
         </TabPanel>
-        <TabPanel value='input' sx={{ width: '700px' }}>
-          <Typography variant='h6' sx={{ display: 'flex', alignItems: 'center' }}>
-            <SettingsIcon sx={{ marginRight: '15px' }} />
-            Interpreter settings
-          </Typography>
-          {
-            Object.keys(row.interpreterSettings).map((setting, index) => {
-              if (setting === 'params') {
-                return (
-                  <div key={`settings-${setting}-${index}`}>
-                    <Typography variant='h6' sx={{ display: 'flex', alignItems: 'center' }} key={`setting-${index}`}>
-                      <AssignmentIcon sx={{ marginRight: '15px' }} />
-                      Recording parameters
-                    </Typography>
-                    {
-                      Object.keys(row.interpreterSettings.params).map((param, index) => {
-                        return (
-                          <Typography key={`recording-params-item-${index}`} sx={{ margin: '10px' }}>
-                            {/*@ts-ignore*/}
-                            {param}: {row.interpreterSettings.params[param].toString()}
-                          </Typography>
-                        )
-                      })
-                    }
-                  </div>
-                )
-              }
-              return (
-                <Typography key={`interpreter-settings-item-${index}`} sx={{ margin: '10px' }}>
-                  {/*@ts-ignore*/}
-                  {setting}: {row.interpreterSettings[setting].toString()}
-                </Typography>
-              )
-            })
-          }
-        </TabPanel>
         <TabPanel value='output' sx={{ width: '700px' }}>
           {!row || !row.serializableOutput || !row.binaryOutput
             || (Object.keys(row.serializableOutput).length === 0 && Object.keys(row.binaryOutput).length === 0)
@@ -127,15 +92,14 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
             <div>
               <Typography variant='h6' sx={{ display: 'flex', alignItems: 'center' }}>
                 <ArticleIcon sx={{ marginRight: '15px' }} />
-                Serializable output
+                Captured Data
               </Typography>
               {Object.keys(row.serializableOutput).map((key) => {
                 return (
                   <div key={`number-of-serializable-output-${key}`}>
-                    <Typography>
-                      {key}:
-                      <a href={`data:application/json;utf8,${JSON.stringify(row.serializableOutput[key], null, 2)}`}
-                        download={key} style={{ margin: '10px' }}>Download as JSON</a>
+                    <Typography sx={{ margin: '20px 0px 20px 0px' }}>
+                      <a style={{ textDecoration: 'none' }} href={`data:application/json;utf8,${JSON.stringify(row.serializableOutput[key], null, 2)}`}
+                        download={key}>Download as JSON</a>
                     </Typography>
                   </div>
                 )
@@ -180,7 +144,7 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
             <div>
               <Typography variant='h6' sx={{ display: 'flex', alignItems: 'center' }}>
                 <ImageIcon sx={{ marginRight: '15px' }} />
-                Binary output</Typography>
+                Captured Screenshot</Typography>
               {Object.keys(row.binaryOutput).map((key) => {
                 try {
                   const imageUrl = row.binaryOutput[key];
@@ -188,9 +152,8 @@ export const RunContent = ({ row, currentLog, interpretationInProgress, logEndRe
                     <Box key={`number-of-binary-output-${key}`} sx={{
                       width: 'max-content',
                     }}>
-                      <Typography key={`binary-output-key-${key}`}>
-                        {key}:
-                        <a href={imageUrl} download={key} style={{ margin: '10px' }}>Download</a>
+                      <Typography key={`binary-output-key-${key}`} sx={{ margin: '20px 0px 20px 0px' }}>
+                        <a href={imageUrl} download={key} style={{ textDecoration: 'none' }}>Download Screenshot</a>
                       </Typography>
                       <img key={`image-${key}`} src={imageUrl} alt={key} height='auto' width='700px' />
                     </Box>

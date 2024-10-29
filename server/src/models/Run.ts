@@ -100,7 +100,7 @@ Run.init(
       allowNull: false,
     },
     runByUserId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     runByScheduleId: {

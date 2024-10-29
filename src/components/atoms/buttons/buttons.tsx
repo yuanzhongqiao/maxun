@@ -35,13 +35,13 @@ export const UrlFormButton = styled.button`
     height: 24px;
     border-radius: 12px;
     outline: none;
-    color: #333;
+    // color: #333;
     
-    &:hover {
-      background-color: #ddd;
-    },
+    // &:hover {
+    //   background-color: #ddd;
+    // },
     
-    &:active {
-      background-color: #d0d0d0;
-    },
+    // &:active {
+    //   background-color: #d0d0d0;
+    // },
 `;

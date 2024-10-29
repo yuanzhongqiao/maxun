@@ -12,6 +12,7 @@ import logger from '../../logger';
 import { InterpreterSettings, RemoteBrowserOptions } from "../../types";
 import { WorkflowGenerator } from "../../workflow-management/classes/Generator";
 import { WorkflowInterpreter } from "../../workflow-management/classes/Interpreter";
+import { getDecryptedProxyConfig } from '../../routes/proxy';
 
 
 
@@ -90,14 +91,33 @@ export class RemoteBrowser {
      * @param options remote browser options to be used when launching the browser
      * @returns {Promise<void>}
      */
-    public initialize = async (options: RemoteBrowserOptions): Promise<void> => {
+    public initialize = async (options: RemoteBrowserOptions, userId: string): Promise<void> => {
         this.browser = <Browser>(await options.browser.launch(options.launchOptions));
-        this.context = await this.browser.newContext(
-            {
-                viewport: { height: 400, width: 900 },
-                // recordVideo: { dir: 'videos/' }
-            }
-        );
+        const proxyConfig = await getDecryptedProxyConfig(userId);
+        let proxyOptions: { server: string, username?: string, password?: string } = { server: '' };
+        if (proxyConfig.proxy_url) {
+            proxyOptions = {
+                server: proxyConfig.proxy_url,
+                ...(proxyConfig.proxy_username && proxyConfig.proxy_password && {
+                    username: proxyConfig.proxy_username,
+                    password: proxyConfig.proxy_password,
+                }),
+            };
+        }
+        const contextOptions: any = {
+            viewport: { height: 400, width: 900 },
+            // recordVideo: { dir: 'videos/' }
+        };
+
+        if (proxyOptions.server) {
+            contextOptions.proxy = {
+                server: proxyOptions.server,
+                username: proxyOptions.username ? proxyOptions.username : undefined,
+                password: proxyOptions.password ? proxyOptions.password : undefined,
+            };
+        }
+
+        this.context = await this.browser.newContext(contextOptions);
         this.currentPage = await this.context.newPage();
         const blocker = await PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch);
         await blocker.enableBlockingInPage(this.currentPage);
@@ -143,7 +163,7 @@ export class RemoteBrowser {
         this.socket.on('setViewportSize', async (data: { width: number, height: number }) => {
             const { width, height } = data;
             logger.log('debug', `Received viewport size: width=${width}, height=${height}`);
-    
+
             // Update the browser context's viewport dynamically
             if (this.context && this.browser) {
                 this.context = await this.browser.newContext({ viewport: { width, height } });

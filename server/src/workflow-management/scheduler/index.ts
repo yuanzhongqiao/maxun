@@ -9,6 +9,7 @@ import Robot from "../../models/Robot";
 import Run from "../../models/Run";
 import { getDecryptedProxyConfig } from "../../routes/proxy";
 import { BinaryOutputService } from "../../storage/mino";
+import { capture } from "../../utils/analytics";
 
 async function createWorkflowAndStoreMetadata(id: string, userId: string) {
   try {
@@ -45,11 +46,11 @@ async function createWorkflowAndStoreMetadata(id: string, userId: string) {
         headless: true,
         proxy: proxyOptions.server ? proxyOptions : undefined,
       }
-    });
+    }, userId);
     const runId = uuid();
 
     const run = await Run.create({
-      status: 'Scheduled',
+      status: 'scheduled',
       name: recording.recording_meta.name,
       robotId: recording.id,
       robotMetaId: recording.recording_meta.id,
@@ -132,6 +133,39 @@ async function executeRun(id: string) {
       binaryOutput: uploadedBinaryOutput,
     });
 
+    let totalRowsExtracted = 0;
+    let extractedScreenshotsCount = 0;
+    let extractedItemsCount = 0;
+
+    if (run.dataValues.binaryOutput && run.dataValues.binaryOutput["item-0"]) {
+      extractedScreenshotsCount = 1;
+    }
+
+    if (run.dataValues.serializableOutput && run.dataValues.serializableOutput["item-0"]) {
+      const itemsArray = run.dataValues.serializableOutput["item-0"];
+      extractedItemsCount = itemsArray.length;
+
+      totalRowsExtracted = itemsArray.reduce((total, item) => {
+        return total + Object.keys(item).length;
+      }, 0);
+    }
+
+    console.log(`Extracted Items Count: ${extractedItemsCount}`);
+    console.log(`Extracted Screenshots Count: ${extractedScreenshotsCount}`);
+    console.log(`Total Rows Extracted: ${totalRowsExtracted}`);
+
+    capture(
+      'maxun-oss-run-created-scheduled',
+      {
+        runId: id,
+        created_at: new Date().toISOString(),
+        status: 'success',
+        totalRowsExtracted,
+        extractedItemsCount,
+        extractedScreenshotsCount,
+      }
+    );
+
     googleSheetUpdateTasks[id] = {
       robotId: plainRun.robotMetaId,
       runId: id,
@@ -143,6 +177,21 @@ async function executeRun(id: string) {
   } catch (error: any) {
     logger.log('info', `Error while running a recording with id: ${id} - ${error.message}`);
     console.log(error.message);
+    const run = await Run.findOne({ where: { runId: id } });
+    if (run) {
+      await run.update({
+        status: 'failed',
+        finishedAt: new Date().toLocaleString(),
+      });
+    }
+    capture(
+      'maxun-oss-run-created-scheduled',
+      {
+        runId: id,
+        created_at: new Date().toISOString(),
+        status: 'failed',
+      }
+    );
     return false;
   }
 }

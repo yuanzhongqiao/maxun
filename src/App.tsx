@@ -45,8 +45,35 @@ const theme = createTheme({
     MuiIconButton: {
       styleOverrides: {
         root: {
-          '&:hover': {
-            color: "#ff66d9",
+          // '&:hover': {
+          //   color: "#ff66d9",
+          // },
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+        },
+      },
+    },
+    MuiAlert: {
+      styleOverrides: {
+        standardInfo: {
+          backgroundColor: "#fce1f4",
+          color: "#ff00c3",
+          '& .MuiAlert-icon': {
+            color: "#ff00c3",
+          },
+        },
+      },
+    },
+    MuiAlertTitle: {
+      styleOverrides: {
+        root: {
+          '& .MuiAlert-icon': {
+            color: "#ffffff",
           },
         },
       },

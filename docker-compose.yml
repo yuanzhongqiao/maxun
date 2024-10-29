@@ -1,0 +1,67 @@
+version: '3.8'
+services:
+  # Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.frontend
+    ports:
+      - "3000:3000"  # Map host port 3000 to container port 3000
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  # Backend
+  backend:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.backend
+    ports:
+      - "8080:8080"  # Map host port 8080 to container port 8080
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+    depends_on:
+      - postgres
+      - minio
+    networks:
+      - app-network
+
+  # Postgres Database
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  # MinIO for Storage
+  minio:
+    image: minio/minio
+    command: server /data
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    volumes:
+      - minio_data:/data
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+  minio_data:
+
+networks:
+  app-network:
+    driver: bridge
