@@ -113,8 +113,3 @@ const buttonStyles = {
   textTransform: 'none',
   color: '#6C6C6C !important',
 };
-
-const linkStyles = {
-  textDecoration: 'none',
-  color: '#6C6C6C !important'
-}
