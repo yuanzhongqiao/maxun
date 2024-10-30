@@ -29,7 +29,7 @@ Maxun lets you train a robot in 2 minutes and scrape the web on auto-pilot. Web 
 # Envirnoment Variables
 | Variable              | Mandatory | Description                                                                                  | If Not Set                                                   |
 |-----------------------|-----------|----------------------------------------------------------------------------------------------|--------------------------------------------------------------|
-| `NODE_ENV`            | Yes       | Defines the app environment (`development`, `production`).                                   | Defaults to `development`; app may not behave as expected.   |
+| `NODE_ENV`            | Yes       | Defines the app environment (`development`, `production`).                                   | Defaults to `development`. |
 | `JWT_SECRET`          | Yes       | Secret key used to sign and verify JSON Web Tokens (JWTs) for authentication.                | JWT authentication will not work.                            |
 | `DB_NAME`             | Yes       | Name of the Postgres database to connect to.                                                 | Database connection will fail.                               |
 | `DB_USER`             | Yes       | Username for Postgres database authentication.                                               | Database connection will fail.                               |
