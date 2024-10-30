@@ -54,6 +54,9 @@ BYOP (Bring Your Own Proxy) lets you connect external proxies to bypass anti-bot
 # Cloud
 We offer a managed cloud version to run Maxun without having to manage the infrastructure and extract data at scale. Maxun cloud also deals with anti-bot detection, huge proxy network with automatic proxy rotation, and CAPTCHA solving. If this interests you, [join the cloud waitlist](https://docs.google.com/forms/d/e/1FAIpQLSdbD2uhqC4sbg4eLZ9qrFbyrfkXZ2XsI6dQ0USRCQNZNn5pzg/viewform) as we launch soon.
 
+# Note
+This project is in early stages of development. We're actively working to improve the product. 
+
 # Contributing
 Please refer to [Contribution Guide](https://github.com/amhsirak/maxun/blob/master/.github/CONTRIBUTING.md).
 
