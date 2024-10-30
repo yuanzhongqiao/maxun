@@ -1,6 +1,6 @@
 <h1 align="center">
     <div>
-        <a href="https://maxun.io">
+        <a href="https://maxun-website.vercel.app/">
             <img src="/public/img/maxunlogo.png" width="50" />
             <br>
             Maxun
@@ -15,9 +15,10 @@ Maxun lets you train a robot in 2 minutes and scrape the web on auto-pilot. Web 
 
 
 <p align="center">
-    <a href="https://maxun.io/"><b>Website</b></a> •
+    <a href="https://maxun-website.vercel.app/"><b>Website</b></a> •
     <a href="https://discord.gg/5RgZmkW"><b>Discord</b></a> •
-    <a href="https://x.com/maxun_io"><b>Twitter</b></a>
+    <a href="https://x.com/maxun_io"><b>Twitter</b></a> •
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdbD2uhqC4sbg4eLZ9qrFbyrfkXZ2XsI6dQ0USRCQNZNn5pzg/viewform"><b>Join Maxun Cloud</b></a>
 </p>
 
 ![maxun_demo](https://github.com/user-attachments/assets/a61ba670-e56a-4ae1-9681-0b4bd6ba9cdc)
