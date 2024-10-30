@@ -26,6 +26,7 @@ Maxun lets you train a robot in 2 minutes and scrape the web on auto-pilot. Web 
 
 # Installation
 ### Docker
+⚠️ Work In Progress.
 
 ### Local Setup
 1. Ensure you have Node.js, PostgreSQL, MinIO and Redis installed on your system.
