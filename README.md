@@ -26,6 +26,30 @@ Maxun lets you train a robot in 2 minutes and scrape the web on auto-pilot. Web 
 
 # Installation
 
+# Envirnoment Variables
+| Variable     | Mandatory | Description                | If Not Set                           |
+|--------------|-----------|----------------------------|-----------------------------         |
+| `NODE_ENV`   | Yes       | Sets whether you are running the app locally or in production.    | |
+| `JWT_SECRET` | Yes        | JWT secret is utilized to generate authentication tokens.    | |
+| `DB_NAME`    | Yes       | Brief description here.    | Describe what happens here.          |
+| `DB_USER` | Yes        | Brief description here.    | Describe what happens here.          |
+| `DB_PASSWORD` | Yes        | Brief description here.    | Describe what happens here.          |
+| `DB_NAME`    | Yes       | Brief description here.    | Describe what happens here.          |
+| `DB_USER` | Yes        | Brief description here.    | Describe what happens here.          |
+| `DB_HOST`   | Yes       | Sets whether you are running the app locally or in production.    | |
+| `DB_PORT` | Yes        | JWT secret is utilized to generate authentication tokens.    | |
+| `ENCRYPTION_KEY` | Yes        | Brief description here.    | Describe what happens here.          |
+| `MINIO_ENDPOINT` | Yes        | Brief description here.    | Describe what happens here.          |
+| `MINIO_PORT` | Yes        | Brief description here.    | Describe what happens here.          |
+| `MINIO_ACCESS_KEY` | Yes        | Brief description here.    | Describe what happens here.          |
+| `GOOGLE_CLIENT_ID` | Yes        | Brief description here.    | Describe what happens here.          |
+| `GOOGLE_CLIENT_SECRET` | Yes        | Brief description here.    | Describe what happens here.          |
+| `GOOGLE_REDIRECT_URI` | Yes        | Brief description here.    | Describe what happens here.          |
+| `REDIS_HOST` | Yes        | Brief description here.    | Describe what happens here.          |
+| `REDIS_PORT` | Yes        | Brief description here.    | Describe what happens here.          |
+| `MAXUN_TELEMETRY` | No        | Brief description here.    | Describe what happens here.          |
+
+
 # How Does It Work?
 Maxun lets you create custom robots which emulate user actions and extract data. A robot can perform any of the actions: <b>Capture List, Capture Text or Capture Screenshot. Once a robot is created, it will keep extracting data for you without manual intervention</b>
 
