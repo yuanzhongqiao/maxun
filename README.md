@@ -77,12 +77,12 @@ Maxun lets you create custom robots which emulate user actions and extract data.
 
 ![Screenshot 2024-10-23 222138](https://github.com/user-attachments/assets/53573c98-769e-490d-829e-ada9fac0764f)
 
-### 1. Robot Actions
+## 1. Robot Actions
 1. Capture List: Useful to extract structured and bulk items from the website. Example: Scrape products from Amazon etc.
 2. Capture Text: Useful to extract individual text content from the website.
 3. Capture Screenshot: Get fullpage or visible section screenshots of the website.
 
-### 2. BYOP
+## 2. BYOP
 BYOP (Bring Your Own Proxy) lets you connect external proxies to bypass anti-bot protection. Currently, the proxies are per user. Soon you'll be able to configure proxy per robot.
 
 
@@ -101,7 +101,7 @@ BYOP (Bring Your Own Proxy) lets you connect external proxies to bypass anti-bot
 We offer a managed cloud version to run Maxun without having to manage the infrastructure and extract data at scale. Maxun cloud also deals with anti-bot detection, huge proxy network with automatic proxy rotation, and CAPTCHA solving. If this interests you, [join the cloud waitlist](https://docs.google.com/forms/d/e/1FAIpQLSdbD2uhqC4sbg4eLZ9qrFbyrfkXZ2XsI6dQ0USRCQNZNn5pzg/viewform) as we launch soon.
 
 # Note
-This project is in early stages of development. We're actively working to improve the product. 
+This project is in early stages of development. Your feedback is very important for us - we're actively working to improve the product. <a href="https://forms.gle/E8vRMVB7bUbsSktPA">Drop anonymous feedback here.</a>
 
 # Contributing
 Please refer to [Contribution Guide](https://github.com/amhsirak/maxun/blob/master/.github/CONTRIBUTING.md).
