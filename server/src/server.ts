@@ -63,20 +63,20 @@ readdirSync(path.join(__dirname, 'api')).forEach((r) => {
 });
 
 const isProduction = process.env.NODE_ENV === 'production';
-const workerPath = path.resolve(__dirname, isProduction ? './worker.js' : '/worker.ts');
+const workerPath = path.resolve(__dirname, isProduction ? './worker.js' : './worker.ts');
 
-let workerProcess;
+let workerProcess: any;
 if (!isProduction) {
   workerProcess = fork(workerPath, [], {
     execArgv: ['--inspect=5859'],
   });
-  workerProcess.on('message', (message) => {
+  workerProcess.on('message', (message: any) => {
     console.log(`Message from worker: ${message}`);
   });
-  workerProcess.on('error', (error) => {
+  workerProcess.on('error', (error: any) => {
     console.error(`Error in worker: ${error}`);
   });
-  workerProcess.on('exit', (code) => {
+  workerProcess.on('exit', (code: any) => {
     console.log(`Worker exited with code: ${code}`);
   });
 }
@@ -91,13 +91,21 @@ app.get('/', function (req, res) {
 });
 
 server.listen(SERVER_PORT, async () => {
-  await connectDB();
-  await syncDB();
-  logger.log('info', `Server listening on port ${SERVER_PORT}`);
+  try {
+    await connectDB();
+    await syncDB();
+    logger.log('info', `Server listening on port ${SERVER_PORT}`);
+  } catch (error: any) {
+    logger.log('error', `Failed to connect to the database: ${error.message}`);
+    process.exit(1); // Exit the process if DB connection fails
+  }
 });
+
 
 process.on('SIGINT', () => {
   console.log('Main app shutting down...');
-  //workerProcess.kill();
+  if (!isProduction) {
+    workerProcess.kill();
+  }
   process.exit();
 });
