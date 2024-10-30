@@ -5,9 +5,14 @@ import { handleRunRecording } from "./workflow-management/scheduler";
 import Robot from './models/Robot';
 import { computeNextRun } from './utils/schedule';
 
+console.log('Environment variables:', {
+    REDIS_HOST: process.env.REDIS_HOST,
+    REDIS_PORT: process.env.REDIS_PORT,
+});
+
 const connection = new IORedis({
-    host: 'localhost',
-    port: 6379,
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT, 10) : 6379,
     maxRetriesPerRequest: null,
 });
 

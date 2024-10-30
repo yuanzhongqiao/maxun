@@ -298,12 +298,14 @@ router.get("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response
             raw: true
         });
 
+        const formattedRuns = runs.map(formatRunResponse);
+
         const response = {
             statusCode: 200,
             messageCode: "success",
             runs: {
-                totalCount: runs.length,
-                items: runs,
+            totalCount: formattedRuns.length,
+            items: formattedRuns,
             },
         };
 
@@ -318,6 +320,32 @@ router.get("/robots/:id/runs", requireAPIKey, async (req: Request, res: Response
     }
 }
 );
+
+function formatRunResponse(run: any) {
+    const formattedRun = {
+        id: run.id,
+        status: run.status,
+        name: run.name,
+        robotId: run.robotMetaId, // Renaming robotMetaId to robotId
+        startedAt: run.startedAt,
+        finishedAt: run.finishedAt,
+        runId: run.runId,
+        runByUserId: run.runByUserId,
+        runByScheduleId: run.runByScheduleId,
+        runByAPI: run.runByAPI,
+        data: {},
+        screenshot: null,
+    };
+
+    if (run.serializableOutput && run.serializableOutput['item-0']) {
+        formattedRun.data = run.serializableOutput['item-0'];
+    } else if (run.binaryOutput && run.binaryOutput['item-0']) {
+        formattedRun.screenshot = run.binaryOutput['item-0']; 
+    }
+
+    return formattedRun;
+}
+
 
 /**
  * @swagger
@@ -393,7 +421,7 @@ router.get("/robots/:id/runs/:runId", requireAPIKey, async (req: Request, res: R
         const response = {
             statusCode: 200,
             messageCode: "success",
-            run: run,
+            run: formatRunResponse(run),
         };
 
         res.status(200).json(response);
@@ -754,7 +782,7 @@ router.post("/robots/:id/runs", requireAPIKey, async (req: AuthenticatedRequest,
         const response = {
             statusCode: 200,
             messageCode: "success",
-            run: completedRun,
+            run: formatRunResponse(completedRun),
         };
 
         res.status(200).json(response);

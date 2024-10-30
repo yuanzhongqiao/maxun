@@ -24,9 +24,9 @@ export const comparePassword = (password: string, hash: string): Promise<boolean
 }
 
 export const encrypt = (text: string): string => {
-    const ivLength = parseInt(getEnvVariable('IV_LENGTH'), 10);
+    const ivLength = 16;
     const iv = crypto.randomBytes(ivLength);
-    const algorithm = getEnvVariable('ALGORITHM');
+    const algorithm = 'aes-256-cbc';
     const key = Buffer.from(getEnvVariable('ENCRYPTION_KEY'), 'hex');
     const cipher = crypto.createCipheriv(algorithm, key, iv);
     let encrypted = cipher.update(text, 'utf8', 'hex');

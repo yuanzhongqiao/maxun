@@ -5,6 +5,8 @@ export default defineConfig(() => {
   return {
     build: {
       outDir: 'build',
+      manifest: true,
+      chunkSizeWarningLimit: 1024,
     },
     plugins: [react()],
   };

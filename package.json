@@ -41,6 +41,7 @@
     "jsonwebtoken": "^9.0.2",
     "loglevel": "^1.8.0",
     "loglevel-plugin-remote": "^0.6.8",
+    "maxun-core": "^0.0.3",
     "minio": "^8.0.1",
     "moment-timezone": "^0.5.45",
     "node-cron": "^3.0.3",
@@ -75,7 +76,9 @@
     "server": "./node_modules/.bin/nodemon server/src/server.ts",
     "client": "vite",
     "build": "vite build",
-    "test": "vite preview",
+    "build:server": "tsc -p server/tsconfig.json",
+    "start:server": "node server/dist/server/src/server.js",
+    "preview": "vite preview",
     "lint": "./node_modules/.bin/eslint ."
   },
   "eslintConfig": {
