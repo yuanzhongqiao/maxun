@@ -15,20 +15,14 @@ Maxun lets you train a robot in 2 minutes and scrape the web on auto-pilot. Web 
 
 
 <p align="center">
+    <a href="https://maxun.io/"><b>Website</b></a> •
     <a href="https://discord.gg/5RgZmkW"><b>Discord</b></a> •
-    <a href="https://x.com/maxun_io"><b>Twitter</b></a> •
+    <a href="https://x.com/maxun_io"><b>Twitter</b></a>
 </p>
 
 ![maxun_demo](https://github.com/user-attachments/assets/a61ba670-e56a-4ae1-9681-0b4bd6ba9cdc)
 
 <img src="https://static.scarf.sh/a.png?x-pxid=c12a77cc-855e-4602-8a0f-614b2d0da56a" />
-
-# Join Our Community
-
-<p>
-    <a href="https://discord.gg/5RgZmkW"><b>Discord</b></a> •
-    <a href="https://x.com/maxun_io"><b>Twitter</b></a> •
-</p>
 
 # Installation
 
@@ -47,31 +41,28 @@ BYOP (Bring Your Own Proxy) lets you connect external proxies to bypass anti-bot
 
 
 # Features
-- Extract Data With No-Code
-- Handle Pagination & Scrolling
-- Run Robots On A Specific Schedule
-- Convert Websites to APIs
-- Convert Websites to Spreadsheets
-- Adapt To Website Layout Changes (coming soon)
-- Extract Behind Login, With Two-Factor Authentication Support (coming soon)
-- Integrations (currently Google Sheet)
+- ✨ Extract Data With No-Code
+- ✨ Handle Pagination & Scrolling
+- ✨ Run Robots On A Specific Schedule
+- ✨ Turn Websites to APIs
+- ✨ Turn Websites to Spreadsheets
+- ✨ Adapt To Website Layout Changes (coming soon)
+- ✨ Extract Behind Login, With Two-Factor Authentication Support (coming soon)
+- ✨ Integrations (currently Google Sheet)
 - +++ A lot of amazing things soon!
 
 # Cloud
-We offer a managed cloud version to run Maxun without having to manage the infrastructure and extract data at scale. Maxun cloud also deals with anti-bot detection, huge proxy network, and CAPTCHA solving. If this interests you, [join the cloud waitlist](https://docs.google.com/forms/d/e/1FAIpQLSdbD2uhqC4sbg4eLZ9qrFbyrfkXZ2XsI6dQ0USRCQNZNn5pzg/viewform) as we launch soon.
+We offer a managed cloud version to run Maxun without having to manage the infrastructure and extract data at scale. Maxun cloud also deals with anti-bot detection, huge proxy network with automatic proxy rotation, and CAPTCHA solving. If this interests you, [join the cloud waitlist](https://docs.google.com/forms/d/e/1FAIpQLSdbD2uhqC4sbg4eLZ9qrFbyrfkXZ2XsI6dQ0USRCQNZNn5pzg/viewform) as we launch soon.
 
 # Contributing
-
 Please refer to [Contribution Guide](https://github.com/amhsirak/maxun/blob/master/.github/CONTRIBUTING.md).
 
 # License
-
 <p>
 This project is licensed under <a href="./LICENSE">AGPLv3</a>.
 </p>
 
 # Contributors
-
 Thank you to the combined efforts of everyone who contributes!
 
 <a href="https://github.com/amhsirak/maxun/graphs/contributors">
