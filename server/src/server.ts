@@ -84,8 +84,8 @@ if (!isProduction) {
 app.get('/', function (req, res) {
   capture(
     'maxun-oss-server-run', {
-      event: 'server_started',
-    }
+    event: 'server_started',
+  }
   );
   return res.send('Maxun server started 🚀');
 });
