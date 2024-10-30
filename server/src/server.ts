@@ -62,8 +62,13 @@ readdirSync(path.join(__dirname, 'api')).forEach((r) => {
   }
 });
 
-const workerProcess = fork(path.resolve(__dirname, './worker.ts'), [], {
-  execArgv: ['--inspect=5859'],  // Specify a different debug port for the worker
+// Check if we're running in production or development
+const isProduction = process.env.NODE_ENV === 'production';
+const workerPath = path.resolve(__dirname, isProduction ? './worker.js' : '/worker.ts');
+
+// Fork the worker process
+const workerProcess = fork(workerPath, [], {
+  execArgv: isProduction ? ['--inspect=8081'] : ['--inspect=5859'],
 });
 
 workerProcess.on('message', (message) => {
