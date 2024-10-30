@@ -15,9 +15,9 @@ Maxun lets you train a robot in 2 minutes and scrape the web on auto-pilot. Web 
 
 
 <p align="center">
-    <a href="https://maxun-website.vercel.app/"><b>Website</b></a> •
-    <a href="https://discord.gg/5RgZmkW"><b>Discord</b></a> •
-    <a href="https://x.com/maxun_io"><b>Twitter</b></a> •
+    <a href="https://maxun-website.vercel.app/"><b>Website</b></a> |
+    <a href="https://discord.gg/5RgZmkW"><b>Discord</b></a> |
+    <a href="https://x.com/maxun_io"><b>Twitter</b></a> |
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSdbD2uhqC4sbg4eLZ9qrFbyrfkXZ2XsI6dQ0USRCQNZNn5pzg/viewform"><b>Join Maxun Cloud</b></a>
 </p>
 
@@ -105,9 +105,6 @@ We offer a managed cloud version to run Maxun without having to manage the infra
 # Note
 This project is in early stages of development. Your feedback is very important for us - we're actively working to improve the product. <a href="https://forms.gle/E8vRMVB7bUbsSktPA">Drop anonymous feedback here.</a>
 
-# Contributing
-Please refer to [Contribution Guide](https://github.com/amhsirak/maxun/blob/master/.github/CONTRIBUTING.md).
-
 # License
 <p>
 This project is licensed under <a href="./LICENSE">AGPLv3</a>.
@@ -116,6 +113,6 @@ This project is licensed under <a href="./LICENSE">AGPLv3</a>.
 # Contributors
 Thank you to the combined efforts of everyone who contributes!
 
-<a href="https://github.com/amhsirak/maxun/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=amhsirak/maxun" />
+<a href="https://github.com/getmaxun/maxun/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=getmaxun/maxun" />
 </a>
