@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: production
     env_file: .env
     ports:
       - "5173:80"
@@ -12,9 +13,10 @@ services:
     depends_on:
       - db
       - minio
+      - redis
 
   db:
-    image: postgres:13
+    image: postgres:15
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -35,6 +37,17 @@ services:
     volumes:
       - minio_data:/data
 
+  redis:
+    image: redis:6
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
 volumes:
   postgres_data:
   minio_data:
+  redis_data:
