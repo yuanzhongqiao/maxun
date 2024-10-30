@@ -27,27 +27,26 @@ Maxun lets you train a robot in 2 minutes and scrape the web on auto-pilot. Web 
 # Installation
 
 # Envirnoment Variables
-| Variable     | Mandatory | Description                | If Not Set                           |
-|--------------|-----------|----------------------------|-----------------------------         |
-| `NODE_ENV`   | Yes       | Sets whether you are running the app locally or in production.    | |
-| `JWT_SECRET` | Yes        | JWT secret is utilized to generate authentication tokens.    | |
-| `DB_NAME`    | Yes       | Brief description here.    | Describe what happens here.          |
-| `DB_USER` | Yes        | Brief description here.    | Describe what happens here.          |
-| `DB_PASSWORD` | Yes        | Brief description here.    | Describe what happens here.          |
-| `DB_NAME`    | Yes       | Brief description here.    | Describe what happens here.          |
-| `DB_USER` | Yes        | Brief description here.    | Describe what happens here.          |
-| `DB_HOST`   | Yes       | Sets whether you are running the app locally or in production.    | |
-| `DB_PORT` | Yes        | JWT secret is utilized to generate authentication tokens.    | |
-| `ENCRYPTION_KEY` | Yes        | Brief description here.    | Describe what happens here.          |
-| `MINIO_ENDPOINT` | Yes        | Brief description here.    | Describe what happens here.          |
-| `MINIO_PORT` | Yes        | Brief description here.    | Describe what happens here.          |
-| `MINIO_ACCESS_KEY` | Yes        | Brief description here.    | Describe what happens here.          |
-| `GOOGLE_CLIENT_ID` | Yes        | Brief description here.    | Describe what happens here.          |
-| `GOOGLE_CLIENT_SECRET` | Yes        | Brief description here.    | Describe what happens here.          |
-| `GOOGLE_REDIRECT_URI` | Yes        | Brief description here.    | Describe what happens here.          |
-| `REDIS_HOST` | Yes        | Brief description here.    | Describe what happens here.          |
-| `REDIS_PORT` | Yes        | Brief description here.    | Describe what happens here.          |
-| `MAXUN_TELEMETRY` | No        | Brief description here.    | Describe what happens here.          |
+| Variable              | Mandatory | Description                                                                                  | If Not Set                                                   |
+|-----------------------|-----------|----------------------------------------------------------------------------------------------|--------------------------------------------------------------|
+| `NODE_ENV`            | Yes       | Defines the app environment (`development`, `production`).                                   | Defaults to `development`; app may not behave as expected.   |
+| `JWT_SECRET`          | Yes       | Secret key used to sign and verify JSON Web Tokens (JWTs) for authentication.                | JWT authentication will not work.                            |
+| `DB_NAME`             | Yes       | Name of the Postgres database to connect to.                                                 | Database connection will fail.                               |
+| `DB_USER`             | Yes       | Username for Postgres database authentication.                                               | Database connection will fail.                               |
+| `DB_PASSWORD`         | Yes       | Password for Postgres database authentication.                                               | Database connection will fail.                               |
+| `DB_HOST`             | Yes       | Host address where the Postgres database server is running.                                  | Database connection will fail.                               |
+| `DB_PORT`             | Yes       | Port number used to connect to the Postgres database server.                                 | Database connection will fail.                               |
+| `ENCRYPTION_KEY`      | Yes       | Key used for encrypting sensitive data (proxies, passwords).                                 | Encryption functionality will not work.                      |
+| `MINIO_ENDPOINT`      | Yes       | Endpoint URL for MinIO, to store robot run screenshots.                                      | Connection to MinIO storage will fail.                       |
+| `MINIO_PORT`          | Yes       | Port number for MinIO service.                                                               | Connection to MinIO storage will fail.                       |
+| `MINIO_ACCESS_KEY`    | Yes       | Access key for authenticating with MinIO.                                                    | MinIO authentication will fail.                              |
+| `GOOGLE_CLIENT_ID`    | No       | Client ID for Google OAuth, used in authentication.                                          | Google login will not work.                                  |
+| `GOOGLE_CLIENT_SECRET`| No       | Client Secret for Google OAuth.                                                              | Google login will not work.                                  |
+| `GOOGLE_REDIRECT_URI` | No       | Redirect URI for handling Google OAuth responses.                                            | Google login will not work.                                  |
+| `REDIS_HOST`          | Yes       | Host address of the Redis server for caching.                                                | Redis connection will fail, affecting performance.           |
+| `REDIS_PORT`          | Yes       | Port number for the Redis server.                                                            | Redis connection will fail, affecting performance.           |
+| `MAXUN_TELEMETRY`     | No        | Disables telemetry to stop sending anonymous usage data. Keeping it enabled helps us understand how the product is used and assess the impact of any new changes. Please keep it enabled. | Telemetry data will not be collected. |
+
 
 
 # How Does It Work?
