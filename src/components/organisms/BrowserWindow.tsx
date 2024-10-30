@@ -66,7 +66,6 @@ export const BrowserWindow = () => {
 
     const { socket } = useSocketStore();
     const { notify } = useGlobalInfoStore();
-    //const { width, height } = useBrowserDimensionsStore();
     const { getText, getList, paginationMode, paginationType, limitMode } = useActionContext();
     const { addTextStep, addListStep } = useBrowserSteps();
 
