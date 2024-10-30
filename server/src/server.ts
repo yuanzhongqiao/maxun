@@ -62,24 +62,24 @@ readdirSync(path.join(__dirname, 'api')).forEach((r) => {
   }
 });
 
-// Check if we're running in production or development
 const isProduction = process.env.NODE_ENV === 'production';
 const workerPath = path.resolve(__dirname, isProduction ? './worker.js' : '/worker.ts');
 
-// Fork the worker process
-const workerProcess = fork(workerPath, [], {
-  execArgv: isProduction ? ['--inspect=8081'] : ['--inspect=5859'],
-});
-
-workerProcess.on('message', (message) => {
-  console.log(`Message from worker: ${message}`);
-});
-workerProcess.on('error', (error) => {
-  console.error(`Error in worker: ${error}`);
-});
-workerProcess.on('exit', (code) => {
-  console.log(`Worker exited with code: ${code}`);
-});
+let workerProcess;
+if (!isProduction) {
+  workerProcess = fork(workerPath, [], {
+    execArgv: ['--inspect=5859'],
+  });
+  workerProcess.on('message', (message) => {
+    console.log(`Message from worker: ${message}`);
+  });
+  workerProcess.on('error', (error) => {
+    console.error(`Error in worker: ${error}`);
+  });
+  workerProcess.on('exit', (code) => {
+    console.log(`Worker exited with code: ${code}`);
+  });
+}
 
 app.get('/', function (req, res) {
   capture(
@@ -98,6 +98,6 @@ server.listen(SERVER_PORT, async () => {
 
 process.on('SIGINT', () => {
   console.log('Main app shutting down...');
-  workerProcess.kill();
+  //workerProcess.kill();
   process.exit();
 });
