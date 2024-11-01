@@ -1,31 +1,12 @@
 version: '3.8'
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: production
-      args:
-        VITE_BACKEND_URL: ${VITE_BACKEND_URL}
-    env_file: .env
-    ports:
-      - "5173:80"  # Frontend exposed on port 5173
-    depends_on:
-      db:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://app:80/"]  # Changed to port 80
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  db:
+  postgres:
     image: postgres:13
     environment:
-      POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - "5432:5432"
     volumes:
@@ -35,6 +16,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  redis:
+    image: redis:6
+    environment:
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
 
   minio:
     image: minio/minio
@@ -47,24 +38,27 @@ services:
     volumes:
       - minio_data:/data
 
-  redis:
-    image: redis:6
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+  backend:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
     ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-
-  nginx:
-    image: nginx:latest
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf  # Your Nginx config
-    ports:
-      - "80:80"  # Host port 80 mapped to Nginx port 80
+      - "8080:8080"
+    env_file: .env
     depends_on:
-      - app
+      - postgres
+      - redis
+      - minio
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    env_file: .env
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:
