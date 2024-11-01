@@ -29,6 +29,10 @@ RUN npm run build:server
 FROM base AS frontend-build
 WORKDIR /app
 
+# Define the environment variable to make it available at build time
+ARG VITE_BACKEND_URL
+ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
+
 # Copy frontend code and configs
 COPY src ./src
 COPY index.html ./index.html
