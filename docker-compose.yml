@@ -45,6 +45,12 @@ services:
     ports:
       - "8080:8080"
     env_file: .env
+    environment:
+      # to ensure Playwright works in Docker
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+      DISPLAY: :0
+      DEBUG: pw:api
+      PWDEBUG: 1  # Enables debugging
     depends_on:
       - postgres
       - redis
