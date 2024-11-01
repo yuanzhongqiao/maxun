@@ -1,4 +1,3 @@
-# Use Node.js with Ubuntu instead of Alpine for better Playwright support
 FROM mcr.microsoft.com/playwright:v1.40.0-jammy
 
 # Set working directory
@@ -11,15 +10,22 @@ COPY src ./src
 COPY server ./server
 COPY tsconfig.json ./
 COPY server/tsconfig.json ./server/
+COPY server/start.sh ./  
 
 # Install dependencies
 RUN npm install
 
 # Install Playwright browsers and dependencies
-RUN npx playwright install --with-deps chromium firefox webkit
+RUN npx playwright install --with-deps chromium
+
+# Install xvfb for display support
+RUN apt-get update && apt-get install -y xvfb
+
+# Make the script executable
+RUN chmod +x ./start.sh
 
 # Expose the backend port
 EXPOSE 8080
 
-# Start the backend using the server script
-CMD ["npm", "run", "server"]
+# Start the backend using the start script
+CMD ["./start.sh"]
