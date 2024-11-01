@@ -51,6 +51,10 @@ services:
       DISPLAY: :0
       DEBUG: pw:api
       PWDEBUG: 1  # Enables debugging
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    # Increase shared memory size for Chromium
+    shm_size: '2gb'
     depends_on:
       - postgres
       - redis
