@@ -3,6 +3,7 @@ import {
     Browser,
     CDPSession,
     BrowserContext,
+    chromium,
 } from 'playwright';
 import { Socket } from "socket.io";
 import { PlaywrightBlocker } from '@cliqz/adblocker-playwright';
@@ -91,35 +92,39 @@ export class RemoteBrowser {
      * @param options remote browser options to be used when launching the browser
      * @returns {Promise<void>}
      */
-    public initialize = async (options: RemoteBrowserOptions, userId: string): Promise<void> => {
-        const launchOptions = {
+    public initialize = async (userId: string): Promise<void> => {
+        // const launchOptions = {
+        //     headless: true,
+        //     proxy: options.launchOptions?.proxy,
+        //     chromiumSandbox: false,
+        //     args: [
+        //         '--no-sandbox',
+        //         '--disable-setuid-sandbox',
+        //         '--headless=new',
+        //         '--disable-gpu',
+        //         '--disable-dev-shm-usage',
+        //         '--disable-software-rasterizer',
+        //         '--in-process-gpu',
+        //         '--disable-infobars',
+        //         '--single-process', 
+        //         '--no-zygote',
+        //         '--disable-notifications',
+        //         '--disable-extensions',
+        //         '--disable-background-timer-throttling',
+        //         ...(options.launchOptions?.args || [])
+        //     ],
+        //     env: {
+        //         ...process.env,
+        //         CHROMIUM_FLAGS: '--disable-gpu --no-sandbox --headless=new'
+        //     }
+        // };
+        // console.log('Launch options before:', options.launchOptions);
+        // this.browser = <Browser>(await options.browser.launch(launchOptions));
+
+        // console.log('Launch options after:', options.launchOptions)
+        this.browser = <Browser>(await chromium.launch({
             headless: true,
-            proxy: options.launchOptions?.proxy,
-            chromiumSandbox: false,
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--headless=new',
-                '--disable-gpu',
-                '--disable-dev-shm-usage',
-                '--disable-software-rasterizer',
-                '--in-process-gpu',
-                '--disable-infobars',
-                '--single-process', 
-                '--no-zygote',
-                '--disable-notifications',
-                '--disable-extensions',
-                '--disable-background-timer-throttling',
-                ...(options.launchOptions?.args || [])
-            ],
-            env: {
-                ...process.env,
-                CHROMIUM_FLAGS: '--disable-gpu --no-sandbox --headless=new'
-            }
-        };
-        console.log('Launch options before:', options.launchOptions);
-        this.browser = <Browser>(await options.browser.launch(launchOptions));
-        console.log('Launch options after:', options.launchOptions)
+        }));
         const proxyConfig = await getDecryptedProxyConfig(userId);
         let proxyOptions: { server: string, username?: string, password?: string } = { server: '' };
         if (proxyConfig.proxy_url) {

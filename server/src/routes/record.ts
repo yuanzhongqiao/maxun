@@ -56,13 +56,7 @@ router.get('/start', requireSignIn, async (req: AuthenticatedRequest, res: Respo
         };
     }
 
-    const id = initializeRemoteBrowserForRecording({
-        browser: chromium,
-        launchOptions: {
-            headless: true,
-            proxy: proxyOptions.server ? proxyOptions : undefined,
-        }
-    }, req.user.id);
+    const id = initializeRemoteBrowserForRecording(req.user.id);
     console.log('id start:', id);
     return res.send(id);
 });
@@ -75,13 +69,7 @@ router.post('/start', requireSignIn, (req: AuthenticatedRequest, res:Response) =
     if (!req.user) {
         return res.status(401).send('User not authenticated');
     }
-    const id = initializeRemoteBrowserForRecording({
-        browser: chromium,
-        launchOptions: {
-            headless: true,
-            ...req.body,
-        }
-    }, req.user.id);
+    const id = initializeRemoteBrowserForRecording(req.user.id);
     console.log('id start POST:', id);
     return res.send(id);
 });
