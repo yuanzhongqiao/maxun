@@ -56,7 +56,8 @@ You can access the frontend at http://localhost:5173/ and backend at http://loca
 # Envirnoment Variables
 | Variable              | Mandatory | Description                                                                                  | If Not Set                                                   |
 |-----------------------|-----------|----------------------------------------------------------------------------------------------|--------------------------------------------------------------|
-| `NODE_ENV`            | Yes       | Defines the app environment (`development`, `production`).                                   | Defaults to `development`. |
+| `BACKEND_URL`            | Yes       | URL to run backend on.                                   | Backend won't start. If not sure, set to http://localhost:8080/ |
+| `VITE_BACKEND_URL`            | Yes       | URL to run backend on.                                   | Backend won't start. If not sure, set to http://localhost:8080/ |
 | `JWT_SECRET`          | Yes       | Secret key used to sign and verify JSON Web Tokens (JWTs) for authentication.                | JWT authentication will not work.                            |
 | `DB_NAME`             | Yes       | Name of the Postgres database to connect to.                                                 | Database connection will fail.                               |
 | `DB_USER`             | Yes       | Username for Postgres database authentication.                                               | Database connection will fail.                               |
