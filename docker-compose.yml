@@ -48,11 +48,15 @@ services:
     environment:
       # to ensure Playwright works in Docker
       PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
-      DISPLAY: :0
-      DEBUG: pw:api
-      PWDEBUG: 1  # Enables debugging
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 0
+      # DEBUG: pw:api
+      # PWDEBUG: 1  # Enables debugging
+      CHROMIUM_FLAGS: '--disable-gpu --no-sandbox --headless=new'
     volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix
+    # - /tmp/.X11-unix:/tmp/.X11-unix
+    - /var/run/dbus:/var/run/dbus  # Add this for D-Bus support
+    security_opt:
+    - seccomp=unconfined  # This might help with browser sandbox issues
     # Increase shared memory size for Chromium
     shm_size: '2gb'
     depends_on:
