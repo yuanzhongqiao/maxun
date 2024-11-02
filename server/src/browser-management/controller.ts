@@ -34,6 +34,7 @@ export const initializeRemoteBrowserForRecording = (options: RemoteBrowserOption
       } else {
         const browserSession = new RemoteBrowser(socket);
         browserSession.interpreter.subscribeToPausing();
+        console.log(`Initialized Browser Config: ${JSON.stringify(options)}`);
         await browserSession.initialize(options, userId);
         await browserSession.registerEditorEvents();
         await browserSession.subscribeToScreencast();
