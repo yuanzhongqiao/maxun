@@ -26,7 +26,7 @@ Maxun lets you train a robot in 2 minutes and scrape the web on auto-pilot. Web 
 <img src="https://static.scarf.sh/a.png?x-pxid=c12a77cc-855e-4602-8a0f-614b2d0da56a" />
 
 # Local Setup
-### Docker
+### Docker Compose
 ```
 docker-compose up -d --build
 ```
