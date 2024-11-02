@@ -20,7 +20,7 @@ import logger from "../logger";
  * @returns string
  * @category BrowserManagement-Controller
  */
-export const initializeRemoteBrowserForRecording = (options: RemoteBrowserOptions, userId: string): string => {
+export const initializeRemoteBrowserForRecording = (userId: string): string => {
   const id = getActiveBrowserId() || uuid();
   createSocketConnection(
     io.of(id),
@@ -34,7 +34,7 @@ export const initializeRemoteBrowserForRecording = (options: RemoteBrowserOption
       } else {
         const browserSession = new RemoteBrowser(socket);
         browserSession.interpreter.subscribeToPausing();
-        await browserSession.initialize(options, userId);
+        await browserSession.initialize(userId);
         await browserSession.registerEditorEvents();
         await browserSession.subscribeToScreencast();
         browserPool.addRemoteBrowser(id, browserSession, true);
@@ -52,13 +52,13 @@ export const initializeRemoteBrowserForRecording = (options: RemoteBrowserOption
  * @returns string
  * @category BrowserManagement-Controller
  */
-export const createRemoteBrowserForRun = (options: RemoteBrowserOptions, userId: string): string => {
+export const createRemoteBrowserForRun = (userId: string): string => {
   const id = uuid();
   createSocketConnectionForRun(
     io.of(id),
     async (socket: Socket) => {
       const browserSession = new RemoteBrowser(socket);
-      await browserSession.initialize(options, userId);
+      await browserSession.initialize(userId);
       browserPool.addRemoteBrowser(id, browserSession, true);
       socket.emit('ready-for-run');
     });

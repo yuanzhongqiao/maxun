@@ -11,14 +11,14 @@ import {
     stopRunningInterpretation,
     getRemoteBrowserCurrentUrl, getRemoteBrowserCurrentTabs,
 } from '../browser-management/controller'
-import { chromium } from 'playwright-extra';
+import { chromium } from 'playwright';
 import stealthPlugin from 'puppeteer-extra-plugin-stealth';
 import logger from "../logger";
 import { getDecryptedProxyConfig } from './proxy';
 import { requireSignIn } from '../middlewares/auth';
 
 export const router = Router();
-chromium.use(stealthPlugin());
+// chromium.use(stealthPlugin());
 
 
 export interface AuthenticatedRequest extends Request {
@@ -56,13 +56,8 @@ router.get('/start', requireSignIn, async (req: AuthenticatedRequest, res: Respo
         };
     }
 
-    const id = initializeRemoteBrowserForRecording({
-        browser: chromium,
-        launchOptions: {
-            headless: true,
-            proxy: proxyOptions.server ? proxyOptions : undefined,
-        }
-    }, req.user.id);
+    const id = initializeRemoteBrowserForRecording(req.user.id);
+    console.log('id start:', id);
     return res.send(id);
 });
 
@@ -74,10 +69,8 @@ router.post('/start', requireSignIn, (req: AuthenticatedRequest, res:Response) =
     if (!req.user) {
         return res.status(401).send('User not authenticated');
     }
-    const id = initializeRemoteBrowserForRecording({
-        browser: chromium,
-        launchOptions: req.body,
-    }, req.user.id);
+    const id = initializeRemoteBrowserForRecording(req.user.id);
+    console.log('id start POST:', id);
     return res.send(id);
 });
 

@@ -73,11 +73,11 @@
   },
   "scripts": {
     "start": "concurrently -k \"npm run server\" \"npm run client\"",
-    "server": "./node_modules/.bin/nodemon server/src/server.ts",
+    "server": "cross-env NODE_OPTIONS='--max-old-space-size=8000' nodemon server/src/server.ts",
     "client": "vite",
     "build": "vite build",
     "build:server": "tsc -p server/tsconfig.json",
-    "start:server": "node server/dist/server/src/server.js",
+    "start:server": "cross-env NODE_OPTIONS='--max-old-space-size=8000' server/dist/server/src/server.js",
     "preview": "vite preview",
     "lint": "./node_modules/.bin/eslint ."
   },
@@ -101,6 +101,7 @@
     "@vitejs/plugin-react": "^4.3.3",
     "ajv": "^8.8.2",
     "concurrently": "^7.0.0",
+    "cross-env": "^7.0.3",
     "nodemon": "^2.0.15",
     "ts-node": "^10.4.0",
     "vite": "^5.4.10"

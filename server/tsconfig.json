@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2018",
+    "target": "es2020",
     "module": "commonjs",
     "outDir": "./dist",
     "rootDir": "../",
@@ -21,12 +21,12 @@
   "include": [
     "src/**/*",
     "../src/shared/**/*",
-    "../src/helpers/**/*"
+    "../src/helpers/**/*",
   ],
   "exclude": [
     "node_modules",
     "../src/components/**/*",  // Exclude frontend components
     "../src/pages/**/*",       // Exclude frontend pages
-    "../src/app/**/*"          // Exclude other frontend-specific code
+    "../src/app/**/*",          // Exclude other frontend-specific code
   ]
 }
