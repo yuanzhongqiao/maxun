@@ -92,7 +92,34 @@ export class RemoteBrowser {
      * @returns {Promise<void>}
      */
     public initialize = async (options: RemoteBrowserOptions, userId: string): Promise<void> => {
-        this.browser = <Browser>(await options.browser.launch(options.launchOptions));
+        const launchOptions = {
+            headless: true,
+            proxy: options.launchOptions?.proxy,
+            chromiumSandbox: false,
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--headless=new',
+                '--disable-gpu',
+                '--disable-dev-shm-usage',
+                '--disable-software-rasterizer',
+                '--in-process-gpu',
+                '--disable-infobars',
+                '--single-process', 
+                '--no-zygote',
+                '--disable-notifications',
+                '--disable-extensions',
+                '--disable-background-timer-throttling',
+                ...(options.launchOptions?.args || [])
+            ],
+            env: {
+                ...process.env,
+                CHROMIUM_FLAGS: '--disable-gpu --no-sandbox --headless=new'
+            }
+        };
+        console.log('Launch options before:', options.launchOptions);
+        this.browser = <Browser>(await options.browser.launch(launchOptions));
+        console.log('Launch options after:', options.launchOptions)
         const proxyConfig = await getDecryptedProxyConfig(userId);
         let proxyOptions: { server: string, username?: string, password?: string } = { server: '' };
         if (proxyConfig.proxy_url) {
@@ -107,6 +134,16 @@ export class RemoteBrowser {
         const contextOptions: any = {
             viewport: { height: 400, width: 900 },
             // recordVideo: { dir: 'videos/' }
+             // Force reduced motion to prevent animation issues
+            reducedMotion: 'reduce',
+            // Force JavaScript to be enabled
+            javaScriptEnabled: true,
+            // Set a reasonable timeout
+            timeout: 50000,
+            // Disable hardware acceleration
+            forcedColors: 'none',
+            isMobile: false,
+            hasTouch: false
         };
 
         if (proxyOptions.server) {
@@ -116,9 +153,17 @@ export class RemoteBrowser {
                 password: proxyOptions.password ? proxyOptions.password : undefined,
             };
         }
+        const browserUserAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.5481.38 Safari/537.36";
 
+
+        contextOptions.userAgent = browserUserAgent;
         this.context = await this.browser.newContext(contextOptions);
+        console.log(`Context from initialize: ${JSON.stringify(this.context)}`)
         this.currentPage = await this.context.newPage();
+        console.log(`CPage from initialize: ${JSON.stringify(this.currentPage)}`)
+        // await this.currentPage.setExtraHTTPHeaders({
+        //     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+        // });
         const blocker = await PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch);
         await blocker.enableBlockingInPage(this.currentPage);
         this.client = await this.currentPage.context().newCDPSession(this.currentPage);
@@ -331,6 +376,9 @@ export class RemoteBrowser {
         await this.stopScreencast();
         const newPage = options ? await this.browser?.newPage(options)
             : await this.browser?.newPage();
+        await newPage?.setExtraHTTPHeaders({
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+        });
 
         await this.currentPage?.close();
         this.currentPage = newPage;
