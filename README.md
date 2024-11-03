@@ -55,6 +55,9 @@ You can access the frontend at http://localhost:5173/ and backend at http://loca
 
 
 # Environment Variables
+1. Create a file named `.env` in the root folder of the project
+2. Example env file can be viewed [here](https://github.com/getmaxun/maxun/blob/master/ENVEXAMPLE).
+
 | Variable              | Mandatory | Description                                                                                  | If Not Set                                                   |
 |-----------------------|-----------|----------------------------------------------------------------------------------------------|--------------------------------------------------------------|
 | `BACKEND_URL`            | Yes       | URL to run backend on.                                   | Backend won't start. If not sure, set to http://localhost:8080/ |
