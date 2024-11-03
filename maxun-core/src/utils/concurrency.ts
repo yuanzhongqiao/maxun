@@ -74,7 +74,7 @@ export default class Concurrency {
   /**
      * Waits until there is no running nor waiting job. \
      * If the concurrency manager is idle at the time of calling this function,
-     * it waits until at least one job is compeleted (can be "presubscribed").
+     * it waits until at least one job is completed (can be "presubscribed").
      * @returns Promise, resolved after there is no running/waiting worker.
      */
   waitForCompletion(): Promise<void> {
