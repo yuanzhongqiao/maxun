@@ -54,7 +54,7 @@ npm run start
 You can access the frontend at http://localhost:5173/ and backend at http://localhost:8080/
 
 
-# Envirnoment Variables
+# Environment Variables
 | Variable              | Mandatory | Description                                                                                  | If Not Set                                                   |
 |-----------------------|-----------|----------------------------------------------------------------------------------------------|--------------------------------------------------------------|
 | `BACKEND_URL`            | Yes       | URL to run backend on.                                   | Backend won't start. If not sure, set to http://localhost:8080/ |
