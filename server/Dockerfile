@@ -10,7 +10,7 @@ COPY src ./src
 COPY server ./server
 COPY tsconfig.json ./
 COPY server/tsconfig.json ./server/
-COPY server/start.sh ./  
+# COPY server/start.sh ./  
 
 # Install dependencies
 RUN npm install
@@ -74,10 +74,10 @@ RUN apt-get update && apt-get install -y \
 # RUN mkdir -p /var/run/dbus
 
 # Make the script executable
-RUN chmod +x ./start.sh
+# RUN chmod +x ./start.sh
 
 # Expose the backend port
 EXPOSE 8080
 
 # Start the backend using the start script
-CMD ["./start.sh"]
+CMD ["npm", "run", "server"]
