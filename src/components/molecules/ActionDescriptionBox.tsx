@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography, FormControlLabel, Checkbox, Box } from '@mui/material';
 import { useActionContext } from '../../context/browserActions';
+import MaxunLogo from "../../assets/maxunlogo.png";
 
 const CustomBoxContainer = styled.div`
   position: relative;
@@ -110,7 +111,7 @@ const ActionDescriptionBox = () => {
 
   return (
     <CustomBoxContainer>
-      <Logo src="/img/maxunlogo.png" alt="Maxun Logo" />
+      <Logo src={MaxunLogo} alt="Maxun Logo" />
       <Triangle />
       <Content>
         {renderActionDescription()}
