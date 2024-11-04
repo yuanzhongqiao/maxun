@@ -52,9 +52,6 @@ services:
       # DEBUG: pw:api
       # PWDEBUG: 1  # Enables debugging
       CHROMIUM_FLAGS: '--disable-gpu --no-sandbox --headless=new'
-    volumes:
-    # - /tmp/.X11-unix:/tmp/.X11-unix
-    - /var/run/dbus:/var/run/dbus  # Add this for D-Bus support
     security_opt:
     - seccomp=unconfined  # This might help with browser sandbox issues
     # Increase shared memory size for Chromium
@@ -63,6 +60,10 @@ services:
       - postgres
       - redis
       - minio
+    volumes:
+      - ./server:/app/server      # Mount server source code for hot reloading
+      - ./maxun-core:/app/maxun-core  # Mount maxun-core for any shared code updates
+      - /var/run/dbus:/var/run/dbus
 
   frontend:
     build:
@@ -71,6 +72,9 @@ services:
     ports:
       - "5173:5173"
     env_file: .env
+    volumes:
+      - ./:/app             # Mount entire frontend app directory for hot reloading
+      - /app/node_modules    # Anonymous volume to prevent overwriting node_modules
     depends_on:
       - backend
 
