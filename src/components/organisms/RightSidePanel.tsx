@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Button, Paper, Box, TextField, IconButton } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
@@ -373,6 +373,20 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
     stopGetScreenshot();
   };
 
+  const isConfirmCaptureDisabled = useMemo(() => {
+    // Check if we are in the initial stage and if there are no browser steps or no valid list selectors with fields
+    if (captureStage !== 'initial') return false;
+  
+    const hasValidListSelector = browserSteps.some(step => 
+      step.type === 'list' && 
+      step.listSelector && 
+      Object.keys(step.fields).length > 0
+    );
+  
+     // Disable the button if there are no valid list selectors or if there are unconfirmed list text fields
+    return !hasValidListSelector || hasUnconfirmedListTextFields;
+  }, [captureStage, browserSteps, hasUnconfirmedListTextFields]);
+
   return (
     <Paper sx={{ height: '520px', width: 'auto', alignItems: "center", background: 'inherit' }} id="browser-actions" elevation={0}>
       {/* <SimpleBox height={60} width='100%' background='lightGray' radius='0%'>
@@ -387,7 +401,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
               <Button
                 variant="outlined"
                 onClick={handleConfirmListCapture}
-                disabled={hasUnconfirmedListTextFields}
+                disabled={captureStage === 'initial' ? isConfirmCaptureDisabled : hasUnconfirmedListTextFields}
               >
                 {captureStage === 'initial' ? 'Confirm Capture' :
                   captureStage === 'pagination' ? 'Confirm Pagination' :

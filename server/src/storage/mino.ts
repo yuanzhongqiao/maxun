@@ -2,7 +2,7 @@ import { Client } from 'minio';
 import Run from '../models/Run';
 
 const minioClient = new Client({
-  endPoint: process.env.MINIO_ENDPOINT || 'localhost',
+  endPoint: process.env.MINIO_ENDPOINT ? process.env.MINIO_ENDPOINT : 'localhost',
   port: parseInt(process.env.MINIO_PORT || '9000'),
   useSSL: false,
   accessKey: process.env.MINIO_ACCESS_KEY || 'minio-access-key',
@@ -108,7 +108,8 @@ class BinaryOutputService {
         await this.uploadBinaryOutputToMinioBucket(run, minioKey, binaryData);
 
         // Construct the public URL for the uploaded object
-        const publicUrl = `http://${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${this.bucketName}/${minioKey}`;
+        // todo: use minio endpoint 
+        const publicUrl = `http://localhost:${process.env.MINIO_PORT}/${this.bucketName}/${minioKey}`;
 
         // Save the public URL in the result object
         uploadedBinaryOutput[key] = publicUrl;
