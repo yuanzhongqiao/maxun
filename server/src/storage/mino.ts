@@ -2,7 +2,7 @@ import { Client } from 'minio';
 import Run from '../models/Run';
 
 const minioClient = new Client({
-  endPoint: process.env.MINIO_ENDPOINT || 'localhost',
+  endPoint: process.env.MINIO_ENDPOINT ? process.env.MINIO_ENDPOINT : 'localhost',
   port: parseInt(process.env.MINIO_PORT || '9000'),
   useSSL: false,
   accessKey: process.env.MINIO_ACCESS_KEY || 'minio-access-key',
