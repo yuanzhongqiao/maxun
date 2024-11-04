@@ -108,7 +108,8 @@ class BinaryOutputService {
         await this.uploadBinaryOutputToMinioBucket(run, minioKey, binaryData);
 
         // Construct the public URL for the uploaded object
-        const publicUrl = `http://${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${this.bucketName}/${minioKey}`;
+        // todo: use minio endpoint 
+        const publicUrl = `http://localhost:${process.env.MINIO_PORT}/${this.bucketName}/${minioKey}`;
 
         // Save the public URL in the result object
         uploadedBinaryOutput[key] = publicUrl;
