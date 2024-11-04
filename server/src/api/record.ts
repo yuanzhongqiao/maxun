@@ -650,7 +650,7 @@ export async function handleRunRecording(id: string, userId: string) {
             throw new Error('browserId or runId or userId is undefined');
         }
 
-        const socket = io(`${process.env.BACKEND_URL}/${browserId}`, {
+        const socket = io(`${process.env.BACKEND_URL ? process.env.BACKEND_URL : 'http://localhost:8080'}/${browserId}`, {
             transports: ['websocket'],
             rejectUnauthorized: false
         });
