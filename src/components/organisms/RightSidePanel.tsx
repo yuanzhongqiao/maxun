@@ -383,8 +383,9 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({ onFinishCapture 
       Object.keys(step.fields).length > 0
     );
   
-    return !hasValidListSelector;
-  }, [captureStage, browserSteps]);
+     // Disable the button if there are no valid list selectors or if there are unconfirmed list text fields
+    return !hasValidListSelector || hasUnconfirmedListTextFields;
+  }, [captureStage, browserSteps, hasUnconfirmedListTextFields]);
 
   return (
     <Paper sx={{ height: '520px', width: 'auto', alignItems: "center", background: 'inherit' }} id="browser-actions" elevation={0}>
