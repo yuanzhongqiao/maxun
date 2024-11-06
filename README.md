@@ -50,17 +50,17 @@ docker-compose up -d --build
 </ol>
 <div class="snippet-clipboard-content notranslate position-relative overflow-auto"><pre class="notranslate"><code>git clone https://github.com/getmaxun/maxun
 
-# change directory to the project root
+#change directory to the project root
 cd maxun
 
-# install dependencies
+#install dependencies
 npm install
 
-# change directory to maxun-core to install dependencies
+#change directory to maxun-core to install dependencies
 cd maxun-core 
 npm install
 
-# start frontend and backend together
+#start frontend and backend together
 npm run start
 </code></pre><div class="zeroclipboard-container">
    
